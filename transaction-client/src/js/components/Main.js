@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
+import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 
 class Main extends Component {
   render() {
-    return <div>Main</div>;
+    return (
+      <div>
+        <Breadcrumb>
+          <BreadcrumbItem active>Home</BreadcrumbItem>
+        </Breadcrumb>
+      </div>
+    );
   }
 }
 

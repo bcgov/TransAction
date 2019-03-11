@@ -1,0 +1,14 @@
+// Underline navbar links when active
+.navbar-nav .nav-link {
+  @include hover-focus {
+    text-decoration: none;
+  }
+
+  @include hover {
+    text-decoration: underline;
+  }
+}
+
+.breadcrumb {
+  background-color: transparent;
+}
