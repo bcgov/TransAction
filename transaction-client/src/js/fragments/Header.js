@@ -11,12 +11,18 @@ class Header extends Component {
     });
   };
 
+  hideNavbar = () => {
+    this.setState({
+      collapsed: true,
+    });
+  };
+
   render() {
     return (
       <header>
         <Navbar className="navbar navbar-expand-lg navbar-dark">
           <Container>
-            <NavbarBrand tag={Link} to="/">
+            <NavbarBrand tag={Link} onClick={this.hideNavbar} to="/">
               <img
                 className="img-fluid d-none d-md-block"
                 src="/images/bcid-logo-rev-en.svg"
@@ -37,12 +43,12 @@ class Header extends Component {
             <Collapse isOpen={!this.state.collapsed} navbar>
               <Nav className="navbar-nav">
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/">
                     Home
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/events">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/events">
                     Events
                   </NavLink>
                 </NavItem>

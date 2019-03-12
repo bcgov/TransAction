@@ -8,7 +8,7 @@ import history from './history';
 import Main from './components/Main';
 import Events from './components/Events';
 
-import '.././scss/bootstrap-theme.scss';
+import '../scss/transaction.scss';
 
 class App extends Component {
   render() {

@@ -10,27 +10,27 @@ class Footer extends Component {
           <Container>
             <Nav className="navbar-nav">
               <NavItem>
-                <NavLink tag={RRNavLink} to="https://www2.gov.bc.ca/gov/content/home/disclaimer">
+                <NavLink tag={RRNavLink} to="#">
                   Disclaimer
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={RRNavLink} to="https://www2.gov.bc.ca/gov/content/home/privacy">
+                <NavLink tag={RRNavLink} to="#">
                   Privacy
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={RRNavLink} to="https://www2.gov.bc.ca/gov/content/home/accessibility">
+                <NavLink tag={RRNavLink} to="#">
                   Accessibility
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={RRNavLink} to="https://www2.gov.bc.ca/gov/content/home/copyright">
+                <NavLink tag={RRNavLink} to="#">
                   Copyright
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={RRNavLink} to="https://www2.gov.bc.ca/gov/content/home/contact-us">
+                <NavLink tag={RRNavLink} to="#">
                   Contact Us
                 </NavLink>
               </NavItem>
