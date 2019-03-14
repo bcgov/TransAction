@@ -3,25 +3,21 @@
 const { OpenShiftClientX } = require('pipeline-cli');
 const path = require('path');
 
-module.exports = () => {
-  const oc = new OpenShiftClientX({ namespace: 'devhub-tools' });
+module.exports = (settings) => {
+  const phase = 'build';
+  const oc = new OpenShiftClientX({ namespace: settings.phases[phase].namespace });
   const templateFile = path.resolve(__dirname, '../../openshift/bc.yaml');
 
-  const appName = 'transaction';
-
-  const objects = oc.process(oc.toFileUrl(templateFile), {
+  const objects = oc.processBuidTemplate(oc.toFileUrl(templateFile), {
     param: {
-      NAME: appName,
-      SUFFIX: `-dev`,
-      VERSION: `build-v1.0`,
+      NAME: settings.phases[phase].name,
+      SUFFIX: settings.phases[phase].suffix,
+      VERSION: settings.phases[phase].tag,
       SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
       SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`,
     },
   });
 
-  oc.applyBestPractices(objects);
-  oc.applyRecommendedLabels(objects, appName, 'build', oc.options.pr);
-  oc.fetchSecretsAndConfigMaps(objects);
-  const applyResult = oc.apply(objects);
-  applyResult.narrow('bc').startBuild();
+  oc.applyRecommendedLabels(objects, settings.phases[phase].name, 'build', settings.phases[phase].changeId);
+  oc.applyAndBuild(objects);
 };
