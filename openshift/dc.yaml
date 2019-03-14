@@ -2,10 +2,20 @@ apiVersion: v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: dotnet-mvc
+  name: transaction
 labels:
-  template: dotnet-mvc
+  template: transaction
 objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    labels:
+      shared: true
+    name: ${NAME}-static
+  spec:
+    lookupPolicy:
+      local: false
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -28,29 +38,26 @@ objects:
           deploymentconfig: ${NAME}${SUFFIX}
       spec:
         containers:
-        - image: ${NAME}:${VERSION}
-          name: dotnet-mvc
+        - image: ${NAME}-static:${VERSION}
+          name: transaction
           ports:
-          - containerPort: 8080
+          - containerPort: 5000
             protocol: TCP
           resources:
             requests:
               cpu: '100m'
             limits:
               cpu: '150m'
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: ${ASPNETCORE_ENVIRONMENT}
     test: false
     triggers:
     - type: ConfigChange
     - imageChangeParams:
         automatic: true
         containerNames:
-        - dotnet-mvc
+        - transaction
         from:
           kind: ImageStreamTag
-          name: ${NAME}:${VERSION}
+          name: ${NAME}-static:${VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: Service
@@ -60,9 +67,9 @@ objects:
   spec:
     ports:
     - name: web
-      port: 2015
+      port: 5000
       protocol: TCP
-      targetPort: 2015
+      targetPort: 5000
     selector:
       deploymentconfig: ${NAME}${SUFFIX}
 - apiVersion: route.openshift.io/v1
@@ -73,7 +80,7 @@ objects:
   spec:
     host:
     port:
-      targetPort: 8080-tcp
+      targetPort: web
     to:
       kind: Service
       name: ${NAME}${SUFFIX}
@@ -84,7 +91,7 @@ parameters:
   displayName: Name
   name: NAME
   required: true
-  value: 'dotnet-mvc'
+  value: 'transaction-client'
 - description: A name suffix used for all objects
   displayName: Suffix
   name: SUFFIX
@@ -95,8 +102,3 @@ parameters:
   name: VERSION
   required: true
   value: 'v1.0.0'
-- description: The ASP Net Core deployment environment setting
-  displayName: AspNetCore Environment
-  name: ASPNETCORE_ENVIRONMENT
-  required: true
-  value: 'Development'
