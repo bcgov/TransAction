@@ -48,8 +48,8 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/events">
-                    Events
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/MyProfile">
+                    MyProfile
                   </NavLink>
                 </NavItem>
               </Nav>
