@@ -6,7 +6,7 @@ const path = require('path');
 module.exports = (settings) => {
   const phase = 'build';
   const oc = new OpenShiftClientX({ namespace: settings.phases[phase].namespace });
-  const templateFile = path.resolve(__dirname, '../../openshift/bc.yaml');
+  const templateFile = path.resolve(__dirname, '../../openshift/api-build-config.yaml');
 
   const objects = oc.processBuidTemplate(oc.toFileUrl(templateFile), {
     param: {

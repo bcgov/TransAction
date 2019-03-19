@@ -12,7 +12,7 @@ objects:
     creationTimestamp: null
     labels:
       shared: true
-    name: ${NAME}-static
+    name: ${NAME}
   spec:
     lookupPolicy:
       local: false
@@ -38,7 +38,7 @@ objects:
           deploymentconfig: ${NAME}${SUFFIX}
       spec:
         containers:
-        - image: ${NAME}-static:${VERSION}
+        - image: ${NAME}:${VERSION}
           name: transaction
           ports:
           - containerPort: 5000
@@ -48,6 +48,18 @@ objects:
               cpu: '100m'
             limits:
               cpu: '150m'
+        #   volumeMounts:
+        #   - name: ${VOLUME_NAME}
+        #     mountPath: /etc/nginx/conf.d
+        #     readOnly: true
+        # volumes:
+        # - name: ${VOLUME_NAME}
+        #   configMap:
+        #     defaultMode: 420
+        #     items:
+        #       - key: nginx.conf
+        #         path: default.conf
+        #     name: nginx.conf
     test: false
     triggers:
     - type: ConfigChange
@@ -57,7 +69,7 @@ objects:
         - transaction
         from:
           kind: ImageStreamTag
-          name: ${NAME}-static:${VERSION}
+          name: ${NAME}:${VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: Service
@@ -91,7 +103,7 @@ parameters:
   displayName: Name
   name: NAME
   required: true
-  value: 'transaction-client'
+  value: 'client'
 - description: A name suffix used for all objects
   displayName: Suffix
   name: SUFFIX
@@ -102,3 +114,8 @@ parameters:
   name: VERSION
   required: true
   value: 'v1.0.0'
+- description: Nginx config volume
+  displayName: Volume Name
+  name: VOLUME_NAME
+  required: false
+  value: nginx-config

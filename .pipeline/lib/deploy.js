@@ -9,7 +9,7 @@ module.exports = (settings) => {
 
   const oc = new OpenShiftClientX({ namespace: phases[phase].namespace });
 
-  const templateFile = path.resolve(__dirname, '../../openshift/dc.yaml');
+  const templateFile = path.resolve(__dirname, '../../openshift/api-deploy-config.yaml');
 
   const objects = []
   
@@ -17,7 +17,8 @@ module.exports = (settings) => {
     param: {
         NAME: phases[phase].name,
         SUFFIX: phases[phase].suffix,
-        VERSION: phases[phase].tag
+        VERSION: phases[phase].tag,
+        ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env
     },
   }));
 
