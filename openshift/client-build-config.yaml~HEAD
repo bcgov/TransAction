@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   name: jenkins
 labels:
-  template: transaction
+  template: client
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -12,7 +12,7 @@ objects:
     creationTimestamp: null
     labels:
       shared: true
-    name: ${NAME}
+    name: ${NAME}-artifacts
   spec:
     lookupPolicy:
       local: false
@@ -20,22 +20,32 @@ objects:
   kind: ImageStream
   metadata:
     creationTimestamp: null
-    name: ${NAME}-static
+    name: ${NAME}
   spec:
     lookupPolicy:
       local: false
+# Build artifacts
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     creationTimestamp: null
-    name: ${NAME}${SUFFIX}
+    labels:
+      build: ${NAME}-artifacts${SUFFIX}
+    name: ${NAME}-artifacts${SUFFIX}
   spec:
-    completionDeadlineSeconds: 180
+    completionDeadlineSeconds: 720
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
-        name: ${NAME}:${VERSION}
+        name: ${NAME}-artifacts:${VERSION}
+      resources:
+      limits:
+        cpu: 500m
+        memory: 2Gi
+      requests:
+        cpu: 250m
+        memory: 1Gi
     postCommit: {}
     source:
       git:
@@ -49,21 +59,32 @@ objects:
           kind: ImageStreamTag
           name: nodejs-8-rhel7:latest
       type: Source
-#Chainned build
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+# Create runtime image
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     creationTimestamp: null
     labels:
-      build: ${NAME}-static${SUFFIX}
-    name: ${NAME}-static${SUFFIX}
+      build: ${NAME}${SUFFIX}
+    name: ${NAME}${SUFFIX}
   spec:
     nodeSelector: null
     completionDeadlineSeconds: 180
     output:
       to:
         kind: ImageStreamTag
-        name: ${NAME}-static:${VERSION}
+        name: ${NAME}:${VERSION}
+    resources:
+      limits:
+        cpu: 500m
+        memory: 2Gi
+      requests:
+        cpu: 250m
+        memory: 1Gi
     postCommit: {}
     resources:
       requests:
@@ -76,10 +97,14 @@ objects:
         COPY html /
         RUN npm install -g serve
         CMD serve -s /build
+        # FROM nodejs/build-output:latest
+        # COPY html/build /usr/share/nginx/html
+        # EXPOSE 5000
+        # CMD ["nginx", "-g", "daemon off;"]
       images:
         - from:
             kind: ImageStreamTag
-            name: '${NAME}:${VERSION}'
+            name: '${NAME}-artifacts:${VERSION}'
           paths:
             - destinationDir: html
               sourcePath: /opt/app-root/src/build/
@@ -89,14 +114,24 @@ objects:
         from:
           kind: ImageStreamTag
           name: 'nodejs:latest'
+          #name: 'nginx:latest'
           namespace: openshift
       type: Docker
+    triggers:
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:${VERSION}
+      type: ImageChange
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
 parameters:
 - description: A name used for all objects
   displayName: Name
   name: NAME
   required: false
-  value: 'transaction-client'
+  value: 'client'
 - description: A name suffix used for all objects
   displayName: Suffix
   name: SUFFIX
@@ -111,7 +146,7 @@ parameters:
   displayName: SOURCE_REPOSITORY_URL
   name: SOURCE_REPOSITORY_URL
   required: false
-  value: 'https://github.com/BCGovNeal/transaction.git'
+  value: 'https://github.com/BCGov/transaction.git'
 - description: SOURCE_REPOSITORY_REF
   displayName: SOURCE_REPOSITORY_REF
   name: SOURCE_REPOSITORY_REF

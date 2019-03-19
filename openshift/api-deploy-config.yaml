@@ -4,104 +4,109 @@ metadata:
   creationTimestamp: null
   name: transaction
 labels:
-  template: api
+  template: client
 objects:
-  - apiVersion: v1
-    kind: ImageStream
-    metadata:
-      creationTimestamp: null
-      labels:
-        shared: true
-      name: ${NAME}
-    spec:
-      lookupPolicy:
-        local: false
-  - apiVersion: v1
-    kind: DeploymentConfig
-    metadata:
-      creationTimestamp: null
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    labels:
+      shared: true
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}${SUFFIX}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: ${NAME}${SUFFIX}
+    strategy:
+      resources:
+        requests:
+          cpu: '100m'
+        limits:
+          cpu: '150m'
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: ${NAME}${SUFFIX}
+      spec:
+        containers:
+        - image: ${NAME}:${VERSION}
+          name: transaction
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources:
+            requests:
+              cpu: '100m'
+            limits:
+              cpu: '150m'
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: ${ASPNETCORE_ENVIRONMENT}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - transaction
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:${VERSION}
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}${SUFFIX}
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: ${NAME}${SUFFIX}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}${SUFFIX}
+  spec:
+    host:
+    port:
+      targetPort: web
+    to:
+      kind: Service
       name: ${NAME}${SUFFIX}
-    spec:
-      replicas: 1
-      selector:
-        deploymentconfig: ${NAME}${SUFFIX}
-      strategy:
-        resources:
-          requests:
-            cpu: "100m"
-          limits:
-            cpu: "150m"
-      template:
-        metadata:
-          creationTimestamp: null
-          labels:
-            deploymentconfig: ${NAME}${SUFFIX}
-        spec:
-          containers:
-            - image: ${NAME}:${VERSION}
-              name: api
-              ports:
-                - containerPort: 5000
-                  protocol: TCP
-              resources:
-                requests:
-                  cpu: "100m"
-                limits:
-                  cpu: "150m"
-              env:
-                - name: ASPNETCORE_ENVIRONMENT
-                  value: ${ASPNETCORE_ENVIRONMENT}
-      test: false
-      triggers:
-        - type: ConfigChange
-        - imageChangeParams:
-            automatic: true
-            containerNames:
-              - api
-            from:
-              kind: ImageStreamTag
-              name: ${NAME}-static:${VERSION}
-          type: ImageChange
-  - apiVersion: v1
-    kind: Service
-    metadata:
-      creationTimestamp: null
-      name: ${NAME}${SUFFIX}
-    spec:
-      ports:
-        - name: web
-          port: 8080
-          protocol: TCP
-          targetPort: 8080
-      selector:
-        deploymentconfig: ${NAME}${SUFFIX}
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      creationTimestamp: null
-      name: ${NAME}${SUFFIX}
-    spec:
-      host:
-      port:
-        targetPort: web
-      to:
-        kind: Service
-        name: ${NAME}${SUFFIX}
-        weight: 100
-      wildcardPolicy: None
+      weight: 100
+    wildcardPolicy: None
 parameters:
-  - description: A name used for all objects
-    displayName: Name
-    name: NAME
-    required: true
-    value: "api"
-  - description: A name suffix used for all objects
-    displayName: Suffix
-    name: SUFFIX
-    required: false
-    value: "-dev"
-  - description: A version used for the image tags
-    displayName: version
-    name: VERSION
-    required: true
-    value: "v1.0.0"
+- description: A name used for all objects
+  displayName: Name
+  name: NAME
+  required: true
+  value: 'api'
+- description: A name suffix used for all objects
+  displayName: Suffix
+  name: SUFFIX
+  required: false
+  value: '-dev'
+- description: A version used for the image tags
+  displayName: version
+  name: VERSION
+  required: true
+  value: 'v1.0.0'
+- description: The ASP Net Core deployment environment setting
+  displayName: AspNetCore Environment
+  name: ASPNETCORE_ENVIRONMENT
+  required: true
+  value: 'Development'

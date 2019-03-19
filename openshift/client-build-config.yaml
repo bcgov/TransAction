@@ -33,19 +33,12 @@ objects:
       build: ${NAME}-artifacts${SUFFIX}
     name: ${NAME}-artifacts${SUFFIX}
   spec:
-    completionDeadlineSeconds: 720
+    completionDeadlineSeconds: 180
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
         name: ${NAME}-artifacts:${VERSION}
-      resources:
-      limits:
-        cpu: 500m
-        memory: 2Gi
-      requests:
-        cpu: 250m
-        memory: 1Gi
     postCommit: {}
     source:
       git:
@@ -78,13 +71,6 @@ objects:
       to:
         kind: ImageStreamTag
         name: ${NAME}:${VERSION}
-    resources:
-      limits:
-        cpu: 500m
-        memory: 2Gi
-      requests:
-        cpu: 250m
-        memory: 1Gi
     postCommit: {}
     resources:
       requests:
