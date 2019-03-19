@@ -41,7 +41,7 @@ objects:
         - image: ${NAME}:${VERSION}
           name: transaction
           ports:
-          - containerPort: 8080
+          - containerPort: 5000
             protocol: TCP
           resources:
             requests:
@@ -60,7 +60,7 @@ objects:
         - transaction
         from:
           kind: ImageStreamTag
-          name: ${NAME}:${VERSION}
+          name: ${NAME}-static:${VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: Service
@@ -105,8 +105,3 @@ parameters:
   name: VERSION
   required: true
   value: 'v1.0.0'
-- description: The ASP Net Core deployment environment setting
-  displayName: AspNetCore Environment
-  name: ASPNETCORE_ENVIRONMENT
-  required: true
-  value: 'Development'
