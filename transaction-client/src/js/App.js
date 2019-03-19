@@ -6,7 +6,7 @@ import Footer from './fragments/Footer';
 import Header from './fragments/Header';
 import history from './history';
 import Main from './components/Main';
-import Events from './components/Events';
+import MyProfile from './components/MyProfile';
 
 import '../scss/transaction.scss';
 
@@ -19,7 +19,7 @@ class App extends Component {
           <Container>
             <Switch>
               <Route path="/" exact component={Main} />
-              <Route path="/events" exact component={Events} />
+              <Route path="/MyProfile" exact component={MyProfile} />
             </Switch>
           </Container>
           <Footer />
