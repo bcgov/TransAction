@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Container, Col, ButtonGroup } from 'reactstrap';
-import MyButtons from './MyButtons';
+import Buttons from './Buttons';
 
 const Event = props => {
   const event = props.event;
@@ -11,8 +11,8 @@ const Event = props => {
         <Col>
           <h3 className="float-left">{event.name}</h3>
           <ButtonGroup className="float-right">
-            <MyButtons name="edit" />
-            <MyButtons name="delete" />
+            <Buttons name="edit" />
+            <Buttons name="delete" />
           </ButtonGroup>
         </Col>
       </Row>
