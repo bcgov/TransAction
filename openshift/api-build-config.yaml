@@ -17,14 +17,6 @@ objects:
     lookupPolicy:
       local: false
 - apiVersion: v1
-  kind: ImageStream
-  metadata:
-    creationTimestamp: null
-    name: ${NAME}-static
-  spec:
-    lookupPolicy:
-      local: false
-- apiVersion: v1
   kind: BuildConfig
   metadata:
     creationTimestamp: null
@@ -36,6 +28,13 @@ objects:
       to:
         kind: ImageStreamTag
         name: ${NAME}:${VERSION}
+    resources:
+      limits:
+        cpu: 500m
+        memory: 2Gi
+      requests:
+        cpu: 250m
+        memory: 1Gi    
     postCommit: {}
     source:
       git:
@@ -49,48 +48,6 @@ objects:
           kind: ImageStreamTag
           name: 'dotnet-22-rhel7:latest'
       type: Source
-#Chainned build
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    creationTimestamp: null
-    labels:
-      build: ${NAME}-static${SUFFIX}
-    name: ${NAME}-static${SUFFIX}
-  spec:
-    nodeSelector: null
-    completionDeadlineSeconds: 180
-    output:
-      to:
-        kind: ImageStreamTag
-        name: ${NAME}-static:${VERSION}
-    postCommit: {}
-    resources:
-      requests:
-        cpu: 1
-      limits:
-        cpu: 2
-    source:
-      dockerfile: |-
-        FROM nodejs/build-output:latest
-        COPY html /
-        RUN npm install -g serve
-        CMD serve -s /build
-      images:
-        - from:
-            kind: ImageStreamTag
-            name: '${NAME}:${VERSION}'
-          paths:
-            - destinationDir: html
-              sourcePath: /opt/app-root/src/build/
-      type: Dockerfile
-    strategy:
-      dockerStrategy:
-        from:
-          kind: ImageStreamTag
-          name: 'nodejs:latest'
-          namespace: openshift
-      type: Docker
 parameters:
 - description: A name used for all objects
   displayName: Name

@@ -39,7 +39,7 @@ objects:
       spec:
         containers:
         - image: ${NAME}:${VERSION}
-          name: transaction
+          name: client
           ports:
           - containerPort: 5000
             protocol: TCP
@@ -66,7 +66,7 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - transaction
+        - client
         from:
           kind: ImageStreamTag
           name: ${NAME}:${VERSION}
@@ -113,9 +113,14 @@ parameters:
   displayName: version
   name: VERSION
   required: true
-  value: 'v1.0.0'
-- description: Nginx config volume
-  displayName: Volume Name
-  name: VOLUME_NAME
-  required: false
-  value: nginx-config
+  value: 'v1.0.0'  
+- description: The ASP Net Core deployment environment setting
+  displayName: AspNetCore Environment
+  name: ASPNETCORE_ENVIRONMENT
+  required: true
+  value: 'Development'
+# - description: Nginx config volume
+#   displayName: Volume Name
+#   name: VOLUME_NAME
+#   required: false
+#   value: nginx-config

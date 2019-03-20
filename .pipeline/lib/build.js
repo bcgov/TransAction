@@ -5,18 +5,29 @@ const path = require('path');
 
 module.exports = (settings) => {
   const phase = 'build';
+  let objects = [];
   const oc = new OpenShiftClientX({ namespace: settings.phases[phase].namespace });
-  const templateFile = path.resolve(__dirname, '../../openshift/api-build-config.yaml');
+  const templatesLocalBaseUrl = oc.toFileUrl(path.resolve(__dirname, '../../openshift'))
 
-  const objects = oc.processBuidTemplate(oc.toFileUrl(templateFile), {
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/client-build-config.yaml`, {
     param: {
-      NAME: settings.phases[phase].name,
+      NAME: `${settings.phases[phase].name}-client`,
       SUFFIX: settings.phases[phase].suffix,
       VERSION: settings.phases[phase].tag,
       SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
       SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`,
     },
-  });
+  }))
+
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/api-build-config.yaml`, {
+    param: {
+      NAME: `${settings.phases[phase].name}-api`,
+      SUFFIX: settings.phases[phase].suffix,
+      VERSION: settings.phases[phase].tag,
+      SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
+      SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`,
+    },
+  }))
 
   oc.applyRecommendedLabels(objects, settings.phases[phase].name, 'build', settings.phases[phase].changeId);
   oc.applyAndBuild(objects);
