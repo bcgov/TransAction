@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   name: transaction
 labels:
-  template: client
+  template: api
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -39,7 +39,7 @@ objects:
       spec:
         containers:
         - image: ${NAME}:${VERSION}
-          name: transaction
+          name: api
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -57,7 +57,7 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - transaction
+        - api
         from:
           kind: ImageStreamTag
           name: ${NAME}:${VERSION}
