@@ -13,5 +13,11 @@ namespace TransAction.Data.Services
 
         TraEvent GetEvent(int id);
 
+       // TraEvent EventUpdate(int id);
+
+        bool Save();
+
+        bool EventExists(int id);
+        
     }
 }

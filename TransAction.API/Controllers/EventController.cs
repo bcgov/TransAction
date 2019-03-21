@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,34 +29,8 @@ namespace TransAction.API.Controllers
 
             return CreatedAtAction(nameof(GetEvents), new { id = item.EventId }, item);
         }*/
-
-        [HttpPost]
-        public IActionResult CreateEvent([FromBody] EventCreateDto create_event)
-        {
-             if(create_event == null)
-            {
-                return BadRequest();
-            }
-             if(create_event.Description == null || create_event.EndDate == null || create_event.StartDate == null)
-            {
-                return BadRequest();
-            }
-
-            
-            var result = new TraEvent()
-            {              
-                Description = create_event.Description,
-                StartDate = create_event.StartDate,
-                EndDate = create_event.EndDate
-            };
-            _context.TraEvent.Add(result);
-            return CreatedAtRoute("New Event Created", new
-            { NewId = result.EventId }, result);
-
-        }
-
-        
-        
+                   
+       
         [HttpGet()]
         public IActionResult GetEvents()
         {
@@ -85,14 +60,60 @@ namespace TransAction.API.Controllers
             {
                 return NotFound();
             }
+            
             var result = new EventDto()
             {
                 EventId = EventD.EventId,
                 Description = EventD.Description,
                 StartDate = EventD.StartDate,
                 EndDate = EventD.EndDate
-            };            
+            };
+            
             return Ok(result);
+            
+        }
+
+
+        [HttpPost()]
+        public IActionResult CreateEvent([FromBody] EventCreateDto create_event)
+        {
+            if (create_event == null)
+            {
+                return BadRequest();
+            }
+            if (create_event.Description == null || create_event.EndDate == null || create_event.StartDate == null)
+            {
+                return BadRequest();
+            }
+           // if(! _TransActionRepo.EventExists())
+            
+            var result = new TraEvent()
+            {
+                Description = create_event.Description,
+                StartDate = create_event.StartDate,
+                EndDate = create_event.EndDate
+            };
+            _context.TraEvent.Add(result);
+            return CreatedAtRoute("New Event Created", new
+            { NewId = result.EventId }, result);
+
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult EventUpdate(int id, [FromBody] EventUpdateDto UEvent)
+        {
+            var Event = _TransActionRepo.GetEvent(id);
+            if (Event == null) return NotFound();
+            if (UEvent == null) return NotFound();
+
+            Mapper.Map(UEvent,Event);
+
+            if (!_TransActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+            
+            return NoContent();
         }
     }
 }
