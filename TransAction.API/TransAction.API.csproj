@@ -15,4 +15,8 @@
     <ProjectReference Include="..\TransAction.Data\TransAction.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Authorization\" />
+  </ItemGroup>
+
 </Project>
