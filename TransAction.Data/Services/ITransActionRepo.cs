@@ -12,6 +12,9 @@ namespace TransAction.Data.Services
         IEnumerable<TraEvent> GetEvents();
 
         TraEvent GetEvent(int id);
-
+        bool Save();
+        void CreateEvent(TraEvent traEvent);
+        bool EventExists(string Name);
+        
     }
 }

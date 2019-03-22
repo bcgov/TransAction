@@ -56,6 +56,16 @@ namespace TransAction.API
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            app.UseStatusCodePages();
+            AutoMapper.Mapper.Initialize(cfg => 
+            {
+                cfg.CreateMap<TraEvent, EventDto>();
+                cfg.CreateMap<EventDto, TraEvent>();
+                cfg.CreateMap<EventCreateDto, TraEvent>();                
+                cfg.CreateMap<EventUpdateDto,TraEvent>();
+                cfg.CreateMap<TraEvent, EventUpdateDto>();
+
+            });
             app.UseMvc();
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using TransAction.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace TransAction.Data.Services
 {
@@ -14,6 +15,25 @@ namespace TransAction.Data.Services
         {
             _context = context;
         }
+
+        public void CreateEvent(TraEvent traEvent)
+        {
+             _context.TraEvent.Add(traEvent);
+        }
+
+        public bool EventExists(string name)
+        {
+            var checkEvent = _context.TraEvent.FirstOrDefault(c => c.Name == name);
+            if (checkEvent != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public TraEvent GetEvent(int id)
         {
             return _context.TraEvent.FirstOrDefault(c => c.EventId == id);
@@ -23,5 +43,12 @@ namespace TransAction.Data.Services
         {
             return _context.TraEvent.OrderBy(c => c.EventId).ToList();
         }
+
+        public bool Save()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
+       
+
     }
 }
