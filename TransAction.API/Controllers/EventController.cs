@@ -12,103 +12,97 @@ namespace TransAction.API.Controllers
     [Route("api/events")]
     public class EventController : Controller
     {
-        private ITransActionRepo _TransActionRepo;
-        private TransActionContext _context;
-        public EventController(ITransActionRepo transActionRepo, TransActionContext context)
+        private ITransActionRepo _transActionRepo;       
+        public EventController(ITransActionRepo transActionRepo)
         {
-            _TransActionRepo = transActionRepo;
-            _context = context;
+            _transActionRepo = transActionRepo;            
         }
 
-        /*
-        [HttpPost()]
-        public async Task<ActionResult<TraEvent>> PostEvent(TraEvent item)
-        {
-            _context.TraEvent.Add(item);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetEvents), new { id = item.EventId }, item);
-        }*/
-                   
-       
         [HttpGet()]
         public IActionResult GetEvents()
         {
-            var TEntities = _TransActionRepo.GetEvents();
-            var results = new List<EventDto>();
+            var events = _transActionRepo.GetEvents();            
+            var getEvents = Mapper.Map<IEnumerable<EventDto>>(events);
+            return Ok(getEvents);
 
-            foreach (var Nevent in TEntities)
-            {
-                results.Add(new EventDto
-                {
-                    EventId = Nevent.EventId,
-                    Description = Nevent.Description,
-                    StartDate = Nevent.StartDate,
-                    EndDate = Nevent.EndDate
-                });
-            }
-            return Ok(results);
         }
-        
 
-        [HttpGet("{id}")]
+
+        [HttpGet("{id}", Name = "GetThatEvent")]
         public IActionResult GetEvent(int id)
         {
-            var EventD = _TransActionRepo.GetEvents().FirstOrDefault(c => c.EventId == id);
+            try
+            {
+                var getEvents = _transActionRepo.GetEvents().FirstOrDefault(c => c.EventId == id);
 
-            if (EventD == null)
-            {
-                return NotFound();
+                if (getEvents == null)
+                {
+                    return NotFound();
+                }
+                var getEvent = _transActionRepo.GetEvent(id);
+                var getEventResult = Mapper.Map<EventDto>(getEvent);
+                return Ok(getEventResult);
+
             }
-            
-            var result = new EventDto()
+
+            catch(Exception)
             {
-                EventId = EventD.EventId,
-                Description = EventD.Description,
-                StartDate = EventD.StartDate,
-                EndDate = EventD.EndDate
-            };
-            
-            return Ok(result);
+                return StatusCode(500, "A problem happened while handeling your request");
+            }
             
         }
 
 
         [HttpPost()]
-        public IActionResult CreateEvent([FromBody] EventCreateDto create_event)
+        public IActionResult CreateEvent([FromBody] EventCreateDto createEvent)
         {
-            if (create_event == null)
+            if (createEvent == null)
             {
                 return BadRequest();
             }
-            if (create_event.Description == null || create_event.EndDate == null || create_event.StartDate == null)
+            if (createEvent.Description == null || createEvent.EndDate == null || createEvent.StartDate == null)
             {
                 return BadRequest();
             }
-           // if(! _TransActionRepo.EventExists())
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if(_transActionRepo.EventExists(createEvent.Name))
+            {
+                return BadRequest() ;
+            }
+
+            var newEvent = Mapper.Map<TraEvent>(createEvent);
+            _transActionRepo.CreateEvent(newEvent);
+
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            var createdPointOfInterestToReturn = Mapper.Map<EventDto>(newEvent);
+            return CreatedAtRoute("GetThatEvent", new { id =  createdPointOfInterestToReturn.EventId }, createdPointOfInterestToReturn);
             
-            var result = new TraEvent()
-            {
-                Description = create_event.Description,
-                StartDate = create_event.StartDate,
-                EndDate = create_event.EndDate
-            };
-            _context.TraEvent.Add(result);
-            return CreatedAtRoute("New Event Created", new
-            { NewId = result.EventId }, result);
 
         }
 
         [HttpPut("{id}")]
-        public IActionResult EventUpdate(int id, [FromBody] EventUpdateDto UEvent)
+        public IActionResult EventUpdate(int id, [FromBody] EventUpdateDto updateEvent)
         {
-            var Event = _TransActionRepo.GetEvent(id);
-            if (Event == null) return NotFound();
-            if (UEvent == null) return NotFound();
+            var eventEntity = _transActionRepo.GetEvent(id);
+            if (eventEntity == null) return NotFound();
+            if (updateEvent == null) return NotFound();
 
-            Mapper.Map(UEvent,Event);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            Mapper.Map(updateEvent,eventEntity);
 
-            if (!_TransActionRepo.Save())
+            if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }

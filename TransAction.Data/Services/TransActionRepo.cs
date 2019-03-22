@@ -16,9 +16,22 @@ namespace TransAction.Data.Services
             _context = context;
         }
 
-        public bool EventExists(int id)
+        public void CreateEvent(TraEvent traEvent)
         {
-            return _context.TraEvent.Any(c => c.EventId == id);         
+             _context.TraEvent.Add(traEvent);
+        }
+
+        public bool EventExists(string name)
+        {
+            var checkEvent = _context.TraEvent.FirstOrDefault(c => c.Name == name);
+            if (checkEvent != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public TraEvent GetEvent(int id)

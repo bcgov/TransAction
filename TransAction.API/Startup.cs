@@ -59,7 +59,9 @@ namespace TransAction.API
             app.UseStatusCodePages();
             AutoMapper.Mapper.Initialize(cfg => 
             {
-                cfg.CreateMap<EventCreateDto, TraEvent>();               
+                cfg.CreateMap<TraEvent, EventDto>();
+                cfg.CreateMap<EventDto, TraEvent>();
+                cfg.CreateMap<EventCreateDto, TraEvent>();                
                 cfg.CreateMap<EventUpdateDto,TraEvent>();
                 cfg.CreateMap<TraEvent, EventUpdateDto>();
 
