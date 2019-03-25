@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Container, Button } from 'reactstrap';
-import axios from 'axios';
 import Event from './Event';
+import api from '../api/api';
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
   state = { events: [] };
 
-  componentDidMount() {
-    axios.get('http://localhost:3001/events', {}).then(response => {
-      //console.log(response.data);
-      this.setState({ events: response.data });
-    });
+  async componentDidMount() {
+    const response = await api.get('/events');
+    //console.log(response.data);
+    this.setState({ events: response.data });
   }
 
   renderEventList() {
@@ -32,7 +31,9 @@ class Main extends Component {
           <Breadcrumb>
             <BreadcrumbItem active>Home</BreadcrumbItem>
           </Breadcrumb>
-          <Button className="mb-2 btn-sm px-3 mx-3 mb-4">Add New Event</Button>
+          <Button color="primary" className="mb-2 btn-sm px-3 mx-3 mb-4">
+            Add New Event
+          </Button>
         </div>
         <div>{this.renderEventList()}</div>
 

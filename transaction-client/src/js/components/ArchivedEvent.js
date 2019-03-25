@@ -1,11 +1,11 @@
 import React from 'react';
-import MyButtons from './MyButtons';
+import Buttons from './Buttons';
 import { Button, ButtonGroup } from 'reactstrap';
 
 const ArchivedEvent = props => {
   return (
     <ButtonGroup>
-      <MyButtons name={props.name} />
+      <Buttons name={props.name} />
     </ButtonGroup>
   );
 };
