@@ -3,31 +3,36 @@
 const { OpenShiftClientX } = require('pipeline-cli');
 const path = require('path');
 
-module.exports = () => {
-  const oc = new OpenShiftClientX();
-  oc.globalArgs.namespace = `devhub-${oc.options.env}`;
-  const templateFile = path.resolve(__dirname, '../../openshift/dc.yaml');
-  const appName = 'dotnet-mvc';
-  const buildNamespace = 'devhub-tools';
-  const buildVersion = `build-v${oc.options.pr}`;
-  const deploymentVersion = `${oc.options.env}-1.0.0`;
-  // remove pr in prefix for test and prod environemnt:
-  const projectPrefix =
-    oc.options.env === 'dev' ? `-${oc.options.env}-${oc.options.pr}` : `-${oc.options.env}`;
+module.exports = (settings) => {
+  const phase = settings.phase;
+  const phases = settings.phases;
 
-  const objects = oc.process(oc.toFileUrl(templateFile), {
+  const oc = new OpenShiftClientX({ namespace: phases[phase].namespace });
+  const templatesLocalBaseUrl = oc.toFileUrl(path.resolve(__dirname, '../../openshift'))
+  //const templateFile = path.resolve(__dirname, '../../openshift/client-deploy-config.yaml');
+
+  let objects = [];
+
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/client-deploy-config.yaml`, {
     param: {
-      ...{
-        NAME: appName,
-        SUFFIX: projectPrefix,
-        VERSION: `${deploymentVersion}`,
-      }
+      NAME: `${phases[phase].name}-client`,
+      SUFFIX: phases[phase].suffix,
+      VERSION: phases[phase].tag,
+      ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env
     },
-  });
+  }))
 
-  oc.applyBestPractices(objects);
-  oc.applyRecommendedLabels(objects, appName, oc.options.env, oc.options.pr);
+  objects = objects.concat(oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/api-deploy-config.yaml`, {
+    param: {
+      NAME: `${phases[phase].name}-api`,
+      SUFFIX: phases[phase].suffix,
+      VERSION: phases[phase].tag,
+      ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env
+    },
+  }))
+
+  oc.applyRecommendedLabels(objects, phases[phase].name, phase, phases[phase].changeId);
   oc.fetchSecretsAndConfigMaps(objects);
-  oc.importImageStreams(objects, deploymentVersion, buildNamespace, buildVersion);
-  oc.applyAndDeploy(objects, `${appName}${projectPrefix}`);
+  oc.importImageStreams(objects, phases[phase].tag, phases.build.namespace, phases.build.tag);
+  oc.applyAndDeploy(objects, phases[phase].instance);
 };

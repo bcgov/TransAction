@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   name: jenkins
 labels:
-  template: transaction
+  template: api
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -22,30 +22,38 @@ objects:
     creationTimestamp: null
     name: ${NAME}${SUFFIX}
   spec:
+    completionDeadlineSeconds: 180
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
         name: ${NAME}:${VERSION}
+    resources:
+      limits:
+        cpu: 500m
+        memory: 2Gi
+      requests:
+        cpu: 250m
+        memory: 1Gi    
     postCommit: {}
     source:
       git:
         uri: ${SOURCE_REPOSITORY_URL}
         ref: ${SOURCE_REPOSITORY_REF}
       type: Git
+      contextDir: TransAction.API
     strategy:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: 'nodejs:10'
-          namespace: openshift
+          name: 'dotnet-22-rhel7:latest'
       type: Source
 parameters:
 - description: A name used for all objects
   displayName: Name
   name: NAME
   required: false
-  value: 'transaction'
+  value: 'api'
 - description: A name suffix used for all objects
   displayName: Suffix
   name: SUFFIX
@@ -60,7 +68,7 @@ parameters:
   displayName: SOURCE_REPOSITORY_URL
   name: SOURCE_REPOSITORY_URL
   required: false
-  value: 'https://github.com/openshift/nodejs-ex.git'
+  value: 'https://github.com/BCGov/transaction.git'
 - description: SOURCE_REPOSITORY_REF
   displayName: SOURCE_REPOSITORY_REF
   name: SOURCE_REPOSITORY_REF
