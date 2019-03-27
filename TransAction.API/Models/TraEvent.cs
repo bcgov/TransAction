@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TransAction.Data.Models
+namespace TransAction.API.Models
 {
     public partial class TraEvent
     {

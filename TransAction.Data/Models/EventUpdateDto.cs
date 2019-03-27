@@ -7,8 +7,6 @@ namespace TransAction.Data.Models
 {
     public class EventUpdateDto
     {
-        [Required(ErrorMessage = "You should provide with an event ID")]
-        public int EventId { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
