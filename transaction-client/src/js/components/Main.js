@@ -32,7 +32,7 @@ class Main extends Component {
           <Breadcrumb>
             <BreadcrumbItem active>Home</BreadcrumbItem>
           </Breadcrumb>
-          <ModalEvent id="add" color="primary" className="mb-2 btn-sm px-3 mx-3 mb-4" name="Add New Event" />
+          <ModalEvent id="add" color="primary" className="btn-sm px-3 mx-3 mb-4" name="Add New Event" />
         </div>
         <div>{this.renderEventList()}</div>
 

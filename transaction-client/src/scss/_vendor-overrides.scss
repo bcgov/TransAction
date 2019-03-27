@@ -12,3 +12,11 @@
 .breadcrumb {
   background-color: transparent;
 }
+
+textarea.form-control {
+  height: 250px;
+}
+
+div.errorMessage {
+  color: red;
+}

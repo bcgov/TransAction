@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import RenderBody from './RenderBody';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { fetchData } from '../actions';
+import { fetchEvents } from '../actions';
 
 class ModalEvent extends React.Component {
   constructor(props) {
@@ -22,29 +22,22 @@ class ModalEvent extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchData();
+    this.props.fetchEvents();
   }
 
   render() {
-    //console.log(this.props.eventData);
+    //console.log(this.props);
     return (
       <div>
         <Button color="primary" onClick={this.toggle} className={this.props.className}>
           {this.props.name}
         </Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} className={'center'}>
-          <ModalHeader toggle={this.toggle}>{this.props.name} Event</ModalHeader>
+        <Modal size="lg" centered={true} isOpen={this.state.modal} toggle={this.toggle} className={'center'}>
+          <ModalHeader toggle={this.toggle}>{this.props.name}</ModalHeader>
           <ModalBody>
-            <RenderBody>{this.props}</RenderBody>
+            <RenderBody modelClose={this.toggle}>{this.props}</RenderBody>
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={this.toggle}>
-              Do a thing!
-            </Button>
-            <Button color="secondary" onClick={this.toggle}>
-              Nooooooo
-            </Button>
-          </ModalFooter>
+          <ModalFooter />
         </Modal>
       </div>
     );
@@ -57,5 +50,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchData }
+  { fetchEvents }
 )(ModalEvent);
