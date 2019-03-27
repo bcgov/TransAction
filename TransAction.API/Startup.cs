@@ -39,7 +39,7 @@ namespace TransAction.API
             services.AddScoped<ITransActionRepo, TransActionRepo>();
 
 
-            var ConnectionString = @"Server=NC057936\SQLEXPRESS;Database=TransAction; Trusted_Connection = true";
+            var ConnectionString = @"Server=NC057936\SQLEXPRESS;Database=TransActionNew; Trusted_Connection = true";
             services.AddDbContext<TransActionContext>(opt =>
                 opt.UseSqlServer(ConnectionString));           
         }
@@ -64,6 +64,14 @@ namespace TransAction.API
                 cfg.CreateMap<EventCreateDto, TraEvent>();                
                 cfg.CreateMap<EventUpdateDto,TraEvent>();
                 cfg.CreateMap<TraEvent, EventUpdateDto>();
+
+                // for profile 
+                cfg.CreateMap<TraUser, UserDto>();
+                cfg.CreateMap<UserDto, TraUser>();
+                cfg.CreateMap<UserCreateDto, TraUser>();
+                cfg.CreateMap<UserUpdateDto, TraUser>();
+                cfg.CreateMap<TraUser, UserUpdateDto>();
+
 
             });
             app.UseMvc();

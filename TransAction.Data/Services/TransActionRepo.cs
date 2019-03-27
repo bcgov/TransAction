@@ -44,11 +44,42 @@ namespace TransAction.Data.Services
             return _context.TraEvent.OrderBy(c => c.EventId).ToList();
         }
 
+/*-----------------------------------------------------------------------------------------*/
+
+        public TraUser GetUser(int id)
+        {
+            return _context.TraUser.FirstOrDefault(c => c.UserId == id);
+        }
+
+        public IEnumerable<TraUser> GetUsers()
+        {
+            return _context.TraUser.OrderBy(c => c.UserId).ToList();
+        }
+
+        
+
+        public void CreateUser(TraUser traUser)
+        {
+            _context.TraUser.Add(traUser);
+        }
+
+        public bool UserExists(string Name, string Email)
+        {
+            var checkUser = _context.TraUser.FirstOrDefault(c => c.Username == Name || c.Email == Email);
+            if (checkUser != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
         }
-       
 
     }
 }
