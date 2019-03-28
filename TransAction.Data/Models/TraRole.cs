@@ -12,12 +12,11 @@ namespace TransAction.Data.Models
         public int RoleId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime? EffectiveStartDate { get; set; }
-        public DateTime? EffectiveEndDate { get; set; }
-        public string CreatedByUser { get; set; }
-        public DateTime? CreatedByDate { get; set; }
-        public string LastUpdatedByUser { get; set; }
-        public DateTime? LastUpdatedByDate { get; set; }
+        public DateTime DbCreateTimestamp { get; set; }
+        public string DbCreateUserid { get; set; }
+        public DateTime DbLastUpdateTimestamp { get; set; }
+        public string DbLastUpdateUserid { get; set; }
+        public long ConcurrencyControlNumber { get; set; }
 
         public ICollection<TraUser> TraUser { get; set; }
     }

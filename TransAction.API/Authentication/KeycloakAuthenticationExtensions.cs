@@ -62,37 +62,38 @@ namespace TransAction.API.Authentication
                         if (dbUser == null)
                         {
                             // create user here
-                        }
-
-
-                        // 
-                        // TODO handle user create exceptions
-                        //
-
-                        List<Claim> claims = new List<Claim>();
-
-                        switch (dbUser.Role.Name)
+                        } else
                         {
-                            case "teamlead":
-                                claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
-                                break;
-                            case "admin":
-                                claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
-                                claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.ADMIN_CLAIM));
-                                break;
-                            default:
-                                claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.LOGIN_CLAIM));
-                                break;
+                            // 
+                            // TODO handle user create exceptions
+                            //
+
+                            List<Claim> claims = new List<Claim>();
+
+                            switch (dbUser.Role.Name)
+                            {
+                                case "teamlead":
+                                    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
+                                    break;
+                                case "admin":
+                                    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
+                                    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.ADMIN_CLAIM));
+                                    break;
+                                default:
+                                    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.LOGIN_CLAIM));
+                                    break;
+                            }
+
+                            if (dbUser.Team != null)
+                                claims.Add(new Claim(AuthorizationTypes.TEAM_ID_CLAIM, dbUser.Team.TeamId.ToString()));
+
+                            claims.Add(new Claim(AuthorizationTypes.USER_ID_CLAIM, dbUser.UserId.ToString()));
+
+                            var appIdentity = new ClaimsIdentity(claims);
+
+                            principal.AddIdentity(appIdentity);
                         }
-
-                        if (dbUser.Team != null)
-                            claims.Add(new Claim(AuthorizationTypes.TEAM_ID_CLAIM, dbUser.Team.TeamId.ToString()));
-
-                        claims.Add(new Claim(AuthorizationTypes.USER_ID_CLAIM, dbUser.UserId.ToString()));
-
-                        var appIdentity = new ClaimsIdentity(claims);
-
-                        principal.AddIdentity(appIdentity);
+                        
                         return Task.CompletedTask;
                     }
                 };
