@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TransAction.Data.Models
-{    public partial class TraUser
+namespace TransAction.API.Models
+{
+    public partial class TraUser
     {
         public TraUser()
         {
