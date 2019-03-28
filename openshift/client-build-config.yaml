@@ -94,28 +94,26 @@ objects:
     source:
       dockerfile: |-
         FROM nodejs/build-output:latest
-        COPY html /
+        COPY src/src/build /build
         RUN npm install -g serve
-        CMD serve -s /build
+        CMD serve -s -l 8080 /build
         # FROM nodejs/build-output:latest
-        # COPY html/build /usr/share/nginx/html
-        # EXPOSE 5000
-        # CMD ["nginx", "-g", "daemon off;"]
+        # COPY src/src/build /
+        # COPY src/src/nginx.conf /
       images:
         - from:
             kind: ImageStreamTag
             name: '${NAME}-artifacts:${VERSION}'
           paths:
-            - destinationDir: html
-              sourcePath: /opt/app-root/src/build/
+            - destinationDir: src
+              sourcePath: /opt/app-root/src/
       type: Dockerfile
     strategy:
       dockerStrategy:
         from:
           kind: ImageStreamTag
           name: 'nodejs:latest'
-          #name: 'nginx:latest'
-          namespace: openshift
+          #name: 'nginx-112-rhel7:latest'
       type: Docker
     triggers:
     - imageChange:

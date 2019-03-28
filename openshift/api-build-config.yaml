@@ -135,9 +135,11 @@ objects:
         uri: ${SOURCE_REPOSITORY_URL}
         ref: ${SOURCE_REPOSITORY_REF}
       type: Git
-      contextDir: TransAction.API
     strategy:
       sourceStrategy:
+        env:
+        - name: DOTNET_STARTUP_PROJECT
+          value: TransAction.API/TransAction.API.csproj
         from:
           kind: ImageStreamTag
           name: 'dotnet-22-rhel7:latest'
