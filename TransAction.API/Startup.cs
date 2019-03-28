@@ -41,7 +41,7 @@ namespace TransAction.API
 
             var ConnectionString = @"Server=NC057936\SQLEXPRESS;Database=TransActionNew; Trusted_Connection = true";
             services.AddDbContext<TransActionContext>(opt =>
-                opt.UseSqlServer(ConnectionString));           
+                opt.UseSqlServer(ConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,12 +57,12 @@ namespace TransAction.API
                 app.UseHsts();
             }
             app.UseStatusCodePages();
-            AutoMapper.Mapper.Initialize(cfg => 
+            AutoMapper.Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<TraEvent, EventDto>();
                 cfg.CreateMap<EventDto, TraEvent>();
-                cfg.CreateMap<EventCreateDto, TraEvent>();                
-                cfg.CreateMap<EventUpdateDto,TraEvent>();
+                cfg.CreateMap<EventCreateDto, TraEvent>();
+                cfg.CreateMap<EventUpdateDto, TraEvent>();
                 cfg.CreateMap<TraEvent, EventUpdateDto>();
 
                 // for profile 
@@ -72,6 +72,13 @@ namespace TransAction.API
                 cfg.CreateMap<UserUpdateDto, TraUser>();
                 cfg.CreateMap<TraUser, UserUpdateDto>();
 
+                //for teams
+                cfg.CreateMap<TraTeam, TeamDto>();
+                cfg.CreateMap<TeamDto, TraTeam>();
+                cfg.CreateMap<TeamCreateDto, TraTeam>();
+                cfg.CreateMap<TeamUpdateDto, TraTeam>();
+                cfg.CreateMap<TraTeam, TeamUpdateDto>();
+
 
             });
             app.UseMvc();
@@ -79,7 +86,7 @@ namespace TransAction.API
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-           
+
         }
     }
 }

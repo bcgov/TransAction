@@ -10,14 +10,19 @@ namespace TransAction.Data.Services
     public interface ITransActionRepo
     {
         IEnumerable<TraEvent> GetEvents();
-        TraEvent GetEvent(int id);        
+        TraEvent GetEvent(int id);
         void CreateEvent(TraEvent traEvent);
         bool EventExists(string Name);
 
         IEnumerable<TraUser> GetUsers();
         TraUser GetUser(int id);
-        bool UserExists(string Name , string Email);
+        bool UserExists(string Name, string Email);
         void CreateUser(TraUser traUser);
+
+        IEnumerable<TraTeam> GetTeams();
+        TraTeam GetTeam(int id);
+        bool TeamExists(string Name);
+        void CreateTeam(TraTeam traTeam);
 
         bool Save();
     }
