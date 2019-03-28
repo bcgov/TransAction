@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Container, Col, ButtonGroup } from 'reactstrap';
-import Buttons from './Buttons';
+import ModalEvent from './ModalEvent';
 
 const Event = props => {
   const event = props.event;
@@ -11,8 +11,8 @@ const Event = props => {
         <Col>
           <h3 className="float-left">{event.name}</h3>
           <ButtonGroup className="float-right">
-            <Buttons name="edit" />
-            <Buttons name="delete" />
+            <ModalEvent name="edit" body={event.description} id="edit" />
+            <ModalEvent name="delete" body={event.description} />
           </ButtonGroup>
         </Col>
       </Row>

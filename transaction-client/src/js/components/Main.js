@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem, Container, Button } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Container } from 'reactstrap';
 import Event from './Event';
-import api from '../api/api';
+import tempDb from '../api/tempDb';
+import ModalEvent from './ModalEvent';
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
   state = { events: [] };
 
   async componentDidMount() {
-    const response = await api.get('/events');
+    const response = await tempDb.get('/events');
     //console.log(response.data);
     this.setState({ events: response.data });
   }
@@ -31,9 +32,7 @@ class Main extends Component {
           <Breadcrumb>
             <BreadcrumbItem active>Home</BreadcrumbItem>
           </Breadcrumb>
-          <Button color="primary" className="mb-2 btn-sm px-3 mx-3 mb-4">
-            Add New Event
-          </Button>
+          <ModalEvent id="add" color="primary" className="btn-sm px-3 mx-3 mb-4" name="Add New Event" />
         </div>
         <div>{this.renderEventList()}</div>
 
