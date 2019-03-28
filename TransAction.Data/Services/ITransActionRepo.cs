@@ -19,6 +19,11 @@ namespace TransAction.Data.Services
         bool UserExists(string Name , string Email);
         void CreateUser(TraUser traUser);
 
+        IEnumerable<TraTeam> GetTeams();
+        TraTeam GetTeam(int id);
+        bool TeamExists(string Name);
+        void CreateTeam(TraTeam traTeam);
+
         bool Save();
     }
 }

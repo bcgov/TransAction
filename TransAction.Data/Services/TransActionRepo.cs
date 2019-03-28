@@ -80,6 +80,33 @@ namespace TransAction.Data.Services
         {
             return (_context.SaveChanges() >= 0);
         }
+/*---------------------------------------------------------------------------------------------*/
+        public IEnumerable<TraTeam> GetTeams()
+        {
+            return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
+        }
 
+        public TraTeam GetTeam(int id)
+        {
+            return _context.TraTeam.FirstOrDefault(c => c.TeamId == id);
+        }
+
+        public void CreateTeam(TraTeam traTeam)
+        {
+            _context.TraTeam.Add(traTeam);
+        }
+
+        public bool TeamExists(string Name)
+        {
+            var checkTeam = _context.TraTeam.FirstOrDefault(c => c.Name == Name);
+            if (checkTeam != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

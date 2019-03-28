@@ -72,6 +72,13 @@ namespace TransAction.API
                 cfg.CreateMap<UserUpdateDto, TraUser>();
                 cfg.CreateMap<TraUser, UserUpdateDto>();
 
+                //for teams
+                cfg.CreateMap<TraTeam, TeamDto>();
+                cfg.CreateMap<TeamDto, TraTeam>();
+                cfg.CreateMap<TeamCreateDto, TraTeam>();
+                cfg.CreateMap<TeamUpdateDto, TraTeam>();
+                cfg.CreateMap<TraTeam, TeamUpdateDto>();
+
 
             });
             app.UseMvc();
