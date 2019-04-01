@@ -12,6 +12,7 @@ namespace TransAction.API.Models
         public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
         public string DbLastUpdateUserid { get; set; }
+        public long ConcurrencyControlNumber { get; set; }
 
         public virtual TraEvent Event { get; set; }
         public virtual TraTeam Team { get; set; }

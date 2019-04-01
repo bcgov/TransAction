@@ -76,3 +76,4 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level1name = N'TRA_ACTIVITY',
     @level2type = NULL,
     @level2name = NULL
+GO
