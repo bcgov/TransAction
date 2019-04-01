@@ -1,4 +1,4 @@
-using System;
+/*using System;
 
 namespace TransAction.Data.Models
 {
@@ -8,4 +8,4 @@ namespace TransAction.Data.Models
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
-}
+}*/

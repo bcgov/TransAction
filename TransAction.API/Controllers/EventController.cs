@@ -76,8 +76,8 @@ namespace TransAction.API.Controllers
 
             var newEvent = Mapper.Map<TraEvent>(createEvent);
 
-            newEvent.DbCreateTimestamp = DateTime.Now;
-            newEvent.DbLastUpdateTimestamp = newEvent.DbCreateTimestamp;
+            //newEvent.DbCreateTimestamp = DateTime.Now;
+           // newEvent.DbLastUpdateTimestamp = newEvent.DbCreateTimestamp;
             
 
             _transActionRepo.CreateEvent(newEvent);
@@ -108,7 +108,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            eventEntity.DbLastUpdateTimestamp = DateTime.Now;
+         //   eventEntity.DbLastUpdateTimestamp = DateTime.Now;
             eventEntity.DbLastUpdateUserid = "Test User" ;
             Mapper.Map(updateEvent,eventEntity);
 

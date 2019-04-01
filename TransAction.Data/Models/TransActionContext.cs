@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
-
+using TransAction.Data.Services;
 namespace TransAction.Data.Models
 {
     public partial class TransActionContext : DbContext
@@ -698,5 +701,7 @@ namespace TransAction.Data.Models
                     .HasConstraintName("FK_USER_ACTIVITY_USER");
             });
         }
+        
+      
     }
 }

@@ -80,8 +80,8 @@ namespace TransAction.API.Controllers
 
             var newTeam = Mapper.Map<TraTeam>(createTeam);
 
-            newTeam.DbCreateTimestamp = DateTime.Now;
-            newTeam.DbLastUpdateTimestamp = newTeam.DbCreateTimestamp;
+        //    newTeam.DbCreateTimestamp = DateTime.Now;
+        //    newTeam.DbLastUpdateTimestamp = newTeam.DbCreateTimestamp;
             newTeam.DbCreateUserid = "Test User";
             newTeam.DbLastUpdateUserid = "Test User";
 
@@ -107,7 +107,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            teamEntity.DbLastUpdateTimestamp = DateTime.Now;
+      //      teamEntity.DbLastUpdateTimestamp = DateTime.Now;
             teamEntity.DbLastUpdateUserid = "Test User";
             Mapper.Map(teamUpdate, teamEntity);
 

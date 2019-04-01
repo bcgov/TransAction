@@ -65,7 +65,7 @@ namespace TransAction.API
                 cfg.CreateMap<EventUpdateDto, TraEvent>();
                 cfg.CreateMap<TraEvent, EventUpdateDto>();
 
-                // for profile 
+                // for user 
                 cfg.CreateMap<TraUser, UserDto>();
                 cfg.CreateMap<UserDto, TraUser>();
                 cfg.CreateMap<UserCreateDto, TraUser>();
