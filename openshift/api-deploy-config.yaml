@@ -99,6 +99,8 @@ objects:
       host:
       port:
         targetPort: web
+      tls:
+        termination: edge
       to:
         kind: Service
         name: ${NAME}${SUFFIX}
