@@ -10,14 +10,13 @@
     [EMAIL]            VARCHAR(1024) NOT NULL,
     [ROLE_ID]      INT            NOT NULL,
     [TEAM_ID]       INT,
-	[EFFECTIVE_START_DATE] DATETIME NULL, 
-	[EFFECTIVE_END_DATE] DATETIME NULL, 
-	[CREATED_BY_USER] VARCHAR(255) NULL, 
-	[CREATED_BY_DATE] DATETIME NULL, 
-	[LAST_UPDATED_BY_USER] VARCHAR(255) NULL, 
-	[LAST_UPDATED_BY_DATE] DATETIME NULL,
+	[DB_CREATE_TIMESTAMP] DATETIME NOT NULL, 
+	[DB_CREATE_USERID] VARCHAR(30) NOT NULL, 
+	[DB_LAST_UPDATE_TIMESTAMP] DATETIME NOT NULL, 
+	[DB_LAST_UPDATE_USERID] VARCHAR(30) NOT NULL,
      
      
+    [CONCURRENCY_CONTROL_NUMBER] BIGINT NOT NULL DEFAULT 1, 
     CONSTRAINT [PK_USER] PRIMARY KEY CLUSTERED ([USER_ID] ASC),
     CONSTRAINT [FK_USER_ROLE] FOREIGN KEY ([ROLE_ID]) REFERENCES [dbo].[TRA_ROLE] ([ROLE_ID]),
     CONSTRAINT [FK_USER_TEAM] FOREIGN KEY ([TEAM_ID]) REFERENCES [dbo].[TRA_TEAM] ([TEAM_ID])
@@ -35,3 +34,49 @@ CREATE NONCLUSTERED INDEX [IX_FK_USER_TEAM]
 
 
 
+
+GO
+EXEC sp_addextendedproperty @name = N'MS_Description',
+    @value = N'The date and time the record was created.',
+    @level0type = N'SCHEMA',
+    @level0name = N'dbo',
+    @level1type = N'TABLE',
+    @level1name = N'TRA_USER',
+    @level2type = N'COLUMN',
+    @level2name = N'DB_CREATE_TIMESTAMP'
+GO
+EXEC sp_addextendedproperty @name = N'MS_Description',
+    @value = N'The user or proxy account that created the record. **',
+    @level0type = N'SCHEMA',
+    @level0name = N'dbo',
+    @level1type = N'TABLE',
+    @level1name = N'TRA_USER',
+    @level2type = N'COLUMN',
+    @level2name = N'DB_CREATE_USERID'
+GO
+EXEC sp_addextendedproperty @name = N'MS_Description',
+    @value = N'The date and time the record was created or last updated.',
+    @level0type = N'SCHEMA',
+    @level0name = N'dbo',
+    @level1type = N'TABLE',
+    @level1name = N'TRA_USER',
+    @level2type = N'COLUMN',
+    @level2name = N'DB_LAST_UPDATE_TIMESTAMP'
+GO
+EXEC sp_addextendedproperty @name = N'MS_Description',
+    @value = N'The user or proxy account that created or last updated the record. **',
+    @level0type = N'SCHEMA',
+    @level0name = N'dbo',
+    @level1type = N'TABLE',
+    @level1name = N'TRA_USER',
+    @level2type = N'COLUMN',
+    @level2name = N'DB_LAST_UPDATE_USERID'
+GO
+EXEC sp_addextendedproperty @name = N'MS_Description',
+    @value = N'Keeps track and contains all the information about the user',
+    @level0type = N'SCHEMA',
+    @level0name = N'dbo',
+    @level1type = N'TABLE',
+    @level1name = N'TRA_USER',
+    @level2type = NULL,
+    @level2name = NULL

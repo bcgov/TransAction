@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="10459423-64a8-4471-96f3-77bc238d0377" ChangeDateTime="03/22/2019 18:54:28">
+    <Property Name="ElementName" Value="[dbo].[TRA_ACTIVITY].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LAST_UPDATED_DATE" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="80d4709d-9d45-4c9f-a08c-b6ff6feba975" ChangeDateTime="03/22/2019 18:54:37">
+    <Property Name="ElementName" Value="[dbo].[TRA_ACTIVITY].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LAST_UPDATED_USER" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ea2c7dd1-f2a2-4ee0-8671-dfa276110e0f" ChangeDateTime="03/22/2019 19:03:55">
+    <Property Name="ElementName" Value="[dbo].[TRA_ACTIVITY].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9fc01ac7-647c-4f76-b621-895354030425" ChangeDateTime="03/22/2019 19:04:13">
+    <Property Name="ElementName" Value="[dbo].[TRA_ACTIVITY].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="6d134cda-997a-4827-9fa3-da097b839791" ChangeDateTime="03/22/2019 19:04:34">
+    <Property Name="ElementName" Value="[dbo].[TRA_ACTIVITY].[LAST_UPDATED_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b839ba7f-c0a0-4c6d-bafa-90211297c4b2" ChangeDateTime="03/22/2019 19:05:00">
+    <Property Name="ElementName" Value="[dbo].[TRA_ACTIVITY].[LAST_UPDATED_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1b40772d-95ae-4c85-997f-8a35a29e7bea" ChangeDateTime="03/22/2019 19:06:47">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e3ba0d0e-3ccc-450b-b0dd-4373770fde2e" ChangeDateTime="03/22/2019 19:07:44">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="131cced2-3c5d-4de0-adf0-a5099f7a79c8" ChangeDateTime="03/22/2019 19:08:03">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ce1024ee-9e36-48eb-9b16-d6008034be94" ChangeDateTime="03/22/2019 19:08:22">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8547ef80-44fb-464a-a94d-2cea05531569" ChangeDateTime="03/22/2019 19:09:52">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_TEAM].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="829aadb4-e249-4e62-a3fb-fc4d10162655" ChangeDateTime="03/22/2019 19:10:03">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_TEAM].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4f7f8991-765f-41c1-9422-d2b092ff5cf9" ChangeDateTime="03/22/2019 19:10:23">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_TEAM].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bc5b3567-7e1b-4f22-96a0-71981204c9c4" ChangeDateTime="03/22/2019 19:10:43">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_TEAM].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="012e9277-54c3-4f35-84c1-152759bdcd1e" ChangeDateTime="03/22/2019 19:11:19">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_USER].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="901432d3-bb9d-4b37-ab8a-5fc05921eff6" ChangeDateTime="03/22/2019 19:12:12">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_USER].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="069601cf-0541-4a1f-93e5-e11ee137ab1a" ChangeDateTime="03/22/2019 19:12:27">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_USER].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1daf5129-df2a-4880-a64b-be67167f6011" ChangeDateTime="03/22/2019 19:13:21">
+    <Property Name="ElementName" Value="[dbo].[TRA_EVENT_USER].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_EVENT_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0df32b41-94d3-4868-8759-9a4ec373af77" ChangeDateTime="03/22/2019 19:15:06">
+    <Property Name="ElementName" Value="[dbo].[TRA_MEMBER_REQ].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_MEMBER_REQ]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="03255adf-9817-465b-8abf-5413c1e1e324" ChangeDateTime="03/22/2019 19:15:16">
+    <Property Name="ElementName" Value="[dbo].[TRA_MEMBER_REQ].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_MEMBER_REQ]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="52e6f3f0-ac7c-4d5e-a7ce-e844ae622f93" ChangeDateTime="03/22/2019 19:15:36">
+    <Property Name="ElementName" Value="[dbo].[TRA_MEMBER_REQ].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_MEMBER_REQ]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1a2a1cb7-df89-4db7-b62b-7096fc569636" ChangeDateTime="03/22/2019 19:15:56">
+    <Property Name="ElementName" Value="[dbo].[TRA_MEMBER_REQ].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_MEMBER_REQ]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f999ccc3-5ecf-4e4d-b8ba-e5bd47795d9e" ChangeDateTime="03/22/2019 19:20:00">
+    <Property Name="ElementName" Value="[dbo].[TRA_ROLE].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ROLE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7cf3252c-ba50-4fd6-80c6-9df19d75d93c" ChangeDateTime="03/22/2019 19:20:08">
+    <Property Name="ElementName" Value="[dbo].[TRA_ROLE].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ROLE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="959284a9-f021-4a5d-8527-20d71646b564" ChangeDateTime="03/22/2019 19:20:31">
+    <Property Name="ElementName" Value="[dbo].[TRA_ROLE].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ROLE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="58b1d715-f094-4ce0-804b-5338f3d77fa0" ChangeDateTime="03/22/2019 19:21:07">
+    <Property Name="ElementName" Value="[dbo].[TRA_ROLE].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_ROLE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="24c23c55-2c8a-4fd5-bf27-331cdc9a7e95" ChangeDateTime="03/22/2019 19:22:00">
+    <Property Name="ElementName" Value="[dbo].[TRA_TEAM].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ba2cb34f-2ca8-4e48-ae3f-7f9a9cc3c7fa" ChangeDateTime="03/22/2019 19:22:12">
+    <Property Name="ElementName" Value="[dbo].[TRA_TEAM].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="a21094b5-4b1d-49b4-ad1d-dec87424b60f" ChangeDateTime="03/22/2019 19:22:28">
+    <Property Name="ElementName" Value="[dbo].[TRA_TEAM].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4d42a13a-cf9f-42d6-aae2-5cb3348555bb" ChangeDateTime="03/22/2019 19:22:50">
+    <Property Name="ElementName" Value="[dbo].[TRA_TEAM].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cd66fc2a-eb4a-416c-923c-1cf4be5d1df9" ChangeDateTime="03/22/2019 19:24:02">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f874e7a0-53ec-49dd-aaef-529344363089" ChangeDateTime="03/22/2019 19:24:12">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c29999eb-6a26-4fc2-bd50-65dfc54c3915" ChangeDateTime="03/22/2019 19:24:26">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2d95fb3a-15ab-4ceb-b790-82425a9e8209" ChangeDateTime="03/22/2019 19:24:36">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="32b5c038-6da5-4647-8761-fb0128374912" ChangeDateTime="03/22/2019 19:51:26">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC_MESSAGE].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC_MESSAGE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="10dc2d45-3277-4165-92a6-524abf308457" ChangeDateTime="03/22/2019 19:51:36">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC_MESSAGE].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC_MESSAGE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="eb4e3fc3-36bb-4271-bbef-13af1e132c2b" ChangeDateTime="03/22/2019 19:51:57">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC_MESSAGE].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC_MESSAGE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="6d279a3a-e06d-48d3-8fe7-dab62cb258ad" ChangeDateTime="03/22/2019 19:52:16">
+    <Property Name="ElementName" Value="[dbo].[TRA_TOPIC_MESSAGE].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TOPIC_MESSAGE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="99c0f936-f8eb-4721-816e-ac7900b6375c" ChangeDateTime="03/22/2019 19:53:36">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b32512d4-0204-4444-b955-b368ef7b4f67" ChangeDateTime="03/22/2019 19:53:46">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b3f137cc-5f08-475d-9a01-dcf93b7bce21" ChangeDateTime="03/22/2019 19:53:59">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="128967d7-65a0-4405-921b-fd41ff82b894" ChangeDateTime="03/22/2019 19:54:11">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4fab8f26-a418-4ebe-a6d9-994545e75692" ChangeDateTime="03/22/2019 19:55:11">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER_ACTIVITY].[LAST_UPDATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8ac6aba4-6cf7-4c1a-8db1-2bc116124235" ChangeDateTime="03/22/2019 19:55:18">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER_ACTIVITY].[LAST_UPDATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_LAST_UPDATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c8651936-185e-494b-acbb-16bb0a98eb74" ChangeDateTime="03/22/2019 19:55:25">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER_ACTIVITY].[CREATED_BY_DATE]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_USERID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2604c04b-730f-46f0-8878-445eb636d573" ChangeDateTime="03/22/2019 19:55:42">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER_ACTIVITY].[CREATED_BY_USER]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DB_CREATE_TIMESTAMP" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b8a517c0-2393-4987-8c28-b4b2c34fd36a" ChangeDateTime="03/22/2019 21:09:41">
+    <Property Name="ElementName" Value="[dbo].[TRA_TEAM].[PROGRESS_BAR]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_TEAM]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="GOAL" />
+  </Operation>
+</Operations>

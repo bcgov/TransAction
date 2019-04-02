@@ -18,7 +18,7 @@ namespace TransAction.Data.Services
 
         public void CreateEvent(TraEvent traEvent)
         {
-             _context.TraEvent.Add(traEvent);
+            _context.TraEvent.Add(traEvent);
         }
 
         public bool EventExists(string name)
@@ -44,11 +44,69 @@ namespace TransAction.Data.Services
             return _context.TraEvent.OrderBy(c => c.EventId).ToList();
         }
 
+        /*-----------------------------------------------------------------------------------------*/
+
+        public TraUser GetUser(int id)
+        {
+            return _context.TraUser.FirstOrDefault(c => c.UserId == id);
+        }
+
+        public IEnumerable<TraUser> GetUsers()
+        {
+            return _context.TraUser.OrderBy(c => c.UserId).ToList();
+        }
+
+
+
+        public void CreateUser(TraUser traUser)
+        {
+            _context.TraUser.Add(traUser);
+        }
+
+        public bool UserExists(string Name, string Email)
+        {
+            var checkUser = _context.TraUser.FirstOrDefault(c => c.Username == Name || c.Email == Email);
+            if (checkUser != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
         }
-       
+        /*---------------------------------------------------------------------------------------------*/
+        public IEnumerable<TraTeam> GetTeams()
+        {
+            return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
+        }
 
+        public TraTeam GetTeam(int id)
+        {
+            return _context.TraTeam.FirstOrDefault(c => c.TeamId == id);
+        }
+
+        public void CreateTeam(TraTeam traTeam)
+        {
+            _context.TraTeam.Add(traTeam);
+        }
+
+        public bool TeamExists(string Name)
+        {
+            var checkTeam = _context.TraTeam.FirstOrDefault(c => c.Name == Name);
+            if (checkTeam != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

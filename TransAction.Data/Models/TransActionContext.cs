@@ -27,15 +27,6 @@ namespace TransAction.Data.Models
         public virtual DbSet<TraUser> TraUser { get; set; }
         public virtual DbSet<TraUserActivity> TraUserActivity { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=NC057936\\SQLExpress;Database=TransActionPractice;Trusted_Connection=True;");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TraActivity>(entity =>
@@ -88,19 +79,35 @@ namespace TransAction.Data.Models
 
             modelBuilder.Entity<TraEvent>(entity =>
             {
-                entity.HasKey(e => e.EventId);
+                entity.HasKey(e => e.EventId)
+                    .HasName("PK_EVENT");
 
                 entity.ToTable("TRA_EVENT");
 
                 entity.Property(e => e.EventId).HasColumnName("EVENT_ID");
 
-                entity.Property(e => e.CreatedByDate)
-                    .HasColumnName("CREATED_BY_DATE")
+                entity.Property(e => e.ConcurrencyControlNumber)
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.DbCreateTimestamp)
+                    .HasColumnName("DB_CREATE_TIMESTAMP")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.CreatedByUser)
-                    .HasColumnName("CREATED_BY_USER")
-                    .HasMaxLength(255)
+                entity.Property(e => e.DbCreateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_CREATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DbLastUpdateTimestamp)
+                    .HasColumnName("DB_LAST_UPDATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbLastUpdateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_LAST_UPDATE_USERID")
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Description)
@@ -108,25 +115,14 @@ namespace TransAction.Data.Models
                     .HasColumnName("DESCRIPTION")
                     .HasColumnType("text");
 
-                entity.Property(e => e.EffectiveEndDate)
-                    .HasColumnName("EFFECTIVE_END_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.EffectiveStartDate)
-                    .HasColumnName("EFFECTIVE_START_DATE")
-                    .HasColumnType("datetime");
-
                 entity.Property(e => e.EndDate)
                     .HasColumnName("END_DATE")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.LastUpdatedByDate)
-                    .HasColumnName("LAST_UPDATED_BY_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.LastUpdatedByUser)
-                    .HasColumnName("LAST_UPDATED_BY_USER")
-                    .HasMaxLength(255)
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasMaxLength(1024)
                     .IsUnicode(false);
 
                 entity.Property(e => e.StartDate)
@@ -312,37 +308,11 @@ namespace TransAction.Data.Models
                 entity.ToTable("TRA_ROLE");
 
                 entity.Property(e => e.RoleId).HasColumnName("ROLE_ID");
-
-                entity.Property(e => e.CreatedByDate)
-                    .HasColumnName("CREATED_BY_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.CreatedByUser)
-                    .HasColumnName("CREATED_BY_USER")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
+                
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnName("DESCRIPTION")
                     .HasMaxLength(1024)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EffectiveEndDate)
-                    .HasColumnName("EFFECTIVE_END_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.EffectiveStartDate)
-                    .HasColumnName("EFFECTIVE_START_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.LastUpdatedByDate)
-                    .HasColumnName("LAST_UPDATED_BY_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.LastUpdatedByUser)
-                    .HasColumnName("LAST_UPDATED_BY_USER")
-                    .HasMaxLength(255)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Name)
@@ -350,23 +320,63 @@ namespace TransAction.Data.Models
                     .HasColumnName("NAME")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.Property(e => e.ConcurrencyControlNumber)
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.DbCreateTimestamp)
+                    .HasColumnName("DB_CREATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbCreateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_CREATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DbLastUpdateTimestamp)
+                    .HasColumnName("DB_LAST_UPDATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbLastUpdateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_LAST_UPDATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TraTeam>(entity =>
             {
-                entity.HasKey(e => e.TeamId);
+                entity.HasKey(e => e.TeamId)
+                    .HasName("PK_TEAM");
 
                 entity.ToTable("TRA_TEAM");
 
                 entity.Property(e => e.TeamId).HasColumnName("TEAM_ID");
 
-                entity.Property(e => e.CreatedByDate)
-                    .HasColumnName("CREATED_BY_DATE")
+                entity.Property(e => e.ConcurrencyControlNumber)
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.DbCreateTimestamp)
+                    .HasColumnName("DB_CREATE_TIMESTAMP")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.CreatedByUser)
-                    .HasColumnName("CREATED_BY_USER")
-                    .HasMaxLength(255)
+                entity.Property(e => e.DbCreateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_CREATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DbLastUpdateTimestamp)
+                    .HasColumnName("DB_LAST_UPDATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbLastUpdateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_LAST_UPDATE_USERID")
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Description)
@@ -374,29 +384,20 @@ namespace TransAction.Data.Models
                     .HasColumnName("DESCRIPTION")
                     .HasColumnType("text");
 
-                entity.Property(e => e.EffectiveEndDate)
-                    .HasColumnName("EFFECTIVE_END_DATE")
-                    .HasColumnType("datetime");
 
-                entity.Property(e => e.EffectiveStartDate)
-                    .HasColumnName("EFFECTIVE_START_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.LastUpdatedByDate)
-                    .HasColumnName("LAST_UPDATED_BY_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.LastUpdatedByUser)
-                    .HasColumnName("LAST_UPDATED_BY_USER")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ProgressBar).HasColumnName("PROGRESS_BAR");
+                entity.Property(e => e.Goal).HasColumnName("GOAL");
 
                 entity.Property(e => e.Region)
                     .IsRequired()
                     .HasColumnName("REGION")
                     .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                /*ADDED MANUALLY*/
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasMaxLength(1024)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
@@ -405,7 +406,7 @@ namespace TransAction.Data.Models
                     .WithMany(p => p.TraTeam)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TRA_TEAM_USER");
+                    .HasConstraintName("FK_TEAM_USER");
             });
 
             modelBuilder.Entity<TraTopic>(entity =>
@@ -521,25 +522,41 @@ namespace TransAction.Data.Models
 
             modelBuilder.Entity<TraUser>(entity =>
             {
-                entity.HasKey(e => e.UserId);
+                entity.HasKey(e => e.UserId)
+                   .HasName("PK_USER");
 
                 entity.ToTable("TRA_USER");
 
                 entity.HasIndex(e => e.RoleId)
-                    .HasName("IX_FK_USER_ROLES");
+                    .HasName("IX_FK_USER_ROLE");
 
                 entity.HasIndex(e => e.TeamId)
-                    .HasName("IX_FK_UserTEAM");
+                    .HasName("IX_FK_USER_TEAM");
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
-                entity.Property(e => e.CreatedByDate)
-                    .HasColumnName("CREATED_BY_DATE")
+                entity.Property(e => e.ConcurrencyControlNumber)
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.DbCreateTimestamp)
+                    .HasColumnName("DB_CREATE_TIMESTAMP")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.CreatedByUser)
-                    .HasColumnName("CREATED_BY_USER")
-                    .HasMaxLength(255)
+                entity.Property(e => e.DbCreateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_CREATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DbLastUpdateTimestamp)
+                    .HasColumnName("DB_LAST_UPDATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbLastUpdateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_LAST_UPDATE_USERID")
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Description)
@@ -553,14 +570,6 @@ namespace TransAction.Data.Models
                     .HasColumnName("DIRECTORY ")
                     .HasMaxLength(8)
                     .IsUnicode(false);
-
-                entity.Property(e => e.EffectiveEndDate)
-                    .HasColumnName("EFFECTIVE_END_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.EffectiveStartDate)
-                    .HasColumnName("EFFECTIVE_START_DATE")
-                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -577,15 +586,6 @@ namespace TransAction.Data.Models
                 entity.Property(e => e.Guid)
                     .IsRequired()
                     .HasColumnName("GUID")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LastUpdatedByDate)
-                    .HasColumnName("LAST_UPDATED_BY_DATE")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.LastUpdatedByUser)
-                    .HasColumnName("LAST_UPDATED_BY_USER")
                     .HasMaxLength(255)
                     .IsUnicode(false);
 

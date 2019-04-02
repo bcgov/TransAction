@@ -13,20 +13,20 @@ namespace TransAction.Data.Models
         }
 
         public int TeamId { get; set; }
+        public string Name { get; set; }
         public string Region { get; set; }
         public string Description { get; set; }
-        public int ProgressBar { get; set; }
+        public int Goal { get; set; }
         public int UserId { get; set; }
-        public DateTime? EffectiveStartDate { get; set; }
-        public DateTime? EffectiveEndDate { get; set; }
-        public string CreatedByUser { get; set; }
-        public DateTime? CreatedByDate { get; set; }
-        public string LastUpdatedByUser { get; set; }
-        public DateTime? LastUpdatedByDate { get; set; }
+        public DateTime DbCreateTimestamp { get; set; }
+        public string DbCreateUserid { get; set; }
+        public DateTime DbLastUpdateTimestamp { get; set; }
+        public string DbLastUpdateUserid { get; set; }
+        public long ConcurrencyControlNumber { get; set; }
 
-        public TraUser User { get; set; }
-        public ICollection<TraEventTeam> TraEventTeam { get; set; }
-        public ICollection<TraMemberReq> TraMemberReq { get; set; }
-        public ICollection<TraUser> TraUser { get; set; }
+        public virtual TraUser User { get; set; }
+        public virtual ICollection<TraEventTeam> TraEventTeam { get; set; }
+        public virtual ICollection<TraMemberReq> TraMemberReq { get; set; }
+        public virtual ICollection<TraUser> TraUser { get; set; }
     }
 }

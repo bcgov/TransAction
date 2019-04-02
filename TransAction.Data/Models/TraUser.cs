@@ -25,20 +25,19 @@ namespace TransAction.Data.Models
         public string Email { get; set; }
         public int RoleId { get; set; }
         public int? TeamId { get; set; }
-        public DateTime? EffectiveStartDate { get; set; }
-        public DateTime? EffectiveEndDate { get; set; }
-        public string CreatedByUser { get; set; }
-        public DateTime? CreatedByDate { get; set; }
-        public string LastUpdatedByUser { get; set; }
-        public DateTime? LastUpdatedByDate { get; set; }
+        public DateTime DbCreateTimestamp { get; set; }
+        public string DbCreateUserid { get; set; }
+        public DateTime DbLastUpdateTimestamp { get; set; }
+        public string DbLastUpdateUserid { get; set; }
+        public long ConcurrencyControlNumber { get; set; }
 
-        public TraRole Role { get; set; }
-        public TraTeam Team { get; set; }
-        public ICollection<TraEventUser> TraEventUser { get; set; }
-        public ICollection<TraMemberReq> TraMemberReq { get; set; }
-        public ICollection<TraTeam> TraTeam { get; set; }
-        public ICollection<TraTopic> TraTopic { get; set; }
-        public ICollection<TraTopicMessage> TraTopicMessage { get; set; }
-        public ICollection<TraUserActivity> TraUserActivity { get; set; }
+        public virtual TraRole Role { get; set; }
+        public virtual TraTeam Team { get; set; }
+        public virtual ICollection<TraEventUser> TraEventUser { get; set; }
+        public virtual ICollection<TraMemberReq> TraMemberReq { get; set; }
+        public virtual ICollection<TraTeam> TraTeam { get; set; }
+        public virtual ICollection<TraTopic> TraTopic { get; set; }
+        public virtual ICollection<TraTopicMessage> TraTopicMessage { get; set; }
+        public virtual ICollection<TraUserActivity> TraUserActivity { get; set; }
     }
 }

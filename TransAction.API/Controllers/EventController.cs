@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,17 +12,17 @@ namespace TransAction.API.Controllers
     [Route("api/events")]
     public class EventController : Controller
     {
-        private ITransActionRepo _transActionRepo;       
+        private ITransActionRepo _transActionRepo;
         public EventController(ITransActionRepo transActionRepo)
         {
-            _transActionRepo = transActionRepo;            
+            _transActionRepo = transActionRepo;
         }
 
 
         [HttpGet()]
         public IActionResult GetEvents()
         {
-            var events = _transActionRepo.GetEvents();            
+            var events = _transActionRepo.GetEvents();
             var getEvents = Mapper.Map<IEnumerable<EventDto>>(events);
             return Ok(getEvents);
 
@@ -46,11 +46,11 @@ namespace TransAction.API.Controllers
 
             }
 
-            catch(Exception)
+            catch (Exception)
             {
                 return StatusCode(500, "A problem happened while handeling your request");
             }
-            
+
         }
 
 
@@ -69,13 +69,22 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if(_transActionRepo.EventExists(createEvent.Name))
+            if (_transActionRepo.EventExists(createEvent.Name))
             {
-                return BadRequest() ;
+                return BadRequest();
             }
 
             var newEvent = Mapper.Map<TraEvent>(createEvent);
+
+            newEvent.DbCreateTimestamp = DateTime.Now;
+            newEvent.DbLastUpdateTimestamp = newEvent.DbCreateTimestamp;
+
+
             _transActionRepo.CreateEvent(newEvent);
+
+            newEvent.DbCreateUserid = "Test User";
+            newEvent.DbLastUpdateUserid = "Test User";
+
 
             if (!_transActionRepo.Save())
             {
@@ -83,8 +92,8 @@ namespace TransAction.API.Controllers
             }
 
             var createdPointOfInterestToReturn = Mapper.Map<EventDto>(newEvent);
-            return CreatedAtRoute("GetThatEvent", new { id =  createdPointOfInterestToReturn.EventId }, createdPointOfInterestToReturn);
-            
+            return CreatedAtRoute("GetThatEvent", new { id = createdPointOfInterestToReturn.EventId }, createdPointOfInterestToReturn);
+
 
         }
 
@@ -99,14 +108,16 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
-            Mapper.Map(updateEvent,eventEntity);
+            eventEntity.DbLastUpdateTimestamp = DateTime.Now;
+            eventEntity.DbLastUpdateUserid = "Test User";
+            Mapper.Map(updateEvent, eventEntity);
+
 
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-            
+
             return NoContent();
         }
     }

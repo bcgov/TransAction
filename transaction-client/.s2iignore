@@ -1,0 +1,7 @@
+Dockerfile
+./build
+./.vs
+.gitignore
+.dockerignore
+db.json
+.env.local
