@@ -48,6 +48,24 @@ objects:
                   cpu: "100m"
                 limits:
                   cpu: "150m"
+              env:
+                - name: REACT_APP_SSO_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: sso-configs
+                      key: CLIENT_SSO_HOST
+                - name: REACT_APP_SSO_REALM
+                  valueFrom:
+                    secretKeyRef:
+                      name: sso-configs
+                      key: CLIENT_SSO_REALM
+                - name: REACT_APP_SSO_CLIENT
+                  valueFrom:
+                    secretKeyRef:
+                      name: sso-configs
+                      key: CLIENT_SSO_CLIENTID
+                - name: REACT_APP_API_HOST
+                  value: ${API_URL}
           #   volumeMounts:
           #   - name: ${VOLUME_NAME}
           #     mountPath: /etc/nginx/conf.d
@@ -119,6 +137,11 @@ parameters:
     name: ASPNETCORE_ENVIRONMENT
     required: true
     value: "Development"
+  - description: API HOST
+    displayName: API HOST
+    name: API_URL
+    required: true
+    value: ""
 # - description: Nginx config volume
 #   displayName: Volume Name
 #   name: VOLUME_NAME
