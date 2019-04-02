@@ -55,13 +55,13 @@ namespace TransAction.API
             services.AddSingleton<IAuthorizationHandler, UserEditAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, TeamEditAuthorizationHandler>();
 
-            services.AddCors(options => 
+            services.AddCors(options =>
             {
                 options.AddPolicy(CORS_ALLOW_ALL,
                 builder =>
                 {
                     builder.AllowAnyOrigin().AllowAnyHeader();
-                    
+
                 });
             });
 
