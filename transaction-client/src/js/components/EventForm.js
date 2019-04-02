@@ -8,25 +8,14 @@ class EventForm extends React.Component {
       return <div className="errorMessage">{error}</div>;
     }
   }
-  //TODO This sucks ass please refactor
-  renderInput = ({ input, label, type, meta, action }) => {
-    if (action === 'add') {
-      return (
-        <div className="field">
-          <Label>{label}</Label>
-          <Input type={type} {...input} autoComplete="off" />
-          {this.renderError(meta)}
-        </div>
-      );
-    } else {
-      return (
-        <div className="field">
-          <Label>{label}</Label>
-          <Input type={type} {...input} autoComplete="off" />
-          {this.renderError(meta)}
-        </div>
-      );
-    }
+  renderInput = ({ input, label, type, meta }) => {
+    return (
+      <div className="field">
+        <Label>{label}</Label>
+        <Input type={type} {...input} autoComplete="off" />
+        {this.renderError(meta)}
+      </div>
+    );
   };
 
   onSubmit = formValues => {
@@ -37,16 +26,24 @@ class EventForm extends React.Component {
   parseId() {
     if (this.props.idFlag === 'add') {
       return (
-        //take form into seperate function
+        //TODO take form into seperate function
         <Form onSubmit={this.props.handleSubmit(this.onSubmit)}>
-          <Field name="name" component={this.renderInput} label="Name of Event" action={this.props.idFlag} />
+          <Field name="name" component={this.renderInput} label="Name of Event" />
           <Field
-            name="description"
+            name="startDate"
+            type="date"
+            placeholder=" date placeholder"
             component={this.renderInput}
-            label="Description of Event"
-            type="textarea"
-            action={this.props.idFlag}
+            label="Start Date"
           />
+          <Field
+            name="endDate"
+            type="date"
+            placeholder=" date placeholder"
+            component={this.renderInput}
+            label="End Date"
+          />
+          <Field name="description" component={this.renderInput} label="Description of Event" type="textarea" />
           <ButtonGroup className="float-right mt-3">
             <Button color="primary">Do a thing!</Button>
             <Button color="secondary" onClick={this.props.modalClose}>
@@ -59,14 +56,22 @@ class EventForm extends React.Component {
       //edit case
       return (
         <Form onSubmit={this.props.handleSubmit(this.onSubmit)}>
-          <Field name="name" component={this.renderInput} label="Name of Event" action={this.props.idFlag} />
+          <Field name="name" component={this.renderInput} label="Name of Event" />
           <Field
-            name="description"
+            name="startDate"
+            type="date"
+            placeholder=" date placeholder"
             component={this.renderInput}
-            label="Description of Event"
-            type="textarea"
-            action={this.props.idFlag}
+            label="Start Date"
           />
+          <Field
+            name="endDate"
+            type="date"
+            placeholder=" date placeholder"
+            component={this.renderInput}
+            label="End Date"
+          />
+          <Field name="description" component={this.renderInput} label="Description of Event" type="textarea" />
           <ButtonGroup className="float-right mt-3">
             <Button color="primary">Do a thing!</Button>
             <Button color="secondary" onClick={this.props.modalClose}>

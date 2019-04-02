@@ -51,11 +51,6 @@ class Main extends Component {
         </div>
         <div>{this.renderEventList()}</div>
 
-        <Button color="primary" className="btn-sm px-3 mx-3 mb-4" onClick={this.toggle}>
-          Add an Event
-        </Button>
-        <ModalEvent name="add" action="add" toggle={this.toggle} isOpen={this.state.modal} />
-
         {/*Old Event Buttons*/}
         {/*<div className = "col-sm offset-1">
             <ButtonGroup className = "row">
