@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "Before assembling"
+
+/usr/libexec/s2i/assemble
+rc=$?
+
+if [ $rc -eq 0 ]; then
+    echo "Assemble complete, perform runtime configurations..."
+else
+    echo "Assemble failed, skipping runtime configurations..."
+fi
+
+exit $rc

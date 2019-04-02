@@ -23,6 +23,8 @@ namespace TransAction.API
 
         public IConfiguration Configuration { get; }
 
+        private const string CORS_ALLOW_ALL = "CORS_ALLOW_ALL";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -31,7 +33,7 @@ namespace TransAction.API
             services.AddScoped<ITransActionRepo, TransActionRepo>();
             services.AddScoped<IAuthorizationRepo, AuthorizationRepo>();
 
-            var ConnectionString = Configuration["ConnectionStrings:TransAction"];
+            var ConnectionString = Configuration["CONNECTION_STRING"];
             services.AddDbContext<TransActionContext>(opt =>
                 opt.UseSqlServer(ConnectionString));
 
@@ -40,7 +42,7 @@ namespace TransAction.API
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddKeycloakAuth(new KeycloakAuthenticationOptions() { Authority = Configuration["JWT:Authority"], Audience = Configuration["JWT:Audience"] });
+            .AddKeycloakAuth(new KeycloakAuthenticationOptions() { Authority = Configuration["JWT_AUTHORITY"], Audience = Configuration["JWT_AUDIENCE"] });
 
             services.AddAuthorization(options =>
             {
@@ -52,6 +54,16 @@ namespace TransAction.API
 
             services.AddSingleton<IAuthorizationHandler, UserEditAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, TeamEditAuthorizationHandler>();
+
+            services.AddCors(options => 
+            {
+                options.AddPolicy(CORS_ALLOW_ALL,
+                builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader();
+                    
+                });
+            });
 
             services.AddMvc(options =>
             {
@@ -95,6 +107,7 @@ namespace TransAction.API
                 cfg.CreateMap<TraTeam, TeamUpdateDto>();
             });
 
+            app.UseCors(CORS_ALLOW_ALL);
             app.UseAuthentication();
             app.UseMvc();
         }

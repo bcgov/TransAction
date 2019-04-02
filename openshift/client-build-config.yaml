@@ -6,148 +6,155 @@ metadata:
 labels:
   template: client
 objects:
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    creationTimestamp: null
-    labels:
-      shared: true
-    name: ${NAME}-artifacts
-  spec:
-    lookupPolicy:
-      local: false
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    creationTimestamp: null
-    name: ${NAME}
-  spec:
-    lookupPolicy:
-      local: false
-# Build artifacts
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    creationTimestamp: null
-    labels:
-      build: ${NAME}-artifacts${SUFFIX}
-    name: ${NAME}-artifacts${SUFFIX}
-  spec:
-    completionDeadlineSeconds: 720
-    nodeSelector: null
-    output:
-      to:
-        kind: ImageStreamTag
-        name: ${NAME}-artifacts:${VERSION}
-      resources:
-      limits:
-        cpu: 500m
-        memory: 2Gi
-      requests:
-        cpu: 250m
-        memory: 1Gi
-    postCommit: {}
-    source:
-      git:
-        uri: ${SOURCE_REPOSITORY_URL}
-        ref: ${SOURCE_REPOSITORY_REF}
-      type: Git
-      contextDir: transaction-client
-    strategy:
-      sourceStrategy:
-        from:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      creationTimestamp: null
+      labels:
+        shared: true
+      name: ${NAME}-artifacts
+    spec:
+      lookupPolicy:
+        local: false
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      creationTimestamp: null
+      name: ${NAME}
+    spec:
+      lookupPolicy:
+        local: false
+  # Build artifacts
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      creationTimestamp: null
+      labels:
+        build: ${NAME}-artifacts${SUFFIX}
+      name: ${NAME}-artifacts${SUFFIX}
+    spec:
+      completionDeadlineSeconds: 720
+      nodeSelector: null
+      output:
+        to:
           kind: ImageStreamTag
-          name: nodejs-8-rhel7:latest
-      type: Source
-    triggers:
-    - type: ConfigChange
-    - imageChange: {}
-      type: ImageChange
-# Create runtime image
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    creationTimestamp: null
-    labels:
-      build: ${NAME}${SUFFIX}
-    name: ${NAME}${SUFFIX}
-  spec:
-    nodeSelector: null
-    completionDeadlineSeconds: 180
-    output:
-      to:
-        kind: ImageStreamTag
-        name: ${NAME}:${VERSION}
-    resources:
-      limits:
-        cpu: 500m
-        memory: 2Gi
-      requests:
-        cpu: 250m
-        memory: 1Gi
-    postCommit: {}
-    resources:
-      requests:
-        cpu: 1
-      limits:
-        cpu: 2
-    source:
-      dockerfile: |-
-        FROM nodejs/build-output:latest
-        COPY src/src/build /build
-        RUN npm install -g serve
-        CMD serve -s -l 8080 /build
-        # FROM nodejs/build-output:latest
-        # COPY src/src/build /
-        # COPY src/src/nginx.conf /
-      images:
-        - from:
+          name: ${NAME}-artifacts:${VERSION}
+        resources:
+          limits:
+            cpu: 2
+            memory: 4Gi
+          requests:
+            cpu: 1
+            memory: 2Gi
+      postCommit: {}
+      source:
+        git:
+          uri: ${SOURCE_REPOSITORY_URL}
+          ref: ${SOURCE_REPOSITORY_REF}
+        type: Git
+        contextDir: transaction-client
+      strategy:
+        sourceStrategy:
+          from:
             kind: ImageStreamTag
-            name: '${NAME}-artifacts:${VERSION}'
-          paths:
-            - destinationDir: src
-              sourcePath: /opt/app-root/src/
-      type: Dockerfile
-    strategy:
-      dockerStrategy:
-        from:
-          kind: ImageStreamTag
-          name: 'nodejs:latest'
-          #name: 'nginx-112-rhel7:latest'
-      type: Docker
-    triggers:
-    - imageChange:
-        from:
+            name: nodejs-8-rhel7:latest
+        type: Source
+      triggers:
+        - type: ConfigChange
+        - imageChange: {}
+          type: ImageChange
+  # Create runtime image
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      creationTimestamp: null
+      labels:
+        build: ${NAME}${SUFFIX}
+      name: ${NAME}${SUFFIX}
+    spec:
+      nodeSelector: null
+      completionDeadlineSeconds: 180
+      output:
+        to:
           kind: ImageStreamTag
           name: ${NAME}:${VERSION}
-      type: ImageChange
-    - type: ConfigChange
-    - imageChange: {}
-      type: ImageChange
+        resources:
+          limits:
+            cpu: 2
+            memory: 4Gi
+          requests:
+            cpu: 1
+            memory: 2Gi
+      postCommit: {}
+      resources:
+        requests:
+          cpu: 1
+        limits:
+          cpu: 2
+      source:
+        dockerfile: |-
+          FROM nodejs/build-output:latest
+          COPY src/src/build /build
+          COPY src/src/env2js.sh /env2js.sh
+
+          RUN touch /build/env.config.js
+          RUN chmod +x /env2js.sh
+          RUN chmod -R a+rw /build/env.config.js
+
+          RUN npm install -g serve
+          RUN apk add --no-cache bash
+
+          CMD /env2js.sh > /build/env.config.js && serve -s -l 8080 /build
+          # FROM nodejs/build-output:latest
+          # COPY src/src/build /
+          # COPY src/src/nginx.conf /
+        images:
+          - from:
+              kind: ImageStreamTag
+              name: "${NAME}-artifacts:${VERSION}"
+            paths:
+              - destinationDir: src
+                sourcePath: /opt/app-root/src/
+        type: Dockerfile
+      strategy:
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: "nodejs:latest"
+            #name: 'nginx-112-rhel7:latest'
+        type: Docker
+      triggers:
+        - imageChange:
+            from:
+              kind: ImageStreamTag
+              name: ${NAME}:${VERSION}
+          type: ImageChange
+        - type: ConfigChange
+        - imageChange: {}
+          type: ImageChange
 parameters:
-- description: A name used for all objects
-  displayName: Name
-  name: NAME
-  required: false
-  value: 'client'
-- description: A name suffix used for all objects
-  displayName: Suffix
-  name: SUFFIX
-  required: false
-  value: '-dev'
-- description: A version used for the image tags
-  displayName: version
-  name: VERSION
-  required: false
-  value: '1.0'
-- description: SOURCE_REPOSITORY_URL
-  displayName: SOURCE_REPOSITORY_URL
-  name: SOURCE_REPOSITORY_URL
-  required: false
-  value: 'https://github.com/BCGov/transaction.git'
-- description: SOURCE_REPOSITORY_REF
-  displayName: SOURCE_REPOSITORY_REF
-  name: SOURCE_REPOSITORY_REF
-  required: false
-  value: 'master'
-  
+  - description: A name used for all objects
+    displayName: Name
+    name: NAME
+    required: false
+    value: "client"
+  - description: A name suffix used for all objects
+    displayName: Suffix
+    name: SUFFIX
+    required: false
+    value: "-dev"
+  - description: A version used for the image tags
+    displayName: version
+    name: VERSION
+    required: false
+    value: "1.0"
+  - description: SOURCE_REPOSITORY_URL
+    displayName: SOURCE_REPOSITORY_URL
+    name: SOURCE_REPOSITORY_URL
+    required: false
+    value: "https://github.com/BCGov/transaction.git"
+  - description: SOURCE_REPOSITORY_REF
+    displayName: SOURCE_REPOSITORY_REF
+    name: SOURCE_REPOSITORY_REF
+    required: false
+    value: "master"

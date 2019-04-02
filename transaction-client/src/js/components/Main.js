@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Container } from 'reactstrap';
 import Event from './Event';
-import tempDb from '../api/tempDb';
+import tempDb from '../api/api';
 import ModalEvent from './ModalEvent';
 //import ArchivedEvent from './ArchivedEvent';
 

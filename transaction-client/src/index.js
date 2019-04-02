@@ -14,9 +14,11 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk)));
 
 const keycloakConfig = {
-  url: process.env.REACT_APP_SSO_HOST,
-  realm: process.env.REACT_APP_SSO_REALM,
-  clientId: process.env.REACT_APP_SSO_CLIENT,
+  url: window.RUNTIME_REACT_APP_SSO_HOST ? window.RUNTIME_REACT_APP_SSO_HOST : process.env.REACT_APP_SSO_HOST,
+  realm: window.RUNTIME_REACT_APP_SSO_REALM ? window.RUNTIME_REACT_APP_SSO_REALM : process.env.REACT_APP_SSO_REALM,
+  clientId: window.RUNTIME_REACT_APP_SSO_CLIENT
+    ? window.RUNTIME_REACT_APP_SSO_CLIENT
+    : process.env.REACT_APP_SSO_CLIENT,
 };
 
 const keycloak = Keycloak(keycloakConfig);

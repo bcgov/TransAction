@@ -1,4 +1,4 @@
-import tempDb from '../api/tempDb';
+import tempDb from '../api/api';
 import { FETCH_EVENTS } from './types';
 
 export const fetchEvents = () => async dispatch => {

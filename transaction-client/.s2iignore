@@ -4,3 +4,4 @@ Dockerfile
 .gitignore
 .dockerignore
 db.json
+.env.local
