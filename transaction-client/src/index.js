@@ -10,6 +10,8 @@ import App from './js/App';
 import Api from './js/api/api';
 import reducers from './js/reducers';
 
+import { UPDATE_AUTH_USER } from './js/actions/types';
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk)));
 
@@ -23,9 +25,23 @@ const keycloakConfig = {
 
 const keycloak = Keycloak(keycloakConfig);
 
+keycloak.onAuthSuccess = () => {
+  getKeycloakUserInfo();
+};
+
+keycloak.onAuthRefreshSuccess = () => {
+  getKeycloakUserInfo();
+};
+
+function getKeycloakUserInfo() {
+  keycloak.loadUserInfo().success(data => {
+    store.dispatch({ type: UPDATE_AUTH_USER, payload: data });
+  });
+}
+
 keycloak
   .init({ onLoad: 'login-required' })
-  .success(function(authenticated) {
+  .success(authenticated => {
     if (authenticated) {
       ReactDOM.render(
         <Provider store={store}>
@@ -35,7 +51,7 @@ keycloak
       );
     }
   })
-  .error(function() {
+  .error(() => {
     //alert('failed to initialize');
   });
 
