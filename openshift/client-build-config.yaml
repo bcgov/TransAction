@@ -99,12 +99,11 @@ objects:
 
           RUN touch /build/env.config.js
           RUN chmod +x /env2js.sh
-          RUN chmod -R a+rw /build/env.config.js
 
           RUN npm install -g serve
           RUN apk add --no-cache bash
 
-          CMD /env2js.sh > /build/env.config.js && serve -s -l 8080 /build
+          CMD /env2js.sh > /build/js/env.config.js && serve -s -l 8080 /build
           # FROM nodejs/build-output:latest
           # COPY src/src/build /
           # COPY src/src/nginx.conf /
