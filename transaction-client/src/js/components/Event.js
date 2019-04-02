@@ -1,23 +1,40 @@
 import React from 'react';
-import { Row, Container, Col, ButtonGroup } from 'reactstrap';
+import { Row, Container, Col, ButtonGroup, Button } from 'reactstrap';
 import ModalEvent from './ModalEvent';
 
-const Event = props => {
-  const event = props.event;
+class Event extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modal: false,
+    };
+  }
 
-  return (
-    <Container>
-      <Row>
-        <Col>
-          <h3 className="float-left">{event.name}</h3>
-          <ButtonGroup className="float-right">
-            <ModalEvent name="edit" body={event.description} id="edit" />
-            <ModalEvent name="delete" body={event.description} />
-          </ButtonGroup>
-        </Col>
-      </Row>
-      <div>{event.description}</div>
-    </Container>
-  );
-};
+  toggle = () => {
+    this.setState(prevState => ({
+      modal: !prevState.modal,
+    }));
+  };
+
+  render() {
+    return (
+      <Container>
+        <Row>
+          <Col>
+            <h3 className="float-left">{this.props.event.name}</h3>
+
+            <ButtonGroup className="float-right">
+              <Button color="primary" onClick={this.toggle}>
+                Edit Events
+              </Button>
+              <ModalEvent name="edit" id={this.props.event.id} toggle={this.toggle} isOpen={this.state.modal} />
+            </ButtonGroup>
+            <h5 className="float-right px-3 mx-3 mb-4">End date: {this.props.event.endDate}</h5>
+          </Col>
+        </Row>
+        <div>{this.props.event.description}</div>
+      </Container>
+    );
+  }
+}
 export default Event;
