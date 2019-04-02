@@ -1,14 +1,10 @@
 import React from 'react';
 import { Row, Container, Col, ButtonGroup, Button } from 'reactstrap';
-import ModalEvent from './ModalEvent';
+import moment from 'moment';
+import EventModal from './EventModal';
 
 class Event extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modal: false,
-    };
-  }
+  state = { modal: false };
 
   toggle = () => {
     this.setState(prevState => ({
@@ -22,16 +18,24 @@ class Event extends React.Component {
         <Row>
           <Col>
             <h3 className="float-left">{this.props.event.name}</h3>
-
             <ButtonGroup className="float-right">
               <Button color="primary" onClick={this.toggle}>
                 Edit Events
               </Button>
-              <ModalEvent name="edit" id={this.props.event.id} toggle={this.toggle} isOpen={this.state.modal} />
+              <EventModal
+                name="edit"
+                id={this.props.event.id}
+                toggle={this.toggle}
+                isOpen={this.state.modal}
+                text="Edit an Event"
+              />
             </ButtonGroup>
-            <h5 className="float-right px-3 mx-3 mb-4">End date: {this.props.event.endDate}</h5>
           </Col>
         </Row>
+        <div className="float-left float-none mb-4">
+          {moment(this.props.event.startDate).format('MMMM Do YYYY')} To{' '}
+          {moment(this.props.event.endDate).format('MMMM Do YYYY')}
+        </div>
         <div>{this.props.event.description}</div>
       </Container>
     );

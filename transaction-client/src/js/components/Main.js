@@ -2,18 +2,13 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { Breadcrumb, BreadcrumbItem, Container, Button } from 'reactstrap';
 import Event from './Event';
-import ModalEvent from './ModalEvent';
+import EventModal from './EventModal';
 import { connect } from 'react-redux';
 import { fetchEvents } from '../actions';
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modal: false,
-    };
-  }
+  state = { modal: false };
 
   toggle = () => {
     this.setState(prevState => ({
@@ -30,7 +25,7 @@ class Main extends Component {
       );
     });
     //console.log(events);
-    return _.orderBy(events, ['key'], ['desc']);
+    return events;
   }
 
   componentDidMount() {
@@ -47,7 +42,7 @@ class Main extends Component {
           <Button color="primary" className="btn-sm px-3 mx-3 mb-4" onClick={this.toggle}>
             Add an Event
           </Button>
-          <ModalEvent name="add" toggle={this.toggle} isOpen={this.state.modal} />
+          <EventModal name="add" toggle={this.toggle} isOpen={this.state.modal} text="Add an Event" />
         </div>
         <div>{this.renderEventList()}</div>
 
@@ -74,9 +69,8 @@ class Main extends Component {
 }
 
 const mapStateToProps = state => {
-  //sort this before passing it to events
-  console.log(Object.values(state.events));
-  return { events: Object.values(state.events) };
+  //sorts by start date
+  return { events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']) };
 };
 
 export default connect(

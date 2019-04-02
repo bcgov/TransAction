@@ -1,16 +1,16 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import RenderBody from './RenderBody';
+import EventModalBody from './EventModalBody';
 
-class ModalEvent extends React.Component {
+class EventModal extends React.Component {
   render() {
     // console.log(this.props);
     return (
       <div>
         <Modal size="lg" centered={true} isOpen={this.props.isOpen} toggle={this.props.toggle} className={'center'}>
-          <ModalHeader toggle={this.props.toggle}>{this.props.name}</ModalHeader>
+          <ModalHeader toggle={this.props.toggle}>{this.props.text}</ModalHeader>
           <ModalBody>
-            <RenderBody modalClose={this.props.toggle}>{this.props}</RenderBody>
+            <EventModalBody modalClose={this.props.toggle}>{this.props}</EventModalBody>
           </ModalBody>
           <ModalFooter />
         </Modal>
@@ -19,4 +19,4 @@ class ModalEvent extends React.Component {
   }
 }
 
-export default ModalEvent;
+export default EventModal;
