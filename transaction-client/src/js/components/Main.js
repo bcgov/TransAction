@@ -16,6 +16,12 @@ class Main extends Component {
     }));
   };
 
+  toggle = () => {
+    this.setState(prevState => ({
+      modal: !prevState.modal,
+    }));
+  };
+
   renderEventList() {
     const events = this.props.events.map(event => {
       return (
