@@ -47,9 +47,9 @@ class EventModalForm extends React.Component {
         </div>
         <Field name="description" component={this.renderInput} label="Description of Event" type="textarea" />
         <ButtonGroup className="float-right mt-3">
-          <Button color="primary">Do a thing!</Button>
+          <Button color="primary">Save Edits</Button>
           <Button color="secondary" onClick={this.props.modalClose}>
-            Nooooooo
+            Cancel
           </Button>
         </ButtonGroup>
       </Form>

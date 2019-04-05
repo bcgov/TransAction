@@ -13,7 +13,7 @@ class EventModalBody extends React.Component {
   }
   //checks idFlag to add or edit
   onSubmit = formValues => {
-    console.log(formValues, this.state.idFlag);
+    console.log(formValues);
     if (this.state.idFlag === 'add') this.props.createEvent(formValues);
     else this.props.editEvent(this.props.children.id, formValues);
 
@@ -46,6 +46,7 @@ class EventModalBody extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  console.log(ownProps);
   //console.log(state.events);
   //console.log(ownProps.children.id);
   return { event: state.events[ownProps.children.id] };
