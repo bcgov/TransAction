@@ -29,6 +29,7 @@ namespace TransAction.API
         public void ConfigureServices(IServiceCollection services)
         {
             //Adding services
+            services.AddHttpContextAccessor();
 
             services.AddScoped<ITransActionRepo, TransActionRepo>();
             services.AddScoped<IAuthorizationRepo, AuthorizationRepo>();
