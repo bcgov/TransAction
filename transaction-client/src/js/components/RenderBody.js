@@ -1,60 +1,47 @@
+import _ from 'lodash';
 import React from 'react';
-import { Form, Input, Label, Button, ButtonGroup } from 'reactstrap';
-import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { createEvent } from '../actions';
+import { createEvent, fetchEvent, editEvent } from '../actions';
+import EventForm from './EventForm';
 
 class RenderBody extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { area: '', idFlag: props.children.id };
-  }
-
-  renderError({ error, touched }) {
-    if (touched && error) {
-      return <div className="errorMessage">{error}</div>;
-    }
-  }
-
-  renderInput = ({ input, label, type, meta }) => {
-    return (
-      <div className="field">
-        <Label>{label}</Label>
-        <Input type={type} {...input} autoComplete="off" />
-        {this.renderError(meta)}
-      </div>
-    );
-  };
+  state = { area: '', idFlag: this.props.children.name };
 
   handelClick() {
-    this.dbCallBack();
-    this.props.modelClose();
+    //this.dbCallBack();
+    this.props.modalClose();
   }
   //form submition method
   onSubmit = formValues => {
-    console.log(formValues);
-    this.props.createEvent(formValues);
+    console.log(formValues, this.state.idFlag);
+    if (this.state.idFlag === 'add') {
+      this.props.createEvent(formValues);
+    } else {
+      this.props.editEvent(this.props.children.id, formValues);
+    }
     this.handelClick(); //evoke methods to close model
   };
-
+  //TODO REFACTOR
   parseId() {
     if (this.state.idFlag === 'add') {
       return (
-        //take form into seperate function
-        <Form onSubmit={this.props.handleSubmit(this.onSubmit)}>
-          <Field name="name" component={this.renderInput} label="Name of Event" />
-          <Field name="description" component={this.renderInput} label="Description of Event" type="textarea" />
-          <ButtonGroup className="float-right mt-3">
-            <Button color="primary">Do a thing!</Button>
-            <Button color="secondary" onClick={this.props.modelClose}>
-              Nooooooo
-            </Button>
-          </ButtonGroup>
-        </Form>
+        <div>
+          <EventForm onSubmit={this.onSubmit} modalClose={this.props.modalClose} />
+        </div>
       );
     } else {
-      return <div>{this.props.children.body}</div>;
+      // console.log(this.props);
+      //edit case
+      return (
+        <div>
+          <EventForm
+            onSubmit={this.onSubmit}
+            idFlag={this.state.idFlag}
+            initialValues={_.pick(this.props.event, 'name', 'description')}
+            modalClose={this.props.modalClose}
+          />
+        </div>
+      );
     }
   }
 
@@ -67,25 +54,13 @@ class RenderBody extends React.Component {
   }
 }
 
-const validate = formValues => {
-  const errors = {};
-
-  if (!formValues.name) {
-    errors.name = 'You must enter a title';
-  }
-  if (!formValues.description) {
-    errors.description = 'You must enter a description';
-  }
-
-  return errors;
+const mapStateToProps = (state, ownProps) => {
+  //console.log(state.events);
+  //console.log(ownProps.children.id);
+  return { event: state.events[ownProps.children.id] };
 };
 
-const formWrapped = reduxForm({
-  form: 'eventStuff',
-  validate,
-})(RenderBody);
-
 export default connect(
-  null,
-  { createEvent }
-)(formWrapped);
+  mapStateToProps,
+  { createEvent, fetchEvent, editEvent }
+)(RenderBody);

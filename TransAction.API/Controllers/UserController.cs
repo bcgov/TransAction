@@ -95,7 +95,6 @@ namespace TransAction.API.Controllers
             return CreatedAtRoute("GetThatUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
         }
         
-
         [HttpPut("{id}")]
         public IActionResult UserUpdate(int id, [FromBody] UserUpdateDto updateUser)
         {
