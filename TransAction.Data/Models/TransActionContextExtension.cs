@@ -9,20 +9,20 @@ namespace TransAction.Data.Models
 {
     public partial class TransActionContext : DbContext
     {
-       // public DateTime DbCreateTimestamp { get; set; } 
-       // public DateTime DbLastUpdateTimestamp { get; set; } 
-        
+        // public DateTime DbCreateTimestamp { get; set; } 
+        // public DateTime DbLastUpdateTimestamp { get; set; } 
+
         public override int SaveChanges()
         {
             IEnumerable<EntityEntry> modifiedEntries = ChangeTracker.Entries()
-                .Where(x => x.State == EntityState.Modified || 
+                .Where(x => x.State == EntityState.Modified ||
                             x.State == EntityState.Added);
 
             DateTime currentTime = DateTime.UtcNow;
 
-            foreach(EntityEntry entry in modifiedEntries)
+            foreach (EntityEntry entry in modifiedEntries)
             {
-                if(entry.State == EntityState.Added)
+                if (entry.State == EntityState.Added)
                 {
 
                     var createTimeStampProp = entry.Member("DbCreateTimestamp");
@@ -36,7 +36,9 @@ namespace TransAction.Data.Models
 
                     var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
                     lastUpdateTimeStampProp.CurrentValue = createTimeStampProp.CurrentValue;
+
                    
+
 
                 }
                 else if (entry.State == EntityState.Modified)
@@ -47,7 +49,7 @@ namespace TransAction.Data.Models
                     var concurrencyControl = entry.Member("ConcurrencyControlNumber");
                     concurrencyControl.CurrentValue = (Int64)concurrencyControl.CurrentValue + 1;
                 }
-                
+
             }
 
             int result;
