@@ -55,7 +55,7 @@ namespace TransAction.API.Controllers
         [HttpPost()]
         public IActionResult CreateUser([FromBody] UserCreateDto createUser)
         {
-            if (createUser == null)
+            if (createUser == null) 
             {
                 return BadRequest();
             }
@@ -78,8 +78,9 @@ namespace TransAction.API.Controllers
 
             var newUser = Mapper.Map<TraUser>(createUser);
 
-            newUser.DbCreateTimestamp = DateTime.Now;
-            newUser.DbLastUpdateTimestamp = newUser.DbCreateTimestamp;
+          //  newUser.DbCreateTimestamp = DateTime.Now;
+          //  newUser.DbLastUpdateTimestamp = newUser.DbCreateTimestamp;
+
             newUser.DbCreateUserid = "Test User";
             newUser.DbLastUpdateUserid = "Test User";
                        
@@ -105,8 +106,10 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            userEntity.DbLastUpdateTimestamp = DateTime.Now;
+
+          //  userEntity.DbLastUpdateTimestamp = DateTime.Now;
             userEntity.DbLastUpdateUserid = "Test User";
+
             Mapper.Map(updateUser, userEntity);
 
             if (!_transActionRepo.Save())
