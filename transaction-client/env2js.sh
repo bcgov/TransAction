@@ -1,25 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
-if [ ! -z ${REACT_APP_SSO_HOST} ]; then
- cat <<END
- window.RUNTIME_REACT_APP_SSO_HOST='${REACT_APP_SSO_HOST}';
-END
-fi
+echo "window.RUNTIME_REACT_APP_SSO_HOST='${REACT_APP_SSO_HOST}'";
 
-if [ ! -z ${REACT_APP_SSO_REALM} ]; then
- cat <<END
- window.RUNTIME_REACT_APP_SSO_REALM='${REACT_APP_SSO_REALM}';
-END
-fi
+echo "window.RUNTIME_REACT_APP_SSO_REALM='${REACT_APP_SSO_REALM}'";
 
-if [ ! -z ${REACT_APP_SSO_CLIENT} ]; then
- cat <<END
- window.RUNTIME_REACT_APP_SSO_CLIENT='${REACT_APP_SSO_CLIENT}';
-END
-fi
+echo "window.RUNTIME_REACT_APP_SSO_CLIENT='${REACT_APP_SSO_CLIENT}'";
 
-if [ ! -z ${REACT_APP_API_HOST} ]; then
- cat <<END
- window.RUNTIME_REACT_APP_API_HOST='${REACT_APP_API_HOST}';
-END
-fi
+echo "window.RUNTIME_REACT_APP_API_HOST='${REACT_APP_API_HOST}'";

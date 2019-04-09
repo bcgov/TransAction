@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace TransAction.API.Controllers
     public class EventController : Controller
     {
         private ITransActionRepo _transActionRepo;
-        public EventController(ITransActionRepo transActionRepo)
+        public EventController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
             _transActionRepo = transActionRepo;
         }

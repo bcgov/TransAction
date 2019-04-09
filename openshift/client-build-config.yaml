@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: jenkins
+  name: transaction
 labels:
-  template: client
+  template: client-build
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -94,19 +94,16 @@ objects:
       source:
         dockerfile: |-
           FROM nodejs/build-output:latest
-          COPY src/src/build /build
+
+          COPY src/src/build /usr/share/nginx/html
           COPY src/src/env2js.sh /env2js.sh
+          COPY src/src/nginx.conf /etc/nginx/conf.d/default.conf
 
-          RUN touch /build/env.config.js
+          USER 0
           RUN chmod +x /env2js.sh
+          USER nginx:nginx
 
-          RUN npm install -g serve
-          RUN apk add --no-cache bash
-
-          CMD /env2js.sh > /build/js/env.config.js && serve -s -l 8080 /build
-          # FROM nodejs/build-output:latest
-          # COPY src/src/build /
-          # COPY src/src/nginx.conf /
+          CMD /env2js.sh > /usr/share/nginx/html/js/env.config.js && nginx -g "daemon off;"
         images:
           - from:
               kind: ImageStreamTag
@@ -119,8 +116,8 @@ objects:
         dockerStrategy:
           from:
             kind: ImageStreamTag
-            name: "nodejs:latest"
-            #name: 'nginx-112-rhel7:latest'
+            #name: "nodejs:latest"
+            name: "transaction-nginx:${VERSION}"
         type: Docker
       triggers:
         - imageChange:
