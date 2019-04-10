@@ -19,6 +19,6 @@ namespace TransAction.Data.Models
         public string Email { get; set; }
         public int RoleId { get; set; }
         public int? TeamId { get; set; }
-        public string ConcurencyControlNumber { get; set; }
+        public long ConcurencyControlNumber { get; set; }
     }
 }

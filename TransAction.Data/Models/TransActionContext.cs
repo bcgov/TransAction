@@ -546,7 +546,7 @@ namespace TransAction.Data.Models
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DbCreateUserid)
-                    .IsRequired()
+                  //  .IsRequired()
                     .HasColumnName("DB_CREATE_USERID")
                     .HasMaxLength(30)
                     .IsUnicode(false);
@@ -556,7 +556,7 @@ namespace TransAction.Data.Models
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DbLastUpdateUserid)
-                    .IsRequired()
+                   // .IsRequired()
                     .HasColumnName("DB_LAST_UPDATE_USERID")
                     .HasMaxLength(30)
                     .IsUnicode(false);

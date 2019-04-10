@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace TransAction.API.Controllers
     public class TeamController : Controller
     {
         private ITransActionRepo _transActionRepo;
-        public TeamController(ITransActionRepo transActionRepo)
+        public TeamController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
             _transActionRepo = transActionRepo;
         }

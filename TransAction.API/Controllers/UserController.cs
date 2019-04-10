@@ -82,8 +82,8 @@ namespace TransAction.API.Controllers
           //  newUser.DbCreateTimestamp = DateTime.Now;
           //  newUser.DbLastUpdateTimestamp = newUser.DbCreateTimestamp;
 
-            newUser.DbCreateUserid = "Test User";
-            newUser.DbLastUpdateUserid = "Test User";
+          //  newUser.DbCreateUserid = "Test User";
+          //  newUser.DbLastUpdateUserid = "Test User";
                        
             _transActionRepo.CreateUser(newUser);
 

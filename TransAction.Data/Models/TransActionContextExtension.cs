@@ -25,8 +25,8 @@ namespace TransAction.Data.Models
                 if (entry.State == EntityState.Added)
                 {
 
-                    var createTimeStampProp = entry.Member("DbCreateTimestamp");
-                    createTimeStampProp.CurrentValue = currentTime;
+                   var createTimeStampProp = entry.Member("DbCreateTimestamp");
+                   createTimeStampProp.CurrentValue = currentTime;
 
 
                     var concurrencyControl = entry.Member("ConcurrencyControlNumber");
@@ -35,9 +35,17 @@ namespace TransAction.Data.Models
 
 
                     var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
-                    lastUpdateTimeStampProp.CurrentValue = createTimeStampProp.CurrentValue;
+                    // lastUpdateTimeStampProp.CurrentValue = createTimeStampProp.CurrentValue;
+                    lastUpdateTimeStampProp.CurrentValue = currentTime;
+                                       
+                    
+                    var createUserId = entry.Member("DbCreateUserid");
+                    createUserId.CurrentValue = "Test Value";
 
-                   
+                    var lastUserId = entry.Member("DbLastUpdateUserid");
+                    lastUserId.CurrentValue = "Test Value";
+
+
 
 
                 }
@@ -48,6 +56,10 @@ namespace TransAction.Data.Models
 
                     var concurrencyControl = entry.Member("ConcurrencyControlNumber");
                     concurrencyControl.CurrentValue = (Int64)concurrencyControl.CurrentValue + 1;
+
+                    var lastUserId = entry.Member("DbLastUpdateUserid");
+                    lastUserId.CurrentValue = "Test Value";
+
                 }
 
             }
