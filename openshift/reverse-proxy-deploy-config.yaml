@@ -4,15 +4,38 @@ metadata:
   creationTimestamp: null
   name: transaction
 labels:
-  template: client-config
+  template: reverse-proxy
 objects:
+  - apiVersion: v1
+    data:
+      conf${SUFFIX}: |-
+        server {
+            listen       8080 default_server;
+            listen       [::]:8080 default_server;
+            server_name  _;
+
+            location / {
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_pass http://transaction-client${SUFFIX}:8080;
+            }
+            
+            location /api {
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_pass http://transaction-api${SUFFIX}:8080/api;
+            }
+        }
+    kind: ConfigMap
+    metadata:
+      name: reverse-proxy-${SUFFIX}
   - apiVersion: v1
     kind: ImageStream
     metadata:
       creationTimestamp: null
       labels:
         shared: true
-      name: ${NAME}
+      name: transaction-nginx
     spec:
       lookupPolicy:
         local: false
@@ -40,11 +63,8 @@ objects:
             deploymentconfig: ${NAME}${SUFFIX}
         spec:
           containers:
-            - image: ${NAME}:${VERSION}
-              name: client
-              ports:
-                - containerPort: 8080
-                  protocol: TCP
+            - image: transaction-nginx:${VERSION}
+              name: reverse-proxy
               resources:
                 requests:
                   cpu: 250m
@@ -52,34 +72,31 @@ objects:
                 limits:
                   cpu: 250m
                   memory: 64Mi
-              env:
-                - name: REACT_APP_SSO_HOST
-                  valueFrom:
-                    secretKeyRef:
-                      name: sso-configs
-                      key: CLIENT_SSO_HOST
-                - name: REACT_APP_SSO_REALM
-                  valueFrom:
-                    secretKeyRef:
-                      name: sso-configs
-                      key: CLIENT_SSO_REALM
-                - name: REACT_APP_SSO_CLIENT
-                  valueFrom:
-                    secretKeyRef:
-                      name: sso-configs
-                      key: CLIENT_SSO_CLIENTID
-                - name: REACT_APP_API_HOST
-                  value: ${API_URL}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              volumeMounts:
+                - name: ${NAME}${SUFFIX}-volume
+                  mountPath: /etc/nginx/conf.d/
+                  readOnly: true
+          volumes:
+            - name: ${NAME}${SUFFIX}-volume
+              configMap:
+                defaultMode: 420
+                items:
+                  - key: conf${SUFFIX}
+                    path: default.conf
+                name: reverse-proxy-${SUFFIX}
       test: false
       triggers:
         - type: ConfigChange
         - imageChangeParams:
             automatic: true
             containerNames:
-              - client
+              - reverse-proxy
             from:
               kind: ImageStreamTag
-              name: ${NAME}:${VERSION}
+              name: transaction-nginx:${VERSION}
           type: ImageChange
   - apiVersion: v1
     kind: Service
@@ -94,25 +111,33 @@ objects:
           targetPort: 8080
       selector:
         deploymentconfig: ${NAME}${SUFFIX}
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      creationTimestamp: null
+      name: ${NAME}${SUFFIX}
+    spec:
+      host:
+      port:
+        targetPort: web
+      tls:
+        termination: edge
+      to:
+        kind: Service
+        name: ${NAME}${SUFFIX}
+        weight: 100
+      wildcardPolicy: None
 parameters:
-  - description: A name used for all objects
-    displayName: Name
+  - displayName: NAME
     name: NAME
     required: true
-    value: "client"
-  - description: A name suffix used for all objects
-    displayName: Suffix
+    value: ""
+  - displayName: SUFFIX
     name: SUFFIX
-    required: false
-    value: "-dev"
-  - description: A version used for the image tags
-    displayName: version
-    name: VERSION
     required: true
-    value: "v1.0.0"
-  - description: API HOST
-    displayName: API HOST
-    name: API_URL
+    value: ""
+  - displayName: VERSION
+    name: VERSION
     required: true
     value: ""
   - description: SOURCE_REPOSITORY_URL
