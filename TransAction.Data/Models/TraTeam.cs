@@ -24,9 +24,11 @@ namespace TransAction.Data.Models
         public string DbLastUpdateUserid { get; set; }
         public long ConcurrencyControlNumber { get; set; }
 
+                
         public virtual TraUser User { get; set; }
         public virtual ICollection<TraEventTeam> TraEventTeam { get; set; }
         public virtual ICollection<TraMemberReq> TraMemberReq { get; set; }
         public virtual ICollection<TraUser> TraUser { get; set; }
+
     }
 }
