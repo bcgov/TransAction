@@ -22,10 +22,9 @@ module.exports = settings => {
           NAME: `${phases[phase].name}-client`,
           SUFFIX: phases[phase].suffix,
           VERSION: phases[phase].tag,
-          ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env,
-          API_URL: `http://${phases[phase].name}-api${
-            phases[phase].suffix
-          }:8080`
+          API_URL: `https://${phases[phase].name}-api${phases[phase].suffix}-${
+            phases[phase].namespace
+          }`
         }
       }
     )
