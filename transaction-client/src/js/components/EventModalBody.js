@@ -5,7 +5,7 @@ import { createEvent, fetchEvent, editEvent } from '../actions';
 import EventModalForm from './EventModalForm';
 
 class EventModalBody extends React.Component {
-  state = { idFlag: this.props.children.name };
+  state = { idFlag: this.props.name };
 
   handelClick() {
     //this.dbCallBack();
@@ -13,9 +13,8 @@ class EventModalBody extends React.Component {
   }
   //checks idFlag to add or edit
   onSubmit = formValues => {
-    console.log(formValues);
     if (this.state.idFlag === 'add') this.props.createEvent(formValues);
-    else this.props.editEvent(this.props.children.id, formValues);
+    else this.props.editEvent(this.props.id, formValues);
 
     this.handelClick(); //evoke methods to close model
   };
@@ -25,14 +24,13 @@ class EventModalBody extends React.Component {
     if (this.state.idFlag !== 'add')
       var initialValues = _.pick(this.props.event, 'name', 'description', 'startDate', 'endDate');
     return (
-      <div>
-        <EventModalForm
-          onSubmit={this.onSubmit}
-          idFlag={this.state.idFlag}
-          initialValues={initialValues}
-          modalClose={this.props.modalClose}
-        />
-      </div>
+      <EventModalForm
+        onSubmit={this.onSubmit}
+        idFlag={this.state.idFlag}
+        initialValues={initialValues}
+        modalClose={this.props.modalClose}
+        name={this.props.name}
+      />
     );
   }
 
@@ -46,10 +44,9 @@ class EventModalBody extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps);
+  //console.log(ownProps);
   //console.log(state.events);
-  //console.log(ownProps.children.id);
-  return { event: state.events[ownProps.children.id] };
+  return { event: state.events[ownProps.id] };
 };
 
 export default connect(

@@ -7,10 +7,12 @@ import {
   EDIT_EVENT,
   FETCH_USER,
   FETCH_TEAM,
-  EDIT_USER_DESCRIPTION,
+  CREATE_TEAM,
   FETCH_REGIONS,
+  FETCH_USERS,
+  FETCH_TEAMS,
 } from './types';
-//import history from '../history';
+import history from '../history';
 
 //Event Actions
 export const fetchEvents = toggleSpinner => async dispatch => {
@@ -38,27 +40,80 @@ export const fetchEvent = id => async dispatch => {
 };
 
 //User Actions
-export const fetchUser = toggleSpinner => async dispatch => {
-  const response = await api.get(`/users/1`);
-  if (response.data.teamid !== null) await dispatch(fetchTeam(response.data.teamid));
-  dispatch({ type: FETCH_USER, payload: response.data });
-  toggleSpinner();
+export const fetchUser = id => async dispatch => {
+  // console.log('FetchUser given id: ', id);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/users/${id}`);
+      //console.log(response.data);
+      dispatch({ type: FETCH_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchUsers = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get('/users');
+      //console.log('fetchUsers: ', response.data);
+      dispatch({ type: FETCH_USERS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 export const fetchTeam = id => async dispatch => {
-  const response = await api.get(`/teams/${id}`);
+  return new Promise(async (resolve, reject) => {
+    try {
+      // console.group('FetchTeam given id: ', id);
+      const response = await api.get(`/teams/${id}`);
+      // console.log(response.data);
+      dispatch({ type: FETCH_TEAM, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+//TODO Combine these two
+export const editUser = (userObj, id) => async dispatch => {
+  // console.log(userObj);
+  const response = await api.put(`/users/${id}`, userObj);
+
+  dispatch({ type: FETCH_USER, payload: response.data });
+};
+export const editTeam = (userObj, id) => async dispatch => {
+  // console.log(userObj);
+  const response = await api.put(`/teams/${id}`, userObj);
 
   dispatch({ type: FETCH_TEAM, payload: response.data });
 };
 
-export const editUserDescription = userObj => async dispatch => {
-  // console.log(userObj);
-  const response = await api.put(`/users/1`, userObj);
+export const fetchRegions = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/regions`);
 
-  dispatch({ type: FETCH_USER, payload: response.data });
+      dispatch({ type: FETCH_REGIONS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
-export const fetchRegions = () => async dispatch => {
-  const response = await api.get(`/regions`);
+export const createTeam = formValues => async dispatch => {
+  const response = await api.post('/teams', formValues);
 
-  dispatch({ type: FETCH_REGIONS, payload: response.data });
+  dispatch({ type: CREATE_TEAM, payload: response.data });
+  history.push('/team');
+};
+
+export const fetchTeams = () => async dispatch => {
+  const response = await api.get('/teams');
+  dispatch({ type: FETCH_TEAMS, payload: response.data });
 };

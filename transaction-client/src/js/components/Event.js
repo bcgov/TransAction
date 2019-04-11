@@ -1,7 +1,8 @@
 import React from 'react';
-import { Row, Container, Col, ButtonGroup, Button } from 'reactstrap';
+import { Row, Col, ButtonGroup, Button } from 'reactstrap';
 import moment from 'moment';
 import EventModal from './EventModal';
+import EventModalBody from './EventModalBody';
 
 class Event extends React.Component {
   state = { modal: false };
@@ -13,8 +14,9 @@ class Event extends React.Component {
   };
 
   render() {
+    //show/hide logic needed using end dates
     return (
-      <Container>
+      <React.Fragment>
         <Row>
           <Col>
             <h3 className="float-left">{this.props.event.name}</h3>
@@ -22,13 +24,10 @@ class Event extends React.Component {
               <Button color="primary" onClick={this.toggle}>
                 Edit Events
               </Button>
-              <EventModal
-                name="edit"
-                id={this.props.event.id}
-                toggle={this.toggle}
-                isOpen={this.state.modal}
-                text="Edit an Event"
-              />
+              <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Edit an Event">
+                {' '}
+                <EventModalBody modalClose={this.toggle} name="edit" id={this.props.event.id} />
+              </EventModal>
             </ButtonGroup>
           </Col>
         </Row>
@@ -37,7 +36,7 @@ class Event extends React.Component {
           {moment(this.props.event.endDate).format('MMMM Do YYYY')}
         </div>
         <div>{this.props.event.description}</div>
-      </Container>
+      </React.Fragment>
     );
   }
 }

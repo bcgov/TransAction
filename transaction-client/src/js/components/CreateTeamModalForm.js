@@ -2,14 +2,13 @@ import React from 'react';
 import { Form, Input, Label, Button, FormGroup } from 'reactstrap';
 import { Field, reduxForm } from 'redux-form';
 
-class EventModalForm extends React.Component {
+class CreateTeamModalForm extends React.Component {
   renderError({ error, touched }) {
     if (touched && error) {
       return <div className="errorMessage">{error}</div>;
     }
   }
-  renderInput = ({ input, label, type, meta, divClass }) => {
-    console.log(divClass);
+  renderInput = ({ input, label, type, meta }) => {
     return (
       <FormGroup>
         <Label>{label}</Label>
@@ -26,17 +25,15 @@ class EventModalForm extends React.Component {
   renderForms() {
     return (
       <Form onSubmit={this.props.handleSubmit(this.onSubmit)}>
-        <Field name="name" component={this.renderInput} label="Name of Event" />
-        <div className="modal-date-picker">
-          <Field name="startDate" type="date" component={this.renderInput} label="Start Date" />
-        </div>
-        <div className="modal-date-picker">
-          <Field name="endDate" type="date" component={this.renderInput} label="End Date" />
-        </div>
-        <Field name="description" component={this.renderInput} label="Description of Event" type="textarea" />
+        <Field name="name" component={this.renderInput} label="Name of CreateTeam" />
+        <Field name="description" component={this.renderInput} label="Description of CreateTeam" type="textarea" />
+        <Field name="goal" component={this.renderInput} label="Set a Team Goal">
+          {' '}
+          Points.
+        </Field>
         <div className="float-right mt-3">
           <Button color="primary" className="mr-3">
-            {this.props.name}
+            Create Team!
           </Button>
           <Button color="secondary" onClick={this.props.modalClose}>
             Cancel
@@ -47,7 +44,7 @@ class EventModalForm extends React.Component {
   }
 
   dbCallBack() {
-    alert('attempting to ' + this.props.idFlag + ' new event!');
+    alert('attempting to ' + this.props.idFlag + ' new CreateTeam!');
   }
 
   render() {
@@ -64,17 +61,11 @@ const validate = formValues => {
   if (!formValues.description) {
     errors.description = 'You must enter a description';
   }
-  if (!formValues.startDate) {
-    errors.startDate = 'You must enter a starting date';
-  }
-  if (!formValues.endDate) {
-    errors.endDate = 'You must enter an ending date';
-  }
 
   return errors;
 };
 
 export default reduxForm({
-  form: 'eventmodalForm',
+  form: 'CreateTeammodalForm',
   validate,
-})(EventModalForm);
+})(CreateTeamModalForm);

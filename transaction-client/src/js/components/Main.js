@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Breadcrumb, BreadcrumbItem, Container, Button, Spinner } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Container, Button, Spinner, Row } from 'reactstrap';
+import { connect } from 'react-redux';
 import Event from './Event';
 import EventModal from './EventModal';
-import { connect } from 'react-redux';
+import EventModalBody from './EventModalBody';
 import { fetchEvents } from '../actions';
+
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
-  state = { modal: false, isSpin: false };
+  state = { modal: false, loading: false };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
-      isSpin: !prevState.isSpin,
+      loading: !prevState.loading,
     }));
   };
 
@@ -30,7 +32,6 @@ class Main extends Component {
         </div>
       );
     });
-
     //console.log(events);
     return events;
   }
@@ -56,15 +57,17 @@ class Main extends Component {
   render() {
     return (
       <Container>
-        <div>
+        <Row>
           <Breadcrumb>
             <BreadcrumbItem active>Home</BreadcrumbItem>
           </Breadcrumb>
-          <Button color="primary" className="btn-sm px-3 mx-3 mb-4" onClick={this.toggle}>
-            Add an Event
-          </Button>
-          <EventModal name="add" toggle={this.toggle} isOpen={this.state.modal} text="Add an Event" />
-        </div>
+        </Row>
+        <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
+          Add an Event
+        </Button>
+        <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Add an Event">
+          <EventModalBody modalClose={this.toggle} name="add" />
+        </EventModal>
         <div>{this.decideRender()}</div>
 
         {/*Old Event Buttons*/}
