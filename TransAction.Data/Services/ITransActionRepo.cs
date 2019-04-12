@@ -24,6 +24,11 @@ namespace TransAction.Data.Services
         bool TeamExists(string Name);
         void CreateTeam(TraTeam traTeam);
 
+        IEnumerable<TraRegion> GetRegions();
+        TraRegion GetRegion(int id);
+        bool RegionExists(string Name);
+        void CreateRegion(TraRegion traRegion);
+
         bool Save();
     }
 }

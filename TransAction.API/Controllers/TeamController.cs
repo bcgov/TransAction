@@ -10,7 +10,7 @@ using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
-    [Route("api/team")]
+    [Route("api/teams")]
     public class TeamController : Controller
     {
         private ITransActionRepo _transActionRepo;

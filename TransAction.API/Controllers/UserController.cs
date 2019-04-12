@@ -10,7 +10,7 @@ using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
-    [Route("api/user")]
+    [Route("api/users")]
     public class UserController : Controller
     {
         private ITransActionRepo _transActionRepo;
