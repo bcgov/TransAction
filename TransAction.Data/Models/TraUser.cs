@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 namespace TransAction.Data.Models
-{    public partial class TraUser
+{
+    public partial class TraUser
     {
         public TraUser()
         {
@@ -18,7 +19,7 @@ namespace TransAction.Data.Models
         public string Username { get; set; }
         public string Directory { get; set; }
         public string Guid { get; set; }
-        public string Region { get; set; }
+        public int RegionId { get; set; }
         public string Fname { get; set; }
         public string Lname { get; set; }
         public string Description { get; set; }
@@ -31,6 +32,7 @@ namespace TransAction.Data.Models
         public string DbLastUpdateUserid { get; set; }
         public long ConcurrencyControlNumber { get; set; }
 
+        public virtual TraRegion Region { get; set; }
         public virtual TraRole Role { get; set; }
         public virtual TraTeam Team { get; set; }
         public virtual ICollection<TraEventUser> TraEventUser { get; set; }

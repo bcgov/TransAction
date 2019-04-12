@@ -24,6 +24,7 @@ namespace TransAction.Data.Models
         public virtual DbSet<TraEventUser> TraEventUser { get; set; }
         public virtual DbSet<TraMemberReq> TraMemberReq { get; set; }
         public virtual DbSet<TraRole> TraRole { get; set; }
+        public virtual DbSet<TraRegion> TraRegion { get; set; }
         public virtual DbSet<TraTeam> TraTeam { get; set; }
         public virtual DbSet<TraTopic> TraTopic { get; set; }
         public virtual DbSet<TraTopicMessage> TraTopicMessage { get; set; }
@@ -300,6 +301,51 @@ namespace TransAction.Data.Models
                     .HasConstraintName("FK_MEMBER_REQ_USER");
             });
 
+            modelBuilder.Entity<TraRegion>(entity =>
+            {
+                entity.HasKey(e => e.RegionId)
+                    .HasName("PK_REGION");
+
+                entity.ToTable("TRA_REGION");
+
+                entity.Property(e => e.RegionId).HasColumnName("REGION_ID");
+
+                entity.Property(e => e.ConcurrencyControlNumber)
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.DbCreateTimestamp)
+                    .HasColumnName("DB_CREATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbCreateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_CREATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DbLastUpdateTimestamp)
+                    .HasColumnName("DB_LAST_UPDATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbLastUpdateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_LAST_UPDATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasColumnName("DESCRIPTION")
+                    .HasColumnType("text");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<TraRole>(entity =>
             {
                 entity.HasKey(e => e.RoleId)
@@ -388,23 +434,23 @@ namespace TransAction.Data.Models
                     .HasColumnName("DESCRIPTION")
                     .HasColumnType("text");
 
-
                 entity.Property(e => e.Goal).HasColumnName("GOAL");
 
-                entity.Property(e => e.Region)
-                    .IsRequired()
-                    .HasColumnName("REGION")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                /*ADDED MANUALLY*/
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("NAME")
-                    .HasMaxLength(1024)
+                    .HasMaxLength(255)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RegionId).HasColumnName("REGION_ID");
+
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
+
+                entity.HasOne(d => d.Region)
+                    .WithMany(p => p.TraTeam)
+                    .HasForeignKey(d => d.RegionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TEAM_REGION");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.TraTeam)
@@ -525,7 +571,7 @@ namespace TransAction.Data.Models
             modelBuilder.Entity<TraUser>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                   .HasName("PK_USER");
+                    .HasName("PK_USER");
 
                 entity.ToTable("TRA_USER");
 
@@ -546,7 +592,7 @@ namespace TransAction.Data.Models
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DbCreateUserid)
-                  //  .IsRequired()
+                    .IsRequired()
                     .HasColumnName("DB_CREATE_USERID")
                     .HasMaxLength(30)
                     .IsUnicode(false);
@@ -556,7 +602,7 @@ namespace TransAction.Data.Models
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DbLastUpdateUserid)
-                   // .IsRequired()
+                    .IsRequired()
                     .HasColumnName("DB_LAST_UPDATE_USERID")
                     .HasMaxLength(30)
                     .IsUnicode(false);
@@ -597,11 +643,7 @@ namespace TransAction.Data.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Region)
-                    .IsRequired()
-                    .HasColumnName("REGION")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.RegionId).HasColumnName("REGION_ID");
 
                 entity.Property(e => e.RoleId).HasColumnName("ROLE_ID");
 
@@ -612,6 +654,12 @@ namespace TransAction.Data.Models
                     .HasColumnName("USERNAME")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Region)
+                    .WithMany(p => p.TraUser)
+                    .HasForeignKey(d => d.RegionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_USER_REGION");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.TraUser)

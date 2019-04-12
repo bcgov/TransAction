@@ -6,7 +6,7 @@
 	[DB_CREATE_USERID] VARCHAR(30) NOT NULL, 
 	[DB_LAST_UPDATE_TIMESTAMP] DATETIME NOT NULL, 
 	[DB_LAST_UPDATE_USERID] VARCHAR(30) NOT NULL, 
-    [CONCURRENCY_CONTROL_NUMBER] BIGINT NOT NULL, 
+    [CONCURRENCY_CONTROL_NUMBER] BIGINT NOT NULL DEFAULT 1, 
     CONSTRAINT [PK_ROLE] PRIMARY KEY CLUSTERED ([ROLE_ID] ASC)
 );
 
@@ -22,7 +22,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2name = N'DB_CREATE_TIMESTAMP'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'The user or proxy account that created the record. **',
+    @value = N'The user or proxy account that created the record. ',
     @level0type = N'SCHEMA',
     @level0name = N'dbo',
     @level1type = N'TABLE',
@@ -40,7 +40,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2name = N'DB_LAST_UPDATE_TIMESTAMP'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'The user or proxy account that created or last updated the record. **',
+    @value = N'The user or proxy account that created or last updated the record. ',
     @level0type = N'SCHEMA',
     @level0name = N'dbo',
     @level1type = N'TABLE',
@@ -48,14 +48,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2type = N'COLUMN',
     @level2name = N'DB_LAST_UPDATE_USERID'
 GO
-EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'1',
-    @level0type = N'SCHEMA',
-    @level0name = N'dbo',
-    @level1type = N'TABLE',
-    @level1name = N'TRA_ROLE',
-    @level2type = N'COLUMN',
-    @level2name = N'CONCURRENCY_CONTROL_NUMBER'
+
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
     @value = N'Keeps track of the three roles',

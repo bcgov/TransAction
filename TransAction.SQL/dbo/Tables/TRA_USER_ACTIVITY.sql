@@ -37,7 +37,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2name = N'DB_CREATE_TIMESTAMP'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'The user or proxy account that created the record. **',
+    @value = N'The user or proxy account that created the record. ',
     @level0type = N'SCHEMA',
     @level0name = N'dbo',
     @level1type = N'TABLE',
@@ -55,7 +55,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2name = N'DB_LAST_UPDATE_TIMESTAMP'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'The user or proxy account that created or last updated the record. **',
+    @value = N'The user or proxy account that created or last updated the record. ',
     @level0type = N'SCHEMA',
     @level0name = N'dbo',
     @level1type = N'TABLE',

@@ -60,7 +60,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createTeam.Region ==null || createTeam.Description == null)
+            if (createTeam.RegionId ==null || createTeam.Description == null)
             {
                 return BadRequest();
             }

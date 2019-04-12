@@ -74,6 +74,7 @@
     <Build Include="dbo\Tables\TRA_ACTIVITY.sql" />
     <Build Include="dbo\Tables\TRA_TOPIC_MESSAGE.sql" />
     <Build Include="dbo\Tables\TRA_TOPIC.sql" />
+    <Build Include="dbo\Tables\TRA_REGION.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="TransAction.SQL.refactorlog" />

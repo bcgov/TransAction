@@ -3,8 +3,9 @@
     [USERNAME]             VARCHAR(255) NOT NULL,
     [DIRECTORY ] VARCHAR(8) NOT NULL,
 	[GUID] VARCHAR(255) NOT NULL,
-    [REGION]           VARCHAR(255) NOT NULL,
-    [FNAME]            VARCHAR(255) NOT NULL,
+    --[REGION]           VARCHAR(255) NOT NULL,
+   [REGION_ID]         INT NOT NULL,
+   [FNAME]            VARCHAR(255) NOT NULL,
     [LNAME]            VARCHAR(255) NOT NULL,
     [DESCRIPTION]      VARCHAR(1024) NOT NULL,
     [EMAIL]            VARCHAR(1024) NOT NULL,
@@ -19,7 +20,8 @@
     [CONCURRENCY_CONTROL_NUMBER] BIGINT NOT NULL DEFAULT 1, 
     CONSTRAINT [PK_USER] PRIMARY KEY CLUSTERED ([USER_ID] ASC),
     CONSTRAINT [FK_USER_ROLE] FOREIGN KEY ([ROLE_ID]) REFERENCES [dbo].[TRA_ROLE] ([ROLE_ID]),
-    CONSTRAINT [FK_USER_TEAM] FOREIGN KEY ([TEAM_ID]) REFERENCES [dbo].[TRA_TEAM] ([TEAM_ID])
+    CONSTRAINT [FK_USER_TEAM] FOREIGN KEY ([TEAM_ID]) REFERENCES [dbo].[TRA_TEAM] ([TEAM_ID]),
+	CONSTRAINT [FK_USER_REGION] FOREIGN KEY ([REGION_ID]) REFERENCES [dbo].[TRA_REGION] ([REGION_ID])
 );
 
 
@@ -46,7 +48,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2name = N'DB_CREATE_TIMESTAMP'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'The user or proxy account that created the record. **',
+    @value = N'The user or proxy account that created the record. ',
     @level0type = N'SCHEMA',
     @level0name = N'dbo',
     @level1type = N'TABLE',
@@ -64,7 +66,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2name = N'DB_LAST_UPDATE_TIMESTAMP'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'The user or proxy account that created or last updated the record. **',
+    @value = N'The user or proxy account that created or last updated the record. ',
     @level0type = N'SCHEMA',
     @level0name = N'dbo',
     @level1type = N'TABLE',
@@ -107,7 +109,7 @@ BEGIN
 	TRA_USER.USERNAME = inserted.USERNAME,
 	TRA_USER.[DIRECTORY ] = inserted.[DIRECTORY ],
 	TRA_USER.GUID = inserted.GUID,
-	TRA_USER.REGION = inserted.REGION,
+	TRA_USER.REGION_ID = inserted.REGION_ID,
 	TRA_USER.FNAME = inserted.FNAME,
 	TRA_USER.LNAME = inserted.LNAME,
 	TRA_USER.DESCRIPTION = inserted.DESCRIPTION,
@@ -139,7 +141,7 @@ BEGIN
 	   [USERNAME]
       ,[DIRECTORY ]
       ,[GUID]
-      ,[REGION]
+      ,[REGION_ID]
       ,[FNAME]
       ,[LNAME]
       ,[DESCRIPTION]
@@ -156,7 +158,7 @@ BEGIN
 	   [USERNAME]
       ,[DIRECTORY ]
       ,[GUID]
-      ,[REGION]
+      ,[REGION_ID]
       ,[FNAME]
       ,[LNAME]
       ,[DESCRIPTION]

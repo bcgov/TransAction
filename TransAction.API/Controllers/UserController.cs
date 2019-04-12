@@ -60,7 +60,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createUser.Guid == null || createUser.Username == null || createUser.Directory == null || createUser.Region == null)
+            if (createUser.Guid == null || createUser.Username == null || createUser.Directory == null || createUser.RegionId == null)
             {
                 return BadRequest();
             }
@@ -100,7 +100,7 @@ namespace TransAction.API.Controllers
         public IActionResult UserUpdate(int id, [FromBody] UserUpdateDto updateUser)
         {
             var userEntity = _transActionRepo.GetUser(id);
-            if (userEntity == null) return NotFound();
+           if (userEntity == null) return NotFound();
             if (updateUser == null) return NotFound();
 
             if (!ModelState.IsValid)
