@@ -7,6 +7,8 @@ import Header from './fragments/Header';
 import history from './history';
 import Main from './components/Main';
 import Profile from './components/Profile';
+import Team from './components/Team';
+import TeamsList from './components/TeamsList';
 
 import '../scss/transaction.scss';
 
@@ -19,7 +21,11 @@ class App extends Component {
           <Container>
             <Switch>
               <Route path="/" exact component={Main} />
-              <Route path="/Profile" exact component={Profile} />
+              <Route path="/profile/" exact component={Profile} />
+              <Route path="/team/" exact component={Team} />
+              <Route path="/profile/:id" exact component={Profile} />
+              <Route path="/team/:id" exact component={Team} />
+              <Route path="/teamslist" exact component={TeamsList} />
             </Switch>
           </Container>
           <Footer />
