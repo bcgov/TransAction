@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   name: transaction
 labels:
-  template: transaction
+  template: client-config
 objects:
   - apiVersion: v1
     kind: ImageStream
@@ -134,11 +134,6 @@ parameters:
     name: VERSION
     required: true
     value: "v1.0.0"
-  - description: The ASP Net Core deployment environment setting
-    displayName: AspNetCore Environment
-    name: ASPNETCORE_ENVIRONMENT
-    required: true
-    value: "Development"
   - description: API HOST
     displayName: API HOST
     name: API_URL

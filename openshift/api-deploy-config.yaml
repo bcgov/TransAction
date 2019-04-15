@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   name: transaction
 labels:
-  template: api
+  template: api-deploy
 objects:
   - apiVersion: v1
     kind: ImageStream
