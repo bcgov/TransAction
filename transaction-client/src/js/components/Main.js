@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Breadcrumb, BreadcrumbItem, Container, Button } from 'reactstrap';
-import Event from './Event';
-import ModalEvent from './ModalEvent';
+import { Breadcrumb, BreadcrumbItem, Container, Button, Spinner, Row } from 'reactstrap';
 import { connect } from 'react-redux';
+import Event from './Event';
+import EventModal from './EventModal';
+import EventModalBody from './EventModalBody';
 import { fetchEvents } from '../actions';
+
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modal: false,
-    };
-  }
+  state = { modal: false, loading: false };
+
+  toggleSpinner = () => {
+    this.setState(prevState => ({
+      loading: !prevState.loading,
+    }));
+  };
 
   toggle = () => {
     this.setState(prevState => ({
@@ -30,26 +33,42 @@ class Main extends Component {
       );
     });
     //console.log(events);
-    return _.orderBy(events, ['key'], ['desc']);
+    return events;
+  }
+  decideRender() {
+    //console.log(this.state.isSpin);
+    if (this.state.isSpin === true) {
+      //console.log('spin');
+      return (
+        <div className="col-1 offset-6">
+          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
+        </div>
+      );
+    } else {
+      return this.renderEventList();
+    }
   }
 
   componentDidMount() {
-    this.props.fetchEvents();
+    this.toggleSpinner();
+    this.props.fetchEvents(this.toggleSpinner);
   }
 
   render() {
     return (
       <Container>
-        <div>
+        <Row>
           <Breadcrumb>
             <BreadcrumbItem active>Home</BreadcrumbItem>
           </Breadcrumb>
-          <Button color="primary" className="btn-sm px-3 mx-3 mb-4" onClick={this.toggle}>
-            Add an Event
-          </Button>
-          <ModalEvent name="add" toggle={this.toggle} isOpen={this.state.modal} />
-        </div>
-        <div>{this.renderEventList()}</div>
+        </Row>
+        <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
+          Add an Event
+        </Button>
+        <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Add an Event">
+          <EventModalBody modalClose={this.toggle} name="add" />
+        </EventModal>
+        <div>{this.decideRender()}</div>
 
         {/*Old Event Buttons*/}
         {/*<div className = "col-sm offset-1">
@@ -74,9 +93,9 @@ class Main extends Component {
 }
 
 const mapStateToProps = state => {
-  //sort this before passing it to events
-  console.log(Object.values(state.events));
-  return { events: Object.values(state.events) };
+  //sorts by start date
+
+  return { events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']), user: state.authUser };
 };
 
 export default connect(
