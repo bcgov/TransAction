@@ -78,12 +78,6 @@ namespace TransAction.API.Controllers
             }
 
             var newUser = Mapper.Map<TraUser>(createUser);
-
-          //  newUser.DbCreateTimestamp = DateTime.Now;
-          //  newUser.DbLastUpdateTimestamp = newUser.DbCreateTimestamp;
-
-          //  newUser.DbCreateUserid = "Test User";
-          //  newUser.DbLastUpdateUserid = "Test User";
                        
             _transActionRepo.CreateUser(newUser);
 
@@ -107,9 +101,6 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-          //  userEntity.DbLastUpdateTimestamp = DateTime.Now;
-            userEntity.DbLastUpdateUserid = "Test User";
 
             Mapper.Map(updateUser, userEntity);
 

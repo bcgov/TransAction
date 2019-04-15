@@ -35,7 +35,7 @@ namespace TransAction.Data.Models
 
 
                     var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
-                    // lastUpdateTimeStampProp.CurrentValue = createTimeStampProp.CurrentValue;
+                    lastUpdateTimeStampProp.CurrentValue = createTimeStampProp.CurrentValue;
                     lastUpdateTimeStampProp.CurrentValue = currentTime;
                                        
                     
@@ -50,16 +50,9 @@ namespace TransAction.Data.Models
 
                 }
                 else if (entry.State == EntityState.Modified)
-                {
-                    var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
-                    lastUpdateTimeStampProp.CurrentValue = currentTime;
-
+                {                                   
                     var concurrencyControl = entry.Member("ConcurrencyControlNumber");
-                    concurrencyControl.CurrentValue = (Int64)concurrencyControl.CurrentValue + 1;
-
-                    var lastUserId = entry.Member("DbLastUpdateUserid");
-                    lastUserId.CurrentValue = "Test Value";
-
+                    concurrencyControl.CurrentValue = (Int64)concurrencyControl.CurrentValue + 1;                               
                 }
 
             }

@@ -60,15 +60,10 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createTeam.RegionId ==null || createTeam.Description == null)
+            if (createTeam.RegionId == null || createTeam.Description == null)
             {
                 return BadRequest();
             }
-            /*
-            if (createTeam.Goal == null || createTeam.UserId == null)
-            { 
-                return BadRequest();
-            }*/
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -80,12 +75,6 @@ namespace TransAction.API.Controllers
             }
 
             var newTeam = Mapper.Map<TraTeam>(createTeam);
-
-        //    newTeam.DbCreateTimestamp = DateTime.Now;
-        //    newTeam.DbLastUpdateTimestamp = newTeam.DbCreateTimestamp;
-            newTeam.DbCreateUserid = "Test User";
-            newTeam.DbLastUpdateUserid = "Test User";
-
             _transActionRepo.CreateTeam(newTeam);
 
             if (!_transActionRepo.Save())
@@ -108,8 +97,6 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-      //      teamEntity.DbLastUpdateTimestamp = DateTime.Now;
-            teamEntity.DbLastUpdateUserid = "Test User";
             Mapper.Map(teamUpdate, teamEntity);
 
 

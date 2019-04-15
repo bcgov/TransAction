@@ -75,14 +75,7 @@ namespace TransAction.API.Controllers
 
             var newRegion = Mapper.Map<TraRegion>(createRegion);
 
-            //newEvent.DbCreateTimestamp = DateTime.Now;
-            // newEvent.DbLastUpdateTimestamp = newEvent.DbCreateTimestamp;
-
-
             _transActionRepo.CreateRegion(newRegion);
-
-            newRegion.DbCreateUserid = "Test User";
-            newRegion.DbLastUpdateUserid = "Test User";
 
 
             if (!_transActionRepo.Save())
@@ -106,8 +99,6 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            //   eventEntity.DbLastUpdateTimestamp = DateTime.Now;
-            regionEntity.DbLastUpdateUserid = "Test User";
             Mapper.Map(updateRegion, regionEntity);
 
 
