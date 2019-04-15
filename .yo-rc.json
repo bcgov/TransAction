@@ -23,6 +23,30 @@
           "github_repo": "TransAction",
           "jenkinsFilePath": ".jenkins/Jenkinsfile",
           "uuid": "c65cff2d-bdbf-4ab0-b212-d96a6bfe1407"
+        },
+        "main": {
+          "jenkinsJobName": "TransAction",
+          "github_owner": "bcgov",
+          "github_repo": "TransAction",
+          "jenkinsFilePath": "Jenkinsfile",
+          "uuid": "0b266fcc-d551-483f-b0bf-9bc5fbbc314c",
+          "name": "main",
+          "version": "1.0.0",
+          "path": ".",
+          "environments": {
+            "build": {
+              "namespace": "vlpweg-tools"
+            },
+            "dev": {
+              "namespace": "vlpweg-dev"
+            },
+            "test": {
+              "namespace": "vlpweg-test"
+            },
+            "prod": {
+              "namespace": "vlpweg-prod"
+            }
+          }
         }
       }
     }
