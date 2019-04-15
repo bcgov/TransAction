@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Buttom, Container, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Container, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchTeams } from '../actions';
-import EventModal from './EventModal';
-import CreateTeamModalBody from './CreateTeamModalBody';
 
 class TeamsList extends Component {
   componentDidMount() {

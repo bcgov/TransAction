@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button, Row } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -14,7 +14,7 @@ import TeamUserReadOnly from './TeamUserReadOnly';
 import NoTeamPage from './NoTeamPage';
 
 class Team extends Component {
-  state = { loading: true, modal: false };
+  state = { loading: true, modal: false, currentTeam: {} };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -53,14 +53,14 @@ class Team extends Component {
           }
           //a regular user, therefor seeing his team in read only
           else {
-            return <TeamUserReadOnly team={this.props.team} user={this.props.user} />;
+            return <TeamUserReadOnly team={this.state.currentTeam} user={this.props.user} />;
           }
         }
       }
       //paramId is passed
       else {
         //if the team id does not exist
-        if (!this.props.team.id) {
+        if (!this.state.currentTeam.id) {
           return <div>hmmmmmm.. we couldnt find that team :(</div>;
         }
         //if the paramId is the same as user teamid
@@ -71,12 +71,12 @@ class Team extends Component {
           }
           //a regular user, therefor seeing his team in read only
           else {
-            return <TeamUserReadOnly team={this.props.team} user={this.props.user} />;
+            return <TeamUserReadOnly team={this.state.currentTeam} user={this.props.user} />;
           }
         }
         //paramid is NOT the same as user teamid; viewing someones team from the outside
         else {
-          return <TeamReadOnly team={this.props.team} />;
+          return <TeamReadOnly team={this.state.currentTeam} />;
         }
       }
     }
@@ -84,31 +84,32 @@ class Team extends Component {
 
   onSubmit = formValues => {
     //console.log('passed in ', formValues);
-    const userObj = { ...this.props.team, ...formValues };
+    const userObj = { ...this.state.currentTeam, ...formValues };
     //console.log('now contain ', userObj);
-    this.props.editTeam(userObj, this.props.team.id);
+    this.props.editTeam(userObj, this.state.currentTeam.id);
   };
 
   componentDidMount() {
     // this.toggleSpinner();
 
-    this.props
-      .fetchUser('me')
-      .then(() => {
-        const teamid = this.props.paramid ? this.props.paramid : this.props.user.teamid;
-        Promise.all([this.props.fetchTeam(teamid), this.props.fetchUsers()]);
-      })
-      .then(() => {
-        this.toggleSpinner();
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
+    this.props.fetchUser('me').then(() => {
+      const teamid = this.props.paramid ? this.props.paramid : this.props.user.teamid;
+      Promise.all([this.props.fetchTeam(teamid), this.props.fetchUsers()])
+        .then(() => {
+          console.log(this.state.currentTeam);
+          this.setState({ currentTeam: this.props.team[teamid] });
+          console.log(this.state.currentTeam);
+          this.toggleSpinner();
+        })
+        .catch(() => {
+          this.toggleSpinner();
+        });
+    });
   }
 
   progressBar() {
-    if (this.props.team.progressbar === true && this.props.user.teamid !== null) {
-      return <ProgressBar team={this.props.team} onSubmit={this.onSubmit} />;
+    if (this.state.currentTeam.progressbar === true && this.props.user.teamid !== null) {
+      return <ProgressBar team={this.state.currentTeam} onSubmit={this.onSubmit} />;
     } else {
       return (
         <div>
@@ -116,34 +117,47 @@ class Team extends Component {
             Set Goal
           </Button>
           <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create Progress Bar Goal">
-            <ProgressModalBody onSubmit={this.onSubmit} team={this.props.team} modalClose={this.toggle} name="create" />
+            <ProgressModalBody
+              onSubmit={this.onSubmit}
+              team={this.state.currentTeam}
+              modalClose={this.toggle}
+              name="create"
+            />
           </EventModal>
         </div>
       );
     }
   }
 
+  checkUser(user) {
+    if (user.teamid === this) return user;
+  }
+
   showTeamMembers() {
-    const users = this.props.users.map(teamate => {
+    var users = this.props.users.filter(this.checkUser, this.state.currentTeam.id).map(teamate => {
       //console.log(teamate);
-      if (teamate.teamid === this.props.team.id) return <div key={teamate.id}>{teamate.name}</div>;
+      return <div key={teamate.id}>{teamate.name}</div>;
     });
     return users;
   }
 
   onSubmit = formValues => {
     //console.log('passed in ', formValues);
-    const teamObj = { ...this.props.team, ...formValues };
+    const teamObj = { ...this.state.currentTeam, ...formValues };
     console.log('now contain ', teamObj);
-    this.props.editTeam(teamObj, this.props.team.id);
+    this.props.editTeam(teamObj, this.state.currentTeam.id);
   };
 
   teamInfo() {
-    console.log(_.pick(this.props.team, 'description'));
+    console.log(_.pick(this.state.currentTeam, 'description'));
     return (
       <div>
-        <TitleForm initialValues={_.pick(this.props.team, 'name')} onSubmit={this.onSubmit} title="Team Name: " />
-        <DescriptionForm initialValues={_.pick(this.props.team, 'description')} onSubmit={this.onSubmit} />
+        <TitleForm
+          initialValues={_.pick(this.state.currentTeam, 'name')}
+          onSubmit={this.onSubmit}
+          title="Team Name: "
+        />
+        <DescriptionForm initialValues={_.pick(this.state.currentTeam, 'description')} onSubmit={this.onSubmit} />
         <h2 className="mt-2">Progress: </h2>
         <div>{this.progressBar()}</div>
         <div>
@@ -174,7 +188,6 @@ class Team extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  // console.log(ownProps);
   return {
     paramid: parseInt(ownProps.match.params.id),
     user: state.user,

@@ -24,14 +24,17 @@ class Main extends Component {
     }));
   };
 
+  test() {
+    console.log('clicked');
+  }
+
   renderEventList() {
-    const events = this.props.events.map(event => {
-      return (
-        <div className="mb-5" key={event.id}>
-          <Event event={event} />
-        </div>
-      );
-    });
+    const events = this.props.events.map(event => (
+      <div key={event.id} className="mb-5" onClick={this.test}>
+        <Event event={event} />
+      </div>
+    ));
+
     //console.log(events);
     return events;
   }

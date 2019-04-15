@@ -44,8 +44,6 @@ class EventModalBody extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  //console.log(ownProps);
-  //console.log(state.events);
   return { event: state.events[ownProps.id] };
 };
 

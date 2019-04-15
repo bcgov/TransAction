@@ -3,10 +3,14 @@ import { Progress } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchUsers } from '../actions';
 class TeamUserReadOnly extends Component {
+  checkUser(user) {
+    if (user.teamid === this) return user;
+  }
+
   showTeamMembers() {
-    const users = this.props.users.map(teamate => {
+    var users = this.props.users.filter(this.checkUser, this.props.team.id).map(teamate => {
       //console.log(teamate);
-      if (teamate.teamid === this.props.team.id) return <div key={teamate.id}>{teamate.name}</div>;
+      return <div key={teamate.id}>{teamate.name}</div>;
     });
     return users;
   }
