@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TransAction.API.Models
+namespace TransAction.Data.Models
 {
-    public partial class TraRole
+    public partial class TraRegion
     {
-        public TraRole()
+        public TraRegion()
         {
+            TraTeam = new HashSet<TraTeam>();
             TraUser = new HashSet<TraUser>();
         }
 
-        public int RoleId { get; set; }
+        public int RegionId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
@@ -19,6 +20,7 @@ namespace TransAction.API.Models
         public string DbLastUpdateUserid { get; set; }
         public long ConcurrencyControlNumber { get; set; }
 
+        public virtual ICollection<TraTeam> TraTeam { get; set; }
         public virtual ICollection<TraUser> TraUser { get; set; }
     }
 }
