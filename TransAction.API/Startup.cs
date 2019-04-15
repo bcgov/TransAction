@@ -29,8 +29,6 @@ namespace TransAction.API
         public void ConfigureServices(IServiceCollection services)
         {
             //Adding services
-            
-            // add http context accessor
             services.AddHttpContextAccessor();
 
             services.AddScoped<ITransActionRepo, TransActionRepo>();
@@ -108,6 +106,14 @@ namespace TransAction.API
                 cfg.CreateMap<TeamCreateDto, TraTeam>();
                 cfg.CreateMap<TeamUpdateDto, TraTeam>();
                 cfg.CreateMap<TraTeam, TeamUpdateDto>();
+
+                //for regions
+                cfg.CreateMap<TraRegion, RegionDto>();
+                cfg.CreateMap<RegionDto, TraRegion>();
+                cfg.CreateMap<RegionCreateDto, TraRegion>();
+                cfg.CreateMap<RegionUpdateDto, TraRegion>();
+                cfg.CreateMap<TraRegion, RegionUpdateDto>();
+
             });
 
             app.UseCors(CORS_ALLOW_ALL);
