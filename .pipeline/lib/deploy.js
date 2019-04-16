@@ -22,9 +22,7 @@ module.exports = settings => {
           NAME: `${phases[phase].name}-client`,
           SUFFIX: phases[phase].suffix,
           VERSION: phases[phase].tag,
-          API_URL: `https://${phases[phase].name}-proxy${
-            phases[phase].suffix
-          }-${phases[phase].namespace}`
+          HOST: phases[phase].host
         }
       }
     )
@@ -38,20 +36,8 @@ module.exports = settings => {
           NAME: `${phases[phase].name}-api`,
           SUFFIX: phases[phase].suffix,
           VERSION: phases[phase].tag,
+          HOST: phases[phase].host,
           ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env
-        }
-      }
-    )
-  );
-
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
-      `${templatesLocalBaseUrl}/reverse-proxy-deploy-config.yaml`,
-      {
-        param: {
-          NAME: `${phases[phase].name}-proxy`,
-          SUFFIX: phases[phase].suffix,
-          VERSION: phases[phase].tag
         }
       }
     )
