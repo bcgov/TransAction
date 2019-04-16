@@ -28,9 +28,11 @@ objects:
       strategy:
         resources:
           requests:
-            cpu: "100m"
+            cpu: 500m
+            memory: 256Mi
           limits:
-            cpu: "150m"
+            cpu: 500m
+            memory: 512Mi
       template:
         metadata:
           creationTimestamp: null
@@ -45,9 +47,11 @@ objects:
                   protocol: TCP
               resources:
                 requests:
-                  cpu: "100m"
+                  cpu: 500m
+                  memory: 256Mi
                 limits:
-                  cpu: "150m"
+                  cpu: 500m
+                  memory: 512Mi
               env:
                 - name: CONNECTION_STRING
                   valueFrom:
@@ -90,22 +94,6 @@ objects:
           targetPort: 8080
       selector:
         deploymentconfig: ${NAME}${SUFFIX}
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      creationTimestamp: null
-      name: ${NAME}${SUFFIX}
-    spec:
-      host:
-      port:
-        targetPort: web
-      tls:
-        termination: edge
-      to:
-        kind: Service
-        name: ${NAME}${SUFFIX}
-        weight: 100
-      wildcardPolicy: None
 parameters:
   - description: A name used for all objects
     displayName: Name
@@ -127,3 +115,13 @@ parameters:
     name: ASPNETCORE_ENVIRONMENT
     required: true
     value: "Development"
+  - description: SOURCE_REPOSITORY_URL
+    displayName: SOURCE_REPOSITORY_URL
+    name: SOURCE_REPOSITORY_URL
+    required: false
+    value: ""
+  - description: SOURCE_REPOSITORY_REF
+    displayName: SOURCE_REPOSITORY_REF
+    name: SOURCE_REPOSITORY_REF
+    required: false
+    value: ""
