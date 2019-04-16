@@ -1,9 +1,8 @@
 ﻿CREATE TABLE [dbo].[TRA_USER] (
     [USER_ID]               INT            IDENTITY (1, 1) NOT NULL,
     [USERNAME]             VARCHAR(255) NOT NULL,
-    [DIRECTORY ] VARCHAR(8) NOT NULL,
+    [DIRECTORY] VARCHAR(8) NOT NULL,
 	[GUID] VARCHAR(255) NOT NULL,
-    --[REGION]           VARCHAR(255) NOT NULL,
    [REGION_ID]         INT NOT NULL,
    [FNAME]            VARCHAR(255) NOT NULL,
     [LNAME]            VARCHAR(255) NOT NULL,
@@ -107,7 +106,7 @@ BEGIN
 	UPDATE TRA_USER
 	SET
 	TRA_USER.USERNAME = inserted.USERNAME,
-	TRA_USER.[DIRECTORY ] = inserted.[DIRECTORY ],
+	TRA_USER.[DIRECTORY] = inserted.[DIRECTORY],
 	TRA_USER.GUID = inserted.GUID,
 	TRA_USER.REGION_ID = inserted.REGION_ID,
 	TRA_USER.FNAME = inserted.FNAME,
@@ -139,7 +138,7 @@ BEGIN
 	BEGIN
 	INSERT INTO TRA_USER(
 	   [USERNAME]
-      ,[DIRECTORY ]
+      ,[DIRECTORY]
       ,[GUID]
       ,[REGION_ID]
       ,[FNAME]
@@ -156,7 +155,7 @@ BEGIN
 	
 	SELECT 
 	   [USERNAME]
-      ,[DIRECTORY ]
+      ,[DIRECTORY]
       ,[GUID]
       ,[REGION_ID]
       ,[FNAME]

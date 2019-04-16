@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using TransAction.API.Authorization;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -59,7 +60,7 @@ namespace TransAction.API.Controllers
 
         }
 
-
+        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPost()]
         public IActionResult CreateEvent([FromBody] EventCreateDto createEvent)
         {

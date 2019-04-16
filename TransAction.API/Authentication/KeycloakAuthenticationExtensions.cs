@@ -18,6 +18,7 @@ namespace TransAction.API.Authentication
 {
     public static class KeycloakAuthenticationExtensions
     {
+        
         public static AuthenticationBuilder AddKeycloakAuth(this AuthenticationBuilder builder, KeycloakAuthenticationOptions configOptions)
         {            
             return builder.AddJwtBearer(o =>
@@ -57,11 +58,41 @@ namespace TransAction.API.Authentication
                     {
                         var principal = context.Principal;
                         var db = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationRepo>();
-                        var dbUser = db.GetUser(principal.FindFirstValue("preferred_username"));
+                        var dbUser = db.GetUser(principal.FindFirstValue("idir_guid"));
 
                         if (dbUser == null)
                         {
                             // create user here
+                            var newUser = new TraUser();
+                            newUser.Username = principal.FindFirstValue("preferred_username");                            
+                            var dir = principal.FindFirstValue("preferred_username").Split("@");
+                            if(dir.Count() > 1)
+                            {
+                                newUser.Directory = dir[1];
+                            }else
+                            {
+                                newUser.Directory = "";
+                            }                                                       
+                            newUser.RoleId = db.GetRole("USER").RoleId;
+                            newUser.Email = principal.FindFirstValue(ClaimTypes.Email);
+                            newUser.Fname = principal.FindFirstValue(ClaimTypes.GivenName);
+                            newUser.Lname = principal.FindFirstValue(ClaimTypes.Surname);
+                            newUser.Description = "Hi, this is a new User";
+                            newUser.Guid = principal.FindFirstValue("idir_guid");
+                            newUser.RegionId = db.GetRegion("HQ").RegionId;
+
+                            db.CreateUser(newUser);
+                            if (!db.Save())
+                            {                                
+                                context.NoResult();
+
+                                context.Response.StatusCode = 500;
+                                context.Response.ContentType = "text/plain";                               
+
+                                return context.Response.WriteAsync("Unable to create new user in the database");
+
+                            }
+
                         } else
                         {
                             // 

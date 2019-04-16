@@ -76,6 +76,12 @@ namespace TransAction.Data.Services
             }
         }
 
+        public TraUser GetCurrentUser(string guid)
+        {
+            return _context.TraUser.FirstOrDefault(c => c.Guid == guid);
+        }
+
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
@@ -131,10 +137,39 @@ namespace TransAction.Data.Services
                 return false;
             }
         }
-
         public void CreateRegion(TraRegion traRegion)
         {
             _context.TraRegion.Add(traRegion);
+        }
+
+        /*--------------------------------------------------------------------------*/
+
+        public IEnumerable<TraActivity> GetActivities()
+        {
+            return _context.TraActivity.OrderBy(c => c.ActivityId).ToList();
+        }
+
+        public TraActivity GetActivity(int id)
+        {
+            return _context.TraActivity.FirstOrDefault(c => c.ActivityId == id);
+        }
+
+        public bool ActivityExists(string Name)
+        {
+            var checkActivity = _context.TraActivity.FirstOrDefault(c => c.Name == Name);
+            if (checkActivity != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void CreateActivity(TraActivity traActivity)
+        {
+            _context.TraActivity.Add(traActivity); 
         }
     }
 }

@@ -114,6 +114,13 @@ namespace TransAction.API
                 cfg.CreateMap<RegionUpdateDto, TraRegion>();
                 cfg.CreateMap<TraRegion, RegionUpdateDto>();
 
+                //for activity                
+                cfg.CreateMap<TraActivity, ActivityDto>();
+                cfg.CreateMap<ActivityDto, TraActivity>();
+                cfg.CreateMap<ActivityCreateDto, TraActivity>();
+                cfg.CreateMap<ActivityUpdateDto, TraActivity>();
+                cfg.CreateMap<TraActivity, ActivityUpdateDto>();
+
             });
 
             app.UseCors(CORS_ALLOW_ALL);

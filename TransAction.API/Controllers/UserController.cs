@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -14,9 +17,13 @@ namespace TransAction.API.Controllers
     public class UserController : Controller
     {
         private ITransActionRepo _transActionRepo;
+        private IHttpContextAccessor _httpContextAccessor;
+        
         public UserController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
             _transActionRepo = transActionRepo;
+            _httpContextAccessor = httpContextAccessor;
+             
         }
 
         
@@ -24,8 +31,8 @@ namespace TransAction.API.Controllers
         public IActionResult GetUsers()
         {
             var user = _transActionRepo.GetUsers();
-            var getEvents = Mapper.Map<IEnumerable<UserDto>>(user);
-            return Ok(getEvents);
+            var getUsers = Mapper.Map<IEnumerable<UserDto>>(user);
+            return Ok(getUsers);
 
         }
         
@@ -110,6 +117,31 @@ namespace TransAction.API.Controllers
             }
 
             return NoContent();
+        }
+        [HttpGet("me")]
+        public IActionResult GetCurrentUser()
+        {                  
+
+            try
+            {
+                
+                string userGuid = UserHelper.GetUserGuid(_httpContextAccessor); 
+                var getUsers = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+
+                if (getUsers == null)
+                {
+                    return NotFound();
+                }
+              
+                var getUserResult = Mapper.Map<UserDto>(getUsers);
+                return Ok(getUserResult);
+
+            }
+
+            catch (Exception)
+            {
+                return StatusCode(500, "A problem happened while handeling your request");
+            }
         }
         
     }
