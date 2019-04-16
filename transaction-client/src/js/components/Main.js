@@ -24,13 +24,9 @@ class Main extends Component {
     }));
   };
 
-  test() {
-    console.log('clicked');
-  }
-
   renderEventList() {
     const events = this.props.events.map(event => (
-      <div key={event.id} className="mb-5" onClick={this.test}>
+      <div key={event.id} className="mb-5">
         <Event event={event} />
       </div>
     ));

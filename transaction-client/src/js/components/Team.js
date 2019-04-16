@@ -180,7 +180,7 @@ class Team extends Component {
           </BreadcrumbItem>
           <BreadcrumbItem active>Team</BreadcrumbItem>
         </Breadcrumb>
-        <h1> Team</h1>
+        <h1>Team</h1>
         {this.decideRender()}
       </Container>
     );

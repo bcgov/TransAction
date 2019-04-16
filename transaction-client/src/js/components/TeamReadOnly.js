@@ -5,7 +5,7 @@ import { fetchUsers } from '../actions';
 
 class TeamReadOnly extends Component {
   checkUser(user) {
-    if (user.teamid === this) return user;
+    if (user.teamid === this) return user.teamid;
   }
 
   showTeamMembers() {
@@ -30,12 +30,7 @@ class TeamReadOnly extends Component {
   }
 
   render() {
-    return (
-      <Container>
-        <div>we are in read only mode! and this aint your team</div>
-        {this.teamInfo()}
-      </Container>
-    );
+    return <Container>{this.teamInfo()}</Container>;
   }
 }
 

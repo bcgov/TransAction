@@ -41,10 +41,11 @@ class Profile extends Component {
 
   componentDidMount() {
     // this.toggleSpinner();
-    Promise.all([this.props.fetchUser(this.props.id), this.props.fetchRegions()])
-      .then(() => {
-        this.props.fetchTeam(this.props.user.teamid);
-      })
+    Promise.all([
+      this.props.fetchUser(this.props.id),
+      this.props.fetchRegions(),
+      this.props.fetchTeam(this.props.user.teamid),
+    ])
       .then(() => {
         this.toggleSpinner();
       })

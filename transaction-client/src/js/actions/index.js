@@ -34,9 +34,15 @@ export const editEvent = (id, formValues) => async dispatch => {
 };
 
 export const fetchEvent = id => async dispatch => {
-  const response = await api.get(`/events/${id}`);
-
-  dispatch({ type: FETCH_EVENT, payload: response.data });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/events/${id}`);
+      dispatch({ type: FETCH_EVENT, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 //User Actions
@@ -114,6 +120,13 @@ export const createTeam = formValues => async dispatch => {
 };
 
 export const fetchTeams = () => async dispatch => {
-  const response = await api.get('/teams');
-  dispatch({ type: FETCH_TEAMS, payload: response.data });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get('/teams');
+      dispatch({ type: FETCH_TEAMS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
 };

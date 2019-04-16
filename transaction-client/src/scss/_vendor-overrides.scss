@@ -45,3 +45,20 @@ div.errorMessage {
 .titleform {
   display: inline-block;
 }
+
+.event:hover {
+  background-color: #e9ecef;
+  border-radius: 12px;
+  width: 250px;
+}
+
+.event_description {
+  //text-align: center;
+}
+
+#centerText {
+  text-align: center;
+}
+#borderRoleDifferences {
+  border: 2px solid;
+}
