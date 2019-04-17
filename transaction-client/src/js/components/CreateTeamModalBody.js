@@ -7,7 +7,7 @@ import { createTeam, fetchUser } from '../actions';
 class CreateTeamModalBody extends Component {
   onSubmit = formValues => {
     //TODO hardcoded values, need to make flexible
-    const teamObj = { progressamt: 50, progressbar: true, ...formValues };
+    const teamObj = { progressamt: 50, progressbar: true, ...formValues, concurrencyControlNumber: 1 };
 
     this.props.createTeam(teamObj).then(() => {
       this.props.fetchUser('me');

@@ -6,7 +6,12 @@ import { createUserActivity, fetchActivityList, fetchUser } from '../actions';
 
 class CreateTeamModalBody extends Component {
   onSubmit = formValues => {
-    const activityObj = { eventId: this.props.eventId, ...formValues, userId: this.props.user.userId };
+    const activityObj = {
+      eventId: this.props.eventId,
+      ...formValues,
+      userId: this.props.user.userId,
+      concurrencyControlNumber: 1,
+    };
     console.log('adding:', activityObj);
     this.props.createUserActivity(activityObj).then(() => {
       this.props.fetchUser('me');
