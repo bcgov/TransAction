@@ -8,7 +8,7 @@ module.exports = settings => {
     namespace: phases.build.namespace,
     ...options
   });
-  const target_phase = options.phase;
+  const target_phase = options.env;
 
   for (var k in phases) {
     if (phases.hasOwnProperty(k) && k != "prod") {
