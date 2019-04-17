@@ -171,5 +171,33 @@ namespace TransAction.Data.Services
         {
             _context.TraActivity.Add(traActivity); 
         }
+
+        public IEnumerable<TraUserActivity> GetUserActivities()
+        {
+            return _context.TraUserActivity.OrderBy(c => c.UserActivityId).ToList();
+        }
+
+        public TraUserActivity GetUserActivity(int id)
+        {
+            return _context.TraUserActivity.FirstOrDefault(c => c.UserActivityId == id);
+        }
+
+        public bool UserActivityExists(string Name)
+        {
+            var checkUserActivity = _context.TraUserActivity.FirstOrDefault(c => c.Name == Name);
+            if (checkUserActivity != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void CreateUserActivity(TraUserActivity traUserActivity)
+        {
+            _context.TraUserActivity.Add(traUserActivity);
+        }
     }
 }

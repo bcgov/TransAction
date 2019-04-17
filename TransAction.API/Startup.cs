@@ -121,6 +121,13 @@ namespace TransAction.API
                 cfg.CreateMap<ActivityUpdateDto, TraActivity>();
                 cfg.CreateMap<TraActivity, ActivityUpdateDto>();
 
+                //for user activity
+                cfg.CreateMap<TraUserActivity, UserActivityDto>();
+                cfg.CreateMap<UserActivityDto, TraUserActivity>();
+                cfg.CreateMap<UserActivityCreateDto, TraUserActivity>();
+                cfg.CreateMap<UserActivityUpdateDto, TraUserActivity>();
+                cfg.CreateMap<TraUserActivity, UserActivityUpdateDto>();
+
             });
 
             app.UseCors(CORS_ALLOW_ALL);

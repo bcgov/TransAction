@@ -719,6 +719,12 @@ namespace TransAction.Data.Models
                     .HasColumnName("DESCRIPTION")
                     .HasColumnType("text");
 
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasMaxLength(1024)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Hours).HasColumnName("HOURS");
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");

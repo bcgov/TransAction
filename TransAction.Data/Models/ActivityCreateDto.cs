@@ -9,5 +9,6 @@ namespace TransAction.Data.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public int Intensity { get; set; }
+        public long ConcurrencyControlNumber { get; set; }
     }
 }

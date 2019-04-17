@@ -4,11 +4,13 @@ using System.Text;
 
 namespace TransAction.Data.Models
 {
-    public class ActivityUpdateDto
+    public class UserActivityCreateDto
     {
-        public string Name { get; set; }
         public string Description { get; set; }
-        public int Intensity { get; set; }
+        public string Name { get; set; }
+        public double Hours { get; set; }
+        public int UserId { get; set; }
+        public int ActivityId { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }

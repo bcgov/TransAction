@@ -6,6 +6,7 @@ namespace TransAction.Data.Models
     public partial class TraUserActivity
     {
         public int UserActivityId { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public double Hours { get; set; }
         public int UserId { get; set; }

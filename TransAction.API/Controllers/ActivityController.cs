@@ -54,5 +54,63 @@ namespace TransAction.API.Controllers
 
         }
 
+        [HttpPost()]
+        public IActionResult CreateActivity([FromBody] ActivityCreateDto createActivity)
+        {
+            if (createActivity == null)
+            {
+                return BadRequest();
+            }
+            if (createActivity.Description == null || createActivity.Name == null || createActivity.Intensity == null)
+            {
+                return BadRequest();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (_transActionRepo.ActivityExists(createActivity.Name))
+            {
+                return BadRequest();
+            }
+
+            var newActivity = Mapper.Map<TraActivity>(createActivity);
+
+
+            _transActionRepo.CreateActivity(newActivity);
+
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            var createdPointOfInterestToReturn = Mapper.Map<ActivityDto>(newActivity);
+            return CreatedAtRoute("GetThatActivity", new { id = createdPointOfInterestToReturn.ActivityId }, createdPointOfInterestToReturn);
+
+
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult ActivityUpdate(int id, [FromBody] ActivityUpdateDto updateActivity)
+        {
+            var activityEntity = _transActionRepo.GetActivity(id);
+            if (activityEntity == null) return NotFound();
+            if (updateActivity == null) return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Mapper.Map(updateActivity, activityEntity);
+
+
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
+        }
+
     }
 }

@@ -5,13 +5,15 @@ using System.Text;
 
 namespace TransAction.Data.Models
 {
-    public class ActivityDto
+    public class UserActivityDto
     {
         [JsonProperty("id")]
-        public int ActivityId { get; set; }
+        public int UserActivityId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Intensity { get; set; }
+        public double Hours { get; set; }
+        public int UserId { get; set; }
+        public int ActivityId { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }
