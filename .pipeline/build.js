@@ -1,7 +1,6 @@
-'use strict';
+"use strict";
 
-const build = require('./lib/build.js');
-const phases = require('./lib/config.js')
+const build = require("./lib/build.js");
+const settings = require("./lib/config.js");
 
-build({phases:phases});
-
+build({ ...settings });

@@ -12,4 +12,9 @@ const phases = {
    prod: {namespace: 'vlpweg-prod'   , name: `${name}`, phase: 'prod' , changeId:changeId, suffix: '-prod'             , instance: `${name}-prod`             , version:`${version}-${changeId}`, tag:`prod-${version}`              , host: 'transaction-vlpweg-prod.pathfinder.gov.bc.ca',            dotnet_env: 'Production'}
 }
 
-module.exports = exports = phases;
+process.on("unhandledRejection", reason => {
+  console.log(reason);
+  process.exit(1);
+});
+
+module.exports = exports = { phases, options };

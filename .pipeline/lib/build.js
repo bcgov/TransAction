@@ -4,11 +4,16 @@ const { OpenShiftClientX } = require("pipeline-cli");
 const path = require("path");
 
 module.exports = settings => {
-  const phase = "build";
-  let objects = [];
+  const phases = settings.phases;
+  const options = settings.options;
   const oc = new OpenShiftClientX({
-    namespace: settings.phases[phase].namespace
+    namespace: phases.build.namespace,
+    ...options
   });
+  const phase = "build";
+
+  let objects = [];
+
   const templatesLocalBaseUrl = oc.toFileUrl(
     path.resolve(__dirname, "../../openshift")
   );

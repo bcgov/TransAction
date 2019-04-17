@@ -1,7 +1,6 @@
-'use strict';
+"use strict";
 
-const deploy = require('./lib/deploy.js');
-const phases = require('./lib/config.js')
-const options= require('pipeline-cli').Util.parseArguments()
+const deploy = require("./lib/deploy.js");
+const settings = require("./lib/config.js");
 
-deploy({phases:phases, phase: options.phase});
+deploy({ ...settings });
