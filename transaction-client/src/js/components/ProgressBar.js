@@ -3,6 +3,7 @@ import { Progress, Button } from 'reactstrap';
 import EventModal from './EventModal';
 import ProgressModalBody from './ProgressModalBody';
 
+//TODO REMAKE PROGRESS BAR WITHOUT BOOLEAN VALUE. FIND AMT FOR GOAL IN DIFFERENT TABLE
 class ProgressBar extends Component {
   state = { modal: false };
 

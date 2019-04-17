@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { fetchUser, fetchEvent } from '../actions';
+import EventModal from './EventModal';
+import LogActivityModalBody from './LogActivityModalBody';
 import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -30,7 +32,7 @@ class EventPage extends Component {
   }
 
   checkTeam() {
-    if (this.props.user.teamid === null) {
+    if (this.props.user.teamId === null) {
       return (
         <React.Fragment>
           <h5> What is {this.props.event.name}?</h5>
@@ -52,10 +54,13 @@ class EventPage extends Component {
     return (
       <React.Fragment>
         <h1>{this.props.event.name} </h1>
-        <Button className="float-right" color="primary">
+        <Button className="float-right" color="primary" onClick={this.toggle}>
           Add Activity
         </Button>
-        <h3>Hi {this.props.user.name}!</h3>
+        <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Log an Activity">
+          <LogActivityModalBody modalClose={this.toggle} eventid={this.props.event.id} name="log" />
+        </EventModal>
+        <h3>Hi {this.props.user.fname}!</h3>
         {this.checkTeam()}
       </React.Fragment>
     );

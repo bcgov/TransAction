@@ -35,12 +35,7 @@ class TeamUserReadOnly extends Component {
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <div>Hey its your team but we are in read only mode!</div>
-        {this.teamInfo()}
-      </React.Fragment>
-    );
+    return <React.Fragment>{this.teamInfo()}</React.Fragment>;
   }
 }
 

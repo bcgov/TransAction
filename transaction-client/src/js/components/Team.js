@@ -42,13 +42,13 @@ class Team extends Component {
       //no paramId passed
       if (!this.props.paramid) {
         //we have no teamid and no id was passed as param; load choices
-        if (!this.props.user.teamid) {
+        if (!this.props.user.teamId) {
           return <NoTeamPage />;
         }
         //Following the user's teamid
         else {
-          //If they are a team lead or admin
-          if (this.props.user.role !== 'user') {
+          //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
+          if (this.props.user.role === 24 || this.props.user.role === 25) {
             return this.teamInfo();
           }
           //a regular user, therefor seeing his team in read only
@@ -93,11 +93,11 @@ class Team extends Component {
     // this.toggleSpinner();
 
     this.props.fetchUser('me').then(() => {
-      const teamid = this.props.paramid ? this.props.paramid : this.props.user.teamid;
-      Promise.all([this.props.fetchTeam(teamid), this.props.fetchUsers()])
+      const teamId = this.props.paramid ? this.props.paramid : this.props.user.teamId;
+      Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers()])
         .then(() => {
           console.log(this.state.currentTeam);
-          this.setState({ currentTeam: this.props.team[teamid] });
+          this.setState({ currentTeam: this.props.team[teamId] });
           console.log(this.state.currentTeam);
           this.toggleSpinner();
         })
@@ -108,7 +108,7 @@ class Team extends Component {
   }
 
   progressBar() {
-    if (this.state.currentTeam.progressbar === true && this.props.user.teamid !== null) {
+    if (this.state.currentTeam.progressbar === true && this.props.user.teamId !== null) {
       return <ProgressBar team={this.state.currentTeam} onSubmit={this.onSubmit} />;
     } else {
       return (
@@ -130,7 +130,7 @@ class Team extends Component {
   }
 
   checkUser(user) {
-    if (user.teamid === this) return user;
+    if (user.teamId === this) return user;
   }
 
   showTeamMembers() {

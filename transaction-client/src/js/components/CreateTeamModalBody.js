@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import _ from 'lodash';
 import { connect } from 'react-redux';
 import CreateTeamModalForm from './CreateTeamModalForm';
-import { createTeam, editUser, fetchTeam, fetchUser } from '../actions';
+import { createTeam, fetchUser } from '../actions';
 
 class CreateTeamModalBody extends Component {
   onSubmit = formValues => {
@@ -34,5 +34,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createTeam, fetchUser, editUser, fetchTeam }
+  { createTeam, fetchUser }
 )(CreateTeamModalBody);

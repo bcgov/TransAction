@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Button } from 'reactstrap';
 import { Field, reduxForm } from 'redux-form';
 
-class ProfileDescriptionForm extends Component {
+class DescriptionForm extends Component {
   renderInput = ({ input, type }) => {
     return <Input type={type} {...input} autoComplete="off" />;
   };
@@ -29,5 +29,5 @@ class ProfileDescriptionForm extends Component {
 
 export default reduxForm({
   form: 'profileDescriptionForm',
-  enableReinitialize: true
-})(ProfileDescriptionForm);
+  enableReinitialize: true,
+})(DescriptionForm);

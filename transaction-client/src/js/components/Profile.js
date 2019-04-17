@@ -44,7 +44,7 @@ class Profile extends Component {
     Promise.all([
       this.props.fetchUser(this.props.id),
       this.props.fetchRegions(),
-      this.props.fetchTeam(this.props.user.teamid),
+      this.props.fetchTeam(this.props.user.teamId),
     ])
       .then(() => {
         this.toggleSpinner();
@@ -61,8 +61,19 @@ class Profile extends Component {
     this.props.editUser(userObj, 'me');
   };
 
+  printProgress() {
+    if (this.props.user.teamId !== null) {
+      return (
+        <React.Fragment>
+          <h3>Team Progress: </h3>
+          <div className="progress">{this.progressBar()}</div>
+        </React.Fragment>
+      );
+    }
+  }
+
   progressBar() {
-    if (this.props.team.progressbar === true && this.props.user.teamid !== null) {
+    if (this.props.team.progressbar === true && this.props.user.teamId !== null) {
       return (
         <Progress bar animated color="primary" value={(this.props.team.progressamt / this.props.team.goal) * 100}>
           Check out this hot progress
@@ -74,14 +85,14 @@ class Profile extends Component {
   leaveTeam = () => {
     const leaveAlert = window.confirm('Do you really want to leave the team?');
     if (leaveAlert === true) {
-      const team = { teamid: null };
+      const team = { teamId: null };
       this.onSubmit(team);
     }
   };
 
   //TODO Button logic
   printTeam = () => {
-    if (this.props.user.teamid !== null) {
+    if (this.props.user.teamId !== null) {
       return (
         <h3 className="mt-3">
           Team: {this.props.team.name}
@@ -129,15 +140,14 @@ class Profile extends Component {
         <h3>Name: {this.props.user.name}</h3>
         <h3>
           <ProfileOfficeForm
-            initialValues={_.pick(this.props.user, 'region')}
-            userRegion={this.props.user.region}
+            initialValues={_.pick(this.props.user, 'regionId')}
+            userRegion={this.props.user.regionId}
             regions={this.props.regions}
             onSubmit={this.onSubmit}
           />
         </h3>
         {this.printTeam()}
-        <h3>Team Progress: </h3>
-        <div className="progress">{this.progressBar()}</div>
+        {this.printProgress()}
         <DescriptionForm initialValues={_.pick(this.props.user, 'description')} onSubmit={this.onSubmit} />
       </div>
     );
@@ -162,9 +172,10 @@ class Profile extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   var who;
+  //check to see if params.id exists, if not return "me"
   if (!ownProps.match.params.id) who = 'me';
   else who = ownProps.match.params.id;
-  //check to see if params.id exists, if not return "me"
+
   return { id: who, user: state.user, team: state.team, regions: Object.values(state.regions) };
 };
 

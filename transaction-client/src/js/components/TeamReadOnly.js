@@ -5,13 +5,17 @@ import { fetchUsers } from '../actions';
 
 class TeamReadOnly extends Component {
   checkUser(user) {
-    if (user.teamid === this) return user.teamid;
+    if (user.teamId === this) return user.teamId;
   }
 
   showTeamMembers() {
     var users = this.props.users.filter(this.checkUser, this.props.team.id).map(teamate => {
       //console.log(teamate);
-      return <div key={teamate.id}>{teamate.name}</div>;
+      return (
+        <div key={teamate.id}>
+          {teamate.fname} {teamate.lname}
+        </div>
+      );
     });
     return users;
   }

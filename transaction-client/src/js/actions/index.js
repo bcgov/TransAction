@@ -11,6 +11,8 @@ import {
   FETCH_REGIONS,
   FETCH_USERS,
   FETCH_TEAMS,
+  FETCH_ACTIVITY_LIST,
+  CREATE_USER_ACTIVITY,
 } from './types';
 import history from '../history';
 
@@ -124,6 +126,32 @@ export const fetchTeams = () => async dispatch => {
     try {
       const response = await api.get('/teams');
       dispatch({ type: FETCH_TEAMS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchActivityList = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get('/activities');
+      dispatch({ type: FETCH_ACTIVITY_LIST, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const createUserActivity = activityObj => async dispatch => {
+  console.log('Action has recieved: ', activityObj);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.post('/useractivity', activityObj);
+      console.log('Here in the action, we have: ', response.data);
+      dispatch({ type: CREATE_USER_ACTIVITY, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);
