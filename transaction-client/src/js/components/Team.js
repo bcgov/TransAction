@@ -97,6 +97,7 @@ class Team extends Component {
       Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers()])
         .then(() => {
           console.log(this.state.currentTeam);
+          // Don't do the next line.  Map it in mapstatetoprops
           this.setState({ currentTeam: this.props.team[teamId] });
           console.log(this.state.currentTeam);
           this.toggleSpinner();
@@ -109,7 +110,11 @@ class Team extends Component {
 
   progressBar() {
     if (this.state.currentTeam.progressbar === true && this.props.user.teamId !== null) {
-      return <ProgressBar team={this.state.currentTeam} onSubmit={this.onSubmit} />;
+      return (
+        <div id="progress">
+          <ProgressBar team={this.state.currentTeam} onSubmit={this.onSubmit} />
+        </div>
+      );
     } else {
       return (
         <div>
@@ -134,9 +139,13 @@ class Team extends Component {
   }
 
   showTeamMembers() {
-    var users = this.props.users.filter(this.checkUser, this.state.currentTeam.id).map(teamate => {
+    var users = this.props.users.filter(this.checkUser, this.props.team.id).map(teamate => {
       //console.log(teamate);
-      return <div key={teamate.id}>{teamate.name}</div>;
+      return (
+        <div key={teamate.id}>
+          {teamate.fname} {teamate.lname}
+        </div>
+      );
     });
     return users;
   }
@@ -189,6 +198,7 @@ class Team extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    //i can do all that here?
     paramid: parseInt(ownProps.match.params.id),
     user: state.user,
     team: state.team,

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { fetchUser, fetchEvent } from '../actions';
+import { fetchUser, fetchEvent, fetchUserScore, fetchTeamScore } from '../actions';
 import EventModal from './EventModal';
 import LogActivityModalBody from './LogActivityModalBody';
+import UserScoreGraphicCard from './UserScoreGraphicCard';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 class EventPage extends Component {
@@ -22,13 +23,41 @@ class EventPage extends Component {
 
   componentDidMount() {
     // this.toggleSpinner();
-    Promise.all([this.props.fetchUser('me'), this.props.fetchEvent(this.props.paramId)])
-      .then(() => {
-        this.toggleSpinner();
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
+    this.props.fetchEvent(this.props.paramId).then(() => {
+      Promise.all([
+        this.props.fetchUser('me'),
+
+        this.props.fetchUserScore(this.props.user.id, this.props.event.id),
+        this.props.fetchTeamScore(this.props.user.teamId, this.props.event.id),
+      ])
+        .then(() => {
+          this.toggleSpinner();
+        })
+        .catch(() => {
+          this.toggleSpinner();
+        });
+    });
+  }
+
+  printScores() {
+    return (
+      <React.Fragment>
+        <div>print out scores here</div>
+        <div>{this.props.userScore.value}</div>
+        <Row>
+          <Col>
+            <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
+          </Col>
+          <Col>
+            <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
+          </Col>
+          <Col>
+            <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
+          </Col>
+          <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
+        </Row>
+      </React.Fragment>
+    );
   }
 
   checkTeam() {
@@ -46,6 +75,8 @@ class EventPage extends Component {
           </div>
         </React.Fragment>
       );
+    } else {
+      return this.printScores();
     }
     //TODO add else with graphical elements
   }
@@ -101,10 +132,12 @@ const mapStateToProps = (state, ownProps) => {
     user: state.user,
     paramId: parseInt(ownProps.match.params.id),
     event: state.events[parseInt(ownProps.match.params.id)],
+    userScore: state.userScore,
+    teamScore: state.teamScore,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchUser, fetchEvent }
+  { fetchUser, fetchEvent, fetchUserScore, fetchTeamScore }
 )(EventPage);

@@ -11,7 +11,7 @@ import EventModal from './EventModal';
 import CreateTeamModalBody from './CreateTeamModalBody';
 
 class Profile extends Component {
-  state = { loading: true, modal: false };
+  state = { loading: true, modal: false, currentTeam: {} };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -41,17 +41,17 @@ class Profile extends Component {
 
   componentDidMount() {
     // this.toggleSpinner();
-    Promise.all([
-      this.props.fetchUser(this.props.id),
-      this.props.fetchRegions(),
-      this.props.fetchTeam(this.props.user.teamId),
-    ])
-      .then(() => {
-        this.toggleSpinner();
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
+    this.props.fetchUser(this.props.id).then(() => {
+      const teamId = this.props.user.teamId;
+      Promise.all([this.props.fetchRegions(), this.props.fetchTeam(this.props.user.teamId)])
+        .then(() => {
+          this.setState({ currentTeam: this.props.team[teamId] });
+          this.toggleSpinner();
+        })
+        .catch(() => {
+          this.toggleSpinner();
+        });
+    });
   }
 
   onSubmit = formValues => {
@@ -66,16 +66,21 @@ class Profile extends Component {
       return (
         <React.Fragment>
           <h3>Team Progress: </h3>
-          <div className="progress">{this.progressBar()}</div>
+          <div id="progress">{this.progressBar()}</div>
         </React.Fragment>
       );
     }
   }
 
   progressBar() {
-    if (this.props.team.progressbar === true && this.props.user.teamId !== null) {
+    if (this.state.currentTeam.progressbar === true && this.props.user.teamId !== null) {
       return (
-        <Progress bar animated color="primary" value={(this.props.team.progressamt / this.props.team.goal) * 100}>
+        <Progress
+          bar
+          animated
+          color="primary"
+          value={(this.state.currentTeam.progressamt / this.state.currentTeam.goal) * 100}
+        >
           Check out this hot progress
         </Progress>
       );
@@ -92,10 +97,12 @@ class Profile extends Component {
 
   //TODO Button logic
   printTeam = () => {
+    console.log();
     if (this.props.user.teamId !== null) {
+      console.log(this.state.currentTeam);
       return (
         <h3 className="mt-3">
-          Team: {this.props.team.name}
+          Team: {this.state.currentTeam.name}
           <Link to="/team">
             <Button color="primary" className="ml-3 mb-2">
               Visit Team
@@ -137,7 +144,9 @@ class Profile extends Component {
   userInfo() {
     return (
       <div>
-        <h3>Name: {this.props.user.name}</h3>
+        <h3>
+          Name: {this.props.user.fname} {this.props.user.lname}{' '}
+        </h3>
         <h3>
           <ProfileOfficeForm
             initialValues={_.pick(this.props.user, 'regionId')}
@@ -176,7 +185,12 @@ const mapStateToProps = (state, ownProps) => {
   if (!ownProps.match.params.id) who = 'me';
   else who = ownProps.match.params.id;
 
-  return { id: who, user: state.user, team: state.team, regions: Object.values(state.regions) };
+  return {
+    id: who,
+    user: state.user,
+    team: state.team,
+    regions: Object.values(state.regions),
+  };
 };
 
 export default connect(

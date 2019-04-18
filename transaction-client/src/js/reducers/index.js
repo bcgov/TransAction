@@ -7,6 +7,8 @@ import teamReducer from './teamReducer';
 import regionsReducer from './regionsReducer';
 import usersReducer from './usersReducer';
 import activityReducer from './activityReducer';
+import userScoreReducer from './userScoreReducer';
+import teamScoreReducer from './teamScoreReducer';
 
 export default combineReducers({
   form: formReducer,
@@ -17,4 +19,6 @@ export default combineReducers({
   regions: regionsReducer,
   users: usersReducer,
   activities: activityReducer,
+  userScore: userScoreReducer,
+  teamScore: teamScoreReducer,
 });

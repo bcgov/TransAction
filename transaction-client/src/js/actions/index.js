@@ -13,6 +13,8 @@ import {
   FETCH_TEAMS,
   FETCH_ACTIVITY_LIST,
   CREATE_USER_ACTIVITY,
+  FETCH_USER_SCORE,
+  FETCH_TEAM_SCORE,
 } from './types';
 import history from '../history';
 
@@ -87,6 +89,7 @@ export const fetchTeam = id => async dispatch => {
     }
   });
 };
+
 //TODO Combine these two
 export const editUser = (userObj, id) => async dispatch => {
   // console.log(userObj);
@@ -133,6 +136,8 @@ export const fetchTeams = () => async dispatch => {
   });
 };
 
+//Activity Actions
+
 export const fetchActivityList = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -152,6 +157,32 @@ export const createUserActivity = activityObj => async dispatch => {
       const response = await api.post('/useractivity', activityObj);
       console.log('Here in the action, we have: ', response.data);
       dispatch({ type: CREATE_USER_ACTIVITY, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+//Score Actions
+
+export const fetchUserScore = (userId, eventId) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/user/:${userId}/event/:${eventId}`);
+      dispatch({ type: FETCH_USER_SCORE, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchTeamScore = (teamId, eventId) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/team/:${teamId}/event/:${eventId}`);
+      dispatch({ type: FETCH_TEAM_SCORE, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);

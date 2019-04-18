@@ -47,7 +47,7 @@ class ProgressBar extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="progress">
+        <div id="progress">
           <Progress bar animated color="primary" value={(this.props.team.progressamt / this.props.team.goal) * 100}>
             Check out this hot progress
           </Progress>

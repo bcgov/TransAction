@@ -11,6 +11,8 @@ class CreateTeamModalBody extends Component {
       ...formValues,
       userId: this.props.user.userId,
       concurrencyControlNumber: 1,
+      description: null,
+      name: null,
     };
     console.log('adding:', activityObj);
     this.props.createUserActivity(activityObj).then(() => {
