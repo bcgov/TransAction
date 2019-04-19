@@ -29,7 +29,24 @@
           "github_owner": "bcgov",
           "github_repo": "transaction",
           "jenkinsFilePath": "Jenkinsfile",
-          "uuid": "12365736-f869-4638-a62f-9f7117b507a6"
+          "uuid": "12365736-f869-4638-a62f-9f7117b507a6",
+          "name": "TransAction",
+          "version": "1.0.0",
+          "path": ".",
+          "environments": {
+            "build": {
+              "namespace": "vlpweg-tools"
+            },
+            "dev": {
+              "namespace": "vlpweg-dev"
+            },
+            "test": {
+              "namespace": "vlpweg-test"
+            },
+            "prod": {
+              "namespace": "vlpweg-prod"
+            }
+          }
         }
       }
     }
