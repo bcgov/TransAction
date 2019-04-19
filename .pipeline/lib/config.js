@@ -2,7 +2,7 @@
 const options = require("pipeline-cli").Util.parseArguments();
 const changeId = options.pr; //aka pull-request
 const version = "1.0.0";
-const name = "transAction";
+const name = "transaction";
 
 //  prettier-ignore
 const phases = {
