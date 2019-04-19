@@ -2,7 +2,7 @@
 const options = require("pipeline-cli").Util.parseArguments();
 const changeId = options.pr; //aka pull-request
 const version = "1.0.0";
-const name = "transaction";
+const name = "TransAction";
 
 //  prettier-ignore
 const phases = {
@@ -12,6 +12,7 @@ const phases = {
    prod: {namespace: 'vlpweg-prod'   , name: `${name}`, phase: 'prod' , changeId:changeId, suffix: '-prod'             , instance: `${name}-prod`             , version:`${version}-${changeId}`, tag:`prod-${version}`              , host: 'transaction-vlpweg-prod.pathfinder.gov.bc.ca',            dotnet_env: 'Production'}
 }
 
+// This callback forces the node process to exit as failure.
 process.on("unhandledRejection", reason => {
   console.log(reason);
   process.exit(1);

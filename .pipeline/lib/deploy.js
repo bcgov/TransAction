@@ -1,5 +1,4 @@
 "use strict";
-
 const { OpenShiftClientX } = require("pipeline-cli");
 const path = require("path");
 
@@ -7,20 +6,17 @@ module.exports = settings => {
   const phases = settings.phases;
   const options = settings.options;
   const phase = options.env;
-
-  const oc = new OpenShiftClientX({
-    namespace: phases[phase].namespace,
-    ...options
-  });
-
+  const changeId = phases[phase].changeId;
+  const oc = new OpenShiftClientX(
+    Object.assign({ namespace: phases[phase].namespace }, options)
+  );
   const templatesLocalBaseUrl = oc.toFileUrl(
     path.resolve(__dirname, "../../openshift")
   );
+  var objects = [];
 
-  let objects = [];
-
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/client-deploy-config.yaml`,
       {
         param: {
@@ -33,8 +29,8 @@ module.exports = settings => {
     )
   );
 
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/api-deploy-config.yaml`,
       {
         param: {
@@ -52,9 +48,9 @@ module.exports = settings => {
     objects,
     phases[phase].name,
     phase,
-    phases[phase].changeId
+    `${changeId}`,
+    phases[phase].instance
   );
-  oc.fetchSecretsAndConfigMaps(objects);
   oc.importImageStreams(
     objects,
     phases[phase].tag,

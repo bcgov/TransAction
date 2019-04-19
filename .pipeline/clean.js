@@ -1,6 +1,5 @@
-"use strict";
+'use strict';
+const settings = require('./lib/config.js')
+const task = require('./lib/clean.js')
 
-const settings = require("./lib/config.js");
-const clean = require("./lib/clean.js");
-
-clean({ ...settings });
+task(Object.assign(settings, { phase: settings.options.env}));
