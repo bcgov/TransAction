@@ -41,14 +41,12 @@
             "prod": {
               "namespace": "vlpweg-prod"
             }
-          }
-        },
-        ".": {
+          },
           "jenkinsJobName": "TransAction",
           "github_owner": "bcgov",
           "github_repo": "TransAction",
           "jenkinsFilePath": "Jenkinsfile",
-          "uuid": "07e185be-9a97-4e57-ba31-b2d198524af9"
+          "uuid": "1a1f7df5-40d5-4647-bdbc-7c017210e12d"
         }
       }
     }

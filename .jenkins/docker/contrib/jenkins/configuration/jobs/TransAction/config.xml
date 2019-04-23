@@ -29,7 +29,7 @@
     <data>
       <jenkins.branch.BranchSource>
         <source class="org.jenkinsci.plugins.github_branch_source.GitHubSCMSource" plugin="github-branch-source@2.3.6">
-          <id>07e185be-9a97-4e57-ba31-b2d198524af9</id>
+          <id>1a1f7df5-40d5-4647-bdbc-7c017210e12d</id>
           <credentialsId>github-account</credentialsId>
           <repoOwner>bcgov</repoOwner>
           <repository>TransAction</repository>
