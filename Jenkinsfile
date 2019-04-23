@@ -21,6 +21,7 @@ pipeline {
                     abortAllPreviousBuildInProgress(currentBuild)
                 }
                 echo "Building ..."
+                sh "chmod +x .pipeline/npmw"
                 sh "cd .pipeline && ./npmw ci && ./npmw run build -- --pr=${CHANGE_ID}"
             }
         }
@@ -28,6 +29,7 @@ pipeline {
             agent { label 'deploy' }
             steps {
                 echo "Deploying ..."
+                sh "chmod +x .pipeline/npmw"
                 sh "cd .pipeline && ./npmw ci && ./npmw run deploy -- --pr=${CHANGE_ID} --env=dev"
             }
         }
@@ -39,6 +41,7 @@ pipeline {
             }
             steps {
                 echo "Deploying ..."
+                sh "chmod +x .pipeline/npmw"
                 sh "cd .pipeline && ./npmw ci && ./npmw run deploy -- --pr=${CHANGE_ID} --env=test"
             }
         }
@@ -50,6 +53,7 @@ pipeline {
             }
             steps {
                 echo "Deploying ..."
+                sh "chmod +x .pipeline/npmw"
                 sh "cd .pipeline && ./npmw ci && ./npmw run deploy -- --pr=${CHANGE_ID} --env=prod"
             }
         }
