@@ -30,6 +30,7 @@ pipeline {
             agent { label 'deploy' }
             steps {
                 echo "Deploying ..."
+                sh "chmod +x .jenkins/.pipeline/npmw"
                 sh "cd .jenkins/.pipeline && ./npmw ci && DEBUG=info* ./npmw run deploy -- --pr=${CHANGE_ID} --env=dev"
             }
         }
@@ -41,6 +42,7 @@ pipeline {
             }
             steps {
                 echo "Deploying ..."
+                sh "chmod +x .jenkins/.pipeline/npmw"
                 sh "cd .jenkins/.pipeline && ./npmw ci && ./npmw run deploy -- --pr=${CHANGE_ID} --env=prod"
             }
         }
