@@ -22,7 +22,6 @@ pipeline {
                 }
                 echo "BRANCH_NAME:${env.BRANCH_NAME}\nCHANGE_ID:${env.CHANGE_ID}\nCHANGE_TARGET:${env.CHANGE_TARGET}"
                 echo "Building ..."
-                sh "chmod +x .jenkins/.pipeline/npmw"
                 sh "cd .jenkins/.pipeline && ./npmw ci && ./npmw run build -- --pr=${CHANGE_ID}"
             }
         }
@@ -30,7 +29,6 @@ pipeline {
             agent { label 'deploy' }
             steps {
                 echo "Deploying ..."
-                sh "chmod +x .jenkins/.pipeline/npmw"
                 sh "cd .jenkins/.pipeline && ./npmw ci && DEBUG=info* ./npmw run deploy -- --pr=${CHANGE_ID} --env=dev"
             }
         }
@@ -42,7 +40,6 @@ pipeline {
             }
             steps {
                 echo "Deploying ..."
-                sh "chmod +x .jenkins/.pipeline/npmw"
                 sh "cd .jenkins/.pipeline && ./npmw ci && ./npmw run deploy -- --pr=${CHANGE_ID} --env=prod"
             }
         }
