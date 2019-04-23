@@ -45,7 +45,7 @@ pipeline {
         stage('Deploy (PROD)') {
             agent { label 'deploy' }
             input {
-                message "Should we continue with deployment to TEST?"
+                message "Should we continue with deployment to PROD?"
                 ok "Yes!"
             }
             steps {
