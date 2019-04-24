@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import Event from './Event';
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import { fetchEvents } from '../actions';
+import { fetchEvents, fetchRoles, fetchUser } from '../actions';
 
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
-  state = { modal: false, loading: false };
+  state = { modal: false, loading: false, userRole: '' };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -48,9 +48,35 @@ class Main extends Component {
     }
   }
 
+  findRole(userRoleId) {
+    this.props.roles.forEach(role => {
+      if (userRoleId === role.id) {
+        return this.setState({ userRole: role.name });
+      }
+    });
+  }
+
   componentDidMount() {
     this.toggleSpinner();
+    Promise.all([this.props.fetchRoles(), this.props.fetchUser('me')]).then(() => {
+      this.findRole(this.props.user.roleId);
+    });
     this.props.fetchEvents(this.toggleSpinner);
+  }
+
+  checkAdmin() {
+    if (this.state.userRole === 'admin') {
+      return (
+        <React.Fragment>
+          <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
+            Add an Event
+          </Button>
+          <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Add an Event">
+            <EventModalBody modalClose={this.toggle} name="add" />
+          </EventModal>
+        </React.Fragment>
+      );
+    }
   }
 
   render() {
@@ -61,12 +87,7 @@ class Main extends Component {
             <BreadcrumbItem active>Home</BreadcrumbItem>
           </Breadcrumb>
         </Row>
-        <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
-          Add an Event
-        </Button>
-        <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Add an Event">
-          <EventModalBody modalClose={this.toggle} name="add" />
-        </EventModal>
+        {this.checkAdmin()}
         <div>{this.decideRender()}</div>
 
         {/*Old Event Buttons*/}
@@ -94,10 +115,14 @@ class Main extends Component {
 const mapStateToProps = state => {
   //sorts by start date
 
-  return { events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']), user: state.authUser };
+  return {
+    events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
+    roles: Object.values(state.roles),
+    user: state.user,
+  };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchEvents }
+  { fetchEvents, fetchRoles, fetchUser }
 )(Main);

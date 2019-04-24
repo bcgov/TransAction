@@ -3,7 +3,7 @@ import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button } from 'reactstr
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { fetchUser, fetchTeam, editTeam, fetchUsers } from '../actions';
+import { fetchUser, fetchTeam, editTeam, fetchUsers, fetchRoles } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
 import ProgressBar from './ProgressBar';
@@ -14,7 +14,7 @@ import TeamUserReadOnly from './TeamUserReadOnly';
 import NoTeamPage from './NoTeamPage';
 
 class Team extends Component {
-  state = { loading: true, modal: false, currentTeam: {} };
+  state = { loading: true, modal: false, currentTeam: {}, userRole: '' };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -48,7 +48,7 @@ class Team extends Component {
         //Following the user's teamid
         else {
           //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
-          if (this.props.user.role === 24 || this.props.user.role === 25) {
+          if (this.state.userRole !== 'user') {
             return this.teamInfo();
           }
           //a regular user, therefor seeing his team in read only
@@ -66,7 +66,7 @@ class Team extends Component {
         //if the paramId is the same as user teamid
         if (this.props.paramid === this.props.user.teamid) {
           //If they are a team lead or admin
-          if (this.props.user.role !== 'user') {
+          if (this.state.userRole !== 'user') {
             return this.teamInfo();
           }
           //a regular user, therefor seeing his team in read only
@@ -76,7 +76,12 @@ class Team extends Component {
         }
         //paramid is NOT the same as user teamid; viewing someones team from the outside
         else {
-          return <TeamReadOnly team={this.state.currentTeam} />;
+          //If they are an admin
+          if (this.state.userRole === 'admin') {
+            return this.teamInfo();
+          } else {
+            return <TeamReadOnly team={this.state.currentTeam} />;
+          }
         }
       }
     }
@@ -87,18 +92,30 @@ class Team extends Component {
     const userObj = { ...this.state.currentTeam, ...formValues };
     //console.log('now contain ', userObj);
     this.props.editTeam(userObj, this.state.currentTeam.id);
+    this.props.fetchTeam();
   };
+
+  findRole(userRoleId) {
+    this.props.roles.foreach(role => {
+      if (userRoleId === role.id) {
+        console.log('This user is a ', role.name);
+        this.setState({ userRole: role.name });
+      }
+    });
+  }
 
   componentDidMount() {
     // this.toggleSpinner();
 
     this.props.fetchUser('me').then(() => {
       const teamId = this.props.paramid ? this.props.paramid : this.props.user.teamId;
-      Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers()])
+      Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers(), this.props.fetchRoles()])
         .then(() => {
           console.log(this.state.currentTeam);
           // Don't do the next line.  Map it in mapstatetoprops
           this.setState({ currentTeam: this.props.team[teamId] });
+          this.findRole(this.props.user.roleId);
+
           console.log(this.state.currentTeam);
           this.toggleSpinner();
         })
@@ -110,11 +127,7 @@ class Team extends Component {
 
   progressBar() {
     if (this.state.currentTeam.progressbar === true && this.props.user.teamId !== null) {
-      return (
-        <div id="progress">
-          <ProgressBar team={this.state.currentTeam} onSubmit={this.onSubmit} />
-        </div>
-      );
+      return <ProgressBar team={this.state.currentTeam} onSubmit={this.onSubmit} />;
     } else {
       return (
         <div>
@@ -135,12 +148,13 @@ class Team extends Component {
   }
 
   checkUser(user) {
+    console.log('checking ', user.teamId, ' with ', this);
     if (user.teamId === this) return user;
   }
 
   showTeamMembers() {
-    var users = this.props.users.filter(this.checkUser, this.props.team.id).map(teamate => {
-      //console.log(teamate);
+    var users = this.props.users.filter(this.checkUser, this.state.currentTeam.id).map(teamate => {
+      console.log(teamate);
       return (
         <div key={teamate.id}>
           {teamate.fname} {teamate.lname}
@@ -198,15 +212,15 @@ class Team extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    //i can do all that here?
     paramid: parseInt(ownProps.match.params.id),
     user: state.user,
     team: state.team,
     users: Object.values(state.users),
+    roles: Object.values(state.roles),
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchUser, fetchTeam, editTeam, fetchUsers }
+  { fetchUser, fetchTeam, editTeam, fetchUsers, fetchRoles }
 )(Team);

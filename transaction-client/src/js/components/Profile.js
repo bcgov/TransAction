@@ -4,11 +4,13 @@ import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Progress, Spinner, Button } from 'reactstrap';
-import { fetchUser, fetchTeam, editUser, fetchRegions } from '../actions';
+import { Breadcrumb, BreadcrumbItem, Container, Progress, Spinner, Button, Row, Col } from 'reactstrap';
+import { fetchUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
 import CreateTeamModalBody from './CreateTeamModalBody';
+import UserScoreGraphicCard from './UserScoreGraphicCard';
+import ProfileReadOnly from './ProfileReadOnly';
 
 class Profile extends Component {
   state = { loading: true, modal: false, currentTeam: {} };
@@ -33,25 +35,61 @@ class Profile extends Component {
         </div>
       );
     } else {
-      // console.log('looking for user with id: ', this.props.user);
       if (!this.props.user.id) return <div>Hmmmm, We couldnt find that user :(</div>;
-      else return this.userInfo();
+      //Loading DONE
+      else {
+        //no paramId passed
+        if (!this.props.paramid) {
+          //Following the user's profile
+          //Doesnt matter what the role is, its the users profile.
+          return this.userInfo();
+        }
+        //paramId is passed
+        else {
+          //if the paramId is the same as user profileid
+          if (this.props.paramid === this.props.user.id) {
+            //role doesnt matter, its the users page
+            console.log('here?');
+            return this.userInfo();
+          }
+          //paramid is NOT the same as user id; viewing someones profile from the outside
+          else {
+            //If they are an admin
+            if (this.state.userRole === 'admin') {
+              return this.userInfo();
+            } else {
+              //return read only
+              return <ProfileReadOnly />;
+            }
+          }
+        }
+      }
     }
   }
 
   componentDidMount() {
     // this.toggleSpinner();
-    this.props.fetchUser(this.props.id).then(() => {
-      const teamId = this.props.user.teamId;
-      Promise.all([this.props.fetchRegions(), this.props.fetchTeam(this.props.user.teamId)])
-        .then(() => {
-          this.setState({ currentTeam: this.props.team[teamId] });
-          this.toggleSpinner();
-        })
-        .catch(() => {
-          this.toggleSpinner();
-        });
-    });
+    this.props.fetchEvents();
+    this.props
+      .fetchUser(this.props.paramId)
+      .then(() => {
+        const teamId = this.props.user.teamId;
+        Promise.all([
+          this.props.fetchRegions(),
+          this.props.fetchTeam(this.props.user.teamId),
+          this.props.fetchAllUserScores('me'),
+        ])
+          .then(() => {
+            this.setState({ currentTeam: this.props.team[teamId] });
+            this.toggleSpinner();
+          })
+          .catch(() => {
+            this.toggleSpinner();
+          });
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
   }
 
   onSubmit = formValues => {
@@ -97,9 +135,7 @@ class Profile extends Component {
 
   //TODO Button logic
   printTeam = () => {
-    console.log();
     if (this.props.user.teamId !== null) {
-      console.log(this.state.currentTeam);
       return (
         <h3 className="mt-3">
           Team: {this.state.currentTeam.name}
@@ -141,6 +177,31 @@ class Profile extends Component {
     }
   };
 
+  findEventName(id) {
+    var name = '';
+    this.props.events.forEach(element => {
+      if (element.id === id) {
+        name = element.name;
+      }
+    });
+    return name;
+  }
+  //**TODO, REMOVE HARDCODED TEAM VALUES**
+  printUserScores() {
+    const scores = this.props.allUserScores.map((element, index) => (
+      <Col>
+        <UserScoreGraphicCard
+          key={index}
+          userScore={element.value}
+          teamScore={100}
+          name={this.findEventName(element.eventId)}
+          type="profile"
+        />
+      </Col>
+    ));
+    return scores;
+  }
+
   userInfo() {
     return (
       <div>
@@ -158,12 +219,13 @@ class Profile extends Component {
         {this.printTeam()}
         {this.printProgress()}
         <DescriptionForm initialValues={_.pick(this.props.user, 'description')} onSubmit={this.onSubmit} />
+        <Row className="mt-3 mb-3 "> {this.printUserScores()}</Row>
       </div>
     );
   }
 
   render() {
-    //console.log(this.props);
+    console.log('Id Passed: ', this.props.paramId);
     return (
       <Container>
         <Breadcrumb>
@@ -186,14 +248,17 @@ const mapStateToProps = (state, ownProps) => {
   else who = ownProps.match.params.id;
 
   return {
-    id: who,
+    paramId: who,
     user: state.user,
     team: state.team,
     regions: Object.values(state.regions),
+    allUserScores: Object.values(state.allUserScores),
+    events: Object.values(state.events),
+    roles: Object.values(state.roles),
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchUser, fetchTeam, editUser, fetchRegions }
+  { fetchUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles }
 )(Profile);

@@ -42,19 +42,14 @@ class EventPage extends Component {
   printScores() {
     return (
       <React.Fragment>
-        <div>print out scores here</div>
-        <div>{this.props.userScore.value}</div>
         <Row>
           <Col>
-            <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
+            <UserScoreGraphicCard
+              userScore={this.props.userScore.value}
+              teamScore={this.props.teamScore.value}
+              type="event"
+            />
           </Col>
-          <Col>
-            <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
-          </Col>
-          <Col>
-            <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
-          </Col>
-          <UserScoreGraphicCard userScore={this.props.userScore.value} teamScore={this.props.teamScore.value} />
         </Row>
       </React.Fragment>
     );

@@ -24,7 +24,7 @@ class ProgressBar extends Component {
   progressButtons() {
     if (this.props.team.progressbar === true) {
       return (
-        <div>
+        <React.Fragment>
           <Button color="primary" className="mt-3 mb-2 mr-2" name="edit" onClick={this.toggle}>
             Edit Goal
           </Button>
@@ -39,7 +39,7 @@ class ProgressBar extends Component {
           <Button color="primary" className="mt-3 mb-2" name="remove" onClick={this.onDeleteBar}>
             Remove Goal
           </Button>
-        </div>
+        </React.Fragment>
       );
     }
   }

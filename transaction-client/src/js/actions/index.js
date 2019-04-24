@@ -15,6 +15,9 @@ import {
   CREATE_USER_ACTIVITY,
   FETCH_USER_SCORE,
   FETCH_TEAM_SCORE,
+  FETCH_ALL_TEAM_SCORES,
+  FETCH_ALL_USER_SCORES,
+  FETCH_ROLES,
 } from './types';
 import history from '../history';
 
@@ -178,11 +181,48 @@ export const fetchUserScore = (userId, eventId) => async dispatch => {
   });
 };
 
+export const fetchAllUserScores = userId => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/user/:${userId}`);
+      dispatch({ type: FETCH_ALL_USER_SCORES, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export const fetchTeamScore = (teamId, eventId) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/useractivity/team/:${teamId}/event/:${eventId}`);
       dispatch({ type: FETCH_TEAM_SCORE, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchAllTeamScores = teamId => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/team/:${teamId}`);
+      dispatch({ type: FETCH_ALL_TEAM_SCORES, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchRoles = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/roles`);
+
+      dispatch({ type: FETCH_ROLES, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);
