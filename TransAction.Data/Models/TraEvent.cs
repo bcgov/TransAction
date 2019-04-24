@@ -24,5 +24,7 @@ namespace TransAction.Data.Models
 
         public virtual ICollection<TraEventTeam> TraEventTeam { get; set; }
         public virtual ICollection<TraEventUser> TraEventUser { get; set; }
+        //
+        public virtual ICollection<TraUserActivity> TraUserActivity { get; set; }
     }
 }

@@ -199,5 +199,19 @@ namespace TransAction.Data.Services
         {
             _context.TraUserActivity.Add(traUserActivity);
         }
+
+        public IEnumerable<TraUserActivity> GetAllUserActivities(int eventId , int teamId)
+        {
+            var users = _context.TraEventUser.Where(p => p.EventId == eventId);
+            List<TraUserActivity> userAct = new List<TraUserActivity>();
+            foreach (var user in users)
+            {
+                
+                userAct = _context.TraUserActivity.Where(p => p.UserId == user.UserId).ToList();
+
+            }
+            return userAct;
+
+        }
     }
 }

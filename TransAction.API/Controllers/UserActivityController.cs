@@ -62,8 +62,8 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            
-            if (createUserActivity.Name == null|| createUserActivity.ActivityId == null || createUserActivity.Description == null || createUserActivity.UserId == null || createUserActivity.Hours == null)
+
+            if (createUserActivity.Name == null || createUserActivity.ActivityId == null || createUserActivity.Description == null || createUserActivity.UserId == null || createUserActivity.Hours == null)
             {
                 return BadRequest();
             }
@@ -109,6 +109,23 @@ namespace TransAction.API.Controllers
             }
 
             return NoContent();
+        }
+
+        //total score for that specific team for that specific event
+
+       [HttpGet("team/{teamId}/event{eventId}")]
+        public IActionResult EventSpecificScore(int teamId, int eventId)
+        {
+            var userActs = _transActionRepo.GetAllUserActivities(eventId,teamId);
+
+            /*
+             * go through all the users getting the users from the same team
+             * then, go through all users, using their id's to look for the activty ids and store their hours in an array and then multiply the hours with the respective and the id's intensity 
+             */
+
+            var getUserActivities = Mapper.Map<IEnumerable<UserActivityDto>>(userActs);
+            return Ok(getUserActivities);
+
         }
     }
 }

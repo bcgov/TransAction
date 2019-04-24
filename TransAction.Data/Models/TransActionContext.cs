@@ -729,6 +729,25 @@ namespace TransAction.Data.Models
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
+                // ADDED FOR USERACTIVITY
+
+                entity.Property(e => e.TeamId).HasColumnName("TEAM_ID");
+
+                entity.Property(e => e.EventId).HasColumnName("EVENT_ID");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.TraUserActivity)
+                    .HasForeignKey(d => d.EventId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_USER_ACTIVITY_EVENT");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.TraUserActivity)
+                    .HasForeignKey(d => d.TeamId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_USER_ACTIVITY_TEAM");
+                
+
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.TraUserActivity)
                     .HasForeignKey(d => d.ActivityId)
@@ -740,6 +759,8 @@ namespace TransAction.Data.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_USER_ACTIVITY_USER");
+
+               // Scaffold - DbContext "Server=.\SQLExpress;Database=SchoolDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer - OutputDir Models
             });
         }
         

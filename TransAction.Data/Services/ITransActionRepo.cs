@@ -36,6 +36,7 @@ namespace TransAction.Data.Services
         void CreateActivity(TraActivity traActivity);
 
         IEnumerable<TraUserActivity> GetUserActivities();
+        IEnumerable<TraUserActivity> GetAllUserActivities(int eventId, int teamId);
         TraUserActivity GetUserActivity(int id);
         bool UserActivityExists(string Name);
         void CreateUserActivity(TraUserActivity traUserActivity);
