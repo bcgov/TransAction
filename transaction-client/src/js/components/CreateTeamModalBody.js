@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import _ from 'lodash';
 import { connect } from 'react-redux';
 import CreateTeamModalForm from './CreateTeamModalForm';
-import { createTeam, fetchUser } from '../actions';
+import { createTeam, fetchCurrentUser } from '../actions';
 
 class CreateTeamModalBody extends Component {
   onSubmit = formValues => {
@@ -10,13 +10,13 @@ class CreateTeamModalBody extends Component {
     const teamObj = { progressamt: 50, progressbar: true, ...formValues, concurrencyControlNumber: 1 };
 
     this.props.createTeam(teamObj).then(() => {
-      this.props.fetchUser('me');
+      this.props.fetchCurrentUser('me');
     });
     this.props.modalClose();
   };
 
   componentDidMount() {
-    Promise.all([this.props.fetchUser('me')]);
+    Promise.all([this.props.fetchCurrentUser('me')]);
   }
 
   decideRender() {
@@ -29,10 +29,10 @@ class CreateTeamModalBody extends Component {
 }
 
 const mapStateToProps = state => {
-  return { user: state.user };
+  return { currentUser: state.currentUser };
 };
 
 export default connect(
   mapStateToProps,
-  { createTeam, fetchUser }
+  { createTeam, fetchCurrentUser }
 )(CreateTeamModalBody);

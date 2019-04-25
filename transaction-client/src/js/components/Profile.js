@@ -5,15 +5,24 @@ import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Container, Progress, Spinner, Button, Row, Col } from 'reactstrap';
-import { fetchUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles } from '../actions';
+import {
+  fetchCurrentUser,
+  fetchTeam,
+  editUser,
+  fetchRegions,
+  fetchAllUserScores,
+  fetchEvents,
+  fetchRoles,
+} from '../actions';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
 import CreateTeamModalBody from './CreateTeamModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
 import ProfileReadOnly from './ProfileReadOnly';
+import ProfileAdminView from './ProfileAdminView';
 
 class Profile extends Component {
-  state = { loading: true, modal: false, currentTeam: {} };
+  state = { loading: true, modal: false, currentTeam: {}, userRole: '' };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -35,19 +44,20 @@ class Profile extends Component {
         </div>
       );
     } else {
-      if (!this.props.user.id) return <div>Hmmmm, We couldnt find that user :(</div>;
+      if (!this.props.currentUser.id) return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
         //no paramId passed
-        if (!this.props.paramid) {
+        if (!this.props.paramId) {
           //Following the user's profile
           //Doesnt matter what the role is, its the users profile.
+          console.log('no param its our profile');
           return this.userInfo();
         }
         //paramId is passed
         else {
           //if the paramId is the same as user profileid
-          if (this.props.paramid === this.props.user.id) {
+          if (this.props.paramId === this.props.currentUser.id) {
             //role doesnt matter, its the users page
             console.log('here?');
             return this.userInfo();
@@ -56,10 +66,13 @@ class Profile extends Component {
           else {
             //If they are an admin
             if (this.state.userRole === 'admin') {
-              return this.userInfo();
+              console.log('we are admin');
+              console.log(this.props.paramId);
+              return <ProfileAdminView userId={this.props.paramId} />;
             } else {
               //return read only
-              return <ProfileReadOnly />;
+              console.log('we are ', this.state.userRole, ' returning read only');
+              return <ProfileReadOnly userId={this.props.paramId} />;
             }
           }
         }
@@ -71,19 +84,22 @@ class Profile extends Component {
     // this.toggleSpinner();
     this.props.fetchEvents();
     this.props
-      .fetchUser(this.props.paramId)
+      .fetchCurrentUser('me')
       .then(() => {
-        const teamId = this.props.user.teamId;
+        const teamId = this.props.currentUser.teamId;
         Promise.all([
           this.props.fetchRegions(),
-          this.props.fetchTeam(this.props.user.teamId),
+          this.props.fetchTeam(this.props.currentUser.teamId),
           this.props.fetchAllUserScores('me'),
+          this.props.fetchRoles(),
         ])
           .then(() => {
             this.setState({ currentTeam: this.props.team[teamId] });
+            this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
             this.toggleSpinner();
           })
           .catch(() => {
+            console.log('ERROR');
             this.toggleSpinner();
           });
       })
@@ -94,13 +110,13 @@ class Profile extends Component {
 
   onSubmit = formValues => {
     //console.log('passed in ', formValues);
-    const userObj = { ...this.props.user, ...formValues };
+    const userObj = { ...this.props.currentUser, ...formValues };
     //console.log('now contain ', userObj);
     this.props.editUser(userObj, 'me');
   };
 
   printProgress() {
-    if (this.props.user.teamId !== null) {
+    if (this.props.currentUser.teamId !== null) {
       return (
         <React.Fragment>
           <h3>Team Progress: </h3>
@@ -111,7 +127,7 @@ class Profile extends Component {
   }
 
   progressBar() {
-    if (this.state.currentTeam.progressbar === true && this.props.user.teamId !== null) {
+    if (this.state.currentTeam.progressbar === true && this.props.currentUser.teamId !== null) {
       return (
         <Progress
           bar
@@ -135,7 +151,7 @@ class Profile extends Component {
 
   //TODO Button logic
   printTeam = () => {
-    if (this.props.user.teamId !== null) {
+    if (this.props.currentUser.teamId !== null) {
       return (
         <h3 className="mt-3">
           Team: {this.state.currentTeam.name}
@@ -167,7 +183,7 @@ class Profile extends Component {
           <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
             <CreateTeamModalBody
               onSubmit={this.onSubmit}
-              user={this.props.user}
+              user={this.props.currentUser}
               modalClose={this.toggle}
               name="create"
             />
@@ -206,19 +222,19 @@ class Profile extends Component {
     return (
       <div>
         <h3>
-          Name: {this.props.user.fname} {this.props.user.lname}{' '}
+          Name: {this.props.currentUser.fname} {this.props.currentUser.lname}{' '}
         </h3>
         <h3>
           <ProfileOfficeForm
-            initialValues={_.pick(this.props.user, 'regionId')}
-            userRegion={this.props.user.regionId}
+            initialValues={_.pick(this.props.currentUser, 'regionId')}
+            userRegion={this.props.currentUser.regionId}
             regions={this.props.regions}
             onSubmit={this.onSubmit}
           />
         </h3>
         {this.printTeam()}
         {this.printProgress()}
-        <DescriptionForm initialValues={_.pick(this.props.user, 'description')} onSubmit={this.onSubmit} />
+        <DescriptionForm initialValues={_.pick(this.props.currentUser, 'description')} onSubmit={this.onSubmit} />
         <Row className="mt-3 mb-3 "> {this.printUserScores()}</Row>
       </div>
     );
@@ -249,16 +265,16 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     paramId: who,
-    user: state.user,
+    currentUser: state.currentUser,
     team: state.team,
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
     events: Object.values(state.events),
-    roles: Object.values(state.roles),
+    roles: state.roles,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles }
+  { fetchCurrentUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles }
 )(Profile);

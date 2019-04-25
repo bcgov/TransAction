@@ -44,7 +44,7 @@ class GettingStarted extends Component {
                 Create Team
               </Button>
               <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
-                <CreateTeamModalBody user={this.props.user} modalClose={this.toggle} name="create" />
+                <CreateTeamModalBody modalClose={this.toggle} name="create" />
               </EventModal>
             </Col>
             <Col xs="6" id="borderRoleDifferences">

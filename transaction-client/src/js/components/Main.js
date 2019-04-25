@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Event from './Event';
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import { fetchEvents, fetchRoles, fetchUser } from '../actions';
+import { fetchEvents, fetchRoles, fetchCurrentUser } from '../actions';
 
 //import ArchivedEvent from './ArchivedEvent';
 
@@ -48,18 +48,10 @@ class Main extends Component {
     }
   }
 
-  findRole(userRoleId) {
-    this.props.roles.forEach(role => {
-      if (userRoleId === role.id) {
-        return this.setState({ userRole: role.name });
-      }
-    });
-  }
-
   componentDidMount() {
     this.toggleSpinner();
-    Promise.all([this.props.fetchRoles(), this.props.fetchUser('me')]).then(() => {
-      this.findRole(this.props.user.roleId);
+    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser('me')]).then(() => {
+      this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
     });
     this.props.fetchEvents(this.toggleSpinner);
   }
@@ -117,12 +109,12 @@ const mapStateToProps = state => {
 
   return {
     events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
-    roles: Object.values(state.roles),
-    user: state.user,
+    roles: state.roles,
+    currentUser: state.currentUser,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchEvents, fetchRoles, fetchUser }
+  { fetchEvents, fetchRoles, fetchCurrentUser }
 )(Main);

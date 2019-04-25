@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { fetchUser } from '../actions';
+import { fetchCurrentUser } from '../actions';
 import EventModal from './EventModal';
 import CreateTeamModalBody from './CreateTeamModalBody';
 
@@ -30,17 +30,17 @@ class NoTeamPage extends Component {
           Create Team
         </Button>
         <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
-          <CreateTeamModalBody onSubmit={this.onSubmit} user={this.props.user} modalClose={this.toggle} name="create" />
+          <CreateTeamModalBody onSubmit={this.onSubmit} modalClose={this.toggle} name="create" />
         </EventModal>
       </React.Fragment>
     );
   }
 }
 const mapStateToProps = state => {
-  return { user: state.user };
+  return { currentUser: state.currentUser };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchUser }
+  { fetchCurrentUser }
 )(NoTeamPage);

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import ProfileOfficeForm from './ProfileOfficeForm.js';
+import _ from 'lodash';
+
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button, Row } from 'reactstrap';
 import {
   fetchCurrentUser,
   fetchTeam,
@@ -12,9 +15,10 @@ import {
   fetchRoles,
   fetchUser,
 } from '../actions';
+import DescriptionForm from './DescriptionForm';
 
 class Profile extends Component {
-  state = { loading: true, modal: false, currentTeam: {} };
+  state = { loading: true, modal: false, currentTeam: {}, userRole: '' };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -40,10 +44,21 @@ class Profile extends Component {
     }
   }
 
+  findRole(userRoleId) {
+    console.log('please');
+    //console.log(this.props.roles[userRoleId].name);
+    this.setState({ userRole: this.props.roles[userRoleId].name });
+    // this.props.roles.foreach(role => {
+    // console.log('checking ', role.name);
+    // if (userRoleId === role.id) {
+    //   console.log('This user is a ', role.name);
+    //   this.setState({ userRole: role.name });
+    // }
+    //  });
+  }
+
   componentDidMount() {
     // this.toggleSpinner();
-    this.props.fetchEvents();
-    this.props.fetchCurrentUser('me');
     this.props
       .fetchUser(this.props.userId)
       .then(() => {
@@ -54,6 +69,7 @@ class Profile extends Component {
             this.toggleSpinner();
           })
           .catch(() => {
+            console.log('ERROR');
             this.toggleSpinner();
           });
       })
@@ -62,6 +78,22 @@ class Profile extends Component {
       });
   }
 
+  onSubmit = formValues => {
+    //console.log('passed in ', formValues);
+    const userObj = { ...this.props.user, ...formValues };
+    //console.log('now contain ', userObj);
+    this.props.editUser(userObj, 'me');
+  };
+
+  leaveTeam = () => {
+    const leaveAlert = window.confirm('Do you really want to leave the team?');
+    if (leaveAlert === true) {
+      const team = { teamId: null };
+      this.onSubmit(team);
+    }
+  };
+
+  //TODO Button logic
   printTeam = () => {
     if (this.props.user.teamId !== null) {
       return (
@@ -72,6 +104,10 @@ class Profile extends Component {
               Visit Team
             </Button>
           </Link>
+          <Button color="secondary" className="ml-3 mb-2" onClick={this.leaveTeam}>
+            {' '}
+            Leave Team
+          </Button>
         </h3>
       );
     } else {
@@ -79,30 +115,28 @@ class Profile extends Component {
     }
   };
 
-  findRegion(userRegionId) {
-    let regionName = '';
-    this.props.regions.forEach(element => {
-      if (parseInt(userRegionId) === element.id) {
-        regionName = element.name;
-      }
-    });
-    return regionName;
-  }
-
   userInfo() {
     return (
       <div>
         <h3>
           Name: {this.props.user.fname} {this.props.user.lname}{' '}
         </h3>
-        <h3>Region: {this.findRegion(this.props.user.regionId)}</h3>
+        <h3>
+          <ProfileOfficeForm
+            initialValues={_.pick(this.props.user, 'regionId')}
+            userRegion={this.props.user.regionId}
+            regions={this.props.regions}
+            onSubmit={this.onSubmit}
+          />
+        </h3>
         {this.printTeam()}
-        <div>{this.props.user.description}</div>
+        <DescriptionForm initialValues={_.pick(this.props.user, 'description')} onSubmit={this.onSubmit} />
       </div>
     );
   }
 
   render() {
+    console.log('Id Passed: ', this.props.userId);
     return (
       <Container>
         <div>{this.decideRender()}</div>
@@ -119,11 +153,11 @@ const mapStateToProps = state => {
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
     events: Object.values(state.events),
-    roles: Object.values(state.roles),
+    roles: state.roles,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles, fetchUser }
+  { fetchCurrentUser, fetchUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles }
 )(Profile);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { fetchUser, fetchEvent, fetchUserScore, fetchTeamScore } from '../actions';
+import { fetchCurrentUser, fetchEvent, fetchUserScore, fetchTeamScore } from '../actions';
 import EventModal from './EventModal';
 import LogActivityModalBody from './LogActivityModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
@@ -25,10 +25,10 @@ class EventPage extends Component {
     // this.toggleSpinner();
     this.props.fetchEvent(this.props.paramId).then(() => {
       Promise.all([
-        this.props.fetchUser('me'),
+        this.props.fetchCurrentUser('me'),
 
-        this.props.fetchUserScore(this.props.user.id, this.props.event.id),
-        this.props.fetchTeamScore(this.props.user.teamId, this.props.event.id),
+        this.props.fetchUserScore(this.props.currentUser.id, this.props.event.id),
+        this.props.fetchTeamScore(this.props.currentUser.teamId, this.props.event.id),
       ])
         .then(() => {
           this.toggleSpinner();
@@ -56,7 +56,7 @@ class EventPage extends Component {
   }
 
   checkTeam() {
-    if (this.props.user.teamId === null) {
+    if (this.props.currentUser.teamId === null) {
       return (
         <React.Fragment>
           <h5> What is {this.props.event.name}?</h5>
@@ -86,7 +86,7 @@ class EventPage extends Component {
         <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Log an Activity">
           <LogActivityModalBody modalClose={this.toggle} eventid={this.props.event.id} name="log" />
         </EventModal>
-        <h3>Hi {this.props.user.fname}!</h3>
+        <h3>Hi {this.props.currentUser.fname}!</h3>
         {this.checkTeam()}
       </React.Fragment>
     );
@@ -124,7 +124,7 @@ class EventPage extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    user: state.user,
+    currentUser: state.currentUser,
     paramId: parseInt(ownProps.match.params.id),
     event: state.events[parseInt(ownProps.match.params.id)],
     userScore: state.userScore,
@@ -134,5 +134,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { fetchUser, fetchEvent, fetchUserScore, fetchTeamScore }
+  { fetchCurrentUser, fetchEvent, fetchUserScore, fetchTeamScore }
 )(EventPage);

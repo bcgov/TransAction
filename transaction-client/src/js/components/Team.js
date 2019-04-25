@@ -3,7 +3,7 @@ import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button } from 'reactstr
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { fetchUser, fetchTeam, editTeam, fetchUsers, fetchRoles } from '../actions';
+import { fetchCurrentUser, fetchTeam, editTeam, fetchUsers, fetchRoles } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
 import ProgressBar from './ProgressBar';
@@ -40,9 +40,9 @@ class Team extends Component {
     //Loading DONE
     else {
       //no paramId passed
-      if (!this.props.paramid) {
+      if (!this.props.paramId) {
         //we have no teamid and no id was passed as param; load choices
-        if (!this.props.user.teamId) {
+        if (!this.props.currentUser.teamId) {
           return <NoTeamPage />;
         }
         //Following the user's teamid
@@ -53,7 +53,7 @@ class Team extends Component {
           }
           //a regular user, therefor seeing his team in read only
           else {
-            return <TeamUserReadOnly team={this.state.currentTeam} user={this.props.user} />;
+            return <TeamUserReadOnly team={this.state.currentTeam} user={this.props.currentUser} />;
           }
         }
       }
@@ -64,14 +64,14 @@ class Team extends Component {
           return <div>hmmmmmm.. we couldnt find that team :(</div>;
         }
         //if the paramId is the same as user teamid
-        if (this.props.paramid === this.props.user.teamid) {
+        if (this.props.paramId === this.props.currentUser.teamId) {
           //If they are a team lead or admin
           if (this.state.userRole !== 'user') {
             return this.teamInfo();
           }
           //a regular user, therefor seeing his team in read only
           else {
-            return <TeamUserReadOnly team={this.state.currentTeam} user={this.props.user} />;
+            return <TeamUserReadOnly team={this.state.currentTeam} user={this.props.currentUser} />;
           }
         }
         //paramid is NOT the same as user teamid; viewing someones team from the outside
@@ -95,26 +95,17 @@ class Team extends Component {
     this.props.fetchTeam();
   };
 
-  findRole(userRoleId) {
-    this.props.roles.foreach(role => {
-      if (userRoleId === role.id) {
-        console.log('This user is a ', role.name);
-        this.setState({ userRole: role.name });
-      }
-    });
-  }
-
   componentDidMount() {
     // this.toggleSpinner();
 
-    this.props.fetchUser('me').then(() => {
-      const teamId = this.props.paramid ? this.props.paramid : this.props.user.teamId;
+    this.props.fetchCurrentUser('me').then(() => {
+      const teamId = this.props.paramId ? this.props.paramId : this.props.currentUser.teamId;
       Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers(), this.props.fetchRoles()])
         .then(() => {
           console.log(this.state.currentTeam);
           // Don't do the next line.  Map it in mapstatetoprops
           this.setState({ currentTeam: this.props.team[teamId] });
-          this.findRole(this.props.user.roleId);
+          this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
 
           console.log(this.state.currentTeam);
           this.toggleSpinner();
@@ -126,7 +117,7 @@ class Team extends Component {
   }
 
   progressBar() {
-    if (this.state.currentTeam.progressbar === true && this.props.user.teamId !== null) {
+    if (this.state.currentTeam.progressbar === true && this.props.currentUser.teamId !== null) {
       return <ProgressBar team={this.state.currentTeam} onSubmit={this.onSubmit} />;
     } else {
       return (
@@ -212,8 +203,8 @@ class Team extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    paramid: parseInt(ownProps.match.params.id),
-    user: state.user,
+    paramId: parseInt(ownProps.match.params.id),
+    currentUser: state.currentUser,
     team: state.team,
     users: Object.values(state.users),
     roles: Object.values(state.roles),
@@ -222,5 +213,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { fetchUser, fetchTeam, editTeam, fetchUsers, fetchRoles }
+  { fetchCurrentUser, fetchTeam, editTeam, fetchUsers, fetchRoles }
 )(Team);
