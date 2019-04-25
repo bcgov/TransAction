@@ -1,20 +1,21 @@
 "use strict";
-
 const { OpenShiftClientX } = require("pipeline-cli");
 const path = require("path");
 
 module.exports = settings => {
+  const phases = settings.phases;
+  const options = settings.options;
+  const oc = new OpenShiftClientX(
+    Object.assign({ namespace: phases.build.namespace }, options)
+  );
   const phase = "build";
   let objects = [];
-  const oc = new OpenShiftClientX({
-    namespace: settings.phases[phase].namespace
-  });
   const templatesLocalBaseUrl = oc.toFileUrl(
     path.resolve(__dirname, "../../openshift")
   );
 
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/nginx-build-config.yaml`,
       {
         param: {
@@ -28,8 +29,8 @@ module.exports = settings => {
     )
   );
 
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/client-build-config.yaml`,
       {
         param: {
@@ -60,9 +61,10 @@ module.exports = settings => {
 
   oc.applyRecommendedLabels(
     objects,
-    settings.phases[phase].name,
-    "build",
-    settings.phases[phase].changeId
+    phases[phase].name,
+    phase,
+    phases[phase].changeId,
+    phases[phase].instance
   );
   oc.applyAndBuild(objects);
 };
