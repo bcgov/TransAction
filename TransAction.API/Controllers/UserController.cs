@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,11 @@ using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
-    [Route("api/user")]
+    [Route("api/users")]
     public class UserController : Controller
     {
         private ITransActionRepo _transActionRepo;
-        public UserController(ITransActionRepo transActionRepo)
+        public UserController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
             _transActionRepo = transActionRepo;
         }
@@ -59,7 +60,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createUser.Guid == null || createUser.Username == null || createUser.Directory == null || createUser.Region == null)
+            if (createUser.Guid == null || createUser.Username == null || createUser.Directory == null || createUser.RegionId == null)
             {
                 return BadRequest();
             }
@@ -77,12 +78,6 @@ namespace TransAction.API.Controllers
             }
 
             var newUser = Mapper.Map<TraUser>(createUser);
-
-          //  newUser.DbCreateTimestamp = DateTime.Now;
-          //  newUser.DbLastUpdateTimestamp = newUser.DbCreateTimestamp;
-
-            newUser.DbCreateUserid = "Test User";
-            newUser.DbLastUpdateUserid = "Test User";
                        
             _transActionRepo.CreateUser(newUser);
 
@@ -99,16 +94,13 @@ namespace TransAction.API.Controllers
         public IActionResult UserUpdate(int id, [FromBody] UserUpdateDto updateUser)
         {
             var userEntity = _transActionRepo.GetUser(id);
-            if (userEntity == null) return NotFound();
+           if (userEntity == null) return NotFound();
             if (updateUser == null) return NotFound();
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-          //  userEntity.DbLastUpdateTimestamp = DateTime.Now;
-            userEntity.DbLastUpdateUserid = "Test User";
 
             Mapper.Map(updateUser, userEntity);
 

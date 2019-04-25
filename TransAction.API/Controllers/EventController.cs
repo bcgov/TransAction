@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
@@ -17,8 +18,12 @@ namespace TransAction.API.Controllers
         public EventController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
             _transActionRepo = transActionRepo;
+            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value; // nameIdentifeir gives the Id and the .Name gives the username
+            var userEmail = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
+            var checkUser = _transActionRepo.UserExists(userId,userEmail);
+         //   if (!checkUser) ExitController();
+            
         }
-
 
         [HttpGet()]
         public IActionResult GetEvents()
@@ -76,16 +81,9 @@ namespace TransAction.API.Controllers
             }
 
             var newEvent = Mapper.Map<TraEvent>(createEvent);
+          
 
-            //newEvent.DbCreateTimestamp = DateTime.Now;
-           // newEvent.DbLastUpdateTimestamp = newEvent.DbCreateTimestamp;
-            
-
-            _transActionRepo.CreateEvent(newEvent);
-
-            newEvent.DbCreateUserid = "Test User";
-            newEvent.DbLastUpdateUserid = "Test User";
-            
+            _transActionRepo.CreateEvent(newEvent);          
 
             if (!_transActionRepo.Save())
             {
@@ -109,8 +107,6 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-         //   eventEntity.DbLastUpdateTimestamp = DateTime.Now;
-            eventEntity.DbLastUpdateUserid = "Test User" ;
             Mapper.Map(updateEvent,eventEntity);
 
 

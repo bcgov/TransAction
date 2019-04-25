@@ -1,43 +1,43 @@
 "use strict";
-
 const { OpenShiftClientX } = require("pipeline-cli");
 const path = require("path");
 
 module.exports = settings => {
-  const phase = settings.phase;
   const phases = settings.phases;
-
-  const oc = new OpenShiftClientX({ namespace: phases[phase].namespace });
+  const options = settings.options;
+  const phase = options.env;
+  const changeId = phases[phase].changeId;
+  const oc = new OpenShiftClientX(
+    Object.assign({ namespace: phases[phase].namespace }, options)
+  );
   const templatesLocalBaseUrl = oc.toFileUrl(
     path.resolve(__dirname, "../../openshift")
   );
+  var objects = [];
 
-  let objects = [];
-
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/client-deploy-config.yaml`,
       {
         param: {
           NAME: `${phases[phase].name}-client`,
           SUFFIX: phases[phase].suffix,
           VERSION: phases[phase].tag,
-          API_URL: `https://${phases[phase].name}-api${phases[phase].suffix}-${
-            phases[phase].namespace
-          }`
+          HOST: phases[phase].host
         }
       }
     )
   );
 
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/api-deploy-config.yaml`,
       {
         param: {
           NAME: `${phases[phase].name}-api`,
           SUFFIX: phases[phase].suffix,
           VERSION: phases[phase].tag,
+          HOST: phases[phase].host,
           ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env
         }
       }
@@ -48,9 +48,9 @@ module.exports = settings => {
     objects,
     phases[phase].name,
     phase,
-    phases[phase].changeId
+    `${changeId}`,
+    phases[phase].instance
   );
-  oc.fetchSecretsAndConfigMaps(objects);
   oc.importImageStreams(
     objects,
     phases[phase].tag,

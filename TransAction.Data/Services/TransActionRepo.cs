@@ -108,5 +108,33 @@ namespace TransAction.Data.Services
                 return false;
             }
         }
+/*--------------------------------------------------------------------------*/
+        public IEnumerable<TraRegion> GetRegions()
+        {
+            return _context.TraRegion.OrderBy(c => c.RegionId).ToList();
+        }
+
+        public TraRegion GetRegion(int id)
+        {
+            return _context.TraRegion.FirstOrDefault(c => c.RegionId == id);
+        }
+
+        public bool RegionExists(string Name)
+        {
+            var checkRegion = _context.TraRegion.FirstOrDefault(c => c.Name == Name);
+            if (checkRegion != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void CreateRegion(TraRegion traRegion)
+        {
+            _context.TraRegion.Add(traRegion);
+        }
     }
 }

@@ -7,6 +7,24 @@ labels:
   template: client-config
 objects:
   - apiVersion: v1
+    data:
+      client: |-
+        server {
+            listen       8080 default_server;
+            listen       [::]:8080 default_server;
+            server_name  _;
+
+            location / {
+                root   /usr/share/nginx/html;
+                index  index.html index.htm;
+
+                try_files $uri /index.html =404;
+            }
+        }
+    kind: ConfigMap
+    metadata:
+      name: client-configmap-${SUFFIX}
+  - apiVersion: v1
     kind: ImageStream
     metadata:
       creationTimestamp: null
@@ -28,9 +46,11 @@ objects:
       strategy:
         resources:
           requests:
-            cpu: "100m"
+            cpu: 250m
+            memory: 32Mi
           limits:
-            cpu: "150m"
+            cpu: 250m
+            memory: 64Mi
       template:
         metadata:
           creationTimestamp: null
@@ -45,9 +65,11 @@ objects:
                   protocol: TCP
               resources:
                 requests:
-                  cpu: "100m"
+                  cpu: 250m
+                  memory: 32Mi
                 limits:
-                  cpu: "150m"
+                  cpu: 250m
+                  memory: 64Mi
               env:
                 - name: REACT_APP_SSO_HOST
                   valueFrom:
@@ -65,22 +87,21 @@ objects:
                       name: sso-configs
                       key: CLIENT_SSO_CLIENTID
                 - name: REACT_APP_API_HOST
-                  value: ${API_URL}
-          #   volumeMounts:
-          #   - name: ${VOLUME_NAME}
-          #     mountPath: /etc/nginx/conf.d
-          #     readOnly: true
-          # volumes:
-          # - name: ${VOLUME_NAME}
-          #   configMap:
-          #     defaultMode: 420
-          #     items:
-          #       - key: nginx.conf
-          #         path: default.conf
-          #     name: nginx.conf
+                  value: ${HOST}
+              volumeMounts:
+                - name: ${NAME}${SUFFIX}-volume
+                  mountPath: /etc/nginx/conf.d/
+                  readOnly: true
+          volumes:
+            - name: ${NAME}${SUFFIX}-volume
+              configMap:
+                defaultMode: 420
+                items:
+                  - key: client
+                    path: default.conf
+                name: client-configmap-${SUFFIX}
       test: false
       triggers:
-        - type: ConfigChange
         - imageChangeParams:
             automatic: true
             containerNames:
@@ -89,6 +110,7 @@ objects:
               kind: ImageStreamTag
               name: ${NAME}:${VERSION}
           type: ImageChange
+        - type: ConfigChange
   - apiVersion: v1
     kind: Service
     metadata:
@@ -108,7 +130,8 @@ objects:
       creationTimestamp: null
       name: ${NAME}${SUFFIX}
     spec:
-      host:
+      host: ${HOST}
+      path: "/"
       port:
         targetPort: web
       tls:
@@ -134,13 +157,18 @@ parameters:
     name: VERSION
     required: true
     value: "v1.0.0"
-  - description: API HOST
-    displayName: API HOST
-    name: API_URL
+  - description: HOST
+    displayName: HOST
+    name: HOST
     required: true
     value: ""
-# - description: Nginx config volume
-#   displayName: Volume Name
-#   name: VOLUME_NAME
-#   required: false
-#   value: nginx-config
+  - description: SOURCE_REPOSITORY_URL
+    displayName: SOURCE_REPOSITORY_URL
+    name: SOURCE_REPOSITORY_URL
+    required: false
+    value: ""
+  - description: SOURCE_REPOSITORY_REF
+    displayName: SOURCE_REPOSITORY_REF
+    name: SOURCE_REPOSITORY_REF
+    required: false
+    value: ""

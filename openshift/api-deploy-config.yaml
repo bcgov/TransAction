@@ -28,9 +28,11 @@ objects:
       strategy:
         resources:
           requests:
-            cpu: "100m"
+            cpu: 500m
+            memory: 256Mi
           limits:
-            cpu: "150m"
+            cpu: 500m
+            memory: 512Mi
       template:
         metadata:
           creationTimestamp: null
@@ -45,9 +47,11 @@ objects:
                   protocol: TCP
               resources:
                 requests:
-                  cpu: "100m"
+                  cpu: 500m
+                  memory: 256Mi
                 limits:
-                  cpu: "150m"
+                  cpu: 500m
+                  memory: 512Mi
               env:
                 - name: CONNECTION_STRING
                   valueFrom:
@@ -68,7 +72,6 @@ objects:
                   value: ${ASPNETCORE_ENVIRONMENT}
       test: false
       triggers:
-        - type: ConfigChange
         - imageChangeParams:
             automatic: true
             containerNames:
@@ -77,6 +80,7 @@ objects:
               kind: ImageStreamTag
               name: ${NAME}:${VERSION}
           type: ImageChange
+        - type: ConfigChange
   - apiVersion: v1
     kind: Service
     metadata:
@@ -96,7 +100,8 @@ objects:
       creationTimestamp: null
       name: ${NAME}${SUFFIX}
     spec:
-      host:
+      host: ${HOST}
+      path: "/api"
       port:
         targetPort: web
       tls:
@@ -127,3 +132,18 @@ parameters:
     name: ASPNETCORE_ENVIRONMENT
     required: true
     value: "Development"
+  - description: HOST
+    displayName: HOST
+    name: HOST
+    required: true
+    value: ""
+  - description: SOURCE_REPOSITORY_URL
+    displayName: SOURCE_REPOSITORY_URL
+    name: SOURCE_REPOSITORY_URL
+    required: false
+    value: ""
+  - description: SOURCE_REPOSITORY_REF
+    displayName: SOURCE_REPOSITORY_REF
+    name: SOURCE_REPOSITORY_REF
+    required: false
+    value: ""
