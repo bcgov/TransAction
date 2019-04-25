@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button, Row } from 'reactstrap';
+import { Container, Spinner, Button } from 'reactstrap';
 import {
   fetchCurrentUser,
   fetchTeam,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button } from 'reactstrap';
+import { Container, Spinner, Button } from 'reactstrap';
 import {
   fetchCurrentUser,
   fetchTeam,
