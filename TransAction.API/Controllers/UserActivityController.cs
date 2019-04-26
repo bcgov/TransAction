@@ -63,7 +63,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            if (createUserActivity.Name == null || createUserActivity.ActivityId == null || createUserActivity.Description == null || createUserActivity.UserId == null || createUserActivity.Hours == null)
+            if (createUserActivity.Name == null || createUserActivity.ActivityId == null || createUserActivity.Description == null || createUserActivity.UserId == null || createUserActivity.Minutes == null)
             {
                 return BadRequest();
             }
@@ -113,19 +113,44 @@ namespace TransAction.API.Controllers
 
         //total score for that specific team for that specific event
 
-       [HttpGet("team/{teamId}/event{eventId}")]
-        public IActionResult EventSpecificScore(int teamId, int eventId)
+       [HttpGet("event{eventId}")]
+        public IActionResult EventSpecificScore(int eventId)
         {
-            var userActs = _transActionRepo.GetAllUserActivities(eventId,teamId);
+            var score = _transActionRepo.EventSpecificScore(eventId);
 
-            /*
-             * go through all the users getting the users from the same team
-             * then, go through all users, using their id's to look for the activty ids and store their hours in an array and then multiply the hours with the respective and the id's intensity 
-             */
+            var result = new EventSpecificScoreDto
+            {
+                EventId = eventId,
+                Score = score
+            };
+            return Ok(result);
 
-            var getUserActivities = Mapper.Map<IEnumerable<UserActivityDto>>(userActs);
-            return Ok(getUserActivities);
+        }
 
+        [HttpGet("user/{userId}/event{eventId}")]
+        public IActionResult UserSpecificScore(int userId, int eventId)
+        {
+            var score = _transActionRepo.UserSpecificScore(userId, eventId);
+            var result = new UserSpecificScoreDto
+            {
+                eventId = eventId,
+                userId = userId,
+                score = score
+            };
+            return Ok(result);
+        }
+
+        [HttpGet("team/{teamId}/event{eventId}")]
+        public IActionResult TeamSpecificScore(int teamId, int eventId)
+        {
+            var score = _transActionRepo.TeamSpecificScore(teamId, eventId);
+            var result = new TeamSpecificScoreDto
+            {
+                eventId = eventId,
+                teamId = teamId,
+                score = score
+            };
+            return Ok(result);
         }
     }
 }

@@ -36,7 +36,9 @@ namespace TransAction.Data.Services
         void CreateActivity(TraActivity traActivity);
 
         IEnumerable<TraUserActivity> GetUserActivities();
-        IEnumerable<TraUserActivity> GetAllUserActivities(int eventId, int teamId);
+        int EventSpecificScore(int eventId);
+        int UserSpecificScore(int userId, int eventId);
+        int TeamSpecificScore(int teamId, int eventId);
         TraUserActivity GetUserActivity(int id);
         bool UserActivityExists(string Name);
         void CreateUserActivity(TraUserActivity traUserActivity);

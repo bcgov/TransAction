@@ -8,9 +8,11 @@ namespace TransAction.Data.Models
     {
         public string Description { get; set; }
         public string Name { get; set; }
-        public double Hours { get; set; }
+        public int Minutes { get; set; }
         public int UserId { get; set; }
         public int ActivityId { get; set; }
+        public int EventId { get; set; }
+        public int TeamId { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }

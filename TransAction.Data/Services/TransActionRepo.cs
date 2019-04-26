@@ -200,18 +200,55 @@ namespace TransAction.Data.Services
             _context.TraUserActivity.Add(traUserActivity);
         }
 
-        public IEnumerable<TraUserActivity> GetAllUserActivities(int eventId , int teamId)
+        public int EventSpecificScore(int eventId)
+        {               
+           
+            var userAct = _context.TraUserActivity
+                .Where(p => p.EventId == eventId)                    
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.EventId }) 
+                    .Select(x => new
+                    {
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                    })
+                    .ToList();
+            var sum = userAct.Select(c => c.Score).Sum();
+                   
+            return sum;
+
+        }
+
+        public int UserSpecificScore(int userId, int eventId)
+        {           
+            var userAct = _context.TraUserActivity
+                .Where(p => p.EventId == eventId && p.UserId == userId)
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.UserId, x.EventId })
+                    .Select(x => new
+                    {
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                    })
+                    .ToList();
+            var sum = userAct.Select(c => c.Score).Sum();
+
+            return sum;
+
+        }
+
+        public int TeamSpecificScore(int teamId, int eventId)
         {
-            var users = _context.TraEventUser.Where(p => p.EventId == eventId);
-            List<TraUserActivity> userAct = new List<TraUserActivity>();
-            foreach (var user in users)
-            {
-                
-                userAct = _context.TraUserActivity.Where(p => p.UserId == user.UserId).ToList();
+            var userAct = _context.TraUserActivity
+                .Where(p => p.EventId == eventId && p.TeamId == teamId)
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .Select(x => new
+                    {
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                    })
+                    .ToList();
+            var sum = userAct.Select(c => c.Score).Sum();
 
-            }
-            return userAct;
-
+            return sum;
         }
     }
 }

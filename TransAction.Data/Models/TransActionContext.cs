@@ -131,6 +131,11 @@ namespace TransAction.Data.Models
                 entity.Property(e => e.StartDate)
                     .HasColumnName("START_DATE")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("IS_ACTIVE")
+                    .HasColumnType("boolean");
+
             });
 
             modelBuilder.Entity<TraEventTeam>(entity =>
@@ -299,6 +304,10 @@ namespace TransAction.Data.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MEMBER_REQ_USER");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("IS_ACTIVE")
+                    .HasColumnType("boolean");
             });
 
             modelBuilder.Entity<TraRegion>(entity =>
@@ -725,7 +734,7 @@ namespace TransAction.Data.Models
                     .HasMaxLength(1024)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Hours).HasColumnName("HOURS");
+                entity.Property(e => e.Minutes).HasColumnName("MINUTES");
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
@@ -760,7 +769,8 @@ namespace TransAction.Data.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_USER_ACTIVITY_USER");
 
-               // Scaffold - DbContext "Server=.\SQLExpress;Database=SchoolDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer - OutputDir Models
+                // Scaffold - DbContext "Server=NC057936\\SQLEXPRESS;Database=TransActionNew; Trusted_Connection = true;" Microsoft.EntityFrameworkCore.SqlServer - OutputDir Models -Project TransAction.API
+
             });
         }
         

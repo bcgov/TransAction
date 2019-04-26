@@ -16,6 +16,7 @@ namespace TransAction.Data.Models
         public DateTime EndDate { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public Boolean IsActive { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
         public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
