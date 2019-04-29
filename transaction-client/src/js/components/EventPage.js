@@ -84,7 +84,7 @@ class EventPage extends Component {
           Add Activity
         </Button>
         <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Log an Activity">
-          <LogActivityModalBody modalClose={this.toggle} eventid={this.props.event.id} name="log" />
+          <LogActivityModalBody modalClose={this.toggle} eventId={this.props.event.id} name="log" />
         </EventModal>
         <h3>Hi {this.props.currentUser.fname}!</h3>
         {this.checkTeam()}

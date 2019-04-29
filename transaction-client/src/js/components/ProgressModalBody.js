@@ -5,13 +5,12 @@ import ProgressModalForm from './ProgressModalForm';
 class ProgressModalBody extends Component {
   onSubmit = formValues => {
     let obj = {};
-    console.log(this.props.name);
+
     if (this.props.name === 'create') {
       obj = { goal: formValues, progressbar: true };
     } else {
       obj = { goal: formValues };
     }
-    console.log(obj);
 
     this.props.onSubmit(obj);
     this.props.modalClose();
@@ -20,7 +19,6 @@ class ProgressModalBody extends Component {
   decideRender() {
     if (this.props.name === 'edit') {
       var initialValues = _.pick(this.props.team, 'goal');
-      //console.log(initialValues);
     }
     return (
       <ProgressModalForm
