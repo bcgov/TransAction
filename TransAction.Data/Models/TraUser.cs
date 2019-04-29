@@ -26,6 +26,7 @@ namespace TransAction.Data.Models
         public string Email { get; set; }
         public int RoleId { get; set; }
         public int? TeamId { get; set; }
+        public Boolean IsFreeAgent { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
         public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }

@@ -12,12 +12,12 @@ namespace TransAction.Data.Services
         {
             _context = context;
         }
-        public TraUser GetUser(string username)
+        public TraUser GetUser(string guid)
         {
             return _context.TraUser
                 .Include(x => x.Role)
                 .Include(x => x.Team)
-                .FirstOrDefault(x => x.Username == username);
+                .FirstOrDefault(x => x.Guid == guid);
         }
 
         public void CreateUser(TraUser user)
@@ -28,6 +28,15 @@ namespace TransAction.Data.Services
             _context.TraUser.Add(user);
         }
 
+        public TraRole GetRole(string role)
+        {
+            return _context.TraRole.FirstOrDefault(x => x.Name == role);
+        }
+
+        public TraRegion GetRegion(string region)
+        {
+            return _context.TraRegion.FirstOrDefault(x => x.Name == region);
+        }
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
