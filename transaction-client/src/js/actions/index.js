@@ -11,6 +11,14 @@ import {
   FETCH_REGIONS,
   FETCH_USERS,
   FETCH_TEAMS,
+  FETCH_ACTIVITY_LIST,
+  CREATE_USER_ACTIVITY,
+  FETCH_USER_SCORE,
+  FETCH_TEAM_SCORE,
+  FETCH_ALL_TEAM_SCORES,
+  FETCH_ALL_USER_SCORES,
+  FETCH_ROLES,
+  FETCH_CURRENT_USER,
 } from './types';
 import history from '../history';
 
@@ -34,19 +42,25 @@ export const editEvent = (id, formValues) => async dispatch => {
 };
 
 export const fetchEvent = id => async dispatch => {
-  const response = await api.get(`/events/${id}`);
-
-  dispatch({ type: FETCH_EVENT, payload: response.data });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/events/${id}`);
+      dispatch({ type: FETCH_EVENT, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 //User Actions
-export const fetchUser = id => async dispatch => {
+export const fetchCurrentUser = id => async dispatch => {
   // console.log('FetchUser given id: ', id);
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/users/${id}`);
       //console.log(response.data);
-      dispatch({ type: FETCH_USER, payload: response.data });
+      dispatch({ type: FETCH_CURRENT_USER, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);
@@ -66,6 +80,19 @@ export const fetchUsers = () => async dispatch => {
     }
   });
 };
+export const fetchUser = id => async dispatch => {
+  // console.log('FetchUser given id: ', id);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/users/${id}`);
+      //console.log(response.data);
+      dispatch({ type: FETCH_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 export const fetchTeam = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -75,10 +102,12 @@ export const fetchTeam = id => async dispatch => {
       dispatch({ type: FETCH_TEAM, payload: response.data });
       resolve();
     } catch (e) {
+      console.log('ERROR in fetchTeam');
       reject(e);
     }
   });
 };
+
 //TODO Combine these two
 export const editUser = (userObj, id) => async dispatch => {
   // console.log(userObj);
@@ -101,6 +130,7 @@ export const fetchRegions = () => async dispatch => {
       dispatch({ type: FETCH_REGIONS, payload: response.data });
       resolve();
     } catch (e) {
+      console.log('ERROR in fetchR');
       reject(e);
     }
   });
@@ -114,6 +144,107 @@ export const createTeam = formValues => async dispatch => {
 };
 
 export const fetchTeams = () => async dispatch => {
-  const response = await api.get('/teams');
-  dispatch({ type: FETCH_TEAMS, payload: response.data });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get('/teams');
+      dispatch({ type: FETCH_TEAMS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+//Activity Actions
+
+export const fetchActivityList = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get('/activities');
+      dispatch({ type: FETCH_ACTIVITY_LIST, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const createUserActivity = activityObj => async dispatch => {
+  console.log('Action has recieved: ', activityObj);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.post('/useractivity', activityObj);
+      console.log('Here in the action, we have: ', response.data);
+      dispatch({ type: CREATE_USER_ACTIVITY, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+//Score Actions
+
+export const fetchUserScore = (userId, eventId) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/user/${userId}/event/${eventId}`);
+      dispatch({ type: FETCH_USER_SCORE, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in userscore');
+      reject(e);
+    }
+  });
+};
+
+export const fetchAllUserScores = userId => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/user/${userId}`);
+      dispatch({ type: FETCH_ALL_USER_SCORES, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in userscores');
+      reject(e);
+    }
+  });
+};
+
+export const fetchTeamScore = (teamId, eventId) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/team/${teamId}/event/${eventId}`);
+      dispatch({ type: FETCH_TEAM_SCORE, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchAllTeamScores = teamId => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/team/${teamId}`);
+      dispatch({ type: FETCH_ALL_TEAM_SCORES, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchRoles = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/roles`);
+
+      dispatch({ type: FETCH_ROLES, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in fetchRoles');
+      reject(e);
+    }
+  });
 };

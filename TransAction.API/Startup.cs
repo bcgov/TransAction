@@ -82,7 +82,7 @@ namespace TransAction.API
             }
             else
             {
-                app.UseExceptionHandler();
+                app.UseExceptionHandler("/error");
             }
 
             AutoMapper.Mapper.Initialize(cfg =>

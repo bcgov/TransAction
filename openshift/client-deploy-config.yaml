@@ -7,6 +7,24 @@ labels:
   template: client-config
 objects:
   - apiVersion: v1
+    data:
+      client: |-
+        server {
+            listen       8080 default_server;
+            listen       [::]:8080 default_server;
+            server_name  _;
+
+            location / {
+                root   /usr/share/nginx/html;
+                index  index.html index.htm;
+
+                try_files $uri /index.html =404;
+            }
+        }
+    kind: ConfigMap
+    metadata:
+      name: client-configmap-${SUFFIX}
+  - apiVersion: v1
     kind: ImageStream
     metadata:
       creationTimestamp: null
@@ -69,10 +87,21 @@ objects:
                       name: sso-configs
                       key: CLIENT_SSO_CLIENTID
                 - name: REACT_APP_API_HOST
-                  value: ${API_URL}
+                  value: ${HOST}
+              volumeMounts:
+                - name: ${NAME}${SUFFIX}-volume
+                  mountPath: /etc/nginx/conf.d/
+                  readOnly: true
+          volumes:
+            - name: ${NAME}${SUFFIX}-volume
+              configMap:
+                defaultMode: 420
+                items:
+                  - key: client
+                    path: default.conf
+                name: client-configmap-${SUFFIX}
       test: false
       triggers:
-        - type: ConfigChange
         - imageChangeParams:
             automatic: true
             containerNames:
@@ -81,6 +110,7 @@ objects:
               kind: ImageStreamTag
               name: ${NAME}:${VERSION}
           type: ImageChange
+        - type: ConfigChange
   - apiVersion: v1
     kind: Service
     metadata:
@@ -94,6 +124,23 @@ objects:
           targetPort: 8080
       selector:
         deploymentconfig: ${NAME}${SUFFIX}
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      creationTimestamp: null
+      name: ${NAME}${SUFFIX}
+    spec:
+      host: ${HOST}
+      path: "/"
+      port:
+        targetPort: web
+      tls:
+        termination: edge
+      to:
+        kind: Service
+        name: ${NAME}${SUFFIX}
+        weight: 100
+      wildcardPolicy: None
 parameters:
   - description: A name used for all objects
     displayName: Name
@@ -110,9 +157,9 @@ parameters:
     name: VERSION
     required: true
     value: "v1.0.0"
-  - description: API HOST
-    displayName: API HOST
-    name: API_URL
+  - description: HOST
+    displayName: HOST
+    name: HOST
     required: true
     value: ""
   - description: SOURCE_REPOSITORY_URL

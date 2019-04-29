@@ -1,4 +1,3 @@
-﻿
 CREATE TABLE [dbo].[TRA_EVENT]
 (
     [EVENT_ID] INT IDENTITY (1, 1) NOT NULL,

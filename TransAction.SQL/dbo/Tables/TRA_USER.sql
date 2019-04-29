@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[TRA_USER] (
+CREATE TABLE [dbo].[TRA_USER] (
     [USER_ID]               INT            IDENTITY (1, 1) NOT NULL,
     [USERNAME]             VARCHAR(255) NOT NULL,
     [DIRECTORY] VARCHAR(8) NOT NULL,

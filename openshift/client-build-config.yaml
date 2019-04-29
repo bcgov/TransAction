@@ -97,7 +97,6 @@ objects:
 
           COPY src/src/build /usr/share/nginx/html
           COPY src/src/env2js.sh /env2js.sh
-          COPY src/src/nginx.conf /etc/nginx/conf.d/default.conf
 
           USER 0
           RUN chmod +x /env2js.sh

@@ -1,10 +1,12 @@
-import { FETCH_USERS } from '../actions/types';
+import { FETCH_USERS, FETCH_USER } from '../actions/types';
 import _ from 'lodash';
-//rename to currentUserReducer
 export default (state = {}, action) => {
   switch (action.type) {
     case FETCH_USERS:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
+    case FETCH_USER:
+      return { ...state, ...action.payload };
+
     default:
       return state;
   }
