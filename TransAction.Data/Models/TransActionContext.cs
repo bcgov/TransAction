@@ -131,6 +131,11 @@ namespace TransAction.Data.Models
                 entity.Property(e => e.StartDate)
                     .HasColumnName("START_DATE")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("IS_ACTIVE")
+                    .HasColumnType("boolean");
+
             });
 
             modelBuilder.Entity<TraEventTeam>(entity =>
@@ -299,6 +304,10 @@ namespace TransAction.Data.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MEMBER_REQ_USER");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("IS_ACTIVE")
+                    .HasColumnType("boolean");
             });
 
             modelBuilder.Entity<TraRegion>(entity =>
@@ -671,6 +680,10 @@ namespace TransAction.Data.Models
                     .WithMany(p => p.TraUser)
                     .HasForeignKey(d => d.TeamId)
                     .HasConstraintName("FK_USER_TEAM");
+
+                entity.Property(e => e.IsFreeAgent)
+                   .HasColumnName("IS_FREE_AGENT")
+                   .HasColumnType("boolean");
             });
 
             modelBuilder.Entity<TraUserActivity>(entity =>
@@ -719,9 +732,34 @@ namespace TransAction.Data.Models
                     .HasColumnName("DESCRIPTION")
                     .HasColumnType("text");
 
-                entity.Property(e => e.Hours).HasColumnName("HOURS");
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("NAME")
+                    .HasMaxLength(1024)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Minutes).HasColumnName("MINUTES");
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
+
+                // ADDED FOR USERACTIVITY
+
+                entity.Property(e => e.TeamId).HasColumnName("TEAM_ID");
+
+                entity.Property(e => e.EventId).HasColumnName("EVENT_ID");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.TraUserActivity)
+                    .HasForeignKey(d => d.EventId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_USER_ACTIVITY_EVENT");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.TraUserActivity)
+                    .HasForeignKey(d => d.TeamId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_USER_ACTIVITY_TEAM");
+                
 
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.TraUserActivity)
@@ -734,6 +772,9 @@ namespace TransAction.Data.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_USER_ACTIVITY_USER");
+
+                // Scaffold - DbContext "Server=NC057936\\SQLEXPRESS;Database=TransActionNew; Trusted_Connection = true;" Microsoft.EntityFrameworkCore.SqlServer - OutputDir Models -Project TransAction.API
+
             });
         }
         

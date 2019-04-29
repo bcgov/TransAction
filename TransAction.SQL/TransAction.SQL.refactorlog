@@ -329,4 +329,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="GOAL" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="a0e893a0-07ad-42c4-a234-5302f144075a" ChangeDateTime="04/25/2019 18:34:15">
+    <Property Name="ElementName" Value="[dbo].[TRA_USER_ACTIVITY].[HOURS]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER_ACTIVITY]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="MINUTES" />
+  </Operation>
 </Operations>

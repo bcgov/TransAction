@@ -11,5 +11,6 @@ namespace TransAction.Data.Models
         public string Description { get; set; }
         public int Goal { get; set; }
         public int UserId { get; set; }
+        public long ConcurrencyControlNumber { get; set; }
     }
 }

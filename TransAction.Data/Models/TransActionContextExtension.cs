@@ -34,8 +34,7 @@ namespace TransAction.Data.Models
                     concurrencyControl.CurrentValue = controlNumber;
 
 
-                    var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
-                    lastUpdateTimeStampProp.CurrentValue = createTimeStampProp.CurrentValue;
+                    var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");                   
                     lastUpdateTimeStampProp.CurrentValue = currentTime;
                                        
                     

@@ -4,13 +4,11 @@ using System.Text;
 
 namespace TransAction.Data.Models
 {
-    public class TeamCreateDto
+    public class ActivityUpdateDto
     {
         public string Name { get; set; }
-        public int RegionId { get; set; }
         public string Description { get; set; }
-        public int Goal { get; set; }
-        public int UserId { get; set; }
+        public int Intensity { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }
