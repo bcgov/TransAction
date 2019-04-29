@@ -3,6 +3,7 @@ import { Progress, Button } from 'reactstrap';
 import EventModal from './EventModal';
 import ProgressModalBody from './ProgressModalBody';
 
+//TODO REMAKE PROGRESS BAR WITHOUT BOOLEAN VALUE. FIND AMT FOR GOAL IN DIFFERENT TABLE
 class ProgressBar extends Component {
   state = { modal: false };
 
@@ -23,7 +24,7 @@ class ProgressBar extends Component {
   progressButtons() {
     if (this.props.team.progressbar === true) {
       return (
-        <div>
+        <React.Fragment>
           <Button color="primary" className="mt-3 mb-2 mr-2" name="edit" onClick={this.toggle}>
             Edit Goal
           </Button>
@@ -38,7 +39,7 @@ class ProgressBar extends Component {
           <Button color="primary" className="mt-3 mb-2" name="remove" onClick={this.onDeleteBar}>
             Remove Goal
           </Button>
-        </div>
+        </React.Fragment>
       );
     }
   }
@@ -46,7 +47,7 @@ class ProgressBar extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="progress">
+        <div id="progress">
           <Progress bar animated color="primary" value={(this.props.team.progressamt / this.props.team.goal) * 100}>
             Check out this hot progress
           </Progress>

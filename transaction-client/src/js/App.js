@@ -9,6 +9,8 @@ import Main from './components/Main';
 import Profile from './components/Profile';
 import Team from './components/Team';
 import TeamsList from './components/TeamsList';
+import EventPage from './components/EventPage';
+import GettingStarted from './components/GettingStarted';
 
 import '../scss/transaction.scss';
 
@@ -26,6 +28,8 @@ class App extends Component {
               <Route path="/profile/:id" exact component={Profile} />
               <Route path="/team/:id" exact component={Team} />
               <Route path="/teamslist" exact component={TeamsList} />
+              <Route path="/event/:id" exact component={EventPage} />
+              <Route path="/getting_started" exact component={GettingStarted} />
             </Switch>
           </Container>
           <Footer />

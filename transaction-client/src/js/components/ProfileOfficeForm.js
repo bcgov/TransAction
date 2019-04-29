@@ -5,7 +5,7 @@ import { reduxForm, Field } from 'redux-form';
 class ProfileOfficeForm extends React.Component {
   onChange = event => {
     //console.log(event.target.value);
-    const regionObj = { region: event.target.value };
+    const regionObj = { regionId: event.target.value };
     this.onSubmit(regionObj);
   };
 
@@ -16,7 +16,7 @@ class ProfileOfficeForm extends React.Component {
   renderDropdown = () => {
     const options = this.props.regions.map(region => (
       <option key={region.id} value={region.id}>
-        {region.region}
+        {region.name}
       </option>
     ));
 
@@ -30,7 +30,7 @@ class ProfileOfficeForm extends React.Component {
         {' '}
         Region:
         <Form className="regionForm ml-3">
-          <Field name="region" component="select" onChange={this.onChange} className="form-control">
+          <Field name="regionId" component="select" onChange={this.onChange} className="form-control">
             {this.renderDropdown()}
           </Field>
         </Form>
