@@ -44,7 +44,7 @@ namespace TransAction.Data.Services
             return _context.TraEvent.OrderBy(c => c.EventId).ToList();
         }
 
-        /*-----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public TraUser GetUser(int id)
         {
@@ -86,7 +86,7 @@ namespace TransAction.Data.Services
         {
             return (_context.SaveChanges() >= 0);
         }
-        /*---------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraTeam> GetTeams()
         {
             return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
@@ -114,7 +114,7 @@ namespace TransAction.Data.Services
                 return false;
             }
         }
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraRegion> GetRegions()
         {
             return _context.TraRegion.OrderBy(c => c.RegionId).ToList();
@@ -142,7 +142,7 @@ namespace TransAction.Data.Services
             _context.TraRegion.Add(traRegion);
         }
 
-        /*--------------------------------------------------------------------------*/
+ /*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public IEnumerable<TraActivity> GetActivities()
         {
@@ -199,7 +199,7 @@ namespace TransAction.Data.Services
         {
             _context.TraUserActivity.Add(traUserActivity);
         }
-
+/*-----------------------------------------------------------------------------------------------------------------------------*/
         public int EventSpecificScore(int eventId)
         {               
            

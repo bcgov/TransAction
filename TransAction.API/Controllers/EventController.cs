@@ -60,7 +60,7 @@ namespace TransAction.API.Controllers
 
         }
 
-        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
+        //[ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPost()]
         public IActionResult CreateEvent([FromBody] EventCreateDto createEvent)
         {

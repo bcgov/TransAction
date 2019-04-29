@@ -680,6 +680,10 @@ namespace TransAction.Data.Models
                     .WithMany(p => p.TraUser)
                     .HasForeignKey(d => d.TeamId)
                     .HasConstraintName("FK_USER_TEAM");
+
+                entity.Property(e => e.IsFreeAgent)
+                   .HasColumnName("IS_FREE_AGENT")
+                   .HasColumnType("boolean");
             });
 
             modelBuilder.Entity<TraUserActivity>(entity =>
