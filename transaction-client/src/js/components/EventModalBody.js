@@ -13,8 +13,10 @@ class EventModalBody extends React.Component {
   }
   //checks idFlag to add or edit
   onSubmit = formValues => {
-    if (this.state.idFlag === 'add') this.props.createEvent(formValues);
-    else this.props.editEvent(this.props.id, formValues);
+    if (this.state.idFlag === 'add') {
+      const eventObj = { ...formValues, concurrencyControlNumber: 1 };
+      this.props.createEvent(eventObj);
+    } else this.props.editEvent(this.props.id, formValues);
 
     this.handelClick(); //evoke methods to close model
   };
@@ -44,8 +46,6 @@ class EventModalBody extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  //console.log(ownProps);
-  //console.log(state.events);
   return { event: state.events[ownProps.id] };
 };
 

@@ -1,11 +1,10 @@
-import { FETCH_USERS, FETCH_USER } from '../actions/types';
 import _ from 'lodash';
+import { FETCH_ROLES } from '../actions/types';
+
 export default (state = {}, action) => {
   switch (action.type) {
-    case FETCH_USERS:
+    case FETCH_ROLES:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
-    case FETCH_USER:
-      return { ...state, ...action.payload };
 
     default:
       return state;

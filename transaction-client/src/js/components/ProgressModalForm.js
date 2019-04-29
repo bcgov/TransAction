@@ -8,7 +8,7 @@ class ProgressModelForm extends Component {
       return <div className="errorMessage">{error}</div>;
     }
   }
-  renderInput = ({ input, label, type, meta, divClass }) => {
+  renderInput = ({ input, label, type, meta }) => {
     return (
       <React.Fragment>
         <FormGroup>

@@ -1,14 +1,39 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Buttom, Container, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Container, Breadcrumb, BreadcrumbItem, Spinner } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchTeams } from '../actions';
-import EventModal from './EventModal';
-import CreateTeamModalBody from './CreateTeamModalBody';
 
 class TeamsList extends Component {
+  state = { loading: true };
+  toggleSpinner = () => {
+    this.setState(prevState => ({
+      loading: !prevState.loading,
+    }));
+  };
   componentDidMount() {
-    this.props.fetchTeams();
+    // this.toggleSpinner();
+    Promise.all([this.props.fetchTeams()])
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
+  }
+
+  decideRender() {
+    //console.log(this.state.isSpin);
+    if (this.state.isSpin === true) {
+      //console.log('spin');
+      return (
+        <div className="col-1 offset-6">
+          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
+        </div>
+      );
+    } else {
+      return this.showTeams();
+    }
   }
 
   showTeams() {
@@ -33,7 +58,7 @@ class TeamsList extends Component {
           <BreadcrumbItem active>TeamList</BreadcrumbItem>
         </Breadcrumb>
         <h3>List of Teams: </h3>
-        <div>{this.showTeams()}</div>
+        <div>{this.decideRender()}</div>
       </Container>
     );
   }

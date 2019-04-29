@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
-import { Container, Breadcrumb, BreadcrumbItem } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchUsers } from '../actions';
 
 class TeamReadOnly extends Component {
+  checkUser(user) {
+    if (user.teamId === this) return user.teamId;
+  }
+
   showTeamMembers() {
-    const users = this.props.users.map(teamate => {
+    var users = this.props.users.filter(this.checkUser, this.props.team.id).map(teamate => {
       //console.log(teamate);
-      if (teamate.teamid === this.props.team.id) return <div key={teamate.id}>{teamate.name}</div>;
+      return (
+        <div key={teamate.id}>
+          {teamate.fname} {teamate.lname}
+        </div>
+      );
     });
     return users;
   }
@@ -27,12 +34,7 @@ class TeamReadOnly extends Component {
   }
 
   render() {
-    return (
-      <Container>
-        <div>we are in read only mode! and this aint your team</div>
-        {this.teamInfo()}
-      </Container>
-    );
+    return <Container>{this.teamInfo()}</Container>;
   }
 }
 
