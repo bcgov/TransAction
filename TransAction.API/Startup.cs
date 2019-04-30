@@ -61,7 +61,7 @@ namespace TransAction.API
                 options.AddPolicy(CORS_ALLOW_ALL,
                 builder =>
                 {
-                    builder.AllowAnyOrigin().AllowAnyHeader();
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 
                 });
             });
