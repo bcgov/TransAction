@@ -95,7 +95,9 @@ namespace TransAction.API.Controllers
             if (!usersCurrentRole.Equals("Admin"))
             {
                 user.RoleId = roleId;
-            }                      
+            }
+
+            user.IsFreeAgent = false;
             var userUpdate = Mapper.Map<UserUpdateDto>(user);
             Mapper.Map<TraUser>(userUpdate);
 

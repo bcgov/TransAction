@@ -109,6 +109,20 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
+            if(userEntity.TeamId == null && updateUser.TeamId != null)
+            {
+                updateUser.IsFreeAgent = false;
+            }
+            var role = _transActionRepo.GetRoles();
+            var hello = updateUser.RoleId;//this the the one that is being sent in by the client
+            var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
+            var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
+
+            if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
+            {
+                updateUser.RoleId = roleId;
+            }
+
             Mapper.Map(updateUser, userEntity);
 
             if (!_transActionRepo.Save())
@@ -117,6 +131,7 @@ namespace TransAction.API.Controllers
             }
 
             return NoContent();
+
         }
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
