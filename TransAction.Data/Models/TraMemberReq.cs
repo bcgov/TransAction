@@ -8,6 +8,7 @@ namespace TransAction.Data.Models
         public int MemberReqId { get; set; }
         public int UserId { get; set; }
         public int TeamId { get; set; }
+        public Boolean IsActive { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
         public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }

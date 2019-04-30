@@ -44,7 +44,7 @@ namespace TransAction.Data.Services
             return _context.TraEvent.OrderBy(c => c.EventId).ToList();
         }
 
-        /*-----------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public TraUser GetUser(int id)
         {
@@ -76,11 +76,17 @@ namespace TransAction.Data.Services
             }
         }
 
+        public TraUser GetCurrentUser(string guid)
+        {
+            return _context.TraUser.FirstOrDefault(c => c.Guid == guid);
+        }
+
+
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
         }
-        /*---------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraTeam> GetTeams()
         {
             return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
@@ -108,7 +114,7 @@ namespace TransAction.Data.Services
                 return false;
             }
         }
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraRegion> GetRegions()
         {
             return _context.TraRegion.OrderBy(c => c.RegionId).ToList();
@@ -131,10 +137,118 @@ namespace TransAction.Data.Services
                 return false;
             }
         }
-
         public void CreateRegion(TraRegion traRegion)
         {
             _context.TraRegion.Add(traRegion);
+        }
+
+ /*-----------------------------------------------------------------------------------------------------------------------------*/
+
+        public IEnumerable<TraActivity> GetActivities()
+        {
+            return _context.TraActivity.OrderBy(c => c.ActivityId).ToList();
+        }
+
+        public TraActivity GetActivity(int id)
+        {
+            return _context.TraActivity.FirstOrDefault(c => c.ActivityId == id);
+        }
+
+        public bool ActivityExists(string Name)
+        {
+            var checkActivity = _context.TraActivity.FirstOrDefault(c => c.Name == Name);
+            if (checkActivity != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void CreateActivity(TraActivity traActivity)
+        {
+            _context.TraActivity.Add(traActivity); 
+        }
+
+        public IEnumerable<TraUserActivity> GetUserActivities()
+        {
+            return _context.TraUserActivity.OrderBy(c => c.UserActivityId).ToList();
+        }
+
+        public TraUserActivity GetUserActivity(int id)
+        {
+            return _context.TraUserActivity.FirstOrDefault(c => c.UserActivityId == id);
+        }
+
+        public bool UserActivityExists(string Name)
+        {
+            var checkUserActivity = _context.TraUserActivity.FirstOrDefault(c => c.Name == Name);
+            if (checkUserActivity != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void CreateUserActivity(TraUserActivity traUserActivity)
+        {
+            _context.TraUserActivity.Add(traUserActivity);
+        }
+/*-----------------------------------------------------------------------------------------------------------------------------*/
+        public int EventSpecificScore(int eventId)
+        {               
+           
+            var userAct = _context.TraUserActivity
+                .Where(p => p.EventId == eventId)                    
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.EventId }) 
+                    .Select(x => new
+                    {
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                    })
+                    .ToList();
+            var sum = userAct.Select(c => c.Score).Sum();
+                   
+            return sum;
+
+        }
+
+        public int UserSpecificScore(int userId, int eventId)
+        {           
+            var userAct = _context.TraUserActivity
+                .Where(p => p.EventId == eventId && p.UserId == userId)
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.UserId, x.EventId })
+                    .Select(x => new
+                    {
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                    })
+                    .ToList();
+            var sum = userAct.Select(c => c.Score).Sum();
+
+            return sum;
+
+        }
+
+        public int TeamSpecificScore(int teamId, int eventId)
+        {
+            var userAct = _context.TraUserActivity
+                .Where(p => p.EventId == eventId && p.TeamId == teamId)
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .Select(x => new
+                    {
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                    })
+                    .ToList();
+            var sum = userAct.Select(c => c.Score).Sum();
+
+            return sum;
         }
     }
 }
