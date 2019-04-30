@@ -74,8 +74,10 @@ class GettingStarted extends Component {
           <h4 id="centerText">How Does it Work?</h4>
           Teams enter daily activity time in TransAction, and you monitor your team's progress and standings on the
           homepage. You will not only compete against other teams, but your individual time will also help your
-          geographic area compete in the 4-way battle between regions and headquarters.
-          <br />
+          geographic area compete in the 4-way battle between regions and headquarters. toggleAgent={
+            this.toggleAgent
+          }{' '}
+          isOpen={this.state.modalAgent}
           <br /> Exercise time is entered for each day and points are assigned based on level of intensity. Time entered
           is converted to points. High, medium and low intensity exercises are multiplied by factors of 3, 2, and 1,
           respectively. You can view your activity log entries on the calendar. More information can be found in the FAQ

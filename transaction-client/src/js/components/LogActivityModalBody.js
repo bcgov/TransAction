@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import LogActivityModalForm from './LogActivityModalForm';
 import { createUserActivity, fetchActivityList, fetchCurrentUser } from '../actions';
 
-class CreateTeamModalBody extends Component {
+class LogActivityModalBody extends Component {
   onSubmit = formValues => {
     const activityObj = {
       eventId: this.props.eventId,
@@ -14,7 +14,6 @@ class CreateTeamModalBody extends Component {
       description: null,
       name: null,
     };
-    console.log('adding:', activityObj);
     this.props.createUserActivity(activityObj).then(() => {
       this.props.fetchCurrentUser('me');
     });
@@ -48,4 +47,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { createUserActivity, fetchCurrentUser, fetchActivityList }
-)(CreateTeamModalBody);
+)(LogActivityModalBody);

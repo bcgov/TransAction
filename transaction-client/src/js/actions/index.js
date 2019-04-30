@@ -23,10 +23,9 @@ import {
 import history from '../history';
 
 //Event Actions
-export const fetchEvents = toggleSpinner => async dispatch => {
+export const fetchEvents = () => async dispatch => {
   const response = await api.get('/events');
   dispatch({ type: FETCH_EVENTS, payload: response.data });
-  toggleSpinner();
 };
 
 export const createEvent = formValues => async dispatch => {
@@ -110,16 +109,30 @@ export const fetchTeam = id => async dispatch => {
 
 //TODO Combine these two
 export const editUser = (userObj, id) => async dispatch => {
-  // console.log(userObj);
-  const response = await api.put(`/users/${id}`, userObj);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.put(`/users/${id}`, userObj);
 
-  dispatch({ type: FETCH_USER, payload: response.data });
+      dispatch({ type: FETCH_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in editeam');
+      reject(e);
+    }
+  });
 };
-export const editTeam = (userObj, id) => async dispatch => {
-  // console.log(userObj);
-  const response = await api.put(`/teams/${id}`, userObj);
+export const editTeam = (teamObj, id) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.put(`/teams/${id}`, teamObj);
 
-  dispatch({ type: FETCH_TEAM, payload: response.data });
+      dispatch({ type: FETCH_TEAM, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in editeam');
+      reject(e);
+    }
+  });
 };
 
 export const fetchRegions = () => async dispatch => {
@@ -239,8 +252,12 @@ export const fetchRoles = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/roles`);
+      console.log(response.data);
+      const resultToLower = response.data.map(element => {
+        return { ...element, name: element.name.toLowerCase() };
+      });
 
-      dispatch({ type: FETCH_ROLES, payload: response.data });
+      dispatch({ type: FETCH_ROLES, payload: resultToLower });
       resolve();
     } catch (e) {
       console.log('ERROR in fetchRoles');

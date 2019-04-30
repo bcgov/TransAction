@@ -18,7 +18,6 @@ class Event extends React.Component {
   findRole(userRoleId) {
     this.props.roles.forEach(role => {
       if (userRoleId === role.id) {
-        console.log('This user is a ', role.name);
         this.setState({ userRole: role.name });
       }
     });
@@ -29,14 +28,12 @@ class Event extends React.Component {
       this.findRole(this.props.currentUser.roleId);
     });
   }
-  test(id) {
-    console.log(id);
+  redirect(id) {
     this.setState({ redirect: true, redirectId: id });
   }
 
   checkAdmin() {
     if (this.state.userRole === 'admin') {
-      console.log('show edit');
       return (
         <React.Fragment>
           <ButtonGroup className="float-right">
@@ -62,7 +59,7 @@ class Event extends React.Component {
         <React.Fragment>
           <Row>
             <Col>
-              <h3 className="event float-left" onClick={() => this.test(this.props.event.id)}>
+              <h3 className="event float-left" onClick={() => this.redirect(this.props.event.id)}>
                 {this.props.event.name}
               </h3>
               {this.checkAdmin()}

@@ -45,7 +45,6 @@ class Profile extends Component {
   }
 
   findRole(userRoleId) {
-    console.log('please');
     //console.log(this.props.roles[userRoleId].name);
     this.setState({ userRole: this.props.roles[userRoleId].name });
     // this.props.roles.foreach(role => {
@@ -106,7 +105,7 @@ class Profile extends Component {
           </Link>
           <Button color="secondary" className="ml-3 mb-2" onClick={this.leaveTeam}>
             {' '}
-            Leave Team
+            Remove From Team
           </Button>
         </h3>
       );
@@ -136,7 +135,6 @@ class Profile extends Component {
   }
 
   render() {
-    console.log('Id Passed: ', this.props.userId);
     return (
       <Container>
         <div>{this.decideRender()}</div>
