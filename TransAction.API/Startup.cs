@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TransAction.API.Authentication;
 using TransAction.API.Authorization;
+using TransAction.API.Controllers;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -55,6 +56,7 @@ namespace TransAction.API
 
             services.AddSingleton<IAuthorizationHandler, UserEditAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, TeamEditAuthorizationHandler>();
+            
 
             services.AddCors(options =>
             {

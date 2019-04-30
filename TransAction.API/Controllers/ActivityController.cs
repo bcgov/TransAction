@@ -61,7 +61,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createActivity.Description == null || createActivity.Name == null || createActivity.Intensity == null)
+            if (createActivity.Description == null || createActivity.Name == null)
             {
                 return BadRequest();
             }

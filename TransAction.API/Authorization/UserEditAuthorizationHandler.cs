@@ -11,14 +11,14 @@ namespace TransAction.API.Authorization
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
                                                        UserEditRequirement requirement,
-                                                       int id)
+                                                       int userId)
         {
             if (context.User.HasClaim(c => c.Type == AuthorizationTypes.TRA_CLAIM_TYPE && c.Value == AuthorizationTypes.ADMIN_CLAIM))
             {
                 context.Succeed(requirement);
             }
 
-            if (context.User.HasClaim(c => c.Type == AuthorizationTypes.USER_ID_CLAIM && c.Value == id.ToString()))
+            if (context.User.HasClaim(c => c.Type == AuthorizationTypes.USER_ID_CLAIM && c.Value == userId.ToString()))
             {
                 context.Succeed(requirement);
             }

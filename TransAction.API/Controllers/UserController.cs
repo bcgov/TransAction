@@ -67,7 +67,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createUser.Guid == null || createUser.Username == null || createUser.Directory == null || createUser.RegionId == null)
+            if (createUser.Guid == null || createUser.Username == null || createUser.Directory == null)
             {
                 return BadRequest();
             }
