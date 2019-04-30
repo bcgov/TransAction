@@ -109,10 +109,10 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if(userEntity.TeamId == null && updateUser.TeamId != null)
-            {
-                updateUser.IsFreeAgent = false;
-            }
+            //if(userEntity.TeamId == null && updateUser.TeamId != null)
+            //{
+            //    updateUser.IsFreeAgent = false;
+            //}
             var role = _transActionRepo.GetRoles();
             var hello = updateUser.RoleId;//this the the one that is being sent in by the client
             var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
