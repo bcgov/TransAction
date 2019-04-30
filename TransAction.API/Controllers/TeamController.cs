@@ -60,7 +60,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createTeam.RegionId == null || createTeam.Description == null)
+            if (createTeam.Description == null)
             {
                 return BadRequest();
             }
@@ -73,16 +73,39 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-
+            
             var newTeam = Mapper.Map<TraTeam>(createTeam);
             _transActionRepo.CreateTeam(newTeam);
 
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
-            }
+            }         
 
             var createdTeamToReturn = Mapper.Map<TeamDto>(newTeam);
+            
+            var user = _transActionRepo.GetUser(newTeam.UserId);
+            user.TeamId = createdTeamToReturn.TeamId;
+
+            var role = _transActionRepo.GetRoles();
+            var roleId = role.Where(x => x.Name == "Team_Lead").Select(c => c.RoleId).FirstOrDefault();
+            
+            var usersCurrentRole = role.Where(x => x.RoleId == user.RoleId).Select(c => c.Name).FirstOrDefault();
+                      
+            if (!usersCurrentRole.Equals("Admin"))
+            {
+                user.RoleId = roleId;
+            }
+
+            user.IsFreeAgent = false;
+            var userUpdate = Mapper.Map<UserUpdateDto>(user);
+            Mapper.Map<TraUser>(userUpdate);
+
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+            
             return CreatedAtRoute("GetThatUser", new { id = createdTeamToReturn.UserId }, createdTeamToReturn);
         }
 

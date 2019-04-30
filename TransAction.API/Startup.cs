@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TransAction.API.Authentication;
 using TransAction.API.Authorization;
+using TransAction.API.Controllers;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -55,13 +56,14 @@ namespace TransAction.API
 
             services.AddSingleton<IAuthorizationHandler, UserEditAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, TeamEditAuthorizationHandler>();
+            
 
             services.AddCors(options =>
             {
                 options.AddPolicy(CORS_ALLOW_ALL,
                 builder =>
                 {
-                    builder.AllowAnyOrigin().AllowAnyHeader();
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 
                 });
             });
@@ -128,6 +130,9 @@ namespace TransAction.API
                 cfg.CreateMap<UserActivityUpdateDto, TraUserActivity>();
                 cfg.CreateMap<TraUserActivity, UserActivityUpdateDto>();
 
+                //for roles
+                cfg.CreateMap<TraRole, RoleDto>();
+                cfg.CreateMap<RoleDto, TraRole>();
             });
 
             app.UseCors(CORS_ALLOW_ALL);
