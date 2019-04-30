@@ -34,17 +34,17 @@ class LogActivityModalForm extends React.Component {
   };
 
   renderForms() {
-    console.log(this.props.activityList);
     return (
       <Form onSubmit={this.props.handleSubmit(this.onSubmit)}>
         <Field name="activityId" component="select" className="form-control">
           {this.renderDropdown()}
         </Field>
-        <Field
-          name="hours"
-          component={this.renderInput}
-          label="How Long? (1 hour = 1, Half Hour = .5, 15 mins = .25)"
-        />
+        <div id="log-time">
+          <Field name="hours" component={this.renderInput} label="How Many Hours?" />
+        </div>
+        <div id="log-time">
+          <Field name="minutes" component={this.renderInput} label="How Many Minutes?" />
+        </div>
         <div className="float-right mt-3">
           <Button color="primary" className="mr-3">
             Add
