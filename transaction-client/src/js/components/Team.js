@@ -91,8 +91,9 @@ class Team extends Component {
     //console.log('passed in ', formValues);
     const userObj = { ...this.state.currentTeam, ...formValues };
     //console.log('now contain ', userObj);
-    this.props.editTeam(userObj, this.state.currentTeam.id);
-    this.props.fetchTeam();
+    this.props.editTeam(userObj, this.state.currentTeam.id).then(() => {
+      this.setState({ currentTeam: this.props.team[this.state.currentTeam.id] });
+    });
   };
 
   componentDidMount() {
@@ -102,12 +103,10 @@ class Team extends Component {
       const teamId = this.props.paramId ? this.props.paramId : this.props.currentUser.teamId;
       Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers(), this.props.fetchRoles()])
         .then(() => {
-          console.log(this.state.currentTeam);
           // Don't do the next line.  Map it in mapstatetoprops
           this.setState({ currentTeam: this.props.team[teamId] });
           this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
 
-          console.log(this.state.currentTeam);
           this.toggleSpinner();
         })
         .catch(() => {
@@ -139,13 +138,11 @@ class Team extends Component {
   }
 
   checkUser(user) {
-    console.log('checking ', user.teamId, ' with ', this);
     if (user.teamId === this) return user;
   }
 
   showTeamMembers() {
     var users = this.props.users.filter(this.checkUser, this.state.currentTeam.id).map(teamate => {
-      console.log(teamate);
       return (
         <div key={teamate.id}>
           {teamate.fname} {teamate.lname}
@@ -155,15 +152,7 @@ class Team extends Component {
     return users;
   }
 
-  onSubmit = formValues => {
-    //console.log('passed in ', formValues);
-    const teamObj = { ...this.state.currentTeam, ...formValues };
-    console.log('now contain ', teamObj);
-    this.props.editTeam(teamObj, this.state.currentTeam.id);
-  };
-
   teamInfo() {
-    console.log(_.pick(this.state.currentTeam, 'description'));
     return (
       <div>
         <TitleForm
@@ -194,7 +183,9 @@ class Team extends Component {
           </BreadcrumbItem>
           <BreadcrumbItem active>Team</BreadcrumbItem>
         </Breadcrumb>
-        <h1>Team</h1>
+        <h1>
+          Team Page <br />
+        </h1>
         {this.decideRender()}
       </Container>
     );

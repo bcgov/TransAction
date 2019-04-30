@@ -53,7 +53,14 @@ class Main extends Component {
     Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser('me')]).then(() => {
       this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
     });
-    this.props.fetchEvents(this.toggleSpinner);
+    this.props
+      .fetchEvents()
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
   }
 
   checkAdmin() {

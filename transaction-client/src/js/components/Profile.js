@@ -47,6 +47,7 @@ class Profile extends Component {
       if (!this.props.currentUser.id) return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
+        console.log(this.props.paramId);
         //no paramId passed
         if (!this.props.paramId) {
           //Following the user's profile
@@ -56,18 +57,18 @@ class Profile extends Component {
         }
         //paramId is passed
         else {
+          console.log('param Id passed');
           //if the paramId is the same as user profileid
           if (this.props.paramId === this.props.currentUser.id) {
             //role doesnt matter, its the users page
-            console.log('here?');
             return this.userInfo();
           }
           //paramid is NOT the same as user id; viewing someones profile from the outside
           else {
             //If they are an admin
+            console.log(this.state.userRole);
             if (this.state.userRole === 'admin') {
               console.log('we are admin');
-              console.log(this.props.paramId);
               return <ProfileAdminView userId={this.props.paramId} />;
             } else {
               //return read only
@@ -81,21 +82,23 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    // this.toggleSpinner();
-    this.props.fetchEvents();
-    this.props
-      .fetchCurrentUser('me')
+    //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
+    Promise.all([
+      this.props.fetchEvents(),
+      this.props.fetchRoles(),
+      this.props.fetchCurrentUser('me'),
+      this.props.fetchAllUserScores('me'),
+    ])
       .then(() => {
         const teamId = this.props.currentUser.teamId;
         Promise.all([
           this.props.fetchRegions(),
           this.props.fetchTeam(this.props.currentUser.teamId),
-          this.props.fetchAllUserScores('me'),
-          this.props.fetchRoles(),
+
+          this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name }),
         ])
           .then(() => {
             this.setState({ currentTeam: this.props.team[teamId] });
-            this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
             this.toggleSpinner();
           })
           .catch(() => {
@@ -104,15 +107,17 @@ class Profile extends Component {
           });
       })
       .catch(() => {
-        this.toggleSpinner();
+        // this.toggleSpinner();
       });
   }
 
   onSubmit = formValues => {
     //console.log('passed in ', formValues);
     const userObj = { ...this.props.currentUser, ...formValues };
-    //console.log('now contain ', userObj);
-    this.props.editUser(userObj, 'me');
+    console.log('now contain ', userObj);
+    this.props.editUser(userObj, 'me').then(() => {
+      this.props.fetchCurrentUser('me');
+    });
   };
 
   printProgress() {
@@ -204,10 +209,10 @@ class Profile extends Component {
   }
   //**TODO, REMOVE HARDCODED TEAM VALUES**
   printUserScores() {
-    const scores = this.props.allUserScores.map((element, index) => (
+    const scores = this.props.allUserScores.map(element => (
       <Col>
         <UserScoreGraphicCard
-          key={index}
+          key={element.eventId}
           userScore={element.value}
           teamScore={100}
           name={this.findEventName(element.eventId)}
@@ -241,7 +246,6 @@ class Profile extends Component {
   }
 
   render() {
-    console.log('Id Passed: ', this.props.paramId);
     return (
       <Container>
         <Breadcrumb>
@@ -258,13 +262,8 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  var who;
-  //check to see if params.id exists, if not return "me"
-  if (!ownProps.match.params.id) who = 'me';
-  else who = ownProps.match.params.id;
-
   return {
-    paramId: who,
+    paramId: ownProps.match.params.id,
     currentUser: state.currentUser,
     team: state.team,
     regions: Object.values(state.regions),
