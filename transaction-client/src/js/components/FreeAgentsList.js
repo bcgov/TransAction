@@ -64,6 +64,7 @@ class FreeAgentsList extends Component {
       const teamId = { teamId: this.props.currentUser.teamId, isFreeAgent: false };
       const recUser = { ...user, ...teamId };
       this.props.editUser(recUser, user.id);
+      this.props.fetchCurrentTeam(this.props.currentUser.teamId);
     }
   }
 

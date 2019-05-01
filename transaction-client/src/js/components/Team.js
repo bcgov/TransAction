@@ -163,7 +163,7 @@ class Team extends Component {
     const teamId = { teamId: null, isFreeAgent: true };
     const kickUser = { ...user, ...teamId };
     this.props.editUser(kickUser, user.id);
-    this.props.fetchTeam(this.props.currentUser.teamId);
+    this.props.fetchCurrentTeam(this.props.currentUser.teamId);
   }
   checkMember(user) {
     if (user.id !== this.props.currentUser.id) {

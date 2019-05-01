@@ -21,6 +21,9 @@ import {
   FETCH_CURRENT_USER,
   FETCH_CURRENT_TEAM,
   FETCH_CURRENT_ROLE,
+  FETCH_REQUEST,
+  FETCH_ALL_REQUESTS,
+  FETCH_SPECIFIC_TEAM_REQUESTS,
 } from './types';
 import history from '../history';
 
@@ -104,6 +107,7 @@ export const fetchUser = id => async dispatch => {
 
 export const fetchCurrentTeam = id => async dispatch => {
   // console.log('FetchUser given id: ', id);
+  console.log('current team fetch');
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/teams/${id}`);
@@ -161,6 +165,23 @@ export const editUser = (userObj, id) => async dispatch => {
     }
   });
 };
+
+export const recruitUser = (userObj, id) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log('attempting to put values ', userObj);
+      const response = await api.put(`/users/${id}`, userObj);
+      console.log('attempting dispatch response: ', response);
+
+      dispatch({ type: FETCH_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in edituser');
+      reject(e);
+    }
+  });
+};
+
 export const editTeam = (teamObj, id) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -305,6 +326,44 @@ export const fetchRoles = () => async dispatch => {
       resolve();
     } catch (e) {
       console.log('ERROR in fetchRoles');
+      reject(e);
+    }
+  });
+};
+
+//Team Requests
+
+export const fetchAllRequests = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/teamrequests/`);
+      dispatch({ type: FETCH_ALL_REQUESTS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchRequest = id => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/teamrequests/${id}`);
+      dispatch({ type: FETCH_REQUEST, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchSpecificTeamRequests = (id, team) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/teamrequests/${team}/${id}`);
+      dispatch({ type: FETCH_SPECIFIC_TEAM_REQUESTS, payload: response.data });
+      resolve();
+    } catch (e) {
       reject(e);
     }
   });
