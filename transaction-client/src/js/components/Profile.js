@@ -58,6 +58,9 @@ class Profile extends Component {
         //paramId is passed
         else {
           console.log('param Id passed');
+          console.log(this.props.currentRole);
+          console.log(this.props.paramId);
+          console.log(this.props.currentUser.id);
           //if the paramId is the same as user profileid
           if (this.props.paramId === this.props.currentUser.id) {
             //role doesnt matter, its the users page
@@ -66,7 +69,7 @@ class Profile extends Component {
           //paramid is NOT the same as user id; viewing someones profile from the outside
           else {
             //If they are an admin
-            console.log(this.props.currentRole);
+
             if (this.props.currentRole.name === 'admin') {
               console.log('we are admin');
               return <ProfileAdminView userId={this.props.paramId} />;
@@ -260,7 +263,7 @@ class Profile extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    paramId: ownProps.match.params.id,
+    paramId: parseInt(ownProps.match.params.id),
     currentUser: state.currentUser,
     team: state.team,
     regions: Object.values(state.regions),

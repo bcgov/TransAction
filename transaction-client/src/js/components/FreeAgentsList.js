@@ -57,7 +57,7 @@ class FreeAgentsList extends Component {
   recruitAgent(user) {
     console.log(user);
     console.log(this.props.currentTeam);
-    if (this.props.currentTeam.num_members >= 5) {
+    if (this.props.currentTeam.numMembers >= 5) {
       console.log('full team!');
     } else {
       console.log('able to recruit!');

@@ -75,7 +75,7 @@ class Team extends Component {
         else {
           console.log('param id passed, team id is not the same, looking at someone elses team!');
           //If they are an admin
-          if (this.props.currentRole.name === 'admin') {
+          if (this.props.currentRole.name === 'Admin') {
             console.log("param id passed, team id is not the same but we're an admin, so we can edit!");
             return <TeamAdminView paramId={this.props.paramId} />;
           } else {
@@ -266,7 +266,7 @@ const mapStateToProps = (state, ownProps) => {
   if (!ownProps.match.params.id) {
     parameter = null;
   } else {
-    parameter = ownProps.match.params.id;
+    parameter = parseInt(ownProps.match.params.id);
   }
   return {
     paramId: parameter,
