@@ -120,9 +120,12 @@ namespace TransAction.API.Controllers
 
             if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
             {
-                updateUser.RoleId = roleId;               
+                updateUser.RoleId = roleId;
             }
-
+            if (userEntity.TeamId != null && updateUser.TeamId == null)
+            {
+                updateUser.IsFreeAgent = true;
+            }
             Mapper.Map(updateUser, userEntity);
 
             if (!_transActionRepo.Save())
@@ -130,7 +133,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return NoContent();
+            return GetUser(id);
 
         }
         [HttpGet("me")]
