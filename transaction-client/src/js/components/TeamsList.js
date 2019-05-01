@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Breadcrumb, BreadcrumbItem, Spinner } from 'reactstrap';
+import { Container, Breadcrumb, BreadcrumbItem, Spinner, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchTeams } from '../actions';
 
@@ -51,12 +51,14 @@ class TeamsList extends Component {
   render() {
     return (
       <Container>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to="/">Home</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>TeamList</BreadcrumbItem>
-        </Breadcrumb>
+        <Row>
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Link to="/">Home</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem active>TeamList</BreadcrumbItem>
+          </Breadcrumb>
+        </Row>
         <h3>List of Teams: </h3>
         <div>{this.decideRender()}</div>
       </Container>

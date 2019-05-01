@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Container, Spinner, Button } from 'reactstrap';
+import { Spinner, Button } from 'reactstrap';
 import {
   fetchCurrentUser,
   fetchTeam,
@@ -14,11 +14,12 @@ import {
   fetchEvents,
   fetchRoles,
   fetchUser,
+  fetchCurrentTeam,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 
 class Profile extends Component {
-  state = { loading: true, modal: false, currentTeam: {}, userRole: '' };
+  state = { loading: true, modal: false, userRole: '' };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -61,10 +62,12 @@ class Profile extends Component {
     this.props
       .fetchUser(this.props.userId)
       .then(() => {
-        const teamId = this.props.user.teamId;
-        Promise.all([this.props.fetchRegions(), this.props.fetchTeam(this.props.user.teamId)])
+        Promise.all([
+          this.props.fetchRegions(),
+          this.props.fetchTeam(this.props.user.teamId),
+          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+        ])
           .then(() => {
-            this.setState({ currentTeam: this.props.team[teamId] });
             this.toggleSpinner();
           })
           .catch(() => {
@@ -81,7 +84,7 @@ class Profile extends Component {
     //console.log('passed in ', formValues);
     const userObj = { ...this.props.user, ...formValues };
     //console.log('now contain ', userObj);
-    this.props.editUser(userObj, 'me');
+    this.props.editUser(userObj, this.props.user.id);
   };
 
   leaveTeam = () => {
@@ -97,7 +100,7 @@ class Profile extends Component {
     if (this.props.user.teamId !== null) {
       return (
         <h3 className="mt-3">
-          Team: {this.state.currentTeam.name}
+          Team: {this.props.currentTeam.name}
           <Link to="/team">
             <Button color="primary" className="ml-3 mb-2">
               Visit Team
@@ -135,27 +138,34 @@ class Profile extends Component {
   }
 
   render() {
-    return (
-      <Container>
-        <div>{this.decideRender()}</div>
-      </Container>
-    );
+    return <div>{this.decideRender()}</div>;
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
     currentUser: state.currentUser,
-    user: state.users,
+    user: state.users[ownProps.userId],
     team: state.team,
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
     events: Object.values(state.events),
     roles: state.roles,
+    currentTeam: state.currentTeam,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles }
+  {
+    fetchCurrentUser,
+    fetchUser,
+    fetchTeam,
+    editUser,
+    fetchRegions,
+    fetchAllUserScores,
+    fetchEvents,
+    fetchRoles,
+    fetchCurrentTeam,
+  }
 )(Profile);

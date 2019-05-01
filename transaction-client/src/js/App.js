@@ -11,6 +11,7 @@ import Team from './components/Team';
 import TeamsList from './components/TeamsList';
 import EventPage from './components/EventPage';
 import GettingStarted from './components/GettingStarted';
+import FreeAgentsList from './components/FreeAgentsList';
 
 import '../scss/transaction.scss';
 
@@ -30,6 +31,7 @@ class App extends Component {
               <Route path="/teamslist" exact component={TeamsList} />
               <Route path="/event/:id" exact component={EventPage} />
               <Route path="/getting_started" exact component={GettingStarted} />
+              <Route path="/free_agents" exact component={FreeAgentsList} />
             </Switch>
           </Container>
           <Footer />

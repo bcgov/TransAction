@@ -9,19 +9,20 @@ class LogActivityModalBody extends Component {
     const activityObj = {
       eventId: this.props.eventId,
       ...formValues,
-      userId: this.props.currentUser.userId,
+      userId: this.props.currentUser.id,
       concurrencyControlNumber: 1,
-      description: null,
-      name: null,
+      description: 'description',
+      name: 'name',
+      teamId: this.props.currentUser.teamId,
     };
     this.props.createUserActivity(activityObj).then(() => {
-      this.props.fetchCurrentUser('me');
+      this.props.fetchCurrentUser();
     });
     this.props.modalClose();
   };
 
   componentDidMount() {
-    Promise.all([this.props.fetchCurrentUser('me'), this.props.fetchActivityList()]);
+    Promise.all([this.props.fetchCurrentUser(), this.props.fetchActivityList()]);
   }
 
   decideRender() {

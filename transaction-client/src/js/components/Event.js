@@ -24,7 +24,7 @@ class Event extends React.Component {
   }
 
   componentDidMount() {
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser('me')]).then(() => {
+    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser()]).then(() => {
       this.findRole(this.props.currentUser.roleId);
     });
   }

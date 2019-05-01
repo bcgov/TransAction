@@ -25,7 +25,7 @@ class EventPage extends Component {
     // this.toggleSpinner();
     this.props.fetchEvent(this.props.paramId).then(() => {
       Promise.all([
-        this.props.fetchCurrentUser('me'),
+        this.props.fetchCurrentUser(),
 
         this.props.fetchUserScore(this.props.currentUser.id, this.props.event.id),
         this.props.fetchTeamScore(this.props.currentUser.teamId, this.props.event.id),
@@ -71,7 +71,17 @@ class EventPage extends Component {
         </React.Fragment>
       );
     } else {
-      return this.printScores();
+      return (
+        <React.Fragment>
+          <Button className="float-right" color="primary" onClick={this.toggle}>
+            Add Activity
+          </Button>
+          <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Log an Activity">
+            <LogActivityModalBody modalClose={this.toggle} eventId={this.props.event.id} name="log" />
+          </EventModal>
+          {this.printScores()}
+        </React.Fragment>
+      );
     }
     //TODO add else with graphical elements
   }
@@ -80,12 +90,7 @@ class EventPage extends Component {
     return (
       <React.Fragment>
         <h1>{this.props.event.name} </h1>
-        <Button className="float-right" color="primary" onClick={this.toggle}>
-          Add Activity
-        </Button>
-        <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Log an Activity">
-          <LogActivityModalBody modalClose={this.toggle} eventId={this.props.event.id} name="log" />
-        </EventModal>
+
         <h3>Hi {this.props.currentUser.fname}!</h3>
         {this.checkTeam()}
       </React.Fragment>

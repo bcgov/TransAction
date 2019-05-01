@@ -47,7 +47,6 @@ class Profile extends Component {
       if (!this.props.currentUser.id) return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
-        console.log(this.props.paramId);
         //no paramId passed
         if (!this.props.paramId) {
           //Following the user's profile
@@ -83,12 +82,8 @@ class Profile extends Component {
 
   componentDidMount() {
     //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
-    Promise.all([
-      this.props.fetchEvents(),
-      this.props.fetchRoles(),
-      this.props.fetchCurrentUser('me'),
-      this.props.fetchAllUserScores('me'),
-    ])
+    this.props.fetchAllUserScores('me');
+    Promise.all([this.props.fetchEvents(), this.props.fetchRoles(), this.props.fetchCurrentUser()])
       .then(() => {
         const teamId = this.props.currentUser.teamId;
         Promise.all([
@@ -107,7 +102,7 @@ class Profile extends Component {
           });
       })
       .catch(() => {
-        // this.toggleSpinner();
+        this.toggleSpinner();
       });
   }
 
@@ -115,8 +110,8 @@ class Profile extends Component {
     //console.log('passed in ', formValues);
     const userObj = { ...this.props.currentUser, ...formValues };
     console.log('now contain ', userObj);
-    this.props.editUser(userObj, 'me').then(() => {
-      this.props.fetchCurrentUser('me');
+    this.props.editUser(userObj, userObj.id).then(() => {
+      this.props.fetchCurrentUser();
     });
   };
 
@@ -132,7 +127,7 @@ class Profile extends Component {
   }
 
   progressBar() {
-    if (this.state.currentTeam.progressbar === true && this.props.currentUser.teamId !== null) {
+    if (this.state.currentTeam.goal > 0 && this.props.currentUser.teamId !== null) {
       return (
         <Progress
           bar
@@ -210,9 +205,8 @@ class Profile extends Component {
   //**TODO, REMOVE HARDCODED TEAM VALUES**
   printUserScores() {
     const scores = this.props.allUserScores.map(element => (
-      <Col>
+      <Col key={element.eventId}>
         <UserScoreGraphicCard
-          key={element.eventId}
           userScore={element.value}
           teamScore={100}
           name={this.findEventName(element.eventId)}
@@ -238,7 +232,7 @@ class Profile extends Component {
           />
         </h3>
         {this.printTeam()}
-        {this.printProgress()}
+
         <DescriptionForm initialValues={_.pick(this.props.currentUser, 'description')} onSubmit={this.onSubmit} />
         <Row className="mt-3 mb-3 "> {this.printUserScores()}</Row>
       </div>
@@ -248,12 +242,14 @@ class Profile extends Component {
   render() {
     return (
       <Container>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to="/">Home</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>MyProfile</BreadcrumbItem>
-        </Breadcrumb>
+        <Row>
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Link to="/">Home</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem active>MyProfile</BreadcrumbItem>
+          </Breadcrumb>
+        </Row>
         <h1>Personal Profile </h1>
         <div>{this.decideRender()}</div>
       </Container>

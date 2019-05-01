@@ -12,6 +12,7 @@ import teamScoreReducer from './teamScoreReducer';
 import allTeamScoresReducer from './allTeamScoresReducer';
 import allUserScoresReducer from './allUserScoresReducer';
 import rolesReducer from './rolesReducer';
+import currentTeamReducer from './currentTeamReducer';
 
 export default combineReducers({
   form: formReducer,
@@ -27,4 +28,5 @@ export default combineReducers({
   allUserScores: allUserScoresReducer,
   allTeamScores: allTeamScoresReducer,
   roles: rolesReducer,
+  currentTeam: currentTeamReducer,
 });

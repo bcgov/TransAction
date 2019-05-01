@@ -10,7 +10,7 @@ import { fetchEvents, fetchRoles, fetchCurrentUser } from '../actions';
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
-  state = { modal: false, loading: false, userRole: '' };
+  state = { modal: false, loading: true, userRole: '' };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -49,13 +49,9 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    this.toggleSpinner();
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser('me')]).then(() => {
-      this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
-    });
-    this.props
-      .fetchEvents()
+    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchEvents()])
       .then(() => {
+        this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
         this.toggleSpinner();
       })
       .catch(() => {

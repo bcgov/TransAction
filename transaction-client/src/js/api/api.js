@@ -6,6 +6,7 @@ const apiUrl = window.RUNTIME_REACT_APP_API_HOST
 
 const api = axios.create({
   baseURL: `${apiUrl}`,
+  'Access-Control-Allow-Origin': '*',
 });
 
 export default api;
