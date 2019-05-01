@@ -7,6 +7,10 @@ class TitleForm extends Component {
     return <Input className="col-4 mr-2" type={type} {...input} autoComplete="off" />;
   };
 
+  componentDidMount() {
+    this.props.initialize(this.props.initialValues);
+  }
+
   onSubmit = formValues => {
     //console.log('Attempting to edit description!');
     //console.log(formValues);

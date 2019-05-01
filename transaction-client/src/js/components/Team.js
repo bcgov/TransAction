@@ -171,8 +171,8 @@ class Team extends Component {
     }
   }
   checkLeader(user) {
-    if (this.props.roles[user.roleId].name === 'team_lead') {
-      return 'Team Lead';
+    if (this.props.roles[user.roleId].name !== 'user') {
+      return this.props.roles[user.roleId].name;
     }
   }
 
@@ -190,7 +190,11 @@ class Team extends Component {
             </td>
             <td>{this.checkLeader(teamate)}</td>
             <td> </td>
-
+            <td>
+              <Link to={`/profile/${teamate.id}`}>
+                <Button color="primary">View Profile</Button>
+              </Link>
+            </td>
             <td>{this.checkMember(teamate)}</td>
           </tr>
         );
@@ -215,8 +219,10 @@ class Team extends Component {
             <thead>
               <tr>
                 <th>Names</th>
-                <th> </th>
+                <th>Lead</th>
                 <th>Scores</th>
+                <th>Profile</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>{this.showTeamMembers()}</tbody>

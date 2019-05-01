@@ -5,6 +5,7 @@ export default (state = {}, action) => {
     case FETCH_USERS:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
     case FETCH_USER:
+      console.log('payload: ', action.payload);
       return { ...state, [action.payload.id]: action.payload };
 
     default:

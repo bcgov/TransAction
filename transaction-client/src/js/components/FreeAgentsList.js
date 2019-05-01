@@ -12,7 +12,6 @@ import {
   fetchCurrentTeam,
   fetchCurrentRole,
 } from '../actions';
-import { stat } from 'fs';
 
 class FreeAgentsList extends Component {
   state = { loading: true };
@@ -81,6 +80,11 @@ class FreeAgentsList extends Component {
             <td>{user.lname}</td>
             <td>{this.props.regions[user.regionId].name}</td>
             <td>
+              <Link to={`/profile/${user.id}`}>
+                <Button>View Profile</Button>
+              </Link>
+            </td>
+            <td>
               <Button color="primary" onClick={() => this.recruitAgent(user)}>
                 Recruit!
               </Button>
@@ -104,6 +108,7 @@ class FreeAgentsList extends Component {
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Region</th>
+                <th>Profile</th>
                 <th>Recruit</th>
               </tr>
             </thead>
@@ -147,7 +152,7 @@ const mapStateToProps = state => {
     roles: state.roles,
     team: state.team,
     currentTeam: state.currentTeam,
-    currentRole: stat.currentRole,
+    currentRole: state.currentRole,
   };
 };
 export default connect(
