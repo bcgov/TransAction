@@ -120,7 +120,7 @@ namespace TransAction.API.Controllers
 
             if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
             {
-                updateUser.RoleId = roleId;
+                updateUser.RoleId = roleId;               
             }
             if (userEntity.TeamId != null && updateUser.TeamId == null)
             {
