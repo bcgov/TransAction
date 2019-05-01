@@ -14,7 +14,7 @@ import {
 } from '../actions';
 
 class FreeAgentsList extends Component {
-  state = { loading: true };
+  state = { loading: true, clickable: true };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -55,16 +55,36 @@ class FreeAgentsList extends Component {
   }
 
   recruitAgent(user) {
+    this.setState({ clickable: false });
     console.log(user);
     console.log(this.props.currentTeam);
     if (this.props.currentTeam.numMembers >= 5) {
       console.log('full team!');
+      this.setState({ clickable: true });
     } else {
       console.log('able to recruit!');
       const teamId = { teamId: this.props.currentUser.teamId, isFreeAgent: false };
       const recUser = { ...user, ...teamId };
-      this.props.editUser(recUser, user.id);
-      this.props.fetchCurrentTeam(this.props.currentUser.teamId);
+      this.props.editUser(recUser, user.id).then(() => {
+        this.props
+          .fetchCurrentTeam(this.props.currentUser.teamId)
+          .then(() => {
+            this.setState({ clickable: true });
+          })
+          .catch(() => {
+            this.setState({ clickable: true });
+          });
+      });
+    }
+  }
+
+  checkClickable(user) {
+    if (this.state.clickable === true) {
+      return (
+        <Button color="primary" onClick={() => this.recruitAgent(user)}>
+          Recruit!
+        </Button>
+      );
     }
   }
 
@@ -85,11 +105,7 @@ class FreeAgentsList extends Component {
                 <Button>View Profile</Button>
               </Link>
             </td>
-            <td>
-              <Button color="primary" onClick={() => this.recruitAgent(user)}>
-                Recruit!
-              </Button>
-            </td>
+            <td>{this.checkClickable(user)}</td>
           </tr>
         );
       });

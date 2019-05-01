@@ -24,7 +24,7 @@ import NoTeamPage from './NoTeamPage';
 import TeamAdminView from './TeamAdminView';
 
 class Team extends Component {
-  state = { loading: true, modal: false };
+  state = { loading: true, modal: false, clickable: true };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -160,14 +160,25 @@ class Team extends Component {
   }
 
   kickMember(user) {
+    this.setState({ clickable: false });
     const teamId = { teamId: null, isFreeAgent: true };
     const kickUser = { ...user, ...teamId };
-    this.props.editUser(kickUser, user.id);
-    this.props.fetchCurrentTeam(this.props.currentUser.teamId);
+    this.props.editUser(kickUser, user.id).then(() => {
+      this.props
+        .fetchCurrentTeam(this.props.currentUser.teamId)
+        .then(() => {
+          this.setState({ clickable: true });
+        })
+        .catch(() => {
+          this.setState({ clickable: true });
+        });
+    });
   }
   checkMember(user) {
     if (user.id !== this.props.currentUser.id) {
-      return <Button onClick={() => this.kickMember(user)}> Kick </Button>;
+      if (this.state.clickable === true) {
+        return <Button onClick={() => this.kickMember(user)}> Kick </Button>;
+      }
     }
   }
   checkLeader(user) {
