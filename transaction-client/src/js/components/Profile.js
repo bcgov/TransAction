@@ -13,6 +13,7 @@ import {
   fetchAllUserScores,
   fetchEvents,
   fetchRoles,
+  fetchCurrentRole,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
@@ -22,7 +23,7 @@ import ProfileReadOnly from './ProfileReadOnly';
 import ProfileAdminView from './ProfileAdminView';
 
 class Profile extends Component {
-  state = { loading: true, modal: false, currentTeam: {}, userRole: '' };
+  state = { loading: true, modal: false, currentTeam: {} };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -65,8 +66,8 @@ class Profile extends Component {
           //paramid is NOT the same as user id; viewing someones profile from the outside
           else {
             //If they are an admin
-            console.log(this.state.userRole);
-            if (this.state.userRole === 'admin') {
+            console.log(this.props.currentRole);
+            if (this.props.currentRole.name === 'admin') {
               console.log('we are admin');
               return <ProfileAdminView userId={this.props.paramId} />;
             } else {
@@ -90,7 +91,7 @@ class Profile extends Component {
           this.props.fetchRegions(),
           this.props.fetchTeam(this.props.currentUser.teamId),
 
-          this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name }),
+          this.props.fetchCurrentRole(this.props.currentUser.roleId),
         ])
           .then(() => {
             this.setState({ currentTeam: this.props.team[teamId] });
@@ -266,10 +267,11 @@ const mapStateToProps = (state, ownProps) => {
     allUserScores: Object.values(state.allUserScores),
     events: Object.values(state.events),
     roles: state.roles,
+    currentRole: state.currentRole,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles }
+  { fetchCurrentUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles, fetchCurrentRole }
 )(Profile);

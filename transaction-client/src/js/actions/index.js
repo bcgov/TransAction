@@ -20,6 +20,7 @@ import {
   FETCH_ROLES,
   FETCH_CURRENT_USER,
   FETCH_CURRENT_TEAM,
+  FETCH_CURRENT_ROLE,
 } from './types';
 import history from '../history';
 
@@ -108,6 +109,20 @@ export const fetchCurrentTeam = id => async dispatch => {
       const response = await api.get(`/teams/${id}`);
       //console.log(response.data);
       dispatch({ type: FETCH_CURRENT_TEAM, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchCurrentRole = id => async dispatch => {
+  // console.log('FetchUser given id: ', id);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/roles/${id}`);
+      //console.log(response.data);
+      dispatch({ type: FETCH_CURRENT_ROLE, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);

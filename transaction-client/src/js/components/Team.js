@@ -3,7 +3,16 @@ import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button, Row, Table } fr
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { fetchCurrentUser, fetchTeam, editTeam, fetchUsers, fetchRoles, fetchCurrentTeam, editUser } from '../actions';
+import {
+  fetchCurrentUser,
+  fetchTeam,
+  editTeam,
+  fetchUsers,
+  fetchRoles,
+  fetchCurrentTeam,
+  editUser,
+  fetchCurrentRole,
+} from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
 import ProgressBar from './ProgressBar';
@@ -15,7 +24,7 @@ import NoTeamPage from './NoTeamPage';
 import TeamAdminView from './TeamAdminView';
 
 class Team extends Component {
-  state = { loading: true, modal: false, userRole: '' };
+  state = { loading: true, modal: false };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -40,7 +49,7 @@ class Team extends Component {
     }
     //Loading DONE
     else {
-      console.log('THe current user is of role: ', this.state.userRole);
+      console.log('THe current user is of role: ', this.props.currentRole.name);
       //paramId is passed
       if (this.props.paramId !== null) {
         //if the team id does not exist
@@ -52,7 +61,7 @@ class Team extends Component {
         if (this.props.paramId === this.props.currentUser.teamId) {
           console.log('param id passed, team id is the same, its our team!');
           //If they are a team lead or admin
-          if (this.state.userRole !== 'user') {
+          if (this.props.currentRole.name !== 'user') {
             console.log('we are not a user, therefor we can edit!');
             return this.teamInfo();
           }
@@ -66,7 +75,7 @@ class Team extends Component {
         else {
           console.log('param id passed, team id is not the same, looking at someone elses team!');
           //If they are an admin
-          if (this.state.userRole === 'admin') {
+          if (this.props.currentRole.name === 'admin') {
             console.log("param id passed, team id is not the same but we're an admin, so we can edit!");
             return <TeamAdminView paramId={this.props.paramId} />;
           } else {
@@ -86,7 +95,7 @@ class Team extends Component {
         else {
           console.log('No param id but we do have a team, so we are looking at our own team!');
           //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
-          if (this.state.userRole !== 'user') {
+          if (this.props.currentRole !== 'user') {
             console.log('No param id, our team , we are not a user so we can edit!');
             return this.teamInfo();
           }
@@ -113,7 +122,7 @@ class Team extends Component {
     Promise.all([this.props.fetchCurrentUser(), this.props.fetchRoles()]).then(() => {
       console.log('param id: ', this.props.paramId);
       console.log('currentUser teamId: ', this.props.currentUser.teamId);
-      this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
+      this.props.fetchCurrentRole(this.props.currentUser.roleId);
       Promise.all([
         this.props.fetchTeam(),
         this.props.fetchUsers(),
@@ -161,6 +170,11 @@ class Team extends Component {
       return <Button onClick={() => this.kickMember(user)}> Kick </Button>;
     }
   }
+  checkLeader(user) {
+    if (this.props.roles[user.roleId].name === 'team_lead') {
+      return 'Team Lead';
+    }
+  }
 
   //TODO SHOW POINTS
   showTeamMembers() {
@@ -174,7 +188,9 @@ class Team extends Component {
             <td>
               {teamate.fname} {teamate.lname}
             </td>
+            <td>{this.checkLeader(teamate)}</td>
             <td> </td>
+
             <td>{this.checkMember(teamate)}</td>
           </tr>
         );
@@ -199,6 +215,7 @@ class Team extends Component {
             <thead>
               <tr>
                 <th>Names</th>
+                <th> </th>
                 <th>Scores</th>
               </tr>
             </thead>
@@ -252,10 +269,11 @@ const mapStateToProps = (state, ownProps) => {
     users: Object.values(state.users),
     roles: state.roles,
     currentTeam: state.currentTeam,
+    currentRole: state.currentRole,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchTeam, editTeam, fetchUsers, fetchRoles, fetchCurrentTeam, editUser }
+  { fetchCurrentUser, fetchTeam, editTeam, fetchUsers, fetchRoles, fetchCurrentTeam, editUser, fetchCurrentRole }
 )(Team);

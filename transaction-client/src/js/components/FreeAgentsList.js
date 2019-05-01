@@ -10,10 +10,12 @@ import {
   fetchTeam,
   editUser,
   fetchCurrentTeam,
+  fetchCurrentRole,
 } from '../actions';
+import { stat } from 'fs';
 
 class FreeAgentsList extends Component {
-  state = { userRole: '', loading: true };
+  state = { loading: true };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -29,8 +31,10 @@ class FreeAgentsList extends Component {
       this.props.fetchRegions(),
     ])
       .then(() => {
-        this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
-        Promise.all([this.props.fetchCurrentTeam(this.props.currentUser.teamId)]);
+        Promise.all([
+          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+          this.props.fetchCurrentRole(this.props.currentUser.roleId),
+        ]);
       })
       .then(() => {
         this.toggleSpinner();
@@ -88,7 +92,7 @@ class FreeAgentsList extends Component {
   }
 
   checkRole() {
-    if (this.state.userRole !== 'team_lead') {
+    if (this.props.currentRole.name === 'user') {
       return <h2>Access to Free Agents Denied: You are not a Team Leader!</h2>;
     } else {
       return (
@@ -143,9 +147,10 @@ const mapStateToProps = state => {
     roles: state.roles,
     team: state.team,
     currentTeam: state.currentTeam,
+    currentRole: stat.currentRole,
   };
 };
 export default connect(
   mapStateToProps,
-  { fetchUsers, fetchCurrentUser, fetchRoles, fetchRegions, fetchTeam, editUser, fetchCurrentTeam }
+  { fetchUsers, fetchCurrentUser, fetchRoles, fetchRegions, fetchTeam, editUser, fetchCurrentTeam, fetchCurrentRole }
 )(FreeAgentsList);

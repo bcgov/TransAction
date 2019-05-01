@@ -19,7 +19,7 @@ import {
 import DescriptionForm from './DescriptionForm';
 
 class Profile extends Component {
-  state = { loading: true, modal: false, userRole: '' };
+  state = { loading: true, modal: false };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -43,18 +43,6 @@ class Profile extends Component {
     } else {
       return this.userInfo();
     }
-  }
-
-  findRole(userRoleId) {
-    //console.log(this.props.roles[userRoleId].name);
-    this.setState({ userRole: this.props.roles[userRoleId].name });
-    // this.props.roles.foreach(role => {
-    // console.log('checking ', role.name);
-    // if (userRoleId === role.id) {
-    //   console.log('This user is a ', role.name);
-    //   this.setState({ userRole: role.name });
-    // }
-    //  });
   }
 
   componentDidMount() {
