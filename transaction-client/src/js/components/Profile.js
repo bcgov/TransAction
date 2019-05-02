@@ -15,6 +15,7 @@ import {
   fetchRoles,
   fetchCurrentRole,
   fetchAllTeamScores,
+  fetchCurrentTeam,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
@@ -94,7 +95,7 @@ class Profile extends Component {
           this.props.fetchAllTeamScores(this.props.currentUser.teamId),
           this.props.fetchRegions(),
           this.props.fetchTeam(this.props.currentUser.teamId),
-          this.props.fetchCurrentTeam(this.props.currentUser.teadId),
+          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
           this.props.fetchCurrentRole(this.props.currentUser.roleId),
         ])
           .then(() => {
@@ -277,6 +278,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     paramId: parseInt(ownProps.match.params.id),
     currentUser: state.currentUser,
+    currentTeam: state.currentTeam,
     team: state.team,
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
@@ -291,6 +293,7 @@ export default connect(
   mapStateToProps,
   {
     fetchCurrentUser,
+    fetchCurrentTeam,
     fetchTeam,
     editUser,
     fetchRegions,
