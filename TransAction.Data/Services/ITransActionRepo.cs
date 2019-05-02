@@ -40,7 +40,6 @@ namespace TransAction.Data.Services
         int UserSpecificScore(int userId, int eventId);
         IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId);
         int TeamEventSpecificScore(int teamId, int eventId);
-      //  IEnumerable<UserScoreDto> AllEventUserScore(int id);
         IEnumerable<UserScoreDto> CurrentUserScore(int id);
         TraUserActivity GetUserActivity(int id);
         bool UserActivityExists(string Name);
@@ -49,6 +48,10 @@ namespace TransAction.Data.Services
         IEnumerable<TraRole> GetRoles();
         TraRole GetRole(int id);
 
+        IEnumerable<TraMemberReq> GetRequests();
+        TraMemberReq GetRequest(int id);
+        void CreateRequest(TraMemberReq traMember);
+        IEnumerable<CurrentTeamRequestsDto> CurrentTeamReq(int teamId);
 
         bool Save();
     }

@@ -133,6 +133,14 @@ namespace TransAction.API
                 //for roles
                 cfg.CreateMap<TraRole, RoleDto>();
                 cfg.CreateMap<RoleDto, TraRole>();
+
+                //for MemberReq
+
+                cfg.CreateMap<TraMemberReq, MemberReqDto>();
+                cfg.CreateMap<MemberReqDto, TraMemberReq>();
+                cfg.CreateMap<MemberReqCreateDto, TraMemberReq>();
+                cfg.CreateMap<MemberReqUpdateDto, TraMemberReq>();
+                cfg.CreateMap<TraMemberReq, MemberReqUpdateDto>();
             });
 
             app.UseCors(CORS_ALLOW_ALL);

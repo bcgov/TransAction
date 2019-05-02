@@ -286,6 +286,7 @@ namespace TransAction.Data.Services
 
             return userAct;
         }
+/*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public IEnumerable<TraRole> GetRoles()
         {
@@ -296,7 +297,39 @@ namespace TransAction.Data.Services
         {
             return _context.TraRole.FirstOrDefault(c => c.RoleId == id);
         }
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
 
-       
+        public IEnumerable<TraMemberReq> GetRequests()
+        {
+            return _context.TraMemberReq.OrderBy(c => c.MemberReqId).ToList();
+        }
+
+        public TraMemberReq GetRequest(int id)
+        {
+            return _context.TraMemberReq.FirstOrDefault(c => c.MemberReqId == id);
+        }
+
+        public void CreateRequest(TraMemberReq traMember)
+        {
+            _context.TraMemberReq.Add(traMember);
+        }
+
+        public IEnumerable<CurrentTeamRequestsDto> CurrentTeamReq(int teamId)
+        {
+            var teamRequests = _context.TraMemberReq
+                .Where(p => p.TeamId == teamId)
+                .Where(p => p.IsActive == true)
+                    .Select(x => new CurrentTeamRequestsDto()
+                    {   
+                        TeamId = teamId,
+                        UserId = x.UserId,
+                        IsActive = x.IsActive
+                    })
+                    .ToList();
+
+
+
+            return teamRequests;
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet()]
-        public IActionResult GetActivity()
+        public IActionResult GetActivities()
         {
             var activities = _transActionRepo.GetActivities();
             var getActivities = Mapper.Map<IEnumerable<ActivityDto>>(activities);
@@ -31,7 +31,7 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet("{id}", Name = "GetThatActivity")]
-        public IActionResult GetActivities(int id)
+        public IActionResult GetActivity(int id)
         {
             try
             {
