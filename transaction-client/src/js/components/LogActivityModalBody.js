@@ -6,16 +6,22 @@ import { createUserActivity, fetchActivityList, fetchCurrentUser } from '../acti
 
 class LogActivityModalBody extends Component {
   onSubmit = formValues => {
+    if (!formValues.activityId) {
+      const activityId = { activityId: this.props.activityList[1].id };
+      formValues = { ...formValues, ...activityId };
+      console.log('nothing chosen, defaulted to first pick', activityId);
+    }
+    console.log(formValues);
     const activityObj = {
       eventId: this.props.eventId,
       ...formValues,
       userId: this.props.currentUser.id,
       concurrencyControlNumber: 1,
-      description: 'description',
-      name: 'name',
+      description: 'description1',
+      name: 'name1',
       teamId: this.props.currentUser.teamId,
     };
-    this.props.createUserActivity(activityObj).then(() => {
+    this.props.createUserActivity(activityObj, this.props.currentUser.id, this.props.eventId).then(() => {
       this.props.fetchCurrentUser();
     });
     this.props.modalClose();

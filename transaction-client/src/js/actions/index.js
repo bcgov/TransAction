@@ -250,7 +250,8 @@ export const createUserActivity = activityObj => async dispatch => {
   console.log('Action has recieved: ', activityObj);
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.post('/useractivity', activityObj);
+      // create new activity, should contain minutes, activity type, team id , user id, event id
+      const response = await api.post(`/useractivity`, activityObj);
       console.log('Here in the action, we have: ', response.data);
       dispatch({ type: CREATE_USER_ACTIVITY, payload: response.data });
       resolve();
@@ -265,6 +266,7 @@ export const createUserActivity = activityObj => async dispatch => {
 export const fetchUserScore = (userId, eventId) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
+      // this fetches a specific user score for a specific event
       const response = await api.get(`/useractivity/user/${userId}/event/${eventId}`);
       dispatch({ type: FETCH_USER_SCORE, payload: response.data });
       resolve();
@@ -279,6 +281,7 @@ export const fetchAllUserScores = userId => async dispatch => {
   console.log('attemptin to fetch usrer scores');
   return new Promise(async (resolve, reject) => {
     try {
+      // this fetches a specific user scores for ALL active events
       const response = await api.get(`/useractivity/user/${userId}`);
       console.log(response);
       dispatch({ type: FETCH_ALL_USER_SCORES, payload: response.data });
@@ -293,6 +296,7 @@ export const fetchAllUserScores = userId => async dispatch => {
 export const fetchTeamScore = (teamId, eventId) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
+      // specific team specific event
       const response = await api.get(`/useractivity/team/${teamId}/event/${eventId}`);
       dispatch({ type: FETCH_TEAM_SCORE, payload: response.data });
       resolve();
@@ -305,6 +309,7 @@ export const fetchTeamScore = (teamId, eventId) => async dispatch => {
 export const fetchAllTeamScores = teamId => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
+      // specific team all ACTIVE events
       const response = await api.get(`/useractivity/team/${teamId}`);
       dispatch({ type: FETCH_ALL_TEAM_SCORES, payload: response.data });
       resolve();
@@ -357,10 +362,10 @@ export const fetchRequest = id => async dispatch => {
   });
 };
 
-export const fetchSpecificTeamRequests = (id, team) => async dispatch => {
+export const fetchSpecificTeamRequests = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get(`/teamrequests/${team}/${id}`);
+      const response = await api.get(`/teamrequests/team/${id}`);
       dispatch({ type: FETCH_SPECIFIC_TEAM_REQUESTS, payload: response.data });
       resolve();
     } catch (e) {
