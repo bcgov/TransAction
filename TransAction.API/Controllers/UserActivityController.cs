@@ -72,11 +72,14 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.UserActivityExists(createUserActivity.Name))
-            {
-                return BadRequest();
-            }
+            //if (_transActionRepo.UserActivityExists(createUserActivity.Name))
+            //{
+            //    return BadRequest();
+            //}
 
+            var minutes = createUserActivity.Hours * 60;
+            createUserActivity.Minutes = minutes + createUserActivity.Minutes;
+            
             var newUserActivity = Mapper.Map<TraUserActivity>(createUserActivity);
 
             _transActionRepo.CreateUserActivity(newUserActivity);
@@ -142,9 +145,9 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("team/{teamId}/event/{eventId}")]
-        public IActionResult TeamSpecificScore(int teamId, int eventId)
+        public IActionResult TeamEventSpecificScore(int teamId, int eventId)
         {
-            var score = _transActionRepo.TeamSpecificScore(teamId, eventId);
+            var score = _transActionRepo.TeamEventSpecificScore(teamId, eventId);
             var result = new TeamSpecificScoreDto
             {
                 eventId = eventId,
@@ -154,13 +157,19 @@ namespace TransAction.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("user/me")]
-        public IActionResult CurrentUserScore()
+        [HttpGet("team/{teamId}")]
+        public IActionResult TeamSpecificScore(int teamId)
         {
-            var guid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUsers = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == guid);
-            var result = _transActionRepo.CurrentUserScore(getUsers.UserId);
+            var score = _transActionRepo.TeamSpecificScore(teamId);            
+            return Ok(score);
+        }
 
+
+
+        [HttpGet("user/{userId}")]
+        public IActionResult CurrentUserScore(int userId)
+        {
+            var result = _transActionRepo.CurrentUserScore(userId);
             return Ok(result);
         }
     }

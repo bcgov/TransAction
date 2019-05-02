@@ -132,7 +132,7 @@ namespace TransAction.API.Controllers
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-
+            var user = GetUser(id);
             return GetUser(id);
 
         }

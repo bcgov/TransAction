@@ -38,7 +38,9 @@ namespace TransAction.Data.Services
         IEnumerable<TraUserActivity> GetUserActivities();
         int EventSpecificScore(int eventId);
         int UserSpecificScore(int userId, int eventId);
-        int TeamSpecificScore(int teamId, int eventId);
+        IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId);
+        int TeamEventSpecificScore(int teamId, int eventId);
+      //  IEnumerable<UserScoreDto> AllEventUserScore(int id);
         IEnumerable<UserScoreDto> CurrentUserScore(int id);
         TraUserActivity GetUserActivity(int id);
         bool UserActivityExists(string Name);

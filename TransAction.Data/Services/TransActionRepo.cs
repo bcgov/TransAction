@@ -231,7 +231,7 @@ namespace TransAction.Data.Services
 
         }
 
-        public int TeamSpecificScore(int teamId, int eventId)
+        public int TeamEventSpecificScore(int teamId, int eventId)
         {
             var userAct = _context.TraUserActivity
                 .Where(p => p.EventId == eventId && p.TeamId == teamId)
@@ -245,12 +245,31 @@ namespace TransAction.Data.Services
             return userAct;
         }
 
+        public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId)
+        {
+            var teamAct = _context.TraUserActivity
+                .Where(p => p.TeamId == teamId)
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .Select(x => new TeamSpecificScoreDto()
+                    {
+                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                        eventId = x.Key.EventId,
+                        teamId = teamId
+                    })
+                    .ToList();
+
+
+
+            return teamAct;
+        }
+
         public IEnumerable<UserScoreDto> CurrentUserScore(int id)
         {
             var userAct = _context.TraUserActivity
                 .Where(p => p.UserId == id)
                     .Include(x => x.Activity)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .GroupBy(x => new { x.TeamId, x.EventId})
                     .Select(x => new UserScoreDto()
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
@@ -258,6 +277,7 @@ namespace TransAction.Data.Services
                         UserId = id
                     })
                     .ToList();
+
            
 
             return userAct;
@@ -272,5 +292,7 @@ namespace TransAction.Data.Services
         {
             return _context.TraRole.FirstOrDefault(c => c.RoleId == id);
         }
+
+       
     }
 }
