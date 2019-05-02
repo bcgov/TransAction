@@ -200,7 +200,7 @@ class Profile extends Component {
 
   findEventName(id) {
     var name = '';
-    this.props.events.foreach(element => {
+    this.props.events.forEach(element => {
       if (element.id === id) {
         name = element.name;
       }
@@ -210,7 +210,7 @@ class Profile extends Component {
 
   findTeamEventScore(eventId) {
     var score = -1;
-    this.props.allTeamScores.foreach(element => {
+    this.props.allTeamScores.forEach(element => {
       if (element.eventId === eventId) {
         score = element.score;
       }
