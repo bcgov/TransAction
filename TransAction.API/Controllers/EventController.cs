@@ -116,7 +116,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return NoContent();
+            return GetEvent(id);
         }
     }
 }

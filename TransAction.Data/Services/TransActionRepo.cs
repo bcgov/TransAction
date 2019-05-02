@@ -90,6 +90,12 @@ namespace TransAction.Data.Services
         public IEnumerable<TraTeam> GetTeams()
         {
             return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
+            var teams = _context.TraTeam.OrderBy(c => c.TeamId)
+                .Include(p => p.User)
+                .Select(x => new {
+
+                });
+
         }
 
         public TraTeam GetTeam(int id)

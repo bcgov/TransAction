@@ -24,7 +24,10 @@ namespace TransAction.API.Controllers
         public IActionResult GetTeams()
         {
             var teams = _transActionRepo.GetTeams();
+         
             var getTeams = Mapper.Map<IEnumerable<TeamDto>>(teams);
+            //var users = 
+            // getTeams.Select(x => x.NumMembers) =  ;
             return Ok(getTeams);
 
         }
