@@ -45,8 +45,8 @@ class EventPage extends Component {
         <Row>
           <Col>
             <UserScoreGraphicCard
-              userScore={this.props.userScore.value}
-              teamScore={this.props.teamScore.value}
+              userScore={this.props.userScore.score}
+              teamScore={this.props.teamScore.score}
               type="event"
             />
           </Col>

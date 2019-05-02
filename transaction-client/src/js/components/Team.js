@@ -12,6 +12,7 @@ import {
   fetchCurrentTeam,
   editUser,
   fetchCurrentRole,
+  fetchAllTeamScores,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
@@ -127,6 +128,7 @@ class Team extends Component {
         this.props.fetchTeam(),
         this.props.fetchUsers(),
         this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+        this.props.fetchAllTeamScore,
       ])
         .then(() => {
           this.toggleSpinner();
@@ -282,6 +284,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     paramId: parameter,
     currentUser: state.currentUser,
+    allTeamScores: state.allTeamScores,
     team: state.team,
     users: Object.values(state.users),
     roles: state.roles,
@@ -292,5 +295,15 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchTeam, editTeam, fetchUsers, fetchRoles, fetchCurrentTeam, editUser, fetchCurrentRole }
+  {
+    fetchCurrentUser,
+    fetchTeam,
+    editTeam,
+    fetchUsers,
+    fetchRoles,
+    fetchCurrentTeam,
+    editUser,
+    fetchCurrentRole,
+    fetchAllTeamScores,
+  }
 )(Team);
