@@ -14,6 +14,7 @@ import {
   fetchEvents,
   fetchRoles,
   fetchCurrentRole,
+  fetchAllTeamScores,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
@@ -23,7 +24,7 @@ import ProfileReadOnly from './ProfileReadOnly';
 import ProfileAdminView from './ProfileAdminView';
 
 class Profile extends Component {
-  state = { loading: true, modal: false, currentTeam: {} };
+  state = { loading: true, modal: false };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -86,18 +87,17 @@ class Profile extends Component {
 
   componentDidMount() {
     //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
-    this.props.fetchAllUserScores('me');
     Promise.all([this.props.fetchEvents(), this.props.fetchRoles(), this.props.fetchCurrentUser()])
       .then(() => {
-        const teamId = this.props.currentUser.teamId;
         Promise.all([
+          this.props.fetchAllUserScores(this.props.currentUser.id),
+          this.props.fetchAllTeamScores(this.props.currentUser.teamId),
           this.props.fetchRegions(),
           this.props.fetchTeam(this.props.currentUser.teamId),
-
+          this.props.fetchCurrentTeam(this.props.currentUser.teadId),
           this.props.fetchCurrentRole(this.props.currentUser.roleId),
         ])
           .then(() => {
-            this.setState({ currentTeam: this.props.team[teamId] });
             this.toggleSpinner();
           })
           .catch(() => {
@@ -131,13 +131,13 @@ class Profile extends Component {
   }
 
   progressBar() {
-    if (this.state.currentTeam.goal > 0 && this.props.currentUser.teamId !== null) {
+    if (this.props.currentTeam.goal > 0 && this.props.currentUser.teamId !== null) {
       return (
         <Progress
           bar
           animated
           color="primary"
-          value={(this.state.currentTeam.progressamt / this.state.currentTeam.goal) * 100}
+          value={(this.props.currentTeam.progressamt / this.props.currentTeam.goal) * 100}
         >
           Check out this hot progress
         </Progress>
@@ -158,7 +158,7 @@ class Profile extends Component {
     if (this.props.currentUser.teamId !== null) {
       return (
         <h3 className="mt-3">
-          Team: {this.state.currentTeam.name}
+          Team: {this.props.currentTeam.name}
           <Link to="/team">
             <Button color="primary" className="ml-3 mb-2">
               Visit Team
@@ -206,13 +206,25 @@ class Profile extends Component {
     });
     return name;
   }
+
+  findTeamEventScore(eventId) {
+    var score = -1;
+    this.props.allTeamScores.map(element => {
+      if (element.eventId === eventId) {
+        score = element.score;
+      }
+    });
+    return score;
+  }
+
   //**TODO, REMOVE HARDCODED TEAM VALUES**
   printUserScores() {
     const scores = this.props.allUserScores.map(element => (
       <Col key={element.eventId}>
         <UserScoreGraphicCard
-          userScore={element.value}
-          teamScore={100}
+          userScore={element.score}
+          //hardcoded value needs to change
+          teamScore={this.findTeamEventScore(element.eventId)}
           name={this.findEventName(element.eventId)}
           type="profile"
         />
@@ -268,6 +280,7 @@ const mapStateToProps = (state, ownProps) => {
     team: state.team,
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
+    allTeamScores: Object.values(state.allTeamScores),
     events: Object.values(state.events),
     roles: state.roles,
     currentRole: state.currentRole,
@@ -276,5 +289,15 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles, fetchCurrentRole }
+  {
+    fetchCurrentUser,
+    fetchTeam,
+    editUser,
+    fetchRegions,
+    fetchAllUserScores,
+    fetchAllTeamScores,
+    fetchEvents,
+    fetchRoles,
+    fetchCurrentRole,
+  }
 )(Profile);
