@@ -249,7 +249,9 @@ namespace TransAction.Data.Services
         {
             var teamAct = _context.TraUserActivity
                 .Where(p => p.TeamId == teamId)
-                    .Include(x => x.Activity)
+                    .Include(x =>  x.Activity)
+                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+                    //.Where(x => x.Event.IsActive == true)
                     .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new TeamSpecificScoreDto()
                     {
@@ -268,13 +270,15 @@ namespace TransAction.Data.Services
         {
             var userAct = _context.TraUserActivity
                 .Where(p => p.UserId == id)
-                    .Include(x => x.Activity)
+                    .Include(x => x.Activity)//.Where(x => x.Event.IsActive == true)
+                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
                     .GroupBy(x => new { x.TeamId, x.EventId})
                     .Select(x => new UserScoreDto()
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
                         EventId = x.Key.EventId,
-                        UserId = id
+                        UserId = id,
+                        
                     })
                     .ToList();
 
