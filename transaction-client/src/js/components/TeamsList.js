@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Breadcrumb, BreadcrumbItem, Spinner, Row, Button, Table } from 'reactstrap';
 import { connect } from 'react-redux';
-import { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser } from '../actions';
+import { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser, fetchJoinRequests } from '../actions';
 
 class TeamsList extends Component {
   state = { loading: true, clickable: true };
@@ -35,6 +35,9 @@ class TeamsList extends Component {
     const reqObj = { teamId: team.id, userId: this.props.currentUser.id };
     this.props
       .postJoinRequest(reqObj)
+      .then(() => {
+        this.fetchJoinRequests();
+      })
       .then(() => {
         this.setState({ clickable: true });
       })
@@ -147,10 +150,11 @@ const mapStateToProps = state => {
     users: Object.values(state.users),
     regions: state.regions,
     currentUser: state.currentUser,
+    allJoinRequests: state.allJoinRequests,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser }
+  { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser, fetchJoinRequests }
 )(TeamsList);

@@ -22,8 +22,8 @@ import {
   FETCH_CURRENT_TEAM,
   FETCH_CURRENT_ROLE,
   FETCH_REQUEST,
-  FETCH_ALL_REQUESTS,
   FETCH_SPECIFIC_TEAM_REQUESTS,
+  FETCH_JOIN_REQUESTS,
 } from './types';
 import history from '../history';
 
@@ -339,23 +339,11 @@ export const fetchRoles = () => async dispatch => {
 
 //Team Requests
 
-export const fetchAllTeamRequests = () => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get(`/teamrequests/`);
-      dispatch({ type: FETCH_ALL_REQUESTS, payload: response.data });
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
 export const fetchJoinRequests = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/teamrequests`);
-      dispatch({ type: FETCH_REQUEST, payload: response.data });
+      dispatch({ type: FETCH_JOIN_REQUESTS, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);

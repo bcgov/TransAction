@@ -14,7 +14,7 @@ import allUserScoresReducer from './allUserScoresReducer';
 import rolesReducer from './rolesReducer';
 import currentTeamReducer from './currentTeamReducer';
 import currentRoleReducer from './currentRoleReducer';
-import allTeamRequestsReducer from './allTeamRequestsReducer';
+import allJoinRequestsReducer from './allJoinRequestsReducer';
 import userActivityReducer from './userActivityReducer';
 
 export default combineReducers({
@@ -34,5 +34,5 @@ export default combineReducers({
   roles: rolesReducer,
   currentTeam: currentTeamReducer,
   currentRole: currentRoleReducer,
-  allTeamRequests: allTeamRequestsReducer,
+  allJoinRequests: allJoinRequestsReducer,
 });

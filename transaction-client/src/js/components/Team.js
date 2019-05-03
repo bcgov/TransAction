@@ -24,7 +24,7 @@ import {
   editUser,
   fetchCurrentRole,
   fetchAllTeamScores,
-  fetchAllTeamRequests,
+  fetchJoinRequests,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
@@ -146,7 +146,7 @@ class Team extends Component {
         this.props.fetchTeam(this.props.paramId),
         this.props.fetchUsers(),
         this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-        this.props.fetchAllTeamRequests(),
+        this.props.fetchJoinRequests(),
       ])
         .then(() => {
           this.toggleSpinner();
@@ -273,7 +273,7 @@ class Team extends Component {
   }
 
   showTeamRequests() {
-    var requests = this.props.allTeamRequests
+    var requests = this.props.allJoinRequests
       .filter(request => {
         return request.teamId === this.props.currentTeam.id;
       })
@@ -389,7 +389,7 @@ const mapStateToProps = (state, ownProps) => {
     roles: state.roles,
     currentTeam: state.currentTeam,
     currentRole: state.currentRole,
-    allTeamRequests: Object.values(state.allTeamRequests),
+    allJoinRequests: Object.values(state.allJoinRequests),
   };
 };
 
@@ -402,7 +402,7 @@ export default connect(
     fetchUsers,
     fetchRoles,
     fetchCurrentTeam,
-    fetchAllTeamRequests,
+    fetchJoinRequests,
     editUser,
     fetchCurrentRole,
     fetchAllTeamScores,
