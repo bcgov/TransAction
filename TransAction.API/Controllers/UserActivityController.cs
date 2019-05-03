@@ -112,7 +112,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return NoContent();
+            return GetUserActivity(id);
         }
 
         //total score for that specific team for that specific event
