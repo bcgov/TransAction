@@ -48,7 +48,7 @@ class TeamsList extends Component {
 
   checkClickable(team) {
     if (this.props.currentUser.teamId === null) {
-      if (team.numMembers >= 10) {
+      if (team.numMembers >= 5) {
         return <Button color="secondary">Team Is Full</Button>;
       } else if (this.state.clickable === true) {
         return (

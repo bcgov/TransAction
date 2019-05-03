@@ -119,8 +119,9 @@ class Profile extends Component {
     const userObj = { ...this.props.currentUser, ...formValues };
     console.log('now contain ', userObj);
     this.props.editUser(userObj, userObj.id).then(() => {
-      this.props.fetchCurrentUser();
-      this.props.fetchAllTeamScores(this.props.currentUser.teamId);
+      this.props.fetchCurrentUser().then(() => {
+        this.props.fetchAllTeamScores(this.props.currentUser.teamId);
+      });
     });
   };
 

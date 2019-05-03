@@ -24,6 +24,7 @@ import {
   POST_REQUEST,
   FETCH_SPECIFIC_TEAM_REQUESTS,
   FETCH_JOIN_REQUESTS,
+  EDIT_JOIN_REQUEST,
 } from './types';
 import history from '../history';
 
@@ -310,8 +311,10 @@ export const fetchTeamScore = (teamId, eventId) => async dispatch => {
 export const fetchAllTeamScores = teamId => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log('firing fetcH team scores');
       // specific team all ACTIVE events
       const response = await api.get(`/useractivity/team/${teamId}`);
+      console.log('response is ', response);
       dispatch({ type: FETCH_ALL_TEAM_SCORES, payload: response.data });
       resolve();
     } catch (e) {
@@ -368,6 +371,18 @@ export const postJoinRequest = reqObj => async dispatch => {
     try {
       const response = await api.post(`/teamrequests`, reqObj);
       dispatch({ type: POST_REQUEST, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const editJoinRequest = (reqObj, id) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.put(`/teamrequests/${id}`, reqObj);
+      dispatch({ type: EDIT_JOIN_REQUEST, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);

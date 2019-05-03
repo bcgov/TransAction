@@ -1,4 +1,4 @@
-import { FETCH_JOIN_REQUESTS, FETCH_SPECIFIC_TEAM_REQUESTS, POST_REQUEST } from '../actions/types';
+import { FETCH_JOIN_REQUESTS, FETCH_SPECIFIC_TEAM_REQUESTS, POST_REQUEST, EDIT_JOIN_REQUEST } from '../actions/types';
 import _ from 'lodash';
 
 export default (state = {}, action) => {
@@ -8,6 +8,8 @@ export default (state = {}, action) => {
     case FETCH_SPECIFIC_TEAM_REQUESTS:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
     case POST_REQUEST:
+      return { ...state, [action.payload.id]: action.payload };
+    case EDIT_JOIN_REQUEST:
       return { ...state, [action.payload.id]: action.payload };
 
     default:

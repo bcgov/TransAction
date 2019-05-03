@@ -26,6 +26,7 @@ import {
   fetchAllTeamScores,
   fetchSpecificTeamRequests,
   fetchRegions,
+  editJoinRequest,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
@@ -274,6 +275,57 @@ class Team extends Component {
     return users;
   }
 
+  acceptRequest(request) {
+    this.setState({ clickable: false });
+    console.log('editing user ', this.props.users[request.userId].name);
+    const teamId = { teamId: this.props.currentTeam.id };
+    const newUserObj = { ...this.props.users[request.userId], ...teamId };
+    const switchRequest = { ...request, ...{ isActive: false } };
+    Promise.all([
+      this.props.editUser(newUserObj, request.userId),
+      this.props.editJoinRequest(switchRequest, request.id),
+    ]).then(() => {
+      Promise.all([
+        this.props.fetchCurrentTeam(),
+        this.props.fetchSpecificTeamRequests(this.props.currentTeam.id),
+      ]).then(() => {
+        this.setState({ clickable: true });
+      });
+    });
+  }
+
+  checkFull(request) {
+    if (this.props.currentTeam.numMembers < 5 && this.state.clickable === true) {
+      return (
+        <Button color="primary" onClick={() => this.acceptRequest(request)}>
+          Accept
+        </Button>
+      );
+    } else {
+      return <div>Full Team!</div>;
+    }
+  }
+
+  rejectRequest(request) {
+    this.setState({ clickable: false });
+    const switchRequest = { ...request, ...{ isActive: false } };
+    Promise.all([this.props.editJoinRequest(switchRequest, request.id)]).then(() => {
+      Promise.all([this.props.fetchSpecificTeamRequests(this.props.currentTeam.id)]).then(() => {
+        this.setState({ clickable: true });
+      });
+    });
+  }
+
+  checkRejectButton(request) {
+    if (this.state.clickable !== false) {
+      return (
+        <Button color="secondary" onClick={() => this.rejectRequest(request)}>
+          Reject
+        </Button>
+      );
+    }
+  }
+
   showTeamRequests() {
     console.log(this.props.joinRequests);
     var requests = this.props.joinRequests
@@ -292,10 +344,8 @@ class Team extends Component {
                 <Button color="primary">View Profile</Button>
               </Link>
             </td>
-            <td>
-              <Button>Accept</Button>
-              <Button>Reject</Button>
-            </td>
+            <td>{this.checkFull(request)}</td>
+            {this.checkRejectButton(request)}
           </tr>
         );
       });
@@ -337,7 +387,8 @@ class Team extends Component {
                 <th>Last Name</th>
                 <th>Region</th>
                 <th>Profile</th>
-                <th>Actions</th>
+                <th>Add</th>
+                <th>Reject</th>
               </tr>
             </thead>
             <tbody>{this.showTeamRequests()}</tbody>
@@ -412,5 +463,6 @@ export default connect(
     fetchCurrentRole,
     fetchAllTeamScores,
     fetchRegions,
+    editJoinRequest,
   }
 )(Team);

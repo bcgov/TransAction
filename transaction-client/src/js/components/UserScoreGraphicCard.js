@@ -48,8 +48,20 @@ class UserScoreGraphicCard extends Component {
   }
   render() {
     // console.log('HERE');
-    const barUserScore = (this.props.userScore / this.props.teamScore) * 100;
-    const barTeamScore = 100 - barUserScore;
+    console.log('user scores: ', this.props.userScore, 'teamScore: ', this.props.teamScore);
+    var barUserScore;
+    var barTeamScore;
+    var teamScore = this.props.teamScore;
+    var userScore = this.props.userScore;
+    if (this.props.teamScore === -1) {
+      teamScore = 0;
+      barUserScore = 100;
+      barTeamScore = 0;
+    } else {
+      barUserScore = (userScore / teamScore) * 100;
+      barTeamScore = 100 - barUserScore;
+    }
+
     // console.log(barUserScore, barTeamScore);
     return (
       <Container>
