@@ -256,7 +256,7 @@ namespace TransAction.Data.Services
             var teamAct = _context.TraUserActivity
                 .Where(p => p.TeamId == teamId)
                     .Include(x =>  x.Activity)
-                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)                    
                     //.Where(x => x.Event.IsActive == true)
                     .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new TeamSpecificScoreDto()

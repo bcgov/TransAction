@@ -127,12 +127,14 @@ namespace TransAction.API.Controllers
                 updateUser.IsFreeAgent = true;
             }
             //checking for if team is full 
-            //if(userEntity.TeamId != null)
-            //{
-            //    var x = _transActionRepo.GetTeam(userEntity.TeamId);
-            //}
-            
-        
+            //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
+            var users = _transActionRepo.GetUsers();
+            var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
+            if(members >= 5)
+            {
+                return BadRequest("Team Full");
+            }
+
 
             Mapper.Map(updateUser, userEntity);
 
