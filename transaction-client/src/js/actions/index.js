@@ -21,7 +21,7 @@ import {
   FETCH_CURRENT_USER,
   FETCH_CURRENT_TEAM,
   FETCH_CURRENT_ROLE,
-  FETCH_REQUEST,
+  POST_REQUEST,
   FETCH_SPECIFIC_TEAM_REQUESTS,
   FETCH_JOIN_REQUESTS,
 } from './types';
@@ -367,7 +367,7 @@ export const postJoinRequest = reqObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/teamrequests`, reqObj);
-      dispatch({ type: FETCH_REQUEST, payload: response.data });
+      dispatch({ type: POST_REQUEST, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);

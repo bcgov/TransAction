@@ -58,7 +58,7 @@ class FreeAgentsList extends Component {
     this.setState({ clickable: false });
     console.log(user);
     console.log(this.props.currentTeam);
-    if (this.props.currentTeam.numMembers >= 5) {
+    if (this.props.currentTeam.numMembers >= 10) {
       console.log('full team!');
       this.setState({ clickable: true });
     } else {

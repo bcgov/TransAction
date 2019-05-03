@@ -24,7 +24,8 @@ import {
   editUser,
   fetchCurrentRole,
   fetchAllTeamScores,
-  fetchJoinRequests,
+  fetchSpecificTeamRequests,
+  fetchRegions,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
@@ -146,7 +147,8 @@ class Team extends Component {
         this.props.fetchTeam(this.props.paramId),
         this.props.fetchUsers(),
         this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-        this.props.fetchJoinRequests(),
+        this.props.fetchSpecificTeamRequests(this.props.currentUser.teamId),
+        this.props.fetchRegions(),
       ])
         .then(() => {
           this.toggleSpinner();
@@ -273,18 +275,20 @@ class Team extends Component {
   }
 
   showTeamRequests() {
-    var requests = this.props.allJoinRequests
+    console.log(this.props.joinRequests);
+    var requests = this.props.joinRequests
       .filter(request => {
         return request.teamId === this.props.currentTeam.id;
       })
       .map(request => {
+        console.log(this.props.users);
         return (
           <tr key={request.id}>
-            <td>{this.props.user[request.userId].fname}</td>
-            <td>{this.props.user[request.userId].lname}</td>
-            <td>{this.props.region[this.props.user[request.userId].regionId].name}</td>
+            <td>{this.props.users[request.userId].fname}</td>
+            <td>{this.props.users[request.userId].lname}</td>
+            <td>{this.props.regions[this.props.users[request.userId].regionId].name}</td>
             <td>
-              <Link to={`/profile/${this.props.user[request.userId].id}`}>
+              <Link to={`/profile/${this.props.users[request.userId].id}`}>
                 <Button color="primary">View Profile</Button>
               </Link>
             </td>
@@ -389,7 +393,8 @@ const mapStateToProps = (state, ownProps) => {
     roles: state.roles,
     currentTeam: state.currentTeam,
     currentRole: state.currentRole,
-    allJoinRequests: Object.values(state.allJoinRequests),
+    joinRequests: Object.values(state.joinRequests),
+    regions: state.regions,
   };
 };
 
@@ -402,9 +407,10 @@ export default connect(
     fetchUsers,
     fetchRoles,
     fetchCurrentTeam,
-    fetchJoinRequests,
+    fetchSpecificTeamRequests,
     editUser,
     fetchCurrentRole,
     fetchAllTeamScores,
+    fetchRegions,
   }
 )(Team);
