@@ -114,7 +114,7 @@ namespace TransAction.API.Controllers
                 updateUser.IsFreeAgent = false;
             }
             var role = _transActionRepo.GetRoles();
-            var hello = updateUser.RoleId;//this the the one that is being sent in by the client
+            //var hello = updateUser.RoleId;//this the the one that is being sent in by the client
             var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
             var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
 
@@ -126,6 +126,14 @@ namespace TransAction.API.Controllers
             {
                 updateUser.IsFreeAgent = true;
             }
+            //checking for if team is full 
+            //if(userEntity.TeamId != null)
+            //{
+            //    var x = _transActionRepo.GetTeam(userEntity.TeamId);
+            //}
+            
+        
+
             Mapper.Map(updateUser, userEntity);
 
             if (!_transActionRepo.Save())

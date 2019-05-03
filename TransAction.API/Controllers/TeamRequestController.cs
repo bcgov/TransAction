@@ -9,7 +9,7 @@ using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
-    [Route("api/teamrequest")]
+    [Route("api/teamrequests")]
     public class TeamRequestController : Controller
     {
         private ITransActionRepo _transActionRepo;
@@ -63,7 +63,7 @@ namespace TransAction.API.Controllers
             }
 
             var newRequest = Mapper.Map<TraMemberReq>(createRequest);
-
+            newRequest.IsActive = true;
 
             _transActionRepo.CreateRequest(newRequest);
 
