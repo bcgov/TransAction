@@ -82,7 +82,8 @@ namespace TransAction.API.Controllers
             }
 
             var newEvent = Mapper.Map<TraEvent>(createEvent);
-          
+            newEvent.IsActive = true;
+            
 
             _transActionRepo.CreateEvent(newEvent);          
 
