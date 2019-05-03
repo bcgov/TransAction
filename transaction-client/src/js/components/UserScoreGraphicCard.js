@@ -2,13 +2,8 @@ import React, { Component } from 'react';
 import { Card, CardBody, CardTitle, CardSubtitle, Progress, Container, Row } from 'reactstrap';
 
 class UserScoreGraphicCard extends Component {
-  decideRender(barUserScore, barTeamScore) {
-    var title = '';
-    if (this.props.type === 'profile') {
-      title = this.props.name;
-    } else {
-      title = "Lets See How You're Doing!";
-    }
+  scoreCard(barUserScore, barTeamScore, title) {
+    console.log(barUserScore);
     return (
       <CardBody>
         <CardTitle>{title}</CardTitle>
@@ -33,6 +28,23 @@ class UserScoreGraphicCard extends Component {
         </Progress>
       </CardBody>
     );
+  }
+
+  decideRender(barUserScore, barTeamScore) {
+    var title = '';
+    if (this.props.type === 'profile') {
+      title = this.props.name;
+    } else {
+      title = "Lets See How You're Doing!";
+    }
+    console.log(barTeamScore, barUserScore);
+    if (isNaN(barTeamScore) && isNaN(barUserScore)) {
+      barUserScore = 0;
+      barTeamScore = 0;
+      return this.scoreCard(barUserScore, barTeamScore, title);
+    } else {
+      return this.scoreCard(barUserScore, barTeamScore, title);
+    }
   }
   render() {
     // console.log('HERE');

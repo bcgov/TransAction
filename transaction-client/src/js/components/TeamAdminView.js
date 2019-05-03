@@ -8,7 +8,7 @@ import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
 
 class TeamAdminView extends Component {
-  state = { loading: true, modal: false };
+  state = { loading: true, modal: false, clickable: true };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -33,6 +33,7 @@ class TeamAdminView extends Component {
     }
     //Loading DONE
     else {
+      console.log(this.props.team);
       return this.teamInfo();
     }
   }
@@ -70,7 +71,7 @@ class TeamAdminView extends Component {
     const kickUser = { ...user, ...teamId };
     this.props.editUser(kickUser, user.id).then(() => {
       this.props
-        .fetchCurrentTeam(this.props.currentUser.teamId)
+        .fetchTeam(this.props.paramId)
         .then(() => {
           this.setState({ clickable: true });
         })
@@ -95,7 +96,7 @@ class TeamAdminView extends Component {
   showTeamMembers() {
     var users = this.props.users
       .filter(user => {
-        return user.teamId === this.props.currentTeam.id;
+        return user.teamId === this.props.team.id;
       })
       .map(teamate => {
         return (
@@ -120,14 +121,9 @@ class TeamAdminView extends Component {
   teamInfo() {
     return (
       <div>
-        <TitleForm
-          initialValues={_.pick(this.props.currentTeam, 'name')}
-          onSubmit={this.onSubmit}
-          title="Team Name: "
-        />
-        <DescriptionForm initialValues={_.pick(this.props.currentTeam, 'description')} onSubmit={this.onSubmit} />
+        <TitleForm initialValues={_.pick(this.props.team, 'name')} onSubmit={this.onSubmit} title="Team Name: " />
+        <DescriptionForm initialValues={_.pick(this.props.team, 'description')} onSubmit={this.onSubmit} />
         <h2 className="mt-2">Progress: </h2>
-        <div>{this.progressBar()}</div>
         <div>
           <h4>Members:</h4>
           <Table striped>
@@ -143,11 +139,6 @@ class TeamAdminView extends Component {
             <tbody>{this.showTeamMembers()}</tbody>
           </Table>
         </div>
-        <Link to="/free_agents">
-          <Button size="lg" color="primary">
-            Find Free Agents
-          </Button>
-        </Link>
       </div>
     );
   }

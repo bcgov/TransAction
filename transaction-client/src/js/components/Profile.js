@@ -120,6 +120,7 @@ class Profile extends Component {
     console.log('now contain ', userObj);
     this.props.editUser(userObj, userObj.id).then(() => {
       this.props.fetchCurrentUser();
+      this.props.fetchAllTeamScores(this.props.currentUser.teamId);
     });
   };
 

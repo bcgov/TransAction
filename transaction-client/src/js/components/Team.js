@@ -24,6 +24,7 @@ import {
   editUser,
   fetchCurrentRole,
   fetchAllTeamScores,
+  fetchAllTeamRequests,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
@@ -145,6 +146,7 @@ class Team extends Component {
         this.props.fetchTeam(this.props.paramId),
         this.props.fetchUsers(),
         this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+        this.props.fetchAllTeamRequests(),
       ])
         .then(() => {
           this.toggleSpinner();
@@ -270,6 +272,32 @@ class Team extends Component {
     return users;
   }
 
+  showTeamRequests() {
+    var requests = this.props.allTeamRequests
+      .filter(request => {
+        return request.teamId === this.props.currentTeam.id;
+      })
+      .map(request => {
+        return (
+          <tr key={request.id}>
+            <td>{this.props.user[request.userId].fname}</td>
+            <td>{this.props.user[request.userId].lname}</td>
+            <td>{this.props.region[this.props.user[request.userId].regionId].name}</td>
+            <td>
+              <Link to={`/profile/${this.props.user[request.userId].id}`}>
+                <Button color="primary">View Profile</Button>
+              </Link>
+            </td>
+            <td>
+              <Button>Accept</Button>
+              <Button>Reject</Button>
+            </td>
+          </tr>
+        );
+      });
+    return requests;
+  }
+
   teamInfo() {
     return (
       <div>
@@ -296,6 +324,21 @@ class Team extends Component {
             <tbody>{this.showTeamMembers()}</tbody>
           </Table>
         </div>
+        <div>
+          <Table striped>
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Region</th>
+                <th>Profile</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>{this.showTeamRequests()}</tbody>
+          </Table>
+        </div>
+
         <Link to="/free_agents">
           <Button size="lg" color="primary">
             Find Free Agents
@@ -345,6 +388,7 @@ const mapStateToProps = (state, ownProps) => {
     roles: state.roles,
     currentTeam: state.currentTeam,
     currentRole: state.currentRole,
+    allTeamRequests: state.allTeamRequests,
   };
 };
 
@@ -357,6 +401,7 @@ export default connect(
     fetchUsers,
     fetchRoles,
     fetchCurrentTeam,
+    fetchAllTeamRequests,
     editUser,
     fetchCurrentRole,
     fetchAllTeamScores,

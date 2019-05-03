@@ -339,7 +339,7 @@ export const fetchRoles = () => async dispatch => {
 
 //Team Requests
 
-export const fetchAllRequests = () => async dispatch => {
+export const fetchAllTeamRequests = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/teamrequests/`);
