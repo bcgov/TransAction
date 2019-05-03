@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import _ from 'lodash';
 import { connect } from 'react-redux';
 import LogActivityModalForm from './LogActivityModalForm';
-import { createUserActivity, fetchActivityList, fetchCurrentUser } from '../actions';
+import { createUserActivity, fetchActivityList, fetchCurrentUser, fetchUserScore, fetchTeamScore } from '../actions';
 
 class LogActivityModalBody extends Component {
   onSubmit = formValues => {
@@ -21,14 +21,16 @@ class LogActivityModalBody extends Component {
       name: 'name1',
       teamId: this.props.currentUser.teamId,
     };
-    this.props.createUserActivity(activityObj, this.props.currentUser.id, this.props.eventId).then(() => {
+    this.props.createUserActivity(activityObj).then(() => {
       this.props.fetchCurrentUser();
+      this.props.fetchUserScore(this.props.currentUser.id, this.props.eventId);
+      this.props.fetchTeamScore(this.props.currentUser.teamId, this.props.eventId);
     });
     this.props.modalClose();
   };
 
   componentDidMount() {
-    Promise.all([this.props.fetchCurrentUser(), this.props.fetchActivityList()]);
+    Promise.all([this.props.fetchCurrentUser(), this.props.fetchActivityList()]).then(() => {});
   }
 
   decideRender() {
@@ -53,5 +55,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createUserActivity, fetchCurrentUser, fetchActivityList }
+  { createUserActivity, fetchCurrentUser, fetchActivityList, fetchUserScore, fetchTeamScore }
 )(LogActivityModalBody);

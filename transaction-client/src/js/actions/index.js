@@ -351,10 +351,10 @@ export const fetchAllRequests = () => async dispatch => {
   });
 };
 
-export const fetchRequest = id => async dispatch => {
+export const fetchJoinRequests = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get(`/teamrequests/${id}`);
+      const response = await api.get(`/teamrequests`);
       dispatch({ type: FETCH_REQUEST, payload: response.data });
       resolve();
     } catch (e) {

@@ -14,6 +14,8 @@ import allUserScoresReducer from './allUserScoresReducer';
 import rolesReducer from './rolesReducer';
 import currentTeamReducer from './currentTeamReducer';
 import currentRoleReducer from './currentRoleReducer';
+import allTeamRequestsReducer from './allTeamRequestsReducer';
+import userActivityReducer from './userActivityReducer';
 
 export default combineReducers({
   form: formReducer,
@@ -24,6 +26,7 @@ export default combineReducers({
   regions: regionsReducer,
   users: usersReducer,
   activities: activityReducer,
+  userActivities: userActivityReducer,
   userScore: userScoreReducer,
   teamScore: teamScoreReducer,
   allUserScores: allUserScoresReducer,
@@ -31,4 +34,5 @@ export default combineReducers({
   roles: rolesReducer,
   currentTeam: currentTeamReducer,
   currentRole: currentRoleReducer,
+  allTeamRequests: allTeamRequestsReducer,
 });
