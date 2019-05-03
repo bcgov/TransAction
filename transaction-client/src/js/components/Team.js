@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button, Row, Table } from 'reactstrap';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Container,
+  Spinner,
+  Button,
+  Row,
+  Table,
+  Modal,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -25,7 +36,7 @@ import NoTeamPage from './NoTeamPage';
 import TeamAdminView from './TeamAdminView';
 
 class Team extends Component {
-  state = { loading: true, modal: false, clickable: true };
+  state = { loading: true, modal: false, clickable: true, modalLeave: false };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -35,6 +46,11 @@ class Team extends Component {
   toggle = () => {
     this.setState(prevState => ({
       modal: !prevState.modal,
+    }));
+  };
+  toggleLeave = () => {
+    this.setState(prevState => ({
+      modalLeave: !prevState.modalLeave,
     }));
   };
 
@@ -54,7 +70,8 @@ class Team extends Component {
       //paramId is passed
       if (this.props.paramId !== null) {
         //if the team id does not exist
-        if (!this.props.currentTeam.id) {
+        if (!this.props.team) {
+          console.log(this.props.team);
           console.log('param id passed, team id doesnt exist');
           return <div>hmmmmmm.. we couldnt find that team :(</div>;
         }
@@ -96,7 +113,7 @@ class Team extends Component {
         else {
           console.log('No param id but we do have a team, so we are looking at our own team!');
           //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
-          if (this.props.currentRole !== 'user') {
+          if (this.props.currentRole.name !== 'user') {
             console.log('No param id, our team , we are not a user so we can edit!');
             return this.teamInfo();
           }
@@ -125,10 +142,9 @@ class Team extends Component {
       console.log('currentUser teamId: ', this.props.currentUser.teamId);
       this.props.fetchCurrentRole(this.props.currentUser.roleId);
       Promise.all([
-        this.props.fetchTeam(),
+        this.props.fetchTeam(this.props.paramId),
         this.props.fetchUsers(),
         this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-        this.props.fetchAllTeamScore,
       ])
         .then(() => {
           this.toggleSpinner();
@@ -161,6 +177,17 @@ class Team extends Component {
     }
   }
 
+  leaveTeam = () => {
+    const leaveTeam = { teamId: null };
+    console.log(this.props.currentUser);
+    const userObj = { ...this.props.currentUser, ...leaveTeam };
+    this.props.editUser(userObj, this.props.currentUser.id).then(() => {
+      this.props.fetchCurrentUser();
+      this.toggleLeave();
+    });
+    this.props.fetchCurrentUser();
+  };
+
   kickMember(user) {
     this.setState({ clickable: false });
     const teamId = { teamId: null, isFreeAgent: true };
@@ -181,8 +208,36 @@ class Team extends Component {
       if (this.state.clickable === true) {
         return <Button onClick={() => this.kickMember(user)}> Kick </Button>;
       }
+    } else if (this.state.clickable === true) {
+      return (
+        <React.Fragment>
+          <Button color="secondary" className="mb-2" onClick={this.toggleLeave}>
+            {' '}
+            Leave Team
+          </Button>
+          <Modal isOpen={this.state.modalLeave}>
+            <ModalBody>
+              <div>
+                Are you sure you wish to Leave the Team?
+                <br />
+                <br />
+                Note: You will be giving the "Team Leader" role to the first person you recruited.
+              </div>
+              <ModalFooter>
+                <Button color="primary" onClick={this.leaveTeam}>
+                  Ok
+                </Button>{' '}
+                <Button color="secondary" onClick={this.toggleLeave}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </ModalBody>
+          </Modal>
+        </React.Fragment>
+      );
     }
   }
+
   checkLeader(user) {
     if (this.props.roles[user.roleId].name !== 'user') {
       return this.props.roles[user.roleId].name;

@@ -16,6 +16,7 @@ import {
   fetchCurrentRole,
   fetchAllTeamScores,
   fetchCurrentTeam,
+  fetchUsers,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
@@ -47,7 +48,8 @@ class Profile extends Component {
         </div>
       );
     } else {
-      if (!this.props.currentUser.id) return <div>Hmmmm, We couldnt find that user :(</div>;
+      if (!this.props.users[this.props.paramId] && this.props.paramId !== null)
+        return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
         //no paramId passed
@@ -72,12 +74,12 @@ class Profile extends Component {
           else {
             //If they are an admin
 
-            if (this.props.currentRole.name === 'admin') {
+            if (this.props.roles[this.props.currentUser.roleId].name === 'Admin') {
               console.log('we are admin');
               return <ProfileAdminView userId={this.props.paramId} />;
             } else {
               //return read only
-              console.log('we are ', this.state.userRole, ' returning read only');
+              console.log('we are ', this.props.roles[this.props.currentUser.roleId].name, ' returning read only');
               return <ProfileReadOnly userId={this.props.paramId} />;
             }
           }
@@ -94,6 +96,7 @@ class Profile extends Component {
           this.props.fetchAllUserScores(this.props.currentUser.id),
           this.props.fetchAllTeamScores(this.props.currentUser.teamId),
           this.props.fetchRegions(),
+          this.props.fetchUsers(),
           this.props.fetchTeam(this.props.currentUser.teamId),
           this.props.fetchCurrentTeam(this.props.currentUser.teamId),
           this.props.fetchCurrentRole(this.props.currentUser.roleId),
@@ -274,10 +277,17 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  var parameter;
+  if (!ownProps.match.params.id) {
+    parameter = null;
+  } else {
+    parameter = parseInt(ownProps.match.params.id);
+  }
+
   return {
-    paramId: parseInt(ownProps.match.params.id),
+    paramId: parameter,
     currentUser: state.currentUser,
-    currentTeam: state.currentTeam,
+    users: state.users,
     team: state.team,
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
@@ -285,6 +295,7 @@ const mapStateToProps = (state, ownProps) => {
     events: Object.values(state.events),
     roles: state.roles,
     currentRole: state.currentRole,
+    currentTeam: state.currentTeam,
   };
 };
 
@@ -292,7 +303,7 @@ export default connect(
   mapStateToProps,
   {
     fetchCurrentUser,
-    fetchCurrentTeam,
+    fetchUsers,
     fetchTeam,
     editUser,
     fetchRegions,
@@ -301,5 +312,6 @@ export default connect(
     fetchEvents,
     fetchRoles,
     fetchCurrentRole,
+    fetchCurrentTeam,
   }
 )(Profile);

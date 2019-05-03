@@ -60,7 +60,7 @@ class Main extends Component {
   }
 
   checkAdmin() {
-    if (this.props.currentRole.name === 'admin') {
+    if (this.props.currentRole.name === 'Admin') {
       return (
         <React.Fragment>
           <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>

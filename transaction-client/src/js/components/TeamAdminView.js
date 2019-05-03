@@ -65,14 +65,29 @@ class TeamAdminView extends Component {
   }
 
   kickMember(user) {
+    this.setState({ clickable: false });
     const teamId = { teamId: null, isFreeAgent: true };
     const kickUser = { ...user, ...teamId };
-    this.props.editUser(kickUser, user.id);
-    this.props.fetchTeam(this.props.currentUser.teamId);
+    this.props.editUser(kickUser, user.id).then(() => {
+      this.props
+        .fetchCurrentTeam(this.props.currentUser.teamId)
+        .then(() => {
+          this.setState({ clickable: true });
+        })
+        .catch(() => {
+          this.setState({ clickable: true });
+        });
+    });
   }
   checkMember(user) {
-    if (user.id !== this.props.currentUser.id) {
+    if (this.state.clickable === true) {
       return <Button onClick={() => this.kickMember(user)}> Kick </Button>;
+    }
+  }
+
+  checkLeader(user) {
+    if (this.props.roles[user.roleId].name !== 'user') {
+      return this.props.roles[user.roleId].name;
     }
   }
 
@@ -80,7 +95,7 @@ class TeamAdminView extends Component {
   showTeamMembers() {
     var users = this.props.users
       .filter(user => {
-        return user.teamId === this.props.team.id;
+        return user.teamId === this.props.currentTeam.id;
       })
       .map(teamate => {
         return (
@@ -88,7 +103,13 @@ class TeamAdminView extends Component {
             <td>
               {teamate.fname} {teamate.lname}
             </td>
+            <td>{this.checkLeader(teamate)}</td>
             <td> </td>
+            <td>
+              <Link to={`/profile/${teamate.id}`}>
+                <Button color="primary">View Profile</Button>
+              </Link>
+            </td>
             <td>{this.checkMember(teamate)}</td>
           </tr>
         );
@@ -99,15 +120,24 @@ class TeamAdminView extends Component {
   teamInfo() {
     return (
       <div>
-        <TitleForm initialValues={_.pick(this.props.team, 'name')} onSubmit={this.onSubmit} title="Team Name: " />
-        <DescriptionForm initialValues={_.pick(this.props.team, 'description')} onSubmit={this.onSubmit} />
+        <TitleForm
+          initialValues={_.pick(this.props.currentTeam, 'name')}
+          onSubmit={this.onSubmit}
+          title="Team Name: "
+        />
+        <DescriptionForm initialValues={_.pick(this.props.currentTeam, 'description')} onSubmit={this.onSubmit} />
+        <h2 className="mt-2">Progress: </h2>
+        <div>{this.progressBar()}</div>
         <div>
           <h4>Members:</h4>
           <Table striped>
             <thead>
               <tr>
                 <th>Names</th>
+                <th>Lead</th>
                 <th>Scores</th>
+                <th>Profile</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>{this.showTeamMembers()}</tbody>

@@ -26,12 +26,12 @@ class Event extends React.Component {
   }
 
   checkAdmin() {
-    if (this.props.currentRole.name === 'admin') {
+    if (this.props.currentRole.name === 'Admin') {
       return (
         <React.Fragment>
           <ButtonGroup className="float-right">
             <Button color="primary" onClick={this.toggle}>
-              Edit Events
+              Edit Event
             </Button>
             <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Edit an Event">
               {' '}

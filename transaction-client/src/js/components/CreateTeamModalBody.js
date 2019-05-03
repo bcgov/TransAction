@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import _ from 'lodash';
 import { connect } from 'react-redux';
 import CreateTeamModalForm from './CreateTeamModalForm';
-import { createTeam, fetchCurrentUser } from '../actions';
+import { createTeam, fetchCurrentUser, fetchUsers } from '../actions';
 
 class CreateTeamModalBody extends Component {
   onSubmit = formValues => {
@@ -16,12 +16,13 @@ class CreateTeamModalBody extends Component {
 
     this.props.createTeam(teamObj).then(() => {
       this.props.fetchCurrentUser();
+      this.props.fetchUsers();
     });
     this.props.modalClose();
   };
 
   componentDidMount() {
-    Promise.all([this.props.fetchCurrentUser()]);
+    Promise.all([this.props.fetchCurrentUser(), this.props.fetchUsers()]);
   }
 
   decideRender() {
@@ -39,5 +40,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createTeam, fetchCurrentUser }
+  { createTeam, fetchCurrentUser, fetchUsers }
 )(CreateTeamModalBody);

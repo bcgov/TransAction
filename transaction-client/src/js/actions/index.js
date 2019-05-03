@@ -47,8 +47,9 @@ export const createEvent = formValues => async dispatch => {
 };
 
 export const editEvent = (id, formValues) => async dispatch => {
+  console.log(' here are the values passed: ', formValues);
   const response = await api.put(`/events/${id}`, formValues);
-
+  console.log('dispatching : ', response);
   dispatch({ type: EDIT_EVENT, payload: response.data });
 };
 
@@ -367,6 +368,18 @@ export const fetchSpecificTeamRequests = id => async dispatch => {
     try {
       const response = await api.get(`/teamrequests/team/${id}`);
       dispatch({ type: FETCH_SPECIFIC_TEAM_REQUESTS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const postJoinRequest = reqObj => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.post(`/teamrequests`, reqObj);
+      dispatch({ type: FETCH_REQUEST, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);

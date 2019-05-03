@@ -24,7 +24,7 @@ class NoTeamPage extends Component {
   confirmFreeAgent = () => {
     const agentFlag = { isFreeAgent: true };
     const userObj = { ...this.props.currentUser, ...agentFlag };
-    this.props.editUser(userObj, 'me').then(() => {
+    this.props.editUser(userObj, this.props.currentUser.id).then(() => {
       this.props.fetchCurrentUser();
       this.toggleAgent();
     });
@@ -33,7 +33,7 @@ class NoTeamPage extends Component {
   confirmRemoveFreeAgent = () => {
     const agentFlag = { isFreeAgent: false };
     const userObj = { ...this.props.currentUser, ...agentFlag };
-    this.props.editUser(userObj, 'me').then(() => {
+    this.props.editUser(userObj, this.props.currentUser.id).then(() => {
       this.props.fetchCurrentUser();
       this.toggleAgent();
     });

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Table, Spinner } from 'reactstrap';
+import { Table, Spinner, Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { fetchUsers, fetchCurrentTeam, fetchCurrentUser, fetchTeam } from '../actions';
+import { fetchUsers, fetchCurrentTeam, fetchCurrentUser, fetchTeam, fetchRoles } from '../actions';
+import { Link } from 'react-router-dom';
 
 class TeamReadOnly extends Component {
   state = { loading: true };
@@ -13,7 +14,12 @@ class TeamReadOnly extends Component {
   };
 
   componentDidMount() {
-    Promise.all([this.props.fetchTeam(this.props.paramId), this.props.fetchCurrentUser(), this.props.fetchUsers()])
+    Promise.all([
+      this.props.fetchTeam(this.props.paramId),
+      this.props.fetchCurrentUser(),
+      this.props.fetchUsers(),
+      this.props.fetchRoles(),
+    ])
       .then(() => {
         this.toggleSpinner();
       })
@@ -22,6 +28,13 @@ class TeamReadOnly extends Component {
       });
   }
 
+  checkLeader(user) {
+    if (this.props.roles[user.roleId].name !== 'user') {
+      return this.props.roles[user.roleId].name;
+    }
+  }
+
+  //TODO SHOW POINTS
   showTeamMembers() {
     var users = this.props.users
       .filter(user => {
@@ -33,7 +46,13 @@ class TeamReadOnly extends Component {
             <td>
               {teamate.fname} {teamate.lname}
             </td>
+            <td>{this.checkLeader(teamate)}</td>
             <td> </td>
+            <td>
+              <Link to={`/profile/${teamate.id}`}>
+                <Button color="primary">View Profile</Button>
+              </Link>
+            </td>
           </tr>
         );
       });
@@ -51,7 +70,9 @@ class TeamReadOnly extends Component {
             <thead>
               <tr>
                 <th>Names</th>
+                <th>Lead</th>
                 <th>Scores</th>
+                <th>Profile</th>
               </tr>
             </thead>
             <tbody>{this.showTeamMembers()}</tbody>
@@ -85,10 +106,11 @@ const mapStateToProps = (state, ownProps) => {
     currentTeam: state.currentTeam,
     currentUser: state.currentUser,
     team: state.team[ownProps.paramId],
+    roles: state.roles,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchUsers, fetchCurrentTeam, fetchCurrentUser, fetchTeam }
+  { fetchUsers, fetchCurrentTeam, fetchCurrentUser, fetchTeam, fetchRoles }
 )(TeamReadOnly);
