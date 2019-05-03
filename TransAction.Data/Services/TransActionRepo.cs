@@ -253,8 +253,9 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId)
         {
+            var memberId = _context.TraUser.Where(x => x.TeamId == teamId).Select(x => x.UserId);
             var teamAct = _context.TraUserActivity
-                .Where(p => p.TeamId == teamId)
+                .Where(p => p.TeamId == teamId && memberId.Contains(p.UserId))
                     .Include(x =>  x.Activity)
                     .Include(x => x.Event).Where(x => x.Event.IsActive == true)                    
                     //.Where(x => x.Event.IsActive == true)
@@ -326,7 +327,8 @@ namespace TransAction.Data.Services
                 .Where(p => p.TeamId == teamId)
                 .Where(p => p.IsActive == true)
                     .Select(x => new CurrentTeamRequestsDto()
-                    {   
+                    {
+                        MemberReqId = x.MemberReqId,
                         TeamId = teamId,
                         UserId = x.UserId,
                         IsActive = x.IsActive
