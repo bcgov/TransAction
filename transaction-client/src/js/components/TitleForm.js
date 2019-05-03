@@ -12,8 +12,6 @@ class TitleForm extends Component {
   }
 
   onSubmit = formValues => {
-    //console.log('Attempting to edit description!');
-    //console.log(formValues);
     this.props.onSubmit(formValues);
   };
   render() {

@@ -31,13 +31,10 @@ class Main extends Component {
       </div>
     ));
 
-    //console.log(events);
     return events;
   }
   decideRender() {
-    //console.log(this.state.isSpin);
     if (this.state.isSpin === true) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />

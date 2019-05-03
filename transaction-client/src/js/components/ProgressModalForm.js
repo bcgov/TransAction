@@ -48,8 +48,6 @@ const validate = formValues => {
   const errors = {};
   if (isNaN(formValues.edit)) {
     errors.edit = 'You must enter a valid number';
-    //console.log('checking number : ', isNaN(formValues.edit));
-    //console.log('heres the input : ', formValues.edit);
   }
 
   return errors;

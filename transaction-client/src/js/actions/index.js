@@ -48,9 +48,8 @@ export const createEvent = formValues => async dispatch => {
 };
 
 export const editEvent = (id, formValues) => async dispatch => {
-  console.log(' here are the values passed: ', formValues);
   const response = await api.put(`/events/${id}`, formValues);
-  console.log('dispatching : ', response);
+
   dispatch({ type: EDIT_EVENT, payload: response.data });
 };
 
@@ -68,11 +67,10 @@ export const fetchEvent = id => async dispatch => {
 
 //User Actions
 export const fetchCurrentUser = () => async dispatch => {
-  // console.log('FetchUser given id: ', id);
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/users/me`);
-      //console.log(response.data);
+
       dispatch({ type: FETCH_CURRENT_USER, payload: response.data });
       resolve();
     } catch (e) {
@@ -85,7 +83,7 @@ export const fetchUsers = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get('/users');
-      //console.log('fetchUsers: ', response.data);
+
       dispatch({ type: FETCH_USERS, payload: response.data });
       resolve();
     } catch (e) {
@@ -94,11 +92,10 @@ export const fetchUsers = () => async dispatch => {
   });
 };
 export const fetchUser = id => async dispatch => {
-  // console.log('FetchUser given id: ', id);
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/users/${id}`);
-      //console.log(response.data);
+
       dispatch({ type: FETCH_USER, payload: response.data });
       resolve();
     } catch (e) {
@@ -108,12 +105,10 @@ export const fetchUser = id => async dispatch => {
 };
 
 export const fetchCurrentTeam = id => async dispatch => {
-  // console.log('FetchUser given id: ', id);
-  console.log('current team fetch');
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/teams/${id}`);
-      //console.log(response.data);
+
       dispatch({ type: FETCH_CURRENT_TEAM, payload: response.data });
       resolve();
     } catch (e) {
@@ -123,11 +118,10 @@ export const fetchCurrentTeam = id => async dispatch => {
 };
 
 export const fetchCurrentRole = id => async dispatch => {
-  // console.log('FetchUser given id: ', id);
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/roles/${id}`);
-      //console.log(response.data);
+
       dispatch({ type: FETCH_CURRENT_ROLE, payload: response.data });
       resolve();
     } catch (e) {
@@ -139,9 +133,8 @@ export const fetchCurrentRole = id => async dispatch => {
 export const fetchTeam = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.group('FetchTeam given id: ', id);
       const response = await api.get(`/teams/${id}`);
-      console.log(response.data);
+
       dispatch({ type: FETCH_TEAM, payload: response.data });
       resolve();
     } catch (e) {
@@ -155,9 +148,7 @@ export const fetchTeam = id => async dispatch => {
 export const editUser = (userObj, id) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log('attempting to put values ', userObj);
       const response = await api.put(`/users/${id}`, userObj);
-      console.log('attempting dispatch response: ', response);
 
       dispatch({ type: FETCH_USER, payload: response.data });
       resolve();
@@ -171,9 +162,7 @@ export const editUser = (userObj, id) => async dispatch => {
 export const recruitUser = (userObj, id) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log('attempting to put values ', userObj);
       const response = await api.put(`/users/${id}`, userObj);
-      console.log('attempting dispatch response: ', response);
 
       dispatch({ type: FETCH_USER, payload: response.data });
       resolve();
@@ -213,7 +202,6 @@ export const fetchRegions = () => async dispatch => {
 };
 
 export const createTeam = formValues => async dispatch => {
-  console.log('Attempting to create team with values: ', formValues);
   const response = await api.post('/teams', formValues);
 
   dispatch({ type: CREATE_TEAM, payload: response.data });
@@ -249,12 +237,11 @@ export const fetchActivityList = () => async dispatch => {
 };
 
 export const createUserActivity = activityObj => async dispatch => {
-  console.log('Action has recieved: ', activityObj);
   return new Promise(async (resolve, reject) => {
     try {
       // create new activity, should contain minutes, activity type, team id , user id, event id
       const response = await api.post(`/useractivity`, activityObj);
-      console.log('Here in the action, we have: ', response.data);
+
       dispatch({ type: CREATE_USER_ACTIVITY, payload: response.data });
       resolve();
     } catch (e) {
@@ -280,12 +267,11 @@ export const fetchUserScore = (userId, eventId) => async dispatch => {
 };
 
 export const fetchAllUserScores = userId => async dispatch => {
-  console.log('attemptin to fetch usrer scores');
   return new Promise(async (resolve, reject) => {
     try {
       // this fetches a specific user scores for ALL active events
       const response = await api.get(`/useractivity/user/${userId}`);
-      console.log(response);
+
       dispatch({ type: FETCH_ALL_USER_SCORES, payload: response.data });
       resolve();
     } catch (e) {
@@ -311,10 +297,9 @@ export const fetchTeamScore = (teamId, eventId) => async dispatch => {
 export const fetchAllTeamScores = teamId => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log('firing fetcH team scores');
       // specific team all ACTIVE events
       const response = await api.get(`/useractivity/team/${teamId}`);
-      console.log('response is ', response);
+
       dispatch({ type: FETCH_ALL_TEAM_SCORES, payload: response.data });
       resolve();
     } catch (e) {

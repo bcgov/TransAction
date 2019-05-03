@@ -3,7 +3,6 @@ import { Card, CardBody, CardTitle, CardSubtitle, Progress, Container, Row } fro
 
 class UserScoreGraphicCard extends Component {
   scoreCard(barUserScore, barTeamScore, title) {
-    console.log(barUserScore);
     return (
       <CardBody>
         <CardTitle>{title}</CardTitle>
@@ -37,7 +36,7 @@ class UserScoreGraphicCard extends Component {
     } else {
       title = "Lets See How You're Doing!";
     }
-    console.log(barTeamScore, barUserScore);
+
     if (isNaN(barTeamScore) && isNaN(barUserScore)) {
       barUserScore = 0;
       barTeamScore = 0;
@@ -47,8 +46,6 @@ class UserScoreGraphicCard extends Component {
     }
   }
   render() {
-    // console.log('HERE');
-    console.log('user scores: ', this.props.userScore, 'teamScore: ', this.props.teamScore);
     var barUserScore;
     var barTeamScore;
     var teamScore = this.props.teamScore;
@@ -62,7 +59,6 @@ class UserScoreGraphicCard extends Component {
       barTeamScore = 100 - barUserScore;
     }
 
-    // console.log(barUserScore, barTeamScore);
     return (
       <Container>
         <Card>{this.decideRender(barUserScore, barTeamScore)}</Card>

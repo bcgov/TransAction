@@ -24,7 +24,6 @@ class TeamAdminView extends Component {
   //TODO could be taken out into its own component?
   loading() {
     if (this.state.loading) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
@@ -33,15 +32,13 @@ class TeamAdminView extends Component {
     }
     //Loading DONE
     else {
-      console.log(this.props.team);
       return this.teamInfo();
     }
   }
 
   onSubmit = formValues => {
-    //console.log('passed in ', formValues);
     const userObj = { ...this.props.team, ...formValues };
-    //console.log('now contain ', userObj);
+
     this.props.editTeam(userObj, this.props.team.id);
   };
 
@@ -49,8 +46,6 @@ class TeamAdminView extends Component {
     // this.toggleSpinner();
 
     Promise.all([this.props.fetchCurrentUser(), this.props.fetchRoles()]).then(() => {
-      console.log('param id: ', this.props.paramId);
-      console.log('currentUser teamId: ', this.props.currentUser.teamId);
       Promise.all([
         this.props.fetchTeam(this.props.paramId),
         this.props.fetchUsers(),
@@ -149,8 +144,6 @@ class TeamAdminView extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  //console.log(ownProps);
-
   return {
     currentUser: state.currentUser,
     team: state.team[ownProps.paramId],

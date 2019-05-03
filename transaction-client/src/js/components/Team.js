@@ -60,7 +60,6 @@ class Team extends Component {
   //TODO could be taken out into its own component?
   decideRender() {
     if (this.state.loading) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
@@ -69,60 +68,46 @@ class Team extends Component {
     }
     //Loading DONE
     else {
-      console.log('THe current user is of role: ', this.props.currentRole.name);
       //paramId is passed
       if (this.props.paramId !== null) {
         //if the team id does not exist
         if (!this.props.team) {
-          console.log(this.props.team);
-          console.log('param id passed, team id doesnt exist');
           return <div>hmmmmmm.. we couldnt find that team :(</div>;
         }
         //if the paramId is the same as user teamid
         if (this.props.paramId === this.props.currentUser.teamId) {
-          console.log('param id passed, team id is the same, its our team!');
           //If they are a team lead or admin
           if (this.props.currentRole.name !== 'user') {
-            console.log('we are not a user, therefor we can edit!');
             return this.teamInfo();
           }
           //a regular user, therefor seeing his team in read only
           else {
-            console.log('we are a user, so we cannot edit!');
             return <TeamUserReadOnly paramId={this.props.paramId} />;
           }
         }
         //paramid is NOT the same as user teamid; viewing someones team from the outside
         else {
-          console.log('param id passed, team id is not the same, looking at someone elses team!');
           //If they are an admin
           if (this.props.currentRole.name === 'Admin') {
-            console.log("param id passed, team id is not the same but we're an admin, so we can edit!");
             return <TeamAdminView paramId={this.props.paramId} />;
           } else {
-            console.log('we are just a user, so we cannot edit');
             return <TeamReadOnly paramId={this.props.paramId} />;
           }
         }
       } else {
-        console.log('NO param id');
         //no paramId passed
         //we have no teamid and no id was passed as param; load choices
         if (!this.props.currentUser.teamId) {
-          console.log('BOI WE AINT GOT NO TEAM');
           return <NoTeamPage />;
         }
         //Following the user's teamid
         else {
-          console.log('No param id but we do have a team, so we are looking at our own team!');
           //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
           if (this.props.currentRole.name !== 'user') {
-            console.log('No param id, our team , we are not a user so we can edit!');
             return this.teamInfo();
           }
           //a regular user, therefor seeing his team in read only
           else {
-            console.log("no param id, just a user so we're seeing our own team in read only");
             return <TeamUserReadOnly paramId={this.props.currentUser.teamId} />;
           }
         }
@@ -131,9 +116,8 @@ class Team extends Component {
   }
 
   onSubmit = formValues => {
-    //console.log('passed in ', formValues);
     const userObj = { ...this.props.currentTeam, ...formValues };
-    //console.log('now contain ', userObj);
+
     this.props.editTeam(userObj, this.props.currentTeam.id);
   };
 
@@ -141,8 +125,6 @@ class Team extends Component {
     // this.toggleSpinner();
 
     Promise.all([this.props.fetchCurrentUser(), this.props.fetchRoles()]).then(() => {
-      console.log('param id: ', this.props.paramId);
-      console.log('currentUser teamId: ', this.props.currentUser.teamId);
       this.props.fetchCurrentRole(this.props.currentUser.roleId);
       Promise.all([
         this.props.fetchTeam(this.props.paramId),
@@ -184,7 +166,7 @@ class Team extends Component {
 
   leaveTeam = () => {
     const leaveTeam = { teamId: null };
-    console.log(this.props.currentUser);
+
     const userObj = { ...this.props.currentUser, ...leaveTeam };
     this.props.editUser(userObj, this.props.currentUser.id).then(() => {
       this.props.fetchCurrentUser();
@@ -277,7 +259,6 @@ class Team extends Component {
 
   acceptRequest(request) {
     this.setState({ clickable: false });
-    console.log('editing user ', this.props.users[request.userId].name);
     const teamId = { teamId: this.props.currentTeam.id };
     const newUserObj = { ...this.props.users[request.userId], ...teamId };
     const switchRequest = { ...request, ...{ isActive: false } };
@@ -327,13 +308,11 @@ class Team extends Component {
   }
 
   showTeamRequests() {
-    console.log(this.props.joinRequests);
     var requests = this.props.joinRequests
       .filter(request => {
         return request.teamId === this.props.currentTeam.id;
       })
       .map(request => {
-        console.log(this.props.users);
         return (
           <tr key={request.id}>
             <td>{this.props.users[request.userId].fname}</td>
@@ -428,7 +407,6 @@ class Team extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  //console.log(ownProps);
   var parameter;
   if (!ownProps.match.params.id) {
     parameter = null;

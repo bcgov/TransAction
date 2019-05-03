@@ -40,7 +40,6 @@ class TeamUserReadOnly extends Component {
   }
 
   teamInfo() {
-    console.log(this.props.team);
     return (
       <div>
         <h3>Team Name: {this.props.team.name}</h3>
@@ -69,7 +68,6 @@ class TeamUserReadOnly extends Component {
 
   loading() {
     if (this.state.loading) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />

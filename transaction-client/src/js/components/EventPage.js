@@ -99,7 +99,6 @@ class EventPage extends Component {
 
   decideRender() {
     if (this.state.loading) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />

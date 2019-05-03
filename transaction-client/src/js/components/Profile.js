@@ -41,7 +41,6 @@ class Profile extends Component {
 
   decideRender() {
     if (this.state.loading) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
@@ -56,15 +55,11 @@ class Profile extends Component {
         if (!this.props.paramId) {
           //Following the user's profile
           //Doesnt matter what the role is, its the users profile.
-          console.log('no param its our profile');
+
           return this.userInfo();
         }
         //paramId is passed
         else {
-          console.log('param Id passed');
-          console.log(this.props.currentRole);
-          console.log(this.props.paramId);
-          console.log(this.props.currentUser.id);
           //if the paramId is the same as user profileid
           if (this.props.paramId === this.props.currentUser.id) {
             //role doesnt matter, its the users page
@@ -75,11 +70,10 @@ class Profile extends Component {
             //If they are an admin
 
             if (this.props.roles[this.props.currentUser.roleId].name === 'Admin') {
-              console.log('we are admin');
               return <ProfileAdminView userId={this.props.paramId} />;
             } else {
               //return read only
-              console.log('we are ', this.props.roles[this.props.currentUser.roleId].name, ' returning read only');
+
               return <ProfileReadOnly userId={this.props.paramId} />;
             }
           }
@@ -105,7 +99,6 @@ class Profile extends Component {
             this.toggleSpinner();
           })
           .catch(() => {
-            console.log('ERROR');
             this.toggleSpinner();
           });
       })
@@ -115,9 +108,7 @@ class Profile extends Component {
   }
 
   onSubmit = formValues => {
-    //console.log('passed in ', formValues);
     const userObj = { ...this.props.currentUser, ...formValues };
-    console.log('now contain ', userObj);
     this.props.editUser(userObj, userObj.id).then(() => {
       this.props.fetchCurrentUser().then(() => {
         this.props.fetchAllTeamScores(this.props.currentUser.teamId);

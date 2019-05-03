@@ -9,9 +9,8 @@ class LogActivityModalBody extends Component {
     if (!formValues.activityId) {
       const activityId = { activityId: this.props.activityList[1].id };
       formValues = { ...formValues, ...activityId };
-      console.log('nothing chosen, defaulted to first pick', activityId);
     }
-    console.log(formValues);
+
     const activityObj = {
       eventId: this.props.eventId,
       ...formValues,

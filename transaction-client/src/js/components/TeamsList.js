@@ -29,8 +29,6 @@ class TeamsList extends Component {
 
   sendJoinRequest(team) {
     this.setState({ clickable: false });
-    console.log(team);
-    console.log('able to send request!');
 
     const reqObj = { teamId: team.id, userId: this.props.currentUser.id };
     this.props
@@ -84,9 +82,7 @@ class TeamsList extends Component {
   }
 
   decideRender() {
-    //console.log(this.state.isSpin);
     if (this.state.loading === true) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
@@ -117,7 +113,6 @@ class TeamsList extends Component {
 
   showTeams() {
     const teams = this.props.teams.map(team => {
-      //console.log(teamate);
       return (
         <div key={team.id}>
           <Link to={`/team/${team.id}`}>{team.name}</Link>

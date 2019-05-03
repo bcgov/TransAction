@@ -45,7 +45,6 @@ class FreeAgentsList extends Component {
 
   loading() {
     if (this.state.loading) {
-      // console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
@@ -56,13 +55,10 @@ class FreeAgentsList extends Component {
 
   recruitAgent(user) {
     this.setState({ clickable: false });
-    console.log(user);
-    console.log(this.props.currentTeam);
+
     if (this.props.currentTeam.numMembers >= 5) {
-      console.log('full team!');
       this.setState({ clickable: true });
     } else {
-      console.log('able to recruit!');
       const teamId = { teamId: this.props.currentUser.teamId, isFreeAgent: false };
       const recUser = { ...user, ...teamId };
       this.props.editUser(recUser, user.id).then(() => {
