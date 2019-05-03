@@ -325,6 +325,7 @@ class Team extends Component {
           </Table>
         </div>
         <div>
+          <h4>Recruitment Requests</h4>
           <Table striped>
             <thead>
               <tr>
@@ -388,7 +389,7 @@ const mapStateToProps = (state, ownProps) => {
     roles: state.roles,
     currentTeam: state.currentTeam,
     currentRole: state.currentRole,
-    allTeamRequests: state.allTeamRequests,
+    allTeamRequests: Object.values(state.allTeamRequests),
   };
 };
 
