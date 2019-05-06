@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Router, Route, Switch } from 'react-router-dom';
-import { Container } from 'reactstrap';
 
+import history from './history';
 import Footer from './fragments/Footer';
 import Header from './fragments/Header';
-import history from './history';
+import Main from './components/Main';
 import EventList from './components/EventList';
 import Profile from './components/Profile';
 import Team from './components/Team';
@@ -15,17 +16,21 @@ import FreeAgentsList from './components/FreeAgentsList';
 import Incentives from './components/Incentives';
 import FAQ from './components/FAQ';
 
+import { fetchRoles, fetchCurrentUser, fetchCurrentRole } from './actions';
+
 import '../scss/transaction.scss';
 
 class App extends Component {
+  componentDidMount() {}
+
   render() {
     return (
       <Router history={history}>
         <React.Fragment>
           <Header />
-          <Container>
+          <Main>
             <Switch>
-              <Route path="/" exact component={EventList} />
+              <Route path="/" component={EventList} />
               <Route path="/event" exact component={EventList} />
               <Route path="/event/:id" exact component={EventPage} />
               <Route path="/profile/" exact component={Profile} />
@@ -38,7 +43,7 @@ class App extends Component {
               <Route path="/incentives" exact component={Incentives} />
               <Route path="/faq" exact component={FAQ} />
             </Switch>
-          </Container>
+          </Main>
           <Footer />
         </React.Fragment>
       </Router>
@@ -46,4 +51,7 @@ class App extends Component {
   }
 }
 
-export default App;
+export default connect(
+  null,
+  { fetchRoles, fetchCurrentUser, fetchCurrentRole }
+)(App);

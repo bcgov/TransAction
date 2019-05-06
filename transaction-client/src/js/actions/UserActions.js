@@ -1,0 +1,71 @@
+import api from '../api/api';
+
+import { FETCH_USER, FETCH_USERS, FETCH_CURRENT_USER } from './types';
+
+//User Actions
+export const fetchCurrentUser = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/users/me`);
+
+      dispatch({ type: FETCH_CURRENT_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchUsers = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get('/users');
+
+      dispatch({ type: FETCH_USERS, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+export const fetchUser = id => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/users/${id}`);
+
+      dispatch({ type: FETCH_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+//TODO Combine these two
+export const editUser = (userObj, id) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.put(`/users/${id}`, userObj);
+
+      dispatch({ type: FETCH_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in edituser');
+      reject(e);
+    }
+  });
+};
+
+export const recruitUser = (userObj, id) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.put(`/users/${id}`, userObj);
+
+      dispatch({ type: FETCH_USER, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('ERROR in edituser');
+      reject(e);
+    }
+  });
+};

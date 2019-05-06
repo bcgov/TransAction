@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Breadcrumb, BreadcrumbItem, Container, Button, Spinner, Row } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Button, Spinner, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import Event from './Event';
 import EventModal from './EventModal';
@@ -73,7 +73,7 @@ class EventList extends Component {
 
   render() {
     return (
-      <Container>
+      <React.Fragment>
         <Row>
           <Breadcrumb>
             <BreadcrumbItem active>Home</BreadcrumbItem>
@@ -81,25 +81,7 @@ class EventList extends Component {
         </Row>
         {this.checkAdmin()}
         <div>{this.decideRender()}</div>
-
-        {/*Old Event Buttons*/}
-        {/*<div className = "col-sm offset-1">
-            <ButtonGroup className = "row">
-              <div className = "px-2">
-                <ArchivedEvent name = "oldEvent1"></ArchivedEvent>
-              </div>
-              <div className = "px-2">
-                <ArchivedEvent name = "oldEvent2"></ArchivedEvent>
-              </div>
-              <div className = "px-2">
-                <ArchivedEvent name = "oldEvent3"></ArchivedEvent>
-              </div>
-              <div className = "px-2">
-                <ArchivedEvent name = "oldEvent4"></ArchivedEvent>
-              </div>
-            </ButtonGroup>
-          </div>*/}
-      </Container>
+      </React.Fragment>
     );
   }
 }
