@@ -5,7 +5,7 @@ import { Container } from 'reactstrap';
 import Footer from './fragments/Footer';
 import Header from './fragments/Header';
 import history from './history';
-import Main from './components/Main';
+import EventList from './components/EventList';
 import Profile from './components/Profile';
 import Team from './components/Team';
 import TeamsList from './components/TeamsList';
@@ -25,13 +25,14 @@ class App extends Component {
           <Header />
           <Container>
             <Switch>
-              <Route path="/" exact component={Main} />
+              <Route path="/" exact component={EventList} />
+              <Route path="/event" exact component={EventList} />
+              <Route path="/event/:id" exact component={EventPage} />
               <Route path="/profile/" exact component={Profile} />
-              <Route path="/team/" exact component={Team} />
               <Route path="/profile/:id" exact component={Profile} />
+              <Route path="/team/" exact component={Team} />
               <Route path="/team/:id" exact component={Team} />
               <Route path="/teamslist" exact component={TeamsList} />
-              <Route path="/event/:id" exact component={EventPage} />
               <Route path="/getting_started" exact component={GettingStarted} />
               <Route path="/free_agents" exact component={FreeAgentsList} />
               <Route path="/incentives" exact component={Incentives} />

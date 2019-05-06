@@ -9,7 +9,7 @@ import { fetchEvents, fetchRoles, fetchCurrentUser, fetchCurrentRole } from '../
 
 //import ArchivedEvent from './ArchivedEvent';
 
-class Main extends Component {
+class EventList extends Component {
   state = { modal: false, loading: true };
 
   toggleSpinner = () => {
@@ -118,4 +118,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { fetchEvents, fetchRoles, fetchCurrentUser, fetchCurrentRole }
-)(Main);
+)(EventList);
