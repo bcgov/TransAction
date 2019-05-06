@@ -2,21 +2,27 @@ import React, { Component } from 'react';
 //import _ from 'lodash';
 import { connect } from 'react-redux';
 import CreateTeamModalForm from './CreateTeamModalForm';
-import { createTeam, fetchCurrentUser } from '../actions';
+import { createTeam, fetchCurrentUser, fetchUsers } from '../actions';
 
 class CreateTeamModalBody extends Component {
   onSubmit = formValues => {
     //TODO hardcoded values, need to make flexible
-    const teamObj = { progressamt: 50, progressbar: true, ...formValues, concurrencyControlNumber: 1 };
+    const teamObj = {
+      ...formValues,
+      concurrencyControlNumber: 1,
+      regionId: this.props.currentUser.regionId,
+      userId: this.props.currentUser.id,
+    };
 
     this.props.createTeam(teamObj).then(() => {
-      this.props.fetchCurrentUser('me');
+      this.props.fetchCurrentUser();
+      this.props.fetchUsers();
     });
     this.props.modalClose();
   };
 
   componentDidMount() {
-    Promise.all([this.props.fetchCurrentUser('me')]);
+    Promise.all([this.props.fetchCurrentUser(), this.props.fetchUsers()]);
   }
 
   decideRender() {
@@ -34,5 +40,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createTeam, fetchCurrentUser }
+  { createTeam, fetchCurrentUser, fetchUsers }
 )(CreateTeamModalBody);

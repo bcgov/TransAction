@@ -7,9 +7,11 @@ class DescriptionForm extends Component {
     return <Input type={type} {...input} autoComplete="off" />;
   };
 
+  componentDidMount() {
+    this.props.initialize(this.props.initialValues);
+  }
+
   onSubmit = formValues => {
-    //console.log('Attempting to edit description!');
-    //console.log(formValues);
     this.props.onSubmit(formValues);
   };
   render() {

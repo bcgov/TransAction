@@ -16,7 +16,7 @@ class ProgressBar extends Component {
   onDeleteBar = () => {
     const leaveAlert = window.confirm('Do you really want to delete the Progress Bar?');
     if (leaveAlert === true) {
-      const bar = { progressbar: false };
+      const bar = { goal: 0 };
       this.props.onSubmit(bar);
     }
   };
@@ -48,7 +48,7 @@ class ProgressBar extends Component {
     return (
       <React.Fragment>
         <div id="progress">
-          <Progress bar animated color="primary" value={(this.props.team.progressamt / this.props.team.goal) * 100}>
+          <Progress bar animated color="primary" value={(50 / this.props.team.goal) * 100}>
             Check out this hot progress
           </Progress>
         </div>

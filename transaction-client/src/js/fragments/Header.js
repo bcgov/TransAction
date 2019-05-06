@@ -57,6 +57,16 @@ class Header extends Component {
                     Team
                   </NavLink>
                 </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/incentives">
+                    Incentives
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/faq">
+                    FAQ
+                  </NavLink>
+                </NavItem>
               </Nav>
             </Collapse>
           </Container>

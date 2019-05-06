@@ -4,7 +4,6 @@ import { reduxForm, Field } from 'redux-form';
 
 class ProfileOfficeForm extends React.Component {
   onChange = event => {
-    //console.log(event.target.value);
     const regionObj = { regionId: event.target.value };
     this.onSubmit(regionObj);
   };
@@ -24,7 +23,6 @@ class ProfileOfficeForm extends React.Component {
   };
 
   render() {
-    //console.log(this.props.initialValues.region);
     return (
       <div>
         {' '}

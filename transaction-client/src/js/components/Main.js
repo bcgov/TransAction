@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import Event from './Event';
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import { fetchEvents, fetchRoles, fetchCurrentUser } from '../actions';
+import { fetchEvents, fetchRoles, fetchCurrentUser, fetchCurrentRole } from '../actions';
 
 //import ArchivedEvent from './ArchivedEvent';
 
 class Main extends Component {
-  state = { modal: false, loading: false, userRole: '' };
+  state = { modal: false, loading: true };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -31,13 +31,10 @@ class Main extends Component {
       </div>
     ));
 
-    //console.log(events);
     return events;
   }
   decideRender() {
-    //console.log(this.state.isSpin);
     if (this.state.isSpin === true) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
@@ -49,13 +46,9 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    this.toggleSpinner();
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser('me')]).then(() => {
-      this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name });
-    });
-    this.props
-      .fetchEvents()
+    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchEvents()])
       .then(() => {
+        this.props.fetchCurrentRole(this.props.currentUser.roleId);
         this.toggleSpinner();
       })
       .catch(() => {
@@ -64,7 +57,7 @@ class Main extends Component {
   }
 
   checkAdmin() {
-    if (this.state.userRole === 'admin') {
+    if (this.props.currentRole.name === 'Admin') {
       return (
         <React.Fragment>
           <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
@@ -118,10 +111,11 @@ const mapStateToProps = state => {
     events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
     roles: state.roles,
     currentUser: state.currentUser,
+    currentRole: state.currentRole,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchEvents, fetchRoles, fetchCurrentUser }
+  { fetchEvents, fetchRoles, fetchCurrentUser, fetchCurrentRole }
 )(Main);
