@@ -82,7 +82,8 @@ namespace TransAction.API.Controllers
             }
 
             var newEvent = Mapper.Map<TraEvent>(createEvent);
-          
+            newEvent.IsActive = true;
+            
 
             _transActionRepo.CreateEvent(newEvent);          
 
@@ -116,7 +117,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return NoContent();
+            return GetEvent(id);
         }
     }
 }

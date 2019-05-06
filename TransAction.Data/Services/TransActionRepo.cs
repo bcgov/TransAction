@@ -90,6 +90,12 @@ namespace TransAction.Data.Services
         public IEnumerable<TraTeam> GetTeams()
         {
             return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
+            var teams = _context.TraTeam.OrderBy(c => c.TeamId)
+                .Include(p => p.User)
+                .Select(x => new {
+
+                });
+
         }
 
         public TraTeam GetTeam(int id)
@@ -231,7 +237,7 @@ namespace TransAction.Data.Services
 
         }
 
-        public int TeamSpecificScore(int teamId, int eventId)
+        public int TeamEventSpecificScore(int teamId, int eventId)
         {
             var userAct = _context.TraUserActivity
                 .Where(p => p.EventId == eventId && p.TeamId == teamId)
@@ -245,23 +251,49 @@ namespace TransAction.Data.Services
             return userAct;
         }
 
+        public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId)
+        {
+            var memberId = _context.TraUser.Where(x => x.TeamId == teamId).Select(x => x.UserId);
+            var teamAct = _context.TraUserActivity
+                .Where(p => p.TeamId == teamId && memberId.Contains(p.UserId))
+                    .Include(x =>  x.Activity)
+                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)                    
+                    //.Where(x => x.Event.IsActive == true)
+                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .Select(x => new TeamSpecificScoreDto()
+                    {
+                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                        eventId = x.Key.EventId,
+                        teamId = teamId
+                    })
+                    .ToList();
+
+
+
+            return teamAct;
+        }
+
         public IEnumerable<UserScoreDto> CurrentUserScore(int id)
         {
             var userAct = _context.TraUserActivity
                 .Where(p => p.UserId == id)
-                    .Include(x => x.Activity)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .Include(x => x.Activity)//.Where(x => x.Event.IsActive == true)
+                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+                    .GroupBy(x => new { x.TeamId, x.EventId})
                     .Select(x => new UserScoreDto()
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
                         EventId = x.Key.EventId,
-                        UserId = id
+                        UserId = id,
+                        
                     })
                     .ToList();
+
            
 
             return userAct;
         }
+/*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public IEnumerable<TraRole> GetRoles()
         {
@@ -271,6 +303,41 @@ namespace TransAction.Data.Services
         public TraRole GetRole(int id)
         {
             return _context.TraRole.FirstOrDefault(c => c.RoleId == id);
+        }
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
+
+        public IEnumerable<TraMemberReq> GetRequests()
+        {
+            return _context.TraMemberReq.OrderBy(c => c.MemberReqId).ToList();
+        }
+
+        public TraMemberReq GetRequest(int id)
+        {
+            return _context.TraMemberReq.FirstOrDefault(c => c.MemberReqId == id);
+        }
+
+        public void CreateRequest(TraMemberReq traMember)
+        {
+            _context.TraMemberReq.Add(traMember);
+        }
+
+        public IEnumerable<CurrentTeamRequestsDto> CurrentTeamReq(int teamId)
+        {
+            var teamRequests = _context.TraMemberReq
+                .Where(p => p.TeamId == teamId)
+                .Where(p => p.IsActive == true)
+                    .Select(x => new CurrentTeamRequestsDto()
+                    {
+                        MemberReqId = x.MemberReqId,
+                        TeamId = teamId,
+                        UserId = x.UserId,
+                        IsActive = x.IsActive
+                    })
+                    .ToList();
+
+
+
+            return teamRequests;
         }
     }
 }

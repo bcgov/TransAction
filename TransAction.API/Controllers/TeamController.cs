@@ -24,9 +24,15 @@ namespace TransAction.API.Controllers
         public IActionResult GetTeams()
         {
             var teams = _transActionRepo.GetTeams();
+         
             var getTeams = Mapper.Map<IEnumerable<TeamDto>>(teams);
+            var users = _transActionRepo.GetUsers();
+            foreach (var team in getTeams)
+            {                
+                var members = users.Where(y => y.TeamId == team.TeamId).Count();
+                team.NumMembers = members;
+            }
             return Ok(getTeams);
-
         }
 
         [HttpGet("{id}", Name = "GetThatTeam")]
@@ -41,7 +47,10 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getTeam = _transActionRepo.GetTeam(id);
+                var users = _transActionRepo.GetUsers();
+                var members = users.Where(x => x.TeamId == id).Count();                
                 var getTeamResult = Mapper.Map<TeamDto>(getTeam);
+                getTeamResult.NumMembers = members;
                 return Ok(getTeamResult);
 
             }
@@ -96,10 +105,12 @@ namespace TransAction.API.Controllers
             {
                 user.RoleId = roleId;
             }
-
             user.IsFreeAgent = false;
+
             var userUpdate = Mapper.Map<UserUpdateDto>(user);
             Mapper.Map<TraUser>(userUpdate);
+
+            createdTeamToReturn.NumMembers = 1; // intially team will have only one member when created
 
             if (!_transActionRepo.Save())
             {
@@ -120,15 +131,13 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Mapper.Map(teamUpdate, teamEntity);
-
-
+            Mapper.Map(teamUpdate, teamEntity);           
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
-            }
+            }            
 
-            return NoContent();
+            return GetTeam(id);
         }
 
 

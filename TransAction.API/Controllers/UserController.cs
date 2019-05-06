@@ -109,19 +109,31 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if(userEntity.TeamId == null && updateUser.TeamId != null)
+            if (userEntity.TeamId == null && updateUser.TeamId != null)
             {
                 updateUser.IsFreeAgent = false;
             }
-            var role = _transActionRepo.GetRoles();
-            var hello = updateUser.RoleId;//this the the one that is being sent in by the client
+            var role = _transActionRepo.GetRoles();            
             var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
             var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
 
             if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
             {
-                updateUser.RoleId = roleId;
+                updateUser.RoleId = roleId;               
             }
+            if (userEntity.TeamId != null && updateUser.TeamId == null)
+            {
+                updateUser.IsFreeAgent = true;
+            }
+            //checking for if team is full 
+            //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
+            var users = _transActionRepo.GetUsers();
+            var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
+            if(members >= 5)
+            {
+                return BadRequest("Team Full");
+            }
+
 
             Mapper.Map(updateUser, userEntity);
 
@@ -129,8 +141,8 @@ namespace TransAction.API.Controllers
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-
-            return NoContent();
+            var user = GetUser(id);
+            return GetUser(id);
 
         }
         [HttpGet("me")]
