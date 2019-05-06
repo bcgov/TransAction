@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import { fetchCurrentUser, fetchRoles, fetchCurrentRole } from '../actions';
+import { fetchCurrentUser, fetchRoles, fetchRole } from '../actions';
 
 class Event extends React.Component {
   state = { modal: false, redirect: false, redirectId: 0 };
@@ -18,7 +18,7 @@ class Event extends React.Component {
 
   componentDidMount() {
     Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser()]).then(() => {
-      this.props.fetchCurrentRole(this.props.currentUser.roleId);
+      this.props.fetchRole(this.props.currentUser.roleId);
     });
   }
   redirect(id) {
@@ -75,5 +75,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchRoles, fetchCurrentUser, fetchCurrentRole }
+  { fetchRoles, fetchCurrentUser, fetchRole }
 )(Event);

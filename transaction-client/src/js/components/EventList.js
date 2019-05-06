@@ -2,15 +2,27 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { Breadcrumb, BreadcrumbItem, Button, Spinner, Row } from 'reactstrap';
 import { connect } from 'react-redux';
+
 import Event from './Event';
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import { fetchEvents, fetchRoles, fetchCurrentUser, fetchCurrentRole } from '../actions';
+import { fetchEvents } from '../actions';
+import * as Constants from '../Constants';
 
 //import ArchivedEvent from './ArchivedEvent';
 
 class EventList extends Component {
   state = { modal: false, loading: true };
+
+  componentDidMount() {
+    Promise.all([this.props.fetchEvents()])
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
+  }
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -33,6 +45,7 @@ class EventList extends Component {
 
     return events;
   }
+
   decideRender() {
     if (this.state.isSpin === true) {
       return (
@@ -45,19 +58,8 @@ class EventList extends Component {
     }
   }
 
-  componentDidMount() {
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchEvents()])
-      .then(() => {
-        this.props.fetchCurrentRole(this.props.currentUser.roleId);
-        this.toggleSpinner();
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
-  }
-
   checkAdmin() {
-    if (this.props.currentRole.name === 'Admin') {
+    if (this.props.authUser.role_name === Constants.ROLE.ADMIN) {
       return (
         <React.Fragment>
           <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
@@ -91,13 +93,11 @@ const mapStateToProps = state => {
 
   return {
     events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
-    roles: state.roles,
-    currentUser: state.currentUser,
-    currentRole: state.currentRole,
+    authUser: state.authUser,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchEvents, fetchRoles, fetchCurrentUser, fetchCurrentRole }
+  { fetchEvents }
 )(EventList);

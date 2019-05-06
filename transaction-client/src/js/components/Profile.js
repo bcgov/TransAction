@@ -13,7 +13,7 @@ import {
   fetchAllUserScores,
   fetchEvents,
   fetchRoles,
-  fetchCurrentRole,
+  fetchRole,
   fetchAllTeamScores,
   fetchCurrentTeam,
   fetchUsers,
@@ -95,7 +95,7 @@ class Profile extends Component {
           this.props.fetchUsers(),
           this.props.fetchTeam(this.props.currentUser.teamId),
           this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-          this.props.fetchCurrentRole(this.props.currentUser.roleId),
+          this.props.fetchRole(this.props.currentUser.roleId),
         ])
           .then(() => {
             this.toggleSpinner();
@@ -306,7 +306,7 @@ export default connect(
     fetchAllTeamScores,
     fetchEvents,
     fetchRoles,
-    fetchCurrentRole,
+    fetchRole,
     fetchCurrentTeam,
   }
 )(Profile);

@@ -1,6 +1,6 @@
 import api from '../api/api';
 
-import { FETCH_USER, FETCH_USERS, FETCH_CURRENT_USER } from './types';
+import { FETCH_USER, FETCH_USERS, FETCH_CURRENT_USER, UPDATE_AUTH_USER } from './types';
 
 //User Actions
 export const fetchCurrentUser = () => async dispatch => {
@@ -68,4 +68,11 @@ export const recruitUser = (userObj, id) => async dispatch => {
       reject(e);
     }
   });
+};
+
+export const updateAuthUser = data => {
+  return {
+    type: UPDATE_AUTH_USER,
+    payload: data,
+  };
 };

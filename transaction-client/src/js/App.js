@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Router, Route, Switch } from 'react-router-dom';
 
 import history from './history';
@@ -16,13 +15,9 @@ import FreeAgentsList from './components/FreeAgentsList';
 import Incentives from './components/Incentives';
 import FAQ from './components/FAQ';
 
-import { fetchRoles, fetchCurrentUser, fetchCurrentRole } from './actions';
-
 import '../scss/transaction.scss';
 
 class App extends Component {
-  componentDidMount() {}
-
   render() {
     return (
       <Router history={history}>
@@ -51,7 +46,4 @@ class App extends Component {
   }
 }
 
-export default connect(
-  null,
-  { fetchRoles, fetchCurrentUser, fetchCurrentRole }
-)(App);
+export default App;

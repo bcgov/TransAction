@@ -12,7 +12,6 @@ export const FETCH_TEAM = 'FETCH_TEAM';
 export const FETCH_TEAMS = 'FETCH_TEAMS';
 export const CREATE_TEAM = 'CREATE_TEAM';
 
-export const FETCH_AUTH_USER = 'FETCH_AUTH_USER';
 export const UPDATE_AUTH_USER = 'UPDATE_AUTH_USER';
 
 export const CREATE_USER_ACTIVITY = 'CREATE_USER_ACTIVITY';

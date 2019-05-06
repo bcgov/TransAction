@@ -2,24 +2,26 @@ import api from '../api/api';
 
 import { FETCH_ROLES, FETCH_CURRENT_ROLE } from './types';
 
-export const fetchRoles = () => async dispatch => {
+export const fetchRoles = () => async (dispatch, getState) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get(`/roles`);
-      const resultToLower = response.data.map(element => {
-        return { ...element, name: element.name.toLowerCase() };
-      });
+      if (Object.keys(getState().roles).length === 0) {
+        const response = await api.get(`/roles`);
+        const resultToLower = response.data.map(role => {
+          return { ...role, name: role.name.toLowerCase() };
+        });
 
-      dispatch({ type: FETCH_ROLES, payload: resultToLower });
+        dispatch({ type: FETCH_ROLES, payload: resultToLower });
+      }
+
       resolve();
     } catch (e) {
-      console.log('ERROR in fetchRoles');
       reject(e);
     }
   });
 };
 
-export const fetchCurrentRole = id => async dispatch => {
+export const fetchRole = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/roles/${id}`);

@@ -22,7 +22,7 @@ import {
   fetchRoles,
   fetchCurrentTeam,
   editUser,
-  fetchCurrentRole,
+  fetchRole,
   fetchAllTeamScores,
   fetchSpecificTeamRequests,
   fetchRegions,
@@ -125,7 +125,7 @@ class Team extends Component {
     // this.toggleSpinner();
 
     Promise.all([this.props.fetchCurrentUser(), this.props.fetchRoles()]).then(() => {
-      this.props.fetchCurrentRole(this.props.currentUser.roleId);
+      this.props.fetchRole(this.props.currentUser.roleId);
       Promise.all([
         this.props.fetchTeam(this.props.paramId),
         this.props.fetchUsers(),
@@ -438,7 +438,7 @@ export default connect(
     fetchCurrentTeam,
     fetchSpecificTeamRequests,
     editUser,
-    fetchCurrentRole,
+    fetchRole,
     fetchAllTeamScores,
     fetchRegions,
     editJoinRequest,
