@@ -1,11 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Row, Col, ButtonGroup, Button } from 'reactstrap';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import { fetchCurrentUser, fetchRoles, fetchRole } from '../actions';
+import * as Constants from '../Constants';
 
 class Event extends React.Component {
   state = { modal: false, redirect: false, redirectId: 0 };
@@ -16,17 +17,12 @@ class Event extends React.Component {
     }));
   };
 
-  componentDidMount() {
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser()]).then(() => {
-      this.props.fetchRole(this.props.currentUser.roleId);
-    });
-  }
   redirect(id) {
     this.setState({ redirect: true, redirectId: id });
   }
 
   checkAdmin() {
-    if (this.props.currentRole.name === 'Admin') {
+    if (this.props.currentUser.roleName === Constants.ROLE.ADMIN) {
       return (
         <React.Fragment>
           <ButtonGroup className="float-right">
@@ -44,36 +40,33 @@ class Event extends React.Component {
   }
 
   render() {
-    //TODO show/hide logic needed using end dates
-    if (this.state.redirect) {
-      return <Redirect to={`/event/${this.state.redirectId}`} />;
-    } else {
-      return (
-        <React.Fragment>
-          <Row>
-            <Col>
-              <h3 className="event float-left" onClick={() => this.redirect(this.props.event.id)}>
-                {this.props.event.name}
-              </h3>
-              {this.checkAdmin()}
-            </Col>
-          </Row>
-          <div className="float-left float-none mb-4">
-            {moment(this.props.event.startDate).format('MMMM Do YYYY')} To{' '}
-            {moment(this.props.event.endDate).format('MMMM Do YYYY')}
-          </div>
-          <div>{this.props.event.description}</div>
-        </React.Fragment>
-      );
-    }
+    return (
+      <React.Fragment>
+        <Row>
+          <Col>
+            <Link to={`/event/${this.props.event.id}`} className="h3">
+              {this.props.event.name}
+            </Link>
+            {this.checkAdmin()}
+          </Col>
+        </Row>
+        <div className="float-left float-none mb-4">
+          {moment(this.props.event.startDate).format('MMMM Do YYYY')} To{' '}
+          {moment(this.props.event.endDate).format('MMMM Do YYYY')}
+        </div>
+        <div>{this.props.event.description}</div>
+      </React.Fragment>
+    );
   }
 }
 
 const mapStateToProps = state => {
-  return { currentUser: state.currentUser, roles: Object.values(state.roles), currentRole: state.currentRole };
+  return {
+    currentUser: state.users.current,
+  };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchRoles, fetchCurrentUser, fetchRole }
+  null
 )(Event);

@@ -1,11 +1,11 @@
-import { FETCH_CURRENT_ROLE } from '../actions/types';
+// import { FETCH_CURRENT_ROLE } from '../actions/types';
 
-export default (state = {}, action) => {
-  switch (action.type) {
-    case FETCH_CURRENT_ROLE:
-      return { ...state, ...action.payload };
+// export default (state = {}, action) => {
+//   switch (action.type) {
+//     case FETCH_CURRENT_ROLE:
+//       return { ...state, ...action.payload };
 
-    default:
-      return state;
-  }
-};
+//     default:
+//       return state;
+//   }
+// };

@@ -27,6 +27,41 @@ import ProfileAdminView from './ProfileAdminView';
 
 class Profile extends Component {
   state = { loading: true, modal: false };
+
+  componentDidMount() {
+    //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
+    Promise.all([this.props.fetchEvents(), this.props.fetchRoles(), this.props.fetchCurrentUser()])
+      .then(() => {
+        Promise.all([
+          this.props.fetchAllUserScores(this.props.currentUser.id),
+          this.props.fetchAllTeamScores(this.props.currentUser.teamId),
+          this.props.fetchRegions(),
+          this.props.fetchUsers(),
+          this.props.fetchTeam(this.props.currentUser.teamId),
+          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+          this.props.fetchRole(this.props.currentUser.roleId),
+        ])
+          .then(() => {
+            this.toggleSpinner();
+          })
+          .catch(() => {
+            this.toggleSpinner();
+          });
+      })
+      .catch(() => {
+        // this.toggleSpinner();
+      });
+  }
+
+  onSubmit = formValues => {
+    const userObj = { ...this.props.currentUser, ...formValues };
+    this.props.editUser(userObj, userObj.id).then(() => {
+      this.props.fetchCurrentUser().then(() => {
+        this.props.fetchAllTeamScores(this.props.currentUser.teamId);
+      });
+    });
+  };
+
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -83,40 +118,6 @@ class Profile extends Component {
       }
     }
   }
-
-  componentDidMount() {
-    //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
-    Promise.all([this.props.fetchEvents(), this.props.fetchRoles(), this.props.fetchCurrentUser()])
-      .then(() => {
-        Promise.all([
-          this.props.fetchAllUserScores(this.props.currentUser.id),
-          this.props.fetchAllTeamScores(this.props.currentUser.teamId),
-          this.props.fetchRegions(),
-          this.props.fetchUsers(),
-          this.props.fetchTeam(this.props.currentUser.teamId),
-          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-          this.props.fetchRole(this.props.currentUser.roleId),
-        ])
-          .then(() => {
-            this.toggleSpinner();
-          })
-          .catch(() => {
-            this.toggleSpinner();
-          });
-      })
-      .catch(() => {
-        // this.toggleSpinner();
-      });
-  }
-
-  onSubmit = formValues => {
-    const userObj = { ...this.props.currentUser, ...formValues };
-    this.props.editUser(userObj, userObj.id).then(() => {
-      this.props.fetchCurrentUser().then(() => {
-        this.props.fetchAllTeamScores(this.props.currentUser.teamId);
-      });
-    });
-  };
 
   printProgress() {
     if (this.props.currentUser.teamId !== null) {

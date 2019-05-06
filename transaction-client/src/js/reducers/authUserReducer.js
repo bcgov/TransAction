@@ -8,10 +8,6 @@ const DEFAULT_USER = {
   idir_displayName: null,
   idir_guid: null,
   preferred_username: null,
-  db_role_id: null,
-  db_user_id: null,
-  role_name: null,
-  loading: true,
 };
 
 export default (state = DEFAULT_USER, action) => {

@@ -58,8 +58,8 @@ class EventList extends Component {
     }
   }
 
-  checkAdmin() {
-    if (this.props.authUser.role_name === Constants.ROLE.ADMIN) {
+  renderAddEvent() {
+    if (this.props.currentUser.roleName === Constants.ROLE.ADMIN) {
       return (
         <React.Fragment>
           <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
@@ -81,7 +81,7 @@ class EventList extends Component {
             <BreadcrumbItem active>Home</BreadcrumbItem>
           </Breadcrumb>
         </Row>
-        {this.checkAdmin()}
+        {this.renderAddEvent()}
         <div>{this.decideRender()}</div>
       </React.Fragment>
     );
@@ -89,11 +89,9 @@ class EventList extends Component {
 }
 
 const mapStateToProps = state => {
-  //sorts by start date
-
   return {
     events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
-    authUser: state.authUser,
+    currentUser: state.users.current,
   };
 };
 

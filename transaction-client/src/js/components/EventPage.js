@@ -127,7 +127,7 @@ class EventPage extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: state.currentUser,
+    currentUser: state.users.current,
     paramId: parseInt(ownProps.match.params.id),
     event: state.events[parseInt(ownProps.match.params.id)],
     userScore: state.userScore,
