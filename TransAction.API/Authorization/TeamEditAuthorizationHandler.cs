@@ -11,7 +11,7 @@ namespace TransAction.API.Authorization
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
                                                        TeamEditRequirement requirement,
-                                                       int id)
+                                                       int teamId)
         {
             if (context.User.HasClaim(c => c.Type == AuthorizationTypes.TRA_CLAIM_TYPE && c.Value == AuthorizationTypes.ADMIN_CLAIM))
             {
@@ -19,7 +19,7 @@ namespace TransAction.API.Authorization
             }
 
             if (context.User.HasClaim(c => c.Type == AuthorizationTypes.TRA_CLAIM_TYPE && c.Value == AuthorizationTypes.EDIT_TEAM_CLAIM) &&
-                context.User.HasClaim(c => c.Type == AuthorizationTypes.TEAM_ID_CLAIM && c.Value == id.ToString()))
+                context.User.HasClaim(c => c.Type == AuthorizationTypes.TEAM_ID_CLAIM && c.Value == teamId.ToString()))
             {
                 context.Succeed(requirement);
             }

@@ -90,7 +90,6 @@ class EventPage extends Component {
     return (
       <React.Fragment>
         <h1>{this.props.event.name} </h1>
-
         <h3>Hi {this.props.currentUser.fname}!</h3>
         {this.checkTeam()}
       </React.Fragment>

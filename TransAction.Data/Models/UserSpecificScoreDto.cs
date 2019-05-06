@@ -4,10 +4,10 @@ using System.Text;
 
 namespace TransAction.Data.Models
 {
-    public class UserSpecificScoreDto
+    public class UserScoreDto
     {
-        public int score { get; set; }
-        public int eventId { get; set; }
-        public int userId { get; set; }
+        public int Score { get; set; }
+        public int EventId { get; set; }
+        public int UserId { get; set; }
     }
 }

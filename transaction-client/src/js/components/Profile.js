@@ -51,6 +51,7 @@ class Profile extends Component {
         return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
+        console.log(this.props.paramId);
         //no paramId passed
         if (!this.props.paramId) {
           //Following the user's profile
@@ -60,6 +61,7 @@ class Profile extends Component {
         }
         //paramId is passed
         else {
+          console.log('param Id passed');
           //if the paramId is the same as user profileid
           if (this.props.paramId === this.props.currentUser.id) {
             //role doesnt matter, its the users page
@@ -103,7 +105,7 @@ class Profile extends Component {
           });
       })
       .catch(() => {
-        this.toggleSpinner();
+        // this.toggleSpinner();
       });
   }
 
