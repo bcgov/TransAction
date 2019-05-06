@@ -9,7 +9,6 @@ class EventModalForm extends React.Component {
     }
   }
   renderInput = ({ input, label, type, meta, divClass }) => {
-    console.log(divClass);
     return (
       <FormGroup>
         <Label>{label}</Label>

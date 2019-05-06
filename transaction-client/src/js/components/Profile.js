@@ -13,6 +13,10 @@ import {
   fetchAllUserScores,
   fetchEvents,
   fetchRoles,
+  fetchCurrentRole,
+  fetchAllTeamScores,
+  fetchCurrentTeam,
+  fetchUsers,
 } from '../actions';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
@@ -22,7 +26,7 @@ import ProfileReadOnly from './ProfileReadOnly';
 import ProfileAdminView from './ProfileAdminView';
 
 class Profile extends Component {
-  state = { loading: true, modal: false, currentTeam: {}, userRole: '' };
+  state = { loading: true, modal: false };
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -37,14 +41,14 @@ class Profile extends Component {
 
   decideRender() {
     if (this.state.loading) {
-      //console.log('spin');
       return (
         <div className="col-1 offset-6">
           <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
         </div>
       );
     } else {
-      if (!this.props.currentUser.id) return <div>Hmmmm, We couldnt find that user :(</div>;
+      if (!this.props.users[this.props.paramId] && this.props.paramId !== null)
+        return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
         console.log(this.props.paramId);
@@ -52,7 +56,7 @@ class Profile extends Component {
         if (!this.props.paramId) {
           //Following the user's profile
           //Doesnt matter what the role is, its the users profile.
-          console.log('no param its our profile');
+
           return this.userInfo();
         }
         //paramId is passed
@@ -66,13 +70,12 @@ class Profile extends Component {
           //paramid is NOT the same as user id; viewing someones profile from the outside
           else {
             //If they are an admin
-            console.log(this.state.userRole);
-            if (this.state.userRole === 'admin') {
-              console.log('we are admin');
+
+            if (this.props.roles[this.props.currentUser.roleId].name === 'Admin') {
               return <ProfileAdminView userId={this.props.paramId} />;
             } else {
               //return read only
-              console.log('we are ', this.state.userRole, ' returning read only');
+
               return <ProfileReadOnly userId={this.props.paramId} />;
             }
           }
@@ -83,26 +86,21 @@ class Profile extends Component {
 
   componentDidMount() {
     //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
-    Promise.all([
-      this.props.fetchEvents(),
-      this.props.fetchRoles(),
-      this.props.fetchCurrentUser('me'),
-      this.props.fetchAllUserScores('me'),
-    ])
+    Promise.all([this.props.fetchEvents(), this.props.fetchRoles(), this.props.fetchCurrentUser()])
       .then(() => {
-        const teamId = this.props.currentUser.teamId;
         Promise.all([
+          this.props.fetchAllUserScores(this.props.currentUser.id),
+          this.props.fetchAllTeamScores(this.props.currentUser.teamId),
           this.props.fetchRegions(),
+          this.props.fetchUsers(),
           this.props.fetchTeam(this.props.currentUser.teamId),
-
-          this.setState({ userRole: this.props.roles[this.props.currentUser.roleId].name }),
+          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+          this.props.fetchCurrentRole(this.props.currentUser.roleId),
         ])
           .then(() => {
-            this.setState({ currentTeam: this.props.team[teamId] });
             this.toggleSpinner();
           })
           .catch(() => {
-            console.log('ERROR');
             this.toggleSpinner();
           });
       })
@@ -112,11 +110,11 @@ class Profile extends Component {
   }
 
   onSubmit = formValues => {
-    //console.log('passed in ', formValues);
     const userObj = { ...this.props.currentUser, ...formValues };
-    console.log('now contain ', userObj);
-    this.props.editUser(userObj, 'me').then(() => {
-      this.props.fetchCurrentUser('me');
+    this.props.editUser(userObj, userObj.id).then(() => {
+      this.props.fetchCurrentUser().then(() => {
+        this.props.fetchAllTeamScores(this.props.currentUser.teamId);
+      });
     });
   };
 
@@ -132,13 +130,13 @@ class Profile extends Component {
   }
 
   progressBar() {
-    if (this.state.currentTeam.progressbar === true && this.props.currentUser.teamId !== null) {
+    if (this.props.currentTeam.goal > 0 && this.props.currentUser.teamId !== null) {
       return (
         <Progress
           bar
           animated
           color="primary"
-          value={(this.state.currentTeam.progressamt / this.state.currentTeam.goal) * 100}
+          value={(this.props.currentTeam.progressamt / this.props.currentTeam.goal) * 100}
         >
           Check out this hot progress
         </Progress>
@@ -159,7 +157,7 @@ class Profile extends Component {
     if (this.props.currentUser.teamId !== null) {
       return (
         <h3 className="mt-3">
-          Team: {this.state.currentTeam.name}
+          Team: {this.props.currentTeam.name}
           <Link to="/team">
             <Button color="primary" className="ml-3 mb-2">
               Visit Team
@@ -207,14 +205,24 @@ class Profile extends Component {
     });
     return name;
   }
-  //**TODO, REMOVE HARDCODED TEAM VALUES**
+
+  findTeamEventScore(eventId) {
+    var score = -1;
+    this.props.allTeamScores.forEach(element => {
+      if (element.eventId === eventId) {
+        score = element.score;
+      }
+    });
+    return score;
+  }
+
   printUserScores() {
     const scores = this.props.allUserScores.map(element => (
-      <Col>
+      <Col key={element.eventId}>
         <UserScoreGraphicCard
-          key={element.eventId}
-          userScore={element.value}
-          teamScore={100}
+          userScore={element.score}
+          //hardcoded value needs to change
+          teamScore={this.findTeamEventScore(element.eventId)}
           name={this.findEventName(element.eventId)}
           type="profile"
         />
@@ -238,7 +246,7 @@ class Profile extends Component {
           />
         </h3>
         {this.printTeam()}
-        {this.printProgress()}
+
         <DescriptionForm initialValues={_.pick(this.props.currentUser, 'description')} onSubmit={this.onSubmit} />
         <Row className="mt-3 mb-3 "> {this.printUserScores()}</Row>
       </div>
@@ -248,12 +256,14 @@ class Profile extends Component {
   render() {
     return (
       <Container>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to="/">Home</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>MyProfile</BreadcrumbItem>
-        </Breadcrumb>
+        <Row>
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Link to="/">Home</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem active>MyProfile</BreadcrumbItem>
+          </Breadcrumb>
+        </Row>
         <h1>Personal Profile </h1>
         <div>{this.decideRender()}</div>
       </Container>
@@ -262,18 +272,41 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  var parameter;
+  if (!ownProps.match.params.id) {
+    parameter = null;
+  } else {
+    parameter = parseInt(ownProps.match.params.id);
+  }
+
   return {
-    paramId: ownProps.match.params.id,
+    paramId: parameter,
     currentUser: state.currentUser,
+    users: state.users,
     team: state.team,
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
+    allTeamScores: Object.values(state.allTeamScores),
     events: Object.values(state.events),
     roles: state.roles,
+    currentRole: state.currentRole,
+    currentTeam: state.currentTeam,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchTeam, editUser, fetchRegions, fetchAllUserScores, fetchEvents, fetchRoles }
+  {
+    fetchCurrentUser,
+    fetchUsers,
+    fetchTeam,
+    editUser,
+    fetchRegions,
+    fetchAllUserScores,
+    fetchAllTeamScores,
+    fetchEvents,
+    fetchRoles,
+    fetchCurrentRole,
+    fetchCurrentTeam,
+  }
 )(Profile);

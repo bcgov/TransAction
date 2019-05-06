@@ -16,7 +16,10 @@ class EventModalBody extends React.Component {
     if (this.state.idFlag === 'add') {
       const eventObj = { ...formValues, concurrencyControlNumber: 1 };
       this.props.createEvent(eventObj);
-    } else this.props.editEvent(this.props.id, formValues);
+    } else {
+      const eventObj = { ...this.props.event, ...formValues };
+      this.props.editEvent(this.props.id, eventObj);
+    }
 
     this.handelClick(); //evoke methods to close model
   };
