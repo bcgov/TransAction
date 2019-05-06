@@ -39,9 +39,14 @@ namespace TransAction.Data.Services
         int EventSpecificScore(int eventId);
         int UserSpecificScore(int userId, int eventId);
         int TeamSpecificScore(int teamId, int eventId);
+        IEnumerable<UserScoreDto> CurrentUserScore(int id);
         TraUserActivity GetUserActivity(int id);
         bool UserActivityExists(string Name);
         void CreateUserActivity(TraUserActivity traUserActivity);
+
+        IEnumerable<TraRole> GetRoles();
+        TraRole GetRole(int id);
+
 
         bool Save();
     }

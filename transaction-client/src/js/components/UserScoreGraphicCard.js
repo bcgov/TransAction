@@ -2,13 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardBody, CardTitle, CardSubtitle, Progress, Container, Row } from 'reactstrap';
 
 class UserScoreGraphicCard extends Component {
-  decideRender(barUserScore, barTeamScore) {
-    var title = '';
-    if (this.props.type === 'profile') {
-      title = this.props.name;
-    } else {
-      title = "Lets See How You're Doing!";
-    }
+  scoreCard(barUserScore, barTeamScore, title) {
     return (
       <CardBody>
         <CardTitle>{title}</CardTitle>
@@ -34,11 +28,37 @@ class UserScoreGraphicCard extends Component {
       </CardBody>
     );
   }
+
+  decideRender(barUserScore, barTeamScore) {
+    var title = '';
+    if (this.props.type === 'profile') {
+      title = this.props.name;
+    } else {
+      title = "Lets See How You're Doing!";
+    }
+
+    if (isNaN(barTeamScore) && isNaN(barUserScore)) {
+      barUserScore = 0;
+      barTeamScore = 0;
+      return this.scoreCard(barUserScore, barTeamScore, title);
+    } else {
+      return this.scoreCard(barUserScore, barTeamScore, title);
+    }
+  }
   render() {
-    // console.log('HERE');
-    const barUserScore = (this.props.userScore / this.props.teamScore) * 100;
-    const barTeamScore = 100 - barUserScore;
-    // console.log(barUserScore, barTeamScore);
+    var barUserScore;
+    var barTeamScore;
+    var teamScore = this.props.teamScore;
+    var userScore = this.props.userScore;
+    if (this.props.teamScore === -1) {
+      teamScore = 0;
+      barUserScore = 100;
+      barTeamScore = 0;
+    } else {
+      barUserScore = (userScore / teamScore) * 100;
+      barTeamScore = 100 - barUserScore;
+    }
+
     return (
       <Container>
         <Card>{this.decideRender(barUserScore, barTeamScore)}</Card>

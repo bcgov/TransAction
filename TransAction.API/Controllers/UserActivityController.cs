@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -63,7 +64,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            if (createUserActivity.Name == null || createUserActivity.ActivityId == null || createUserActivity.Description == null || createUserActivity.UserId == null || createUserActivity.Minutes == null)
+            if (createUserActivity.Name == null || createUserActivity.Description == null)
             {
                 return BadRequest();
             }
@@ -113,7 +114,7 @@ namespace TransAction.API.Controllers
 
         //total score for that specific team for that specific event
 
-       [HttpGet("event{eventId}")]
+       [HttpGet("event/{eventId}")]
         public IActionResult EventSpecificScore(int eventId)
         {
             var score = _transActionRepo.EventSpecificScore(eventId);
@@ -127,20 +128,20 @@ namespace TransAction.API.Controllers
 
         }
 
-        [HttpGet("user/{userId}/event{eventId}")]
+        [HttpGet("user/{userId}/event/{eventId}")]
         public IActionResult UserSpecificScore(int userId, int eventId)
         {
             var score = _transActionRepo.UserSpecificScore(userId, eventId);
-            var result = new UserSpecificScoreDto
+            var result = new UserScoreDto
             {
-                eventId = eventId,
-                userId = userId,
-                score = score
+                EventId = eventId,
+                UserId = userId,
+                Score = score
             };
             return Ok(result);
         }
 
-        [HttpGet("team/{teamId}/event{eventId}")]
+        [HttpGet("team/{teamId}/event/{eventId}")]
         public IActionResult TeamSpecificScore(int teamId, int eventId)
         {
             var score = _transActionRepo.TeamSpecificScore(teamId, eventId);
@@ -150,6 +151,16 @@ namespace TransAction.API.Controllers
                 teamId = teamId,
                 score = score
             };
+            return Ok(result);
+        }
+
+        [HttpGet("user/me")]
+        public IActionResult CurrentUserScore()
+        {
+            var guid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUsers = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == guid);
+            var result = _transActionRepo.CurrentUserScore(getUsers.UserId);
+
             return Ok(result);
         }
     }

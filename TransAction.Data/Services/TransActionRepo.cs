@@ -210,11 +210,9 @@ namespace TransAction.Data.Services
                     .Select(x => new
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
-                    })
-                    .ToList();
-            var sum = userAct.Select(c => c.Score).Sum();
-                   
-            return sum;
+                    }).Select(c => c.Score).Sum();
+
+            return userAct;
 
         }
 
@@ -227,11 +225,9 @@ namespace TransAction.Data.Services
                     .Select(x => new
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
-                    })
-                    .ToList();
-            var sum = userAct.Select(c => c.Score).Sum();
+                    }).Select(c => c.Score).Sum();
 
-            return sum;
+            return userAct;
 
         }
 
@@ -244,11 +240,37 @@ namespace TransAction.Data.Services
                     .Select(x => new
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                    }).Select(c => c.Score).Sum();
+    
+            return userAct;
+        }
+
+        public IEnumerable<UserScoreDto> CurrentUserScore(int id)
+        {
+            var userAct = _context.TraUserActivity
+                .Where(p => p.UserId == id)
+                    .Include(x => x.Activity)
+                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .Select(x => new UserScoreDto()
+                    {
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                        EventId = x.Key.EventId,
+                        UserId = id
                     })
                     .ToList();
-            var sum = userAct.Select(c => c.Score).Sum();
+           
 
-            return sum;
+            return userAct;
+        }
+
+        public IEnumerable<TraRole> GetRoles()
+        {
+            return _context.TraRole.OrderBy(c => c.RoleId).ToList();
+        }
+
+        public TraRole GetRole(int id)
+        {
+            return _context.TraRole.FirstOrDefault(c => c.RoleId == id);
         }
     }
 }

@@ -22,30 +22,30 @@ class NoTeamPage extends Component {
   };
 
   confirmFreeAgent = () => {
-    const agentFlag = { freeagent: true };
+    const agentFlag = { isFreeAgent: true };
     const userObj = { ...this.props.currentUser, ...agentFlag };
-    this.props.editUser(userObj, 'me').then(() => {
-      this.props.fetchCurrentUser('me');
+    this.props.editUser(userObj, this.props.currentUser.id).then(() => {
+      this.props.fetchCurrentUser();
       this.toggleAgent();
     });
   };
 
   confirmRemoveFreeAgent = () => {
-    const agentFlag = { freeagent: false };
+    const agentFlag = { isFreeAgent: false };
     const userObj = { ...this.props.currentUser, ...agentFlag };
-    this.props.editUser(userObj, 'me').then(() => {
-      this.props.fetchCurrentUser('me');
+    this.props.editUser(userObj, this.props.currentUser.id).then(() => {
+      this.props.fetchCurrentUser();
       this.toggleAgent();
     });
-    this.props.fetchCurrentUser('me');
+    this.props.fetchCurrentUser();
   };
 
   componentDidMount() {
-    Promise.all([this.props.fetchCurrentUser('me')]);
+    Promise.all([this.props.fetchCurrentUser()]);
   }
 
   showFreeAgent() {
-    if (this.props.currentUser.freeagent === false) {
+    if (this.props.currentUser.isFreeAgent === false) {
       return (
         <div>
           <h4>Forget descisions, let a team lead find you!</h4>

@@ -5,27 +5,20 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import { fetchCurrentUser, fetchRoles } from '../actions';
+import { fetchCurrentUser, fetchRoles, fetchCurrentRole } from '../actions';
 
 class Event extends React.Component {
-  state = { modal: false, redirect: false, redirectId: 0, userRole: '' };
+  state = { modal: false, redirect: false, redirectId: 0 };
 
   toggle = () => {
     this.setState(prevState => ({
       modal: !prevState.modal,
     }));
   };
-  findRole(userRoleId) {
-    this.props.roles.forEach(role => {
-      if (userRoleId === role.id) {
-        this.setState({ userRole: role.name });
-      }
-    });
-  }
 
   componentDidMount() {
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser('me')]).then(() => {
-      this.findRole(this.props.currentUser.roleId);
+    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser()]).then(() => {
+      this.props.fetchCurrentRole(this.props.currentUser.roleId);
     });
   }
   redirect(id) {
@@ -33,12 +26,12 @@ class Event extends React.Component {
   }
 
   checkAdmin() {
-    if (this.state.userRole === 'admin') {
+    if (this.props.currentRole.name === 'Admin') {
       return (
         <React.Fragment>
           <ButtonGroup className="float-right">
             <Button color="primary" onClick={this.toggle}>
-              Edit Events
+              Edit Event
             </Button>
             <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Edit an Event">
               {' '}
@@ -77,10 +70,10 @@ class Event extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { currentUser: state.currentUser, roles: Object.values(state.roles) };
+  return { currentUser: state.currentUser, roles: Object.values(state.roles), currentRole: state.currentRole };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchRoles, fetchCurrentUser }
+  { fetchRoles, fetchCurrentUser, fetchCurrentRole }
 )(Event);

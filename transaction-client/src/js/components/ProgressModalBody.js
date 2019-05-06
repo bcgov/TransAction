@@ -7,7 +7,7 @@ class ProgressModalBody extends Component {
     let obj = {};
 
     if (this.props.name === 'create') {
-      obj = { goal: formValues, progressbar: true };
+      obj = { goal: formValues };
     } else {
       obj = { goal: formValues };
     }
