@@ -12,7 +12,7 @@ export default (state = defaultState, action) => {
     case FETCH_USERS:
       return { ...state, all: { ..._.mapKeys(action.payload, 'id') } };
     case FETCH_USER:
-      return { ...state, [action.payload.id]: action.payload };
+      return { ...state, all: { ...state.all, [action.payload.id]: action.payload } };
     case FETCH_CURRENT_USER:
       return { ...state, current: { ...state.current, ...action.payload } };
     case SET_CURRENT_USER_ROLE:

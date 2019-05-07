@@ -103,7 +103,7 @@ class Team extends Component {
         //Following the user's teamid
         else {
           //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
-          if (this.props.currentRole.name !== 'user') {
+          if (this.props.currentUser.roleName !== 'user') {
             return this.teamInfo();
           }
           //a regular user, therefor seeing his team in read only
@@ -124,22 +124,18 @@ class Team extends Component {
   componentDidMount() {
     // this.toggleSpinner();
 
-    Promise.all([this.props.fetchCurrentUser(), this.props.fetchRoles()]).then(() => {
-      this.props.fetchRole(this.props.currentUser.roleId);
-      Promise.all([
-        this.props.fetchTeam(this.props.paramId),
-        this.props.fetchUsers(),
-        this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-        this.props.fetchSpecificTeamRequests(this.props.currentUser.teamId),
-        this.props.fetchRegions(),
-      ])
-        .then(() => {
-          this.toggleSpinner();
-        })
-        .catch(() => {
-          this.toggleSpinner();
-        });
-    });
+    Promise.all([
+      this.props.fetchTeam(this.props.paramId),
+      this.props.fetchUsers(),
+      this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+      this.props.fetchSpecificTeamRequests(this.props.currentUser.teamId),
+    ])
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
   }
 
   progressBar() {
@@ -225,10 +221,8 @@ class Team extends Component {
     }
   }
 
-  checkLeader(user) {
-    if (this.props.roles[user.roleId].name !== 'user') {
-      return this.props.roles[user.roleId].name;
-    }
+  checkLeader() {
+    return this.props.currentUser.roleName !== 'user';
   }
 
   //TODO SHOW POINTS
@@ -243,7 +237,7 @@ class Team extends Component {
             <td>
               {teamate.fname} {teamate.lname}
             </td>
-            <td>{this.checkLeader(teamate)}</td>
+            <td>{this.checkLeader()}</td>
             <td> </td>
             <td>
               <Link to={`/profile/${teamate.id}`}>
@@ -415,13 +409,12 @@ const mapStateToProps = (state, ownProps) => {
   }
   return {
     paramId: parameter,
-    currentUser: state.currentUser,
+    currentUser: state.users.current,
     allTeamScores: state.allTeamScores,
     team: state.team,
     users: Object.values(state.users),
     roles: state.roles,
     currentTeam: state.currentTeam,
-    currentRole: state.currentRole,
     joinRequests: Object.values(state.joinRequests),
     regions: state.regions,
   };

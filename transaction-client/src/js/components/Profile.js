@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
-import ProfileOfficeForm from './ProfileOfficeForm.js';
 import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Container, Progress, Spinner, Button, Row, Col } from 'reactstrap';
+
 import {
-  fetchCurrentUser,
   fetchTeam,
   editUser,
-  fetchRegions,
   fetchAllUserScores,
   fetchEvents,
-  fetchRoles,
-  fetchRole,
   fetchAllTeamScores,
   fetchCurrentTeam,
   fetchUsers,
 } from '../actions';
+
+import ProfileOfficeForm from './ProfileOfficeForm.js';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
 import CreateTeamModalBody from './CreateTeamModalBody';
@@ -30,26 +28,26 @@ class Profile extends Component {
 
   componentDidMount() {
     //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
-    Promise.all([this.props.fetchEvents(), this.props.fetchRoles(), this.props.fetchCurrentUser()])
+    // Promise.all([this.props.fetchEvents()])
+    //   .then(() => {
+
+    //   })
+    //   .catch(() => {
+    //     // this.toggleSpinner();
+    //   });
+
+    Promise.all([
+      this.props.fetchAllUserScores(this.props.currentUser.id),
+      this.props.fetchAllTeamScores(this.props.currentUser.teamId),
+      this.props.fetchUsers(),
+      this.props.fetchTeam(this.props.currentUser.teamId),
+      this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+    ])
       .then(() => {
-        Promise.all([
-          this.props.fetchAllUserScores(this.props.currentUser.id),
-          this.props.fetchAllTeamScores(this.props.currentUser.teamId),
-          this.props.fetchRegions(),
-          this.props.fetchUsers(),
-          this.props.fetchTeam(this.props.currentUser.teamId),
-          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-          this.props.fetchRole(this.props.currentUser.roleId),
-        ])
-          .then(() => {
-            this.toggleSpinner();
-          })
-          .catch(() => {
-            this.toggleSpinner();
-          });
+        this.toggleSpinner();
       })
       .catch(() => {
-        // this.toggleSpinner();
+        this.toggleSpinner();
       });
   }
 
@@ -86,7 +84,6 @@ class Profile extends Component {
         return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
-        console.log(this.props.paramId);
         //no paramId passed
         if (!this.props.paramId) {
           //Following the user's profile
@@ -282,7 +279,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     paramId: parameter,
-    currentUser: state.currentUser,
+    currentUser: state.users.current,
     users: state.users,
     team: state.team,
     regions: Object.values(state.regions),
@@ -290,24 +287,19 @@ const mapStateToProps = (state, ownProps) => {
     allTeamScores: Object.values(state.allTeamScores),
     events: Object.values(state.events),
     roles: state.roles,
-    currentRole: state.currentRole,
-    currentTeam: state.currentTeam,
+    currentTeam: state.teams.current,
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    fetchCurrentUser,
     fetchUsers,
     fetchTeam,
     editUser,
-    fetchRegions,
     fetchAllUserScores,
     fetchAllTeamScores,
     fetchEvents,
-    fetchRoles,
-    fetchRole,
     fetchCurrentTeam,
   }
 )(Profile);

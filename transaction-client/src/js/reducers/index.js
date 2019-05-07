@@ -3,7 +3,7 @@ import { reducer as formReducer } from 'redux-form';
 import eventReducer from './eventReducer';
 import authUserReducer from './authUserReducer';
 import currentUserReducer from './currentUserReducer';
-import teamReducer from './teamReducer';
+import teamsReducer from './teamReducer';
 import regionsReducer from './regionsReducer';
 import usersReducer from './usersReducer';
 import activityReducer from './activityReducer';
@@ -22,7 +22,7 @@ export default combineReducers({
   events: eventReducer,
   authUser: authUserReducer,
   currentUser: currentUserReducer,
-  team: teamReducer,
+  teams: teamsReducer,
   regions: regionsReducer,
   users: usersReducer,
   activities: activityReducer,

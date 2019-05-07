@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchRoles, fetchCurrentUser, updateCurrentUserRole } from '../actions';
+import { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions } from '../actions';
 class Main extends Component {
   state = { loading: true };
 
   componentDidMount() {
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser()]).then(() => {
+    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchRegions()]).then(() => {
       this.props.updateCurrentUserRole(this.props.roles[this.props.currentUser.roleId].name);
 
       this.setState({ loading: false });
@@ -26,5 +26,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchRoles, fetchCurrentUser, updateCurrentUserRole }
+  { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions }
 )(Main);

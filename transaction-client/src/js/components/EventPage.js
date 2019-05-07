@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { fetchCurrentUser, fetchEvent, fetchUserScore, fetchTeamScore } from '../actions';
+import { fetchEvent, fetchUserScore, fetchTeamScore } from '../actions';
 import EventModal from './EventModal';
 import LogActivityModalBody from './LogActivityModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Spinner, Button, Row, Col } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Spinner, Button, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 class EventPage extends Component {
@@ -22,21 +22,19 @@ class EventPage extends Component {
   };
 
   componentDidMount() {
-    // this.toggleSpinner();
-    this.props.fetchEvent(this.props.paramId).then(() => {
-      Promise.all([
-        this.props.fetchCurrentUser(),
+    const eventId = this.props.paramId;
 
-        this.props.fetchUserScore(this.props.currentUser.id, this.props.event.id),
-        this.props.fetchTeamScore(this.props.currentUser.teamId, this.props.event.id),
-      ])
-        .then(() => {
-          this.toggleSpinner();
-        })
-        .catch(() => {
-          this.toggleSpinner();
-        });
-    });
+    Promise.all([
+      this.props.fetchEvent(eventId),
+      this.props.fetchUserScore(this.props.currentUser.id, eventId),
+      this.props.fetchTeamScore(this.props.currentUser.teamId, eventId),
+    ])
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
   }
 
   printScores() {
@@ -112,24 +110,30 @@ class EventPage extends Component {
 
   render() {
     return (
-      <Container>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to="/">Home</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>Event</BreadcrumbItem>
-        </Breadcrumb>
+      <React.Fragment>
+        <Row>
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Link to="/">Home</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <Link to="/event">Events</Link>
+            </BreadcrumbItem>
+            {this.state.loading ? '' : <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
+          </Breadcrumb>
+        </Row>
         {this.decideRender()}
-      </Container>
+      </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const paramId = ownProps.match.params.id;
   return {
     currentUser: state.users.current,
-    paramId: parseInt(ownProps.match.params.id),
-    event: state.events[parseInt(ownProps.match.params.id)],
+    paramId: paramId,
+    event: state.events[paramId],
     userScore: state.userScore,
     teamScore: state.teamScore,
   };
@@ -137,5 +141,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { fetchCurrentUser, fetchEvent, fetchUserScore, fetchTeamScore }
+  { fetchEvent, fetchUserScore, fetchTeamScore }
 )(EventPage);
