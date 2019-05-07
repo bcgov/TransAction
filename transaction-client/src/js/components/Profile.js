@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Progress, Spinner, Button, Row, Col } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Progress, Spinner, Button, Row, Col } from 'reactstrap';
 
 import {
   fetchTeam,
@@ -252,18 +252,18 @@ class Profile extends Component {
 
   render() {
     return (
-      <Container>
+      <React.Fragment>
         <Row>
           <Breadcrumb>
             <BreadcrumbItem>
               <Link to="/">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>Profile</BreadcrumbItem>
+            <BreadcrumbItem active>{`${this.props.currentUser.fname} ${this.props.currentUser.lname}`}</BreadcrumbItem>
           </Breadcrumb>
         </Row>
         <h1>Personal Profile </h1>
         <div>{this.decideRender()}</div>
-      </Container>
+      </React.Fragment>
     );
   }
 }

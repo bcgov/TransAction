@@ -1,3 +1,73 @@
 @import './vendor/bootstrap-theme.scss';
 
 @import 'vendor-overrides.scss';
+
+textarea.form-control {
+  height: 250px;
+}
+
+div.errorMessage {
+  color: red;
+}
+
+.modal-date-picker {
+  width: 50%;
+  display: inline-block;
+}
+
+.regionForm {
+  width: 20%;
+  display: inline-block;
+}
+
+#progress {
+  width: 40%;
+  display: -ms-flexbox;
+  display: flex;
+  height: 2rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+}
+
+.titleform {
+  display: inline-block;
+}
+
+.event:hover {
+  background-color: #e9ecef;
+  border-radius: 12px;
+  width: 250px;
+}
+
+#centerText {
+  text-align: center;
+}
+#borderRoleDifferences {
+  border: 2px solid;
+}
+
+#progressCard {
+  display: -ms-flexbox;
+  display: flex;
+  height: 2rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+}
+
+#labelCardProgress {
+  height: 2rem;
+  width: 5%;
+}
+
+#log-time {
+  width: 50%;
+  display: inline-block;
+}
+
+#underline {
+  text-decoration: underline;
+}

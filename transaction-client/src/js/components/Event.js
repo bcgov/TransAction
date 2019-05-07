@@ -1,72 +1,61 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Row, Col, ButtonGroup, Button } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
 import moment from 'moment';
 
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
-import * as Constants from '../Constants';
 
 class Event extends React.Component {
-  state = { modal: false, redirect: false, redirectId: 0 };
+  state = { isAdmin: false, modal: false };
 
-  toggle = () => {
+  componentDidMount() {
+    this.setState({ isAdmin: this.props.isAdmin });
+  }
+
+  toggleModal = () => {
     this.setState(prevState => ({
       modal: !prevState.modal,
     }));
   };
 
-  redirect(id) {
-    this.setState({ redirect: true, redirectId: id });
-  }
-
-  checkAdmin() {
-    if (this.props.currentUser.roleName === Constants.ROLE.ADMIN) {
-      return (
-        <React.Fragment>
-          <ButtonGroup className="float-right">
-            <Button color="primary" onClick={this.toggle}>
-              Edit Event
-            </Button>
-            <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Edit an Event">
-              {' '}
-              <EventModalBody modalClose={this.toggle} name="edit" id={this.props.event.id} />
-            </EventModal>
-          </ButtonGroup>
-        </React.Fragment>
-      );
-    }
+  renderEditButton() {
+    return (
+      <div className="float-right">
+        <Button color="primary" size="sm" className="mr-1" onClick={this.toggleModal}>
+          Edit
+        </Button>
+        <Button color="primary" size="sm">
+          Archive
+        </Button>
+      </div>
+    );
   }
 
   render() {
     return (
       <React.Fragment>
-        <Row>
+        <Row className="mb-5">
           <Col>
-            <Link to={`/event/${this.props.event.id}`} className="h3">
-              {this.props.event.name}
-            </Link>
-            {this.checkAdmin()}
+            <div className="mb-2">
+              <Link to={`/event/${this.props.event.id}`} className="h3">
+                {this.props.event.name}
+              </Link>
+              {this.state.isAdmin ? this.renderEditButton() : ''}
+            </div>
+            <div>
+              {moment(this.props.event.startDate).format('MMMM Do YYYY')} To{' '}
+              {moment(this.props.event.endDate).format('MMMM Do YYYY')}
+            </div>
+            <p>{this.props.event.description}</p>
           </Col>
+          <EventModal toggle={this.toggleModal} isOpen={this.state.modal} text="Edit an Event">
+            <EventModalBody modalClose={this.toggleModal} name="edit" id={this.props.event.id} />
+          </EventModal>
         </Row>
-        <div className="float-left float-none mb-4">
-          {moment(this.props.event.startDate).format('MMMM Do YYYY')} To{' '}
-          {moment(this.props.event.endDate).format('MMMM Do YYYY')}
-        </div>
-        <div>{this.props.event.description}</div>
       </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    currentUser: state.users.current,
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  null
-)(Event);
+export default Event;

@@ -1,76 +1,66 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
-import { Breadcrumb, BreadcrumbItem, Button, Spinner, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import Event from './Event';
 import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
+import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
 import * as Constants from '../Constants';
 
 //import ArchivedEvent from './ArchivedEvent';
 
 class EventList extends Component {
-  state = { modal: false, loading: true };
+  state = { isAdmin: false, modal: false, loading: true };
 
   componentDidMount() {
     Promise.all([this.props.fetchEvents()])
       .then(() => {
-        this.toggleSpinner();
+        this.setState({ loading: false });
       })
       .catch(() => {
-        this.toggleSpinner();
+        //this.toggleSpinner();
       });
+
+    this.setState({ isAdmin: this.props.currentUser.roleName === Constants.ROLE.ADMIN });
   }
 
-  toggleSpinner = () => {
-    this.setState(prevState => ({
-      loading: !prevState.loading,
-    }));
-  };
-
-  toggle = () => {
+  modalToggle = () => {
     this.setState(prevState => ({
       modal: !prevState.modal,
     }));
   };
 
   renderEventList() {
-    const events = this.props.events.map(event => (
-      <div key={event.id} className="mb-5">
-        <Event event={event} />
-      </div>
-    ));
+    const events = this.props.events.map(event => <Event key={event.id} event={event} isAdmin={this.state.isAdmin} />);
 
     return events;
   }
 
-  decideRender() {
-    if (this.state.isSpin === true) {
+  renderAddEventButton() {
+    if (this.state.isAdmin) {
       return (
-        <div className="col-1 offset-6">
-          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
-        </div>
+        <Row>
+          <Col>
+            <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.modalToggle}>
+              Add an Event
+            </Button>
+          </Col>
+        </Row>
       );
-    } else {
-      return this.renderEventList();
     }
   }
 
-  renderAddEvent() {
-    if (this.props.currentUser.roleName === Constants.ROLE.ADMIN) {
-      return (
-        <React.Fragment>
-          <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.toggle}>
-            Add an Event
-          </Button>
-          <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Add an Event">
-            <EventModalBody modalClose={this.toggle} name="add" />
-          </EventModal>
-        </React.Fragment>
-      );
-    }
+  renderContent() {
+    return (
+      <React.Fragment>
+        {this.renderAddEventButton()}
+        {this.state.loading ? <PageSpinner /> : this.renderEventList()}
+      </React.Fragment>
+    );
   }
 
   render() {
@@ -78,11 +68,16 @@ class EventList extends Component {
       <React.Fragment>
         <Row>
           <Breadcrumb>
-            <BreadcrumbItem active>Home</BreadcrumbItem>
+            <BreadcrumbItem>
+              <Link to="/">Home</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem active>Events</BreadcrumbItem>
           </Breadcrumb>
         </Row>
-        {this.renderAddEvent()}
-        <div>{this.decideRender()}</div>
+        {this.renderContent()}
+        <EventModal toggle={this.modalToggle} isOpen={this.state.modal} text="Add an Event">
+          <EventModalBody modalClose={this.modalToggle} name="add" />
+        </EventModal>
       </React.Fragment>
     );
   }
