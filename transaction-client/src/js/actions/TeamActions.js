@@ -18,6 +18,7 @@ export const fetchCurrentTeam = id => async (dispatch, getStore) => {
       const teamId = getStore().users.current.teamId;
       const response = await api.get(`/teams/${teamId}`);
 
+      dispatch({ type: FETCH_TEAM, payload: response.data });
       dispatch({ type: FETCH_CURRENT_TEAM, payload: response.data });
       resolve();
     } catch (e) {

@@ -40,7 +40,6 @@ class Profile extends Component {
       this.props.fetchAllUserScores(this.props.currentUser.id),
       this.props.fetchAllTeamScores(this.props.currentUser.teamId),
       this.props.fetchUsers(),
-      this.props.fetchTeam(this.props.currentUser.teamId),
       this.props.fetchCurrentTeam(this.props.currentUser.teamId),
     ])
       .then(() => {
@@ -259,7 +258,7 @@ class Profile extends Component {
             <BreadcrumbItem>
               <Link to="/">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>MyProfile</BreadcrumbItem>
+            <BreadcrumbItem active>Profile</BreadcrumbItem>
           </Breadcrumb>
         </Row>
         <h1>Personal Profile </h1>
@@ -281,7 +280,7 @@ const mapStateToProps = (state, ownProps) => {
     paramId: parameter,
     currentUser: state.users.current,
     users: state.users,
-    team: state.team,
+    // team: state.team,
     regions: Object.values(state.regions),
     allUserScores: Object.values(state.allUserScores),
     allTeamScores: Object.values(state.allTeamScores),

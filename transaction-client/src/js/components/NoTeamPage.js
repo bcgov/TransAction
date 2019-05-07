@@ -131,7 +131,7 @@ class NoTeamPage extends Component {
   }
 }
 const mapStateToProps = state => {
-  return { currentUser: state.currentUser };
+  return { currentUser: state.users.current };
 };
 
 export default connect(

@@ -40,6 +40,24 @@ import TeamAdminView from './TeamAdminView';
 
 class Team extends Component {
   state = { loading: true, modal: false, clickable: true, modalLeave: false };
+
+  componentDidMount() {
+    // this.toggleSpinner();
+
+    Promise.all([
+      this.props.fetchTeam(this.props.paramId),
+      this.props.fetchUsers(),
+      this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+      this.props.fetchSpecificTeamRequests(this.props.currentUser.teamId),
+    ])
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
+  }
+
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -71,7 +89,7 @@ class Team extends Component {
       //paramId is passed
       if (this.props.paramId !== null) {
         //if the team id does not exist
-        if (!this.props.team) {
+        if (!this.props.teams) {
           return <div>hmmmmmm.. we couldnt find that team :(</div>;
         }
         //if the paramId is the same as user teamid
@@ -120,23 +138,6 @@ class Team extends Component {
 
     this.props.editTeam(userObj, this.props.currentTeam.id);
   };
-
-  componentDidMount() {
-    // this.toggleSpinner();
-
-    Promise.all([
-      this.props.fetchTeam(this.props.paramId),
-      this.props.fetchUsers(),
-      this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-      this.props.fetchSpecificTeamRequests(this.props.currentUser.teamId),
-    ])
-      .then(() => {
-        this.toggleSpinner();
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
-  }
 
   progressBar() {
     if (this.props.currentTeam.goal > 0 && this.props.currentUser.teamId !== null) {
@@ -335,7 +336,7 @@ class Team extends Component {
         />
         <DescriptionForm initialValues={_.pick(this.props.currentTeam, 'description')} onSubmit={this.onSubmit} />
         <h2 className="mt-2">Progress: </h2>
-        <div>{this.progressBar()}</div>
+        {/* <div>{this.progressBar()}</div> */}
         <div>
           <h4>Members:</h4>
           <Table striped>
@@ -386,7 +387,7 @@ class Team extends Component {
               <Link to="/">Home</Link>
             </BreadcrumbItem>
             <BreadcrumbItem>
-              <Link to="/teamslist">Teams List</Link>
+              <Link to="/teamslist">Teams</Link>
             </BreadcrumbItem>
             <BreadcrumbItem active>Team</BreadcrumbItem>
           </Breadcrumb>
@@ -411,10 +412,10 @@ const mapStateToProps = (state, ownProps) => {
     paramId: parameter,
     currentUser: state.users.current,
     allTeamScores: state.allTeamScores,
-    team: state.team,
+    teams: state.teams,
     users: Object.values(state.users),
     roles: state.roles,
-    currentTeam: state.currentTeam,
+    currentTeam: state.teams.current,
     joinRequests: Object.values(state.joinRequests),
     regions: state.regions,
   };

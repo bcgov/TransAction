@@ -12,6 +12,7 @@ class Main extends Component {
       this.setState({ loading: false });
     });
   }
+
   render() {
     return this.state.loading ? <div>Loading...</div> : this.props.children;
   }

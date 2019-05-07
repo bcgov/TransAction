@@ -49,7 +49,7 @@ class Header extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/profile">
-                    MyProfile
+                    Profile
                   </NavLink>
                 </NavItem>
                 <NavItem>
