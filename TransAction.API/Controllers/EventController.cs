@@ -81,6 +81,12 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
+            if(createEvent.StartDate > createEvent.EndDate)
+            {
+                var hello = createEvent.StartDate > createEvent.EndDate;
+                return BadRequest();
+            }
+
             var newEvent = Mapper.Map<TraEvent>(createEvent);
             newEvent.IsActive = true;
             

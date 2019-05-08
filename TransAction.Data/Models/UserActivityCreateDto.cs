@@ -10,6 +10,7 @@ namespace TransAction.Data.Models
         public string Name { get; set; }
         public int Hours { get; set; }
         public int Minutes { get; set; }
+        public DateTime ActivityTimestamp { get; set; }
         public int UserId { get; set; }
         public int ActivityId { get; set; }
         public int EventId { get; set; }

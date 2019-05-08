@@ -32,7 +32,8 @@ namespace TransAction.API.Controllers
                 var members = users.Where(y => y.TeamId == team.TeamId).Count();
                 team.NumMembers = members;
             }
-            return Ok(getTeams);
+            var resultTeams = getTeams.Where(x => x.NumMembers > 0);
+            return Ok(resultTeams);
         }
 
         [HttpGet("{id}", Name = "GetThatTeam")]
