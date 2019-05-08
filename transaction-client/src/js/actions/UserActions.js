@@ -1,4 +1,5 @@
 import api from '../api/api';
+import * as Constants from '../Constants';
 
 import { FETCH_USER, FETCH_USERS, FETCH_CURRENT_USER, UPDATE_AUTH_USER, SET_CURRENT_USER_ROLE } from './types';
 
@@ -32,9 +33,12 @@ export const fetchUsers = () => async dispatch => {
 export const fetchUser = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get(`/users/${id}`);
+      if (id) {
+        const response = await api.get(`/users/${id}`);
 
-      dispatch({ type: FETCH_USER, payload: response.data });
+        dispatch({ type: FETCH_USER, payload: response.data });
+      }
+
       resolve();
     } catch (e) {
       reject(e);
@@ -79,8 +83,10 @@ export const updateAuthUser = data => {
 };
 
 export const updateCurrentUserRole = roleName => {
+  const isAdmin = roleName === Constants.ROLE.ADMIN;
+
   return {
     type: SET_CURRENT_USER_ROLE,
-    payload: roleName,
+    payload: { roleName, isAdmin },
   };
 };

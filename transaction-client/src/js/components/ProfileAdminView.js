@@ -5,21 +5,22 @@ import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Spinner, Button } from 'reactstrap';
-import {
-  fetchCurrentUser,
-  fetchTeam,
-  editUser,
-  fetchRegions,
-  fetchAllUserScores,
-  fetchEvents,
-  fetchRoles,
-  fetchUser,
-  fetchCurrentTeam,
-} from '../actions';
+import { fetchTeam } from '../actions';
 import DescriptionForm from './DescriptionForm';
 
 class Profile extends Component {
   state = { loading: true, modal: false };
+
+  componentDidMount() {
+    Promise.all([this.props.fetchTeam(this.props.userToDisplay.teamId)])
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {
+        this.toggleSpinner();
+      });
+  }
+
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
@@ -44,32 +45,10 @@ class Profile extends Component {
     }
   }
 
-  componentDidMount() {
-    // this.toggleSpinner();
-    this.props
-      .fetchUser(this.props.userId)
-      .then(() => {
-        Promise.all([
-          this.props.fetchRegions(),
-          this.props.fetchTeam(this.props.user.teamId),
-          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-        ])
-          .then(() => {
-            this.toggleSpinner();
-          })
-          .catch(() => {
-            this.toggleSpinner();
-          });
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
-  }
-
   onSubmit = formValues => {
-    const userObj = { ...this.props.user, ...formValues };
+    const userObj = { ...this.props.userToDisplay, ...formValues };
 
-    this.props.editUser(userObj, this.props.user.id);
+    this.props.editUser(userObj, this.props.userToDisplay.id);
   };
 
   leaveTeam = () => {
@@ -82,7 +61,7 @@ class Profile extends Component {
 
   //TODO Button logic
   printTeam = () => {
-    if (this.props.user.teamId !== null) {
+    if (this.props.userToDisplay.teamId !== null) {
       return (
         <h3 className="mt-3">
           Team: {this.props.currentTeam.name}
@@ -106,18 +85,18 @@ class Profile extends Component {
     return (
       <div>
         <h3>
-          Name: {this.props.user.fname} {this.props.user.lname}{' '}
+          Name: {this.props.userToDisplay.fname} {this.props.userToDisplay.lname}{' '}
         </h3>
         <h3>
           <ProfileOfficeForm
-            initialValues={_.pick(this.props.user, 'regionId')}
-            userRegion={this.props.user.regionId}
+            initialValues={_.pick(this.props.userToDisplay, 'regionId')}
+            userRegion={this.props.userToDisplay.regionId}
             regions={this.props.regions}
             onSubmit={this.onSubmit}
           />
         </h3>
         {this.printTeam()}
-        <DescriptionForm initialValues={_.pick(this.props.user, 'description')} onSubmit={this.onSubmit} />
+        <DescriptionForm initialValues={_.pick(this.props.userToDisplay, 'description')} onSubmit={this.onSubmit} />
       </div>
     );
   }
@@ -129,28 +108,12 @@ class Profile extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: state.currentUser,
-    user: state.users[ownProps.userId],
-    team: state.team,
     regions: Object.values(state.regions),
-    allUserScores: Object.values(state.allUserScores),
-    events: Object.values(state.events),
-    roles: state.roles,
-    currentTeam: state.currentTeam,
+    currentTeam: state.teams.all[ownProps.userToDisplay.teamId],
   };
 };
 
 export default connect(
   mapStateToProps,
-  {
-    fetchCurrentUser,
-    fetchUser,
-    fetchTeam,
-    editUser,
-    fetchRegions,
-    fetchAllUserScores,
-    fetchEvents,
-    fetchRoles,
-    fetchCurrentTeam,
-  }
+  { fetchTeam }
 )(Profile);

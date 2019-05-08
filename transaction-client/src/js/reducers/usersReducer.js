@@ -16,7 +16,7 @@ export default (state = defaultState, action) => {
     case FETCH_CURRENT_USER:
       return { ...state, current: { ...state.current, ...action.payload } };
     case SET_CURRENT_USER_ROLE:
-      return { ...state, current: { ...state.current, roleName: action.payload } };
+      return { ...state, current: { ...state.current, ...action.payload } };
     default:
       return state;
   }

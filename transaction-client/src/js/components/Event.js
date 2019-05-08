@@ -44,8 +44,8 @@ class Event extends React.Component {
               {this.state.isAdmin ? this.renderEditButton() : ''}
             </div>
             <div>
-              {moment(this.props.event.startDate).format('MMMM Do YYYY')} To{' '}
-              {moment(this.props.event.endDate).format('MMMM Do YYYY')}
+              {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
+              {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
             </div>
             <p>{this.props.event.description}</p>
           </Col>

@@ -12,14 +12,17 @@ import {
 } from './types';
 import history from '../history';
 
-export const fetchCurrentTeam = id => async (dispatch, getStore) => {
+export const fetchCurrentTeam = () => async (dispatch, getStore) => {
   return new Promise(async (resolve, reject) => {
     try {
       const teamId = getStore().users.current.teamId;
-      const response = await api.get(`/teams/${teamId}`);
+      if (teamId) {
+        const response = await api.get(`/teams/${teamId}`);
 
-      dispatch({ type: FETCH_TEAM, payload: response.data });
-      dispatch({ type: FETCH_CURRENT_TEAM, payload: response.data });
+        dispatch({ type: FETCH_TEAM, payload: response.data });
+        dispatch({ type: FETCH_CURRENT_TEAM, payload: response.data });
+      }
+
       resolve();
     } catch (e) {
       reject(e);

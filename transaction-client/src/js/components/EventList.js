@@ -9,12 +9,11 @@ import EventModal from './EventModal';
 import EventModalBody from './EventModalBody';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
-import * as Constants from '../Constants';
 
 //import ArchivedEvent from './ArchivedEvent';
 
 class EventList extends Component {
-  state = { isAdmin: false, modal: false, loading: true };
+  state = { modal: false, loading: true };
 
   componentDidMount() {
     Promise.all([this.props.fetchEvents()])
@@ -24,8 +23,6 @@ class EventList extends Component {
       .catch(() => {
         //this.toggleSpinner();
       });
-
-    this.setState({ isAdmin: this.props.currentUser.roleName === Constants.ROLE.ADMIN });
   }
 
   modalToggle = () => {
@@ -35,13 +32,15 @@ class EventList extends Component {
   };
 
   renderEventList() {
-    const events = this.props.events.map(event => <Event key={event.id} event={event} isAdmin={this.state.isAdmin} />);
+    const events = this.props.events.map(event => (
+      <Event key={event.id} event={event} isAdmin={this.props.currentUser.isAdmin} />
+    ));
 
     return events;
   }
 
   renderAddEventButton() {
-    if (this.state.isAdmin) {
+    if (this.props.currentUser.isAdmin) {
       return (
         <Row>
           <Col>

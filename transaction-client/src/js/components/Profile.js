@@ -3,18 +3,11 @@ import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Progress, Spinner, Button, Row, Col } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Progress, Button, Row, Col } from 'reactstrap';
 
-import {
-  fetchTeam,
-  editUser,
-  fetchAllUserScores,
-  fetchEvents,
-  fetchAllTeamScores,
-  fetchCurrentTeam,
-  fetchUsers,
-} from '../actions';
+import { fetchTeam, editUser, fetchAllUserScores, fetchEvents, fetchAllTeamScores, fetchUser } from '../actions';
 
+import PageSpinner from './ui/PageSpinner';
 import ProfileOfficeForm from './ProfileOfficeForm.js';
 import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
@@ -22,33 +15,82 @@ import CreateTeamModalBody from './CreateTeamModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
 import ProfileReadOnly from './ProfileReadOnly';
 import ProfileAdminView from './ProfileAdminView';
-
 class Profile extends Component {
-  state = { loading: true, modal: false };
+  state = { loading: true, canEdit: false, ownProfile: false, userToDisplay: null, teamToDisplay: null, modal: false };
 
   componentDidMount() {
-    //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
-    // Promise.all([this.props.fetchEvents()])
-    //   .then(() => {
+    this.init(this.props.match.params.id);
+  }
 
-    //   })
-    //   .catch(() => {
-    //     // this.toggleSpinner();
-    //   });
+  componentDidUpdate(prevProps) {
+    // Re-init if URL param has changed
+    const prevId = prevProps.match.params.id;
+    const currId = this.props.match.params.id;
+    if (currId !== prevId && parseInt(prevId) !== this.props.currentUser.id) {
+      this.init(currId);
+    }
+  }
 
-    Promise.all([
-      this.props.fetchAllUserScores(this.props.currentUser.id),
-      this.props.fetchAllTeamScores(this.props.currentUser.teamId),
-      this.props.fetchUsers(),
-      this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-    ])
+  init = userId => {
+    userId = parseInt(userId);
+
+    this.setState({ loading: true });
+
+    this.props
+      .fetchUser(userId)
       .then(() => {
-        this.toggleSpinner();
+        if (userId === this.props.currentUser.id || !userId) {
+          this.setState({ canEdit: true, ownProfile: true });
+        }
+
+        // Allow admins to edit information
+        if (this.props.currentUser.isAdmin) {
+          this.setState({ canEdit: true });
+        }
+
+        if (this.state.ownProfile) {
+          userId = this.props.currentUser.id;
+        }
+
+        this.setState({ userToDisplay: this.props.users.all[userId] });
+
+        return this.props.fetchTeam(34);
+      })
+      .then(() => {
+        this.setState({ teamToDisplay: this.props.teams.all[this.state.userToDisplay.teamId], loading: false });
       })
       .catch(() => {
-        this.toggleSpinner();
+        this.setState({ loading: false });
       });
-  }
+
+    // Promise.all([
+    //   // this.props.fetchAllUserScores(this.props.currentUser.id),
+    //   // this.props.fetchAllTeamScores(this.props.currentUser.teamId),
+    //   this.props.fetchUser(userId),
+    //   this.props.fetchCurrentTeam(),
+    // ])
+    //   .then(() => {
+    //     // User viewing own profile because param id equals currentuser.id
+    //     // or param id not specified and therefore load currentuser
+    //     if (userId === this.props.currentUser.id || !userId) {
+    //       this.setState({ canEdit: true, ownProfile: true });
+    //     }
+
+    //     // Allow admins to edit information
+    //     if (this.props.currentUser.isAdmin) {
+    //       this.setState({ canEdit: true });
+    //     }
+
+    //     if (this.state.ownProfile) {
+    //       userId = this.props.currentUser.id;
+    //     }
+
+    //     this.setState({ userToDisplay: this.props.users.all[userId], loading: false });
+    //   })
+    //   .catch(() => {
+    //     this.setState({ loading: false });
+    //   });
+  };
 
   onSubmit = formValues => {
     const userObj = { ...this.props.currentUser, ...formValues };
@@ -73,44 +115,20 @@ class Profile extends Component {
 
   decideRender() {
     if (this.state.loading) {
-      return (
-        <div className="col-1 offset-6">
-          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
-        </div>
-      );
+      return <PageSpinner />;
     } else {
-      if (!this.props.users[this.props.paramId] && this.props.paramId !== null)
-        return <div>Hmmmm, We couldnt find that user :(</div>;
+      if (!this.state.userToDisplay) return <div>Hmmmm, We couldnt find that user :(</div>;
       //Loading DONE
       else {
-        //no paramId passed
-        if (!this.props.paramId) {
-          //Following the user's profile
-          //Doesnt matter what the role is, its the users profile.
-
-          return this.userInfo();
-        }
-        //paramId is passed
-        else {
-          console.log('param Id passed');
-          //if the paramId is the same as user profileid
-          if (this.props.paramId === this.props.currentUser.id) {
-            //role doesnt matter, its the users page
-            return this.userInfo();
-          }
-          //paramid is NOT the same as user id; viewing someones profile from the outside
-          else {
-            //If they are an admin
-
-            if (this.props.roles[this.props.currentUser.roleId].name === 'Admin') {
-              return <ProfileAdminView userId={this.props.paramId} />;
-            } else {
-              //return read only
-
-              return <ProfileReadOnly userId={this.props.paramId} />;
-            }
-          }
-        }
+        //no userParamId passed
+        // if (this.state.ownProfile) {
+        //   return this.userInfo();
+        // } else if (this.state.canEdit) {
+        //   return <ProfileAdminView userId={this.props.userParamId} userToDisplay={this.state.userToDisplay} />;
+        // } else {
+        //   return <ProfileReadOnly userId={this.props.userParamId} userToDisplay={this.state.userToDisplay} />;
+        // }
+        return this.userInfo();
       }
     }
   }
@@ -127,13 +145,13 @@ class Profile extends Component {
   }
 
   progressBar() {
-    if (this.props.currentTeam.goal > 0 && this.props.currentUser.teamId !== null) {
+    if (this.state.teamToDisplay.goal > 0 && this.props.currentUser.teamId !== null) {
       return (
         <Progress
           bar
           animated
           color="primary"
-          value={(this.props.currentTeam.progressamt / this.props.currentTeam.goal) * 100}
+          value={(this.state.teamToDisplay.progressamt / this.state.teamToDisplay.goal) * 100}
         >
           Check out this hot progress
         </Progress>
@@ -151,11 +169,11 @@ class Profile extends Component {
 
   //TODO Button logic
   printTeam = () => {
-    if (this.props.currentUser.teamId !== null) {
+    if (this.state.teamToDisplay) {
       return (
         <h3 className="mt-3">
-          Team: {this.props.currentTeam.name}
-          <Link to="/team">
+          Team: {this.state.teamToDisplay.name}
+          <Link to={`/team/${this.state.teamToDisplay.id}`}>
             <Button color="primary" className="ml-3 mb-2">
               Visit Team
             </Button>
@@ -229,22 +247,23 @@ class Profile extends Component {
   }
 
   userInfo() {
+    const userToDisplay = this.state.userToDisplay;
     return (
       <div>
         <h3>
-          Name: {this.props.currentUser.fname} {this.props.currentUser.lname}{' '}
+          Name: {userToDisplay.fname} {userToDisplay.lname}{' '}
         </h3>
         <h3>
           <ProfileOfficeForm
-            initialValues={_.pick(this.props.currentUser, 'regionId')}
-            userRegion={this.props.currentUser.regionId}
+            initialValues={userToDisplay}
+            userRegion={userToDisplay.regionId}
             regions={this.props.regions}
             onSubmit={this.onSubmit}
           />
         </h3>
         {this.printTeam()}
 
-        <DescriptionForm initialValues={_.pick(this.props.currentUser, 'description')} onSubmit={this.onSubmit} />
+        <DescriptionForm initialValues={userToDisplay} onSubmit={this.onSubmit} />
         <Row className="mt-3 mb-3 "> {this.printUserScores()}</Row>
       </div>
     );
@@ -269,15 +288,8 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  var parameter;
-  if (!ownProps.match.params.id) {
-    parameter = null;
-  } else {
-    parameter = parseInt(ownProps.match.params.id);
-  }
-
   return {
-    paramId: parameter,
+    userParamId: parseInt(ownProps.match.params.id),
     currentUser: state.users.current,
     users: state.users,
     // team: state.team,
@@ -286,19 +298,18 @@ const mapStateToProps = (state, ownProps) => {
     allTeamScores: Object.values(state.allTeamScores),
     events: Object.values(state.events),
     roles: state.roles,
-    currentTeam: state.teams.current,
+    teams: state.teams,
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    fetchUsers,
+    fetchUser,
     fetchTeam,
     editUser,
     fetchAllUserScores,
     fetchAllTeamScores,
     fetchEvents,
-    fetchCurrentTeam,
   }
 )(Profile);
