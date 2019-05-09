@@ -16,7 +16,6 @@ class EditUserForm extends React.Component {
     }
 
     this.props.editUser(formValues.id, formValues).then(() => {
-      this.props.refreshData();
       this.toggleModal();
     });
   };
