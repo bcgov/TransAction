@@ -14,10 +14,20 @@ import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
 import CreateTeamModalBody from './CreateTeamModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
+
+import EditUserForm from './forms/EditUserForm';
 // import ProfileReadOnly from './ProfileReadOnly';
 // import ProfileAdminView from './ProfileAdminView';
 class Profile extends Component {
-  state = { loading: true, canEdit: false, ownProfile: false, userToDisplay: null, teamToDisplay: null, modal: false };
+  state = {
+    loading: true,
+    canEdit: false,
+    ownProfile: false,
+    userToDisplay: null,
+    teamToDisplay: null,
+    showEditUserForm: false,
+    modal: false,
+  };
 
   componentDidMount() {
     this.init(this.props.match.params.id);
@@ -233,6 +243,17 @@ class Profile extends Component {
     );
   }
 
+  showEditUserForm = () => {
+    this.setState({ showEditUserForm: true });
+  };
+
+  toggleEditUserForm = () => {
+    // console.log('toggle');
+    this.setState(prevState => ({
+      showEditUserForm: !prevState.showEditUserForm,
+    }));
+  };
+
   renderUserInfo() {
     const userToDisplay = this.state.userToDisplay;
 
@@ -356,16 +377,15 @@ class Profile extends Component {
           </Breadcrumb>
         </Row>
 
-        {/* <div>{this.decideRender()}</div> */}
         <Row className="mb-3">
           <Col xs="2">
             <h4>User Profile</h4>
           </Col>
           <Col>
             {(() => {
-              if (this.state.ownProfile && userToDisplay && userToDisplay.teamId) {
+              if (this.state.canEdit && userToDisplay) {
                 return (
-                  <Button color="primary" size="sm">
+                  <Button color="primary" size="sm" onClick={this.showEditUserForm}>
                     Edit Profile
                   </Button>
                 );
@@ -393,6 +413,12 @@ class Profile extends Component {
           </Col>
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderUserTeam()}
+        <EditUserForm
+          initialValues={userToDisplay}
+          isOpen={this.state.showEditUserForm}
+          toggle={this.toggleEditUserForm}
+          refreshData={this.init}
+        />
       </React.Fragment>
     );
   }

@@ -47,7 +47,7 @@ export const fetchUser = id => async dispatch => {
 };
 
 //TODO Combine these two
-export const editUser = (userObj, id) => async dispatch => {
+export const editUser = (id, userObj) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.put(`/users/${id}`, userObj);
