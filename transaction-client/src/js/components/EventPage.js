@@ -1,25 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+
 import { fetchEvent, fetchUserScore, fetchTeamScore } from '../actions';
 import EventModal from './EventModal';
 import LogActivityModalBody from './LogActivityModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
-import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Spinner, Button, Row, Col } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import PageSpinner from './ui/PageSpinner';
 
-class EventPage extends Component {
+class EventPage extends React.Component {
   state = { loading: true, modal: false };
-  toggleSpinner = () => {
-    this.setState(prevState => ({
-      loading: !prevState.loading,
-    }));
-  };
-
-  toggle = () => {
-    this.setState(prevState => ({
-      modal: !prevState.modal,
-    }));
-  };
 
   componentDidMount() {
     const eventId = this.props.paramId;
@@ -30,12 +21,17 @@ class EventPage extends Component {
       this.props.fetchTeamScore(this.props.currentUser.teamId, eventId),
     ])
       .then(() => {
-        this.toggleSpinner();
+        this.setState({ loading: false });
       })
       .catch(() => {
-        this.toggleSpinner();
+        this.setState({ loading: false });
       });
   }
+  toggle = () => {
+    this.setState(prevState => ({
+      modal: !prevState.modal,
+    }));
+  };
 
   printScores() {
     return (
@@ -96,11 +92,7 @@ class EventPage extends Component {
 
   decideRender() {
     if (this.state.loading) {
-      return (
-        <div className="col-1 offset-6">
-          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
-        </div>
-      );
+      return <PageSpinner />;
     }
     //Loading DONE
     else {

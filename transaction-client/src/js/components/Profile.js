@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+//import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Progress, Button, Row, Col } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { fetchTeam, editUser, fetchAllUserScores, fetchEvents, fetchAllTeamScores, fetchUser } from '../actions';
 
@@ -13,8 +14,8 @@ import DescriptionForm from './DescriptionForm';
 import EventModal from './EventModal';
 import CreateTeamModalBody from './CreateTeamModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
-import ProfileReadOnly from './ProfileReadOnly';
-import ProfileAdminView from './ProfileAdminView';
+// import ProfileReadOnly from './ProfileReadOnly';
+// import ProfileAdminView from './ProfileAdminView';
 class Profile extends Component {
   state = { loading: true, canEdit: false, ownProfile: false, userToDisplay: null, teamToDisplay: null, modal: false };
 
@@ -32,64 +33,33 @@ class Profile extends Component {
   }
 
   init = userId => {
-    userId = parseInt(userId);
+    this.setState({ loading: true, canEdit: false, ownProfile: false });
 
-    this.setState({ loading: true });
+    if (this.props.currentUser.isAdmin) {
+      this.setState({ canEdit: true });
+    }
+
+    userId = parseInt(userId);
 
     this.props
       .fetchUser(userId)
       .then(() => {
         if (userId === this.props.currentUser.id || !userId) {
-          this.setState({ canEdit: true, ownProfile: true });
-        }
-
-        // Allow admins to edit information
-        if (this.props.currentUser.isAdmin) {
-          this.setState({ canEdit: true });
-        }
-
-        if (this.state.ownProfile) {
           userId = this.props.currentUser.id;
+          this.setState({ canEdit: true, ownProfile: true });
         }
 
         this.setState({ userToDisplay: this.props.users.all[userId] });
 
-        return this.props.fetchTeam(34);
+        return this.props.fetchTeam(this.state.userToDisplay.teamId);
       })
       .then(() => {
-        this.setState({ teamToDisplay: this.props.teams.all[this.state.userToDisplay.teamId], loading: false });
+        const teamToDisplay = this.props.teams.all[this.state.userToDisplay.teamId];
+        this.setState({ teamToDisplay, loading: false });
       })
       .catch(() => {
         this.setState({ loading: false });
       });
-
-    // Promise.all([
-    //   // this.props.fetchAllUserScores(this.props.currentUser.id),
-    //   // this.props.fetchAllTeamScores(this.props.currentUser.teamId),
-    //   this.props.fetchUser(userId),
-    //   this.props.fetchCurrentTeam(),
-    // ])
-    //   .then(() => {
-    //     // User viewing own profile because param id equals currentuser.id
-    //     // or param id not specified and therefore load currentuser
-    //     if (userId === this.props.currentUser.id || !userId) {
-    //       this.setState({ canEdit: true, ownProfile: true });
-    //     }
-
-    //     // Allow admins to edit information
-    //     if (this.props.currentUser.isAdmin) {
-    //       this.setState({ canEdit: true });
-    //     }
-
-    //     if (this.state.ownProfile) {
-    //       userId = this.props.currentUser.id;
-    //     }
-
-    //     this.setState({ userToDisplay: this.props.users.all[userId], loading: false });
-    //   })
-    //   .catch(() => {
-    //     this.setState({ loading: false });
-    //   });
   };
 
   onSubmit = formValues => {
@@ -99,12 +69,6 @@ class Profile extends Component {
         this.props.fetchAllTeamScores(this.props.currentUser.teamId);
       });
     });
-  };
-
-  toggleSpinner = () => {
-    this.setState(prevState => ({
-      loading: !prevState.loading,
-    }));
   };
 
   toggle = () => {
@@ -257,7 +221,7 @@ class Profile extends Component {
           <ProfileOfficeForm
             initialValues={userToDisplay}
             userRegion={userToDisplay.regionId}
-            regions={this.props.regions}
+            regions={Object.values(this.props.regions)}
             onSubmit={this.onSubmit}
           />
         </h3>
@@ -269,7 +233,113 @@ class Profile extends Component {
     );
   }
 
+  renderUserInfo() {
+    const userToDisplay = this.state.userToDisplay;
+
+    return (
+      <React.Fragment>
+        <Row>
+          <Col xs="12" lg="6">
+            <div>
+              {' '}
+              <strong>Name</strong>
+            </div>
+            <div>
+              {userToDisplay.fname} {userToDisplay.lname}
+            </div>
+          </Col>
+          <Col xs="12" lg="6">
+            <div>
+              {' '}
+              <strong>Region</strong>
+            </div>
+            <div>{this.props.regions[userToDisplay.regionId].name}</div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div>
+              {' '}
+              <strong>Description</strong>
+            </div>
+            <div>{userToDisplay.description}</div>
+          </Col>
+        </Row>
+      </React.Fragment>
+    );
+  }
+
+  renderUserTeam() {
+    const teamToDisplay = this.state.teamToDisplay;
+
+    return (
+      <Row className="mb-5">
+        <Col>
+          {(() => {
+            if (!teamToDisplay) {
+              if (this.state.ownProfile)
+                return (
+                  <React.Fragment>
+                    <div className="mb-3">You are currently not on a team. You have the following options:</div>
+                    <div>
+                      <Link to="/">
+                        <Button color="primary" size="sm">
+                          Create Team
+                        </Button>
+                      </Link>{' '}
+                      or{' '}
+                      <Link to="/">
+                        <Button color="primary" size="sm">
+                          Join Team
+                        </Button>
+                      </Link>
+                    </div>
+                  </React.Fragment>
+                );
+              else return <p>{this.state.userToDisplay.fname} is not part of a team.</p>;
+            } else
+              return (
+                <React.Fragment>
+                  <Row>
+                    <Col>
+                      <div>
+                        {' '}
+                        <strong>Name</strong>
+                      </div>
+                      <div>
+                        <Link to={`/team/${teamToDisplay.id}`}>
+                          {teamToDisplay.name} <FontAwesomeIcon icon="external-link-alt" />
+                        </Link>
+                      </div>
+                    </Col>
+                    <Col>
+                      <div>
+                        {' '}
+                        <strong>Region</strong>
+                      </div>
+                      <div>{this.props.regions[teamToDisplay.regionId].name}</div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <div>
+                        {' '}
+                        <strong>Description</strong>
+                      </div>
+                      <div>{teamToDisplay.description}</div>
+                    </Col>
+                  </Row>
+                </React.Fragment>
+              );
+          })()}
+        </Col>
+      </Row>
+    );
+  }
+
   render() {
+    const userToDisplay = this.state.userToDisplay;
+
     return (
       <React.Fragment>
         <Row>
@@ -277,11 +347,52 @@ class Profile extends Component {
             <BreadcrumbItem>
               <Link to="/">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>{`${this.props.currentUser.fname} ${this.props.currentUser.lname}`}</BreadcrumbItem>
+            <BreadcrumbItem>
+              <Link to="/profile">Profile</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem active>
+              {userToDisplay ? `${userToDisplay.fname} ${userToDisplay.lname}` : ''}
+            </BreadcrumbItem>
           </Breadcrumb>
         </Row>
-        <h1>Personal Profile </h1>
-        <div>{this.decideRender()}</div>
+
+        {/* <div>{this.decideRender()}</div> */}
+        <Row className="mb-3">
+          <Col xs="2">
+            <h4>User Profile</h4>
+          </Col>
+          <Col>
+            {(() => {
+              if (this.state.ownProfile && userToDisplay && userToDisplay.teamId) {
+                return (
+                  <Button color="primary" size="sm">
+                    Edit Profile
+                  </Button>
+                );
+              }
+            })()}
+          </Col>
+        </Row>
+
+        {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
+        <hr />
+        <Row className="mb-3">
+          <Col xs="2">
+            <h4>Team</h4>
+          </Col>
+          <Col>
+            {(() => {
+              if (this.state.ownProfile && userToDisplay && userToDisplay.teamId) {
+                return (
+                  <Button color="danger" size="sm">
+                    Leave Team
+                  </Button>
+                );
+              }
+            })()}
+          </Col>
+        </Row>
+        {this.state.loading ? <PageSpinner /> : this.renderUserTeam()}
       </React.Fragment>
     );
   }
@@ -293,7 +404,7 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: state.users.current,
     users: state.users,
     // team: state.team,
-    regions: Object.values(state.regions),
+    regions: state.regions,
     allUserScores: Object.values(state.allUserScores),
     allTeamScores: Object.values(state.allTeamScores),
     events: Object.values(state.events),

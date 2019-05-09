@@ -33,9 +33,12 @@ export const fetchCurrentTeam = () => async (dispatch, getStore) => {
 export const fetchTeam = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get(`/teams/${id}`);
+      if (id) {
+        const response = await api.get(`/teams/${id}`);
 
-      dispatch({ type: FETCH_TEAM, payload: response.data });
+        dispatch({ type: FETCH_TEAM, payload: response.data });
+      }
+
       resolve();
     } catch (e) {
       console.log('ERROR in fetchTeam');
