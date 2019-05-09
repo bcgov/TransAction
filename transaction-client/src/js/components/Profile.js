@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { fetchTeam, editUser, fetchAllUserScores, fetchEvents, fetchAllTeamScores, fetchUser } from '../actions';
+import { fetchTeam, editUser, fetchAllUserScores, fetchUser } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
 
@@ -56,7 +56,8 @@ class Profile extends Component {
 
         this.setState({ userIdToDisplay: userId, teamIdToDisplay: teamId });
 
-        return this.props.fetchTeam(teamId);
+        if (teamId) return Promise.all([this.props.fetchAllUserScores(userId), this.props.fetchTeam(teamId)]);
+        else return this.props.fetchAllUserScores(userId);
       })
       .then(() => {
         this.setState({ loading: false });
@@ -237,7 +238,6 @@ class Profile extends Component {
           initialValues={userToDisplay}
           isOpen={this.state.showEditUserForm}
           toggle={this.toggleEditUserForm}
-          s
         />
       </React.Fragment>
     );
@@ -249,9 +249,6 @@ const mapStateToProps = state => {
     currentUser: state.users.current,
     users: state.users,
     regions: state.regions,
-    allUserScores: Object.values(state.allUserScores),
-    allTeamScores: Object.values(state.allTeamScores),
-    events: Object.values(state.events),
     roles: state.roles,
     teams: state.teams,
   };
@@ -264,7 +261,5 @@ export default connect(
     fetchTeam,
     editUser,
     fetchAllUserScores,
-    fetchAllTeamScores,
-    fetchEvents,
   }
 )(Profile);

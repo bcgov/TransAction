@@ -10,13 +10,12 @@ import EventModalBody from './EventModalBody';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
 
-//import ArchivedEvent from './ArchivedEvent';
-
 class EventList extends Component {
   state = { modal: false, loading: true };
 
   componentDidMount() {
-    Promise.all([this.props.fetchEvents()])
+    this.props
+      .fetchEvents()
       .then(() => {
         this.setState({ loading: false });
       })
