@@ -193,7 +193,7 @@ class Profile extends Component {
 
       return (
         <Col xs="12" lg="6" key={score.eventId} className="mb-3">
-          <UseScoreCard score={score} teamScore={teamScore} events={events} />
+          <UseScoreCard score={score} teamScore={teamScore} event={events[score.eventId]} />
         </Col>
       );
     });

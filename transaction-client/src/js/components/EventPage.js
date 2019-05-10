@@ -6,7 +6,7 @@ import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
 import EventModal from './EventModal';
 import LogActivityModalBody from './LogActivityModalBody';
-import UserScoreGraphicCard from './UserScoreGraphicCard';
+import UseScoreCard from './ui/UseScoreCard';
 import PageSpinner from './ui/PageSpinner';
 
 class EventPage extends React.Component {
@@ -24,9 +24,10 @@ class EventPage extends React.Component {
         this.setState({ loading: false });
       })
       .catch(() => {
-        this.setState({ loading: false });
+        //this.setState({ loading: false });
       });
   }
+
   toggle = () => {
     this.setState(prevState => ({
       modal: !prevState.modal,
@@ -35,14 +36,15 @@ class EventPage extends React.Component {
 
   printScores() {
     const currentUser = this.props.currentUser;
-    const score = this.props.scores.user[currentUser.id][this.props.match.params.id];
-    const teamScore = this.props.scores.team[currentUser.teamId][this.props.match.params.id];
-
+    const eventId = this.props.event.id;
+    const score = this.props.scores.user[currentUser.id][eventId];
+    const teamScore = this.props.scores.team[currentUser.teamId][eventId];
     return (
       <React.Fragment>
         <Row>
           <Col>
-            <UserScoreGraphicCard userScore={score} teamScore={teamScore} type="event" />
+            <UseScoreCard score={score} teamScore={teamScore} event={this.props.event} />
+            {/* <UserScoreGraphicCard userScore={score} teamScore={teamScore} type="event" /> */}
           </Col>
         </Row>
       </React.Fragment>
@@ -101,6 +103,7 @@ class EventPage extends React.Component {
   }
 
   render() {
+    // console.log(this.props.event);
     return (
       <React.Fragment>
         <Row>
@@ -111,7 +114,7 @@ class EventPage extends React.Component {
             <BreadcrumbItem>
               <Link to="/event">Events</Link>
             </BreadcrumbItem>
-            !{this.state.loading && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
+            {/* {!this.state.loading && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>} */}
           </Breadcrumb>
         </Row>
         {this.decideRender()}
@@ -120,10 +123,10 @@ class EventPage extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
     currentUser: state.users.current,
-    event: state.events,
+    event: state.events[ownProps.match.params.id],
     scores: state.scores,
   };
 };

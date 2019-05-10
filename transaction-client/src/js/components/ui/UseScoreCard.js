@@ -5,13 +5,13 @@ import { Row, Col, Card, CardBody, CardHeader } from 'reactstrap';
 import * as Constants from '../../Constants';
 
 const UseScoreCard = props => {
-  const { score, teamScore, events } = props;
+  const { score, teamScore, event } = props;
 
   return (
     <Card>
       <CardHeader>
-        <Link to={`${Constants.PATHS.EVENT}/${score.eventId}`} className="no-underline">
-          <strong>{events[score.eventId].name}</strong>
+        <Link to={`${Constants.PATHS.EVENT}/${event.id}`} className="no-underline">
+          <strong>{event.name}</strong>
         </Link>
       </CardHeader>
       <CardBody>
