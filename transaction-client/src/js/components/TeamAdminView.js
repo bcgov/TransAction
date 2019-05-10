@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { fetchCurrentUser, fetchTeam, editTeam, fetchUsers, fetchRoles, fetchCurrentTeam, editUser } from '../actions';
-import DescriptionForm from './DescriptionForm';
+// import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
 
 class TeamAdminView extends Component {
@@ -117,7 +117,7 @@ class TeamAdminView extends Component {
     return (
       <div>
         <TitleForm initialValues={_.pick(this.props.team, 'name')} onSubmit={this.onSubmit} title="Team Name: " />
-        <DescriptionForm initialValues={_.pick(this.props.team, 'description')} onSubmit={this.onSubmit} />
+        {/* <DescriptionForm initialValues={_.pick(this.props.team, 'description')} onSubmit={this.onSubmit} /> */}
         <h2 className="mt-2">Progress: </h2>
         <div>
           <h4>Members:</h4>

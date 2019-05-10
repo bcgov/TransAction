@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { NavLink as RRNavLink, Link } from 'react-router-dom';
 import { Container, Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
+import * as Constants from '../../Constants';
+
 class Header extends Component {
   state = { collapsed: true };
 
@@ -48,17 +50,17 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/event">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.EVENT}>
                     Events
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/profile">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.PROFILE}>
                     Profile
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/team">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.TEAM}>
                     Team
                   </NavLink>
                 </NavItem>

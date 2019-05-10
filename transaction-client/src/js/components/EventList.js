@@ -20,7 +20,7 @@ class EventList extends Component {
         this.setState({ loading: false });
       })
       .catch(() => {
-        //this.toggleSpinner();
+        this.setState({ loading: false });
       });
   }
 

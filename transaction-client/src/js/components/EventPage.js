@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 
-import { fetchEvent, fetchUserScore, fetchTeamScore } from '../actions';
+import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
 import EventModal from './EventModal';
 import LogActivityModalBody from './LogActivityModalBody';
 import UserScoreGraphicCard from './UserScoreGraphicCard';
@@ -13,12 +13,12 @@ class EventPage extends React.Component {
   state = { loading: true, modal: false };
 
   componentDidMount() {
-    const eventId = this.props.paramId;
+    const eventId = this.props.match.params.id;
 
     Promise.all([
       this.props.fetchEvent(eventId),
-      this.props.fetchUserScore(this.props.currentUser.id, eventId),
-      this.props.fetchTeamScore(this.props.currentUser.teamId, eventId),
+      this.props.fetchUserEventScore(this.props.currentUser.id, eventId),
+      this.props.fetchTeamEventScore(this.props.currentUser.teamId, eventId),
     ])
       .then(() => {
         this.setState({ loading: false });
@@ -34,15 +34,15 @@ class EventPage extends React.Component {
   };
 
   printScores() {
+    const currentUser = this.props.currentUser;
+    const score = this.props.scores.user[currentUser.id][this.props.match.params.id];
+    const teamScore = this.props.scores.team[currentUser.teamId][this.props.match.params.id];
+
     return (
       <React.Fragment>
         <Row>
           <Col>
-            <UserScoreGraphicCard
-              userScore={this.props.userScore.score}
-              teamScore={this.props.teamScore.score}
-              type="event"
-            />
+            <UserScoreGraphicCard userScore={score} teamScore={teamScore} type="event" />
           </Col>
         </Row>
       </React.Fragment>
@@ -111,7 +111,7 @@ class EventPage extends React.Component {
             <BreadcrumbItem>
               <Link to="/event">Events</Link>
             </BreadcrumbItem>
-            {this.state.loading ? '' : <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
+            !{this.state.loading && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
           </Breadcrumb>
         </Row>
         {this.decideRender()}
@@ -120,18 +120,15 @@ class EventPage extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const paramId = ownProps.match.params.id;
+const mapStateToProps = state => {
   return {
     currentUser: state.users.current,
-    paramId: paramId,
-    event: state.events[paramId],
-    userScore: state.userScore,
-    teamScore: state.teamScore,
+    event: state.events,
+    scores: state.scores,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchEvent, fetchUserScore, fetchTeamScore }
+  { fetchEvent, fetchUserEventScore, fetchTeamEventScore }
 )(EventPage);

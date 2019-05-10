@@ -16,6 +16,8 @@ import FreeAgentsList from './components/FreeAgentsList';
 import Incentives from './components/Incentives';
 import FAQ from './components/FAQ';
 
+import * as Constants from './Constants';
+
 import '../scss/transaction.scss';
 
 class App extends Component {
@@ -28,12 +30,12 @@ class App extends Component {
             <Container>
               <Switch>
                 <Route path="/" exact component={EventList} />
-                <Route path="/event" exact component={EventList} />
-                <Route path="/event/:id" exact component={EventPage} />
-                <Route path="/profile/" exact component={Profile} />
-                <Route path="/profile/:id" exact component={Profile} />
-                <Route path="/team/" exact component={Team} />
-                <Route path="/team/:id" exact component={Team} />
+                <Route path={Constants.PATHS.EVENT} exact component={EventList} />
+                <Route path={`${Constants.PATHS.EVENT}/:id`} exact component={EventPage} />
+                <Route path={Constants.PATHS.PROFILE} exact component={Profile} />
+                <Route path={`${Constants.PATHS.PROFILE}/:id`} exact component={Profile} />
+                <Route path={Constants.PATHS.TEAM} exact component={Team} />
+                <Route path={`${Constants.PATHS.TEAM}/:id`} exact component={Team} />
                 <Route path="/teamslist" exact component={TeamsList} />
                 <Route path="/getting_started" exact component={GettingStarted} />
                 <Route path="/free_agents" exact component={FreeAgentsList} />

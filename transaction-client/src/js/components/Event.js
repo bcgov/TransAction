@@ -38,16 +38,19 @@ class Event extends React.Component {
         <Row className="mb-5">
           <Col>
             <div className="mb-2">
-              <Link to={`/event/${this.props.event.id}`} className="h3">
+              <Link to={`/event/${this.props.event.id}`} className="h4 no-underline">
                 {this.props.event.name}
               </Link>
               {this.state.isAdmin ? this.renderEditButton() : ''}
             </div>
-            <div>
+            <p className="text-muted">
               {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
               {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
-            </div>
+            </p>
             <p>{this.props.event.description}</p>
+            <p>
+              <Link to={`/event/${this.props.event.id}`}>View Details</Link>
+            </p>
           </Col>
           <EventModal toggle={this.toggleModal} isOpen={this.state.modal} text="Edit an Event">
             <EventModalBody modalClose={this.toggleModal} name="edit" id={this.props.event.id} />

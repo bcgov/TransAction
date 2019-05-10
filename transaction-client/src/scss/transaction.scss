@@ -2,6 +2,10 @@
 
 @import 'vendor-overrides.scss';
 
+.no-underline {
+  text-decoration: none;
+}
+
 textarea.form-control {
   height: 250px;
 }

@@ -28,7 +28,7 @@ import {
   fetchRegions,
   editJoinRequest,
 } from '../actions';
-import DescriptionForm from './DescriptionForm';
+// import DescriptionForm from './DescriptionForm';
 import TitleForm from './TitleForm';
 import ProgressBar from './ProgressBar';
 import ProgressModalBody from './ProgressModalBody';
@@ -334,7 +334,7 @@ class Team extends Component {
           onSubmit={this.onSubmit}
           title="Team Name: "
         />
-        <DescriptionForm initialValues={_.pick(this.props.currentTeam, 'description')} onSubmit={this.onSubmit} />
+        {/* <DescriptionForm initialValues={_.pick(this.props.currentTeam, 'description')} onSubmit={this.onSubmit} /> */}
         <h2 className="mt-2">Progress: </h2>
         {/* <div>{this.progressBar()}</div> */}
         <div>

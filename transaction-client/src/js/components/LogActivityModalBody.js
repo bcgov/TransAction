@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 //import _ from 'lodash';
 import { connect } from 'react-redux';
 import LogActivityModalForm from './LogActivityModalForm';
-import { createUserActivity, fetchActivityList, fetchCurrentUser, fetchUserScore, fetchTeamScore } from '../actions';
+import {
+  createUserActivity,
+  fetchActivityList,
+  fetchCurrentUser,
+  fetchUserEventScore,
+  fetchTeamEventScore,
+} from '../actions';
 
 class LogActivityModalBody extends Component {
   onSubmit = formValues => {
@@ -22,8 +28,8 @@ class LogActivityModalBody extends Component {
     };
     this.props.createUserActivity(activityObj).then(() => {
       this.props.fetchCurrentUser();
-      this.props.fetchUserScore(this.props.currentUser.id, this.props.eventId);
-      this.props.fetchTeamScore(this.props.currentUser.teamId, this.props.eventId);
+      this.props.fetchUserEventScore(this.props.currentUser.id, this.props.eventId);
+      this.props.fetchTeamEventScore(this.props.currentUser.teamId, this.props.eventId);
     });
     this.props.modalClose();
   };
@@ -54,5 +60,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createUserActivity, fetchCurrentUser, fetchActivityList, fetchUserScore, fetchTeamScore }
+  { createUserActivity, fetchCurrentUser, fetchActivityList, fetchUserEventScore, fetchTeamEventScore }
 )(LogActivityModalBody);

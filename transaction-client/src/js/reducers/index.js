@@ -1,24 +1,28 @@
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
-import eventReducer from './eventReducer';
-import authUserReducer from './authUserReducer';
-import teamsReducer from './teamReducer';
-import regionsReducer from './regionsReducer';
-import usersReducer from './usersReducer';
+
 import activityReducer from './activityReducer';
-import rolesReducer from './rolesReducer';
+import authUserReducer from './authUserReducer';
+import eventReducer from './eventReducer';
 import joinRequestsReducer from './joinRequestsReducer';
+import regionsReducer from './regionsReducer';
+import rolesReducer from './rolesReducer';
+import scoreReducer from './scoreReducer';
+import teamsReducer from './teamReducer';
+import usersReducer from './usersReducer';
 import userActivityReducer from './userActivityReducer';
 
 export default combineReducers({
   form: formReducer,
-  events: eventReducer,
+
+  activities: activityReducer,
   authUser: authUserReducer,
+  events: eventReducer,
+  joinRequests: joinRequestsReducer,
   teams: teamsReducer,
   regions: regionsReducer,
-  users: usersReducer,
-  activities: activityReducer,
-  userActivities: userActivityReducer,
   roles: rolesReducer,
-  joinRequests: joinRequestsReducer,
+  scores: scoreReducer,
+  users: usersReducer,
+  userActivities: userActivityReducer,
 });

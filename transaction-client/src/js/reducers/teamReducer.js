@@ -1,4 +1,4 @@
-import { FETCH_TEAM, CREATE_TEAM, FETCH_TEAMS, FETCH_CURRENT_TEAM } from '../actions/types';
+import { FETCH_TEAM, CREATE_TEAM, FETCH_TEAMS } from '../actions/types';
 import _ from 'lodash';
 
 const defaultState = {
@@ -12,8 +12,8 @@ export default (state = defaultState, action) => {
       return { ...state, all: { ..._.mapKeys(action.payload, 'id') } };
     case FETCH_TEAM:
       return { ...state, all: { ...state.all, [action.payload.id]: action.payload } };
-    case FETCH_CURRENT_TEAM:
-      return { ...state, current: { ...state.current, ...action.payload } };
+    // case FETCH_CURRENT_TEAM:
+    //   return { ...state, current: { ...state.current, ...action.payload } };
     case CREATE_TEAM:
       return { ...state, all: { ...state.all, [action.payload.id]: action.payload } };
     default:

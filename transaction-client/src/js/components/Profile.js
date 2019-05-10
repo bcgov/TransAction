@@ -5,21 +5,19 @@ import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { fetchTeam, editUser, fetchAllUserScores, fetchUser } from '../actions';
+import { fetchTeam, editUser, fetchAllUserScores, fetchUser, fetchEvents, fetchAllTeamScores } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
+import UseScoreCard from './ui/UseScoreCard';
 
 class Profile extends Component {
   state = {
     loading: true,
     canEdit: false,
     ownProfile: false,
-    userToDisplay: null,
     userIdToDisplay: null,
-    teamToDisplay: null,
     teamIdToDisplay: null,
     showEditUserForm: false,
-    modal: false,
   };
 
   componentDidMount() {
@@ -56,8 +54,14 @@ class Profile extends Component {
 
         this.setState({ userIdToDisplay: userId, teamIdToDisplay: teamId });
 
-        if (teamId) return Promise.all([this.props.fetchAllUserScores(userId), this.props.fetchTeam(teamId)]);
-        else return this.props.fetchAllUserScores(userId);
+        if (teamId)
+          return Promise.all([
+            this.props.fetchAllUserScores(userId),
+            this.props.fetchAllTeamScores(teamId),
+            this.props.fetchTeam(teamId),
+            this.props.fetchEvents(),
+          ]);
+        else return Promise.all([this.props.fetchAllUserScores(userId), this.props.fetchEvents()]);
       })
       .then(() => {
         this.setState({ loading: false });
@@ -115,6 +119,7 @@ class Profile extends Component {
 
   renderUserTeam() {
     const teamToDisplay = this.props.teams.all[this.state.teamIdToDisplay];
+    const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
 
     return (
       <Row className="mb-5">
@@ -140,7 +145,7 @@ class Profile extends Component {
                     </div>
                   </React.Fragment>
                 );
-              else return <p>{this.state.userToDisplay.fname} is not part of a team.</p>;
+              else return <p>{userToDisplay.fname} is not part of a team.</p>;
             } else
               return (
                 <React.Fragment>
@@ -151,7 +156,7 @@ class Profile extends Component {
                         <strong>Name</strong>
                       </div>
                       <div>
-                        <Link to={`/team/${teamToDisplay.id}`}>
+                        <Link to={`/team/${teamToDisplay.id}`} className="no-underline">
                           {teamToDisplay.name} <FontAwesomeIcon icon="external-link-alt" />
                         </Link>
                       </div>
@@ -179,6 +184,20 @@ class Profile extends Component {
         </Col>
       </Row>
     );
+  }
+
+  renderUserScores() {
+    const events = this.props.events;
+    const userScores = Object.values(this.props.scores.user[this.state.userIdToDisplay]).map(score => {
+      const teamScore = this.props.scores.team[this.state.teamIdToDisplay][score.eventId];
+
+      return (
+        <Col xs="12" lg="6" key={score.eventId} className="mb-3">
+          <UseScoreCard score={score} teamScore={teamScore} events={events} />
+        </Col>
+      );
+    });
+    return <Row className="mb-5">{userScores}</Row>;
   }
 
   render() {
@@ -214,9 +233,10 @@ class Profile extends Component {
             })()}
           </Col>
         </Row>
-
         {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
+
         <hr />
+
         <Row className="mb-3">
           <Col xs="2">
             <h4>Team</h4>
@@ -234,6 +254,16 @@ class Profile extends Component {
           </Col>
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderUserTeam()}
+
+        <hr />
+
+        <Row className="mb-3">
+          <Col>
+            <h4>Activity</h4>
+          </Col>
+        </Row>
+        {this.state.loading ? <PageSpinner /> : this.renderUserScores()}
+
         <EditUserForm
           initialValues={userToDisplay}
           isOpen={this.state.showEditUserForm}
@@ -251,6 +281,8 @@ const mapStateToProps = state => {
     regions: state.regions,
     roles: state.roles,
     teams: state.teams,
+    scores: state.scores,
+    events: state.events,
   };
 };
 
@@ -261,5 +293,7 @@ export default connect(
     fetchTeam,
     editUser,
     fetchAllUserScores,
+    fetchAllTeamScores,
+    fetchEvents,
   }
 )(Profile);
