@@ -14,15 +14,31 @@ export const fetchEvents = () => async dispatch => {
 };
 
 export const createEvent = formValues => async dispatch => {
-  const response = await api.post('/events', formValues);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.post('/events', formValues);
+      dispatch({ type: CREATE_EVENT, payload: response.data });
 
-  dispatch({ type: CREATE_EVENT, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('Error in createEvent');
+      reject(e);
+    }
+  });
 };
 
 export const editEvent = (id, formValues) => async dispatch => {
-  const response = await api.put(`/events/${id}`, formValues);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.put(`/events/${id}`, formValues);
+      dispatch({ type: EDIT_EVENT, payload: response.data });
 
-  dispatch({ type: EDIT_EVENT, payload: response.data });
+      resolve();
+    } catch (e) {
+      console.log('Error in editEvent');
+      reject(e);
+    }
+  });
 };
 
 export const fetchEvent = id => async dispatch => {
@@ -30,6 +46,7 @@ export const fetchEvent = id => async dispatch => {
     try {
       const response = await api.get(`/events/${id}`);
       dispatch({ type: FETCH_EVENT, payload: response.data });
+
       resolve();
     } catch (e) {
       console.log('Error in fetchEvent');

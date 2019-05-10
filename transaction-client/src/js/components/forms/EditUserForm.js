@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { FormGroup, Label } from 'reactstrap';
 
 import { editUser } from '../../actions';
 
 import FormModal from '../ui/FormModal';
+import FormField from '../ui/FormField';
 
 class EditUserForm extends React.Component {
   state = { submitting: false };
@@ -48,16 +48,10 @@ class EditUserForm extends React.Component {
         submitting={this.state.submitting}
         title="Edit Profile"
       >
-        <FormGroup>
-          <Label for="regionId">Region</Label>
-          <Field name="regionId" component="select" className="form-control">
-            {this.renderRegionOptions()}
-          </Field>
-        </FormGroup>
-        <FormGroup>
-          <Label for="description">Description</Label>
-          <Field name="description" component="textarea" className="form-control" />
-        </FormGroup>
+        <Field name="regionId" component={FormField} type="select" label="Region" className="form-control">
+          {this.renderRegionOptions()}
+        </Field>
+        <Field name="description" component={FormField} type="textarea" label="Description" className="form-control" />
       </FormModal>
     );
   }

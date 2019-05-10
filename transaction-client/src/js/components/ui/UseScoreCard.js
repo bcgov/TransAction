@@ -4,9 +4,7 @@ import { Row, Col, Card, CardBody, CardHeader } from 'reactstrap';
 
 import * as Constants from '../../Constants';
 
-const UseScoreCard = props => {
-  const { score, teamScore, event } = props;
-
+const UseScoreCard = ({ score, teamScore, event }) => {
   return (
     <Card>
       <CardHeader>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import moment from 'moment';
 
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
 import EventModal from './EventModal';
@@ -55,8 +56,6 @@ class EventPage extends React.Component {
     if (this.props.currentUser.teamId === null) {
       return (
         <React.Fragment>
-          <h5> What is {this.props.event.name}?</h5>
-          <div className="event_description mt-2 mb-2">{this.props.event.description}</div>
           <div id="centerText">
             <Link to="/getting_started" id={this.props.event.id} name={this.props.event.name}>
               <Button size="lg" color="primary">
@@ -82,28 +81,21 @@ class EventPage extends React.Component {
     //TODO add else with graphical elements
   }
 
-  renderPage() {
+  renderContent() {
     return (
       <React.Fragment>
-        <h1>{this.props.event.name} </h1>
-        <h3>Hi {this.props.currentUser.fname}!</h3>
+        <h4>{this.props.event.name}</h4>
+        <p className="text-muted">
+          {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
+          {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
+        </p>
+        <p>{this.props.event.description}</p>
         {this.checkTeam()}
       </React.Fragment>
     );
   }
 
-  decideRender() {
-    if (this.state.loading) {
-      return <PageSpinner />;
-    }
-    //Loading DONE
-    else {
-      return <div>{this.renderPage()}</div>;
-    }
-  }
-
   render() {
-    // console.log(this.props.event);
     return (
       <React.Fragment>
         <Row>
@@ -114,10 +106,10 @@ class EventPage extends React.Component {
             <BreadcrumbItem>
               <Link to="/event">Events</Link>
             </BreadcrumbItem>
-            {/* {!this.state.loading && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>} */}
+            {!this.state.loading && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
           </Breadcrumb>
         </Row>
-        {this.decideRender()}
+        {this.state.loading ? <PageSpinner /> : this.renderContent()}
       </React.Fragment>
     );
   }

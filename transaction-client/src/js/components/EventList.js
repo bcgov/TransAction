@@ -5,13 +5,12 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import Event from './Event';
-import EventModal from './EventModal';
-import EventModalBody from './EventModalBody';
+import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
-
+import * as Constants from '../Constants';
 class EventList extends Component {
-  state = { modal: false, loading: true };
+  state = { loading: true, showEventForm: false, eventFormType: Constants.FORM_TYPE.ADD, eventFormInitialValues: null };
 
   componentDidMount() {
     this.props
@@ -24,15 +23,32 @@ class EventList extends Component {
       });
   }
 
-  modalToggle = () => {
+  showAddEventForm = () => {
+    this.setState({ showEventForm: true, eventFormType: Constants.FORM_TYPE.ADD, eventFormInitialValues: null });
+  };
+
+  showEditEventForm = initialValues => {
+    this.setState({
+      showEventForm: true,
+      eventFormType: Constants.FORM_TYPE.EDIT,
+      eventFormInitialValues: initialValues,
+    });
+  };
+
+  toggleEventForm = () => {
     this.setState(prevState => ({
-      modal: !prevState.modal,
+      showEventForm: !prevState.showEventForm,
     }));
   };
 
   renderEventList() {
     const events = this.props.events.map(event => (
-      <Event key={event.id} event={event} isAdmin={this.props.currentUser.isAdmin} />
+      <Event
+        key={event.id}
+        event={event}
+        isAdmin={this.props.currentUser.isAdmin}
+        showEditForm={this.showEditEventForm}
+      />
     ));
 
     return events;
@@ -43,7 +59,7 @@ class EventList extends Component {
       return (
         <Row>
           <Col>
-            <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.modalToggle}>
+            <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.showAddEventForm}>
               Add an Event
             </Button>
           </Col>
@@ -73,9 +89,12 @@ class EventList extends Component {
           </Breadcrumb>
         </Row>
         {this.renderContent()}
-        <EventModal toggle={this.modalToggle} isOpen={this.state.modal} text="Add an Event">
-          <EventModalBody modalClose={this.modalToggle} name="add" />
-        </EventModal>
+        <EditEventForm
+          initialValues={this.state.eventFormInitialValues}
+          isOpen={this.state.showEventForm}
+          toggle={this.toggleEventForm}
+          formType={this.state.eventFormType}
+        />
       </React.Fragment>
     );
   }

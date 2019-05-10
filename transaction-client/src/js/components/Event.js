@@ -3,26 +3,15 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
 import moment from 'moment';
 
-import EventModal from './EventModal';
-import EventModalBody from './EventModalBody';
-
 class Event extends React.Component {
-  state = { isAdmin: false, modal: false };
-
-  componentDidMount() {
-    this.setState({ isAdmin: this.props.isAdmin });
-  }
-
-  toggleModal = () => {
-    this.setState(prevState => ({
-      modal: !prevState.modal,
-    }));
+  showForm = () => {
+    this.props.showEditForm(this.props.event);
   };
 
   renderEditButton() {
     return (
       <div className="float-right">
-        <Button color="primary" size="sm" className="mr-1" onClick={this.toggleModal}>
+        <Button color="primary" size="sm" className="mr-1" onClick={this.showForm}>
           Edit
         </Button>
         <Button color="primary" size="sm">
@@ -41,7 +30,7 @@ class Event extends React.Component {
               <Link to={`/event/${this.props.event.id}`} className="h4 no-underline">
                 {this.props.event.name}
               </Link>
-              {this.state.isAdmin ? this.renderEditButton() : ''}
+              {this.props.isAdmin ? this.renderEditButton() : ''}
             </div>
             <p className="text-muted">
               {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
@@ -52,9 +41,6 @@ class Event extends React.Component {
               <Link to={`/event/${this.props.event.id}`}>View Details</Link>
             </p>
           </Col>
-          <EventModal toggle={this.toggleModal} isOpen={this.state.modal} text="Edit an Event">
-            <EventModalBody modalClose={this.toggleModal} name="edit" id={this.props.event.id} />
-          </EventModal>
         </Row>
       </React.Fragment>
     );
