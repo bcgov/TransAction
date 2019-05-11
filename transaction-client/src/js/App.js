@@ -19,6 +19,7 @@ import FAQ from './components/FAQ';
 import * as Constants from './Constants';
 
 import '../scss/transaction.scss';
+import 'react-datepicker/dist/react-datepicker.css';
 
 class App extends Component {
   render() {

@@ -5,10 +5,11 @@ import { editEvent, createEvent } from '../../actions';
 
 import FormModal from '../ui/FormModal';
 import FormField from '../ui/FormField';
+import DatePickerField from '../ui/DatePickerField';
 
 import * as Constants from '../../Constants';
 
-class EdiEventForm extends React.Component {
+class EditEventForm extends React.Component {
   state = { submitting: false };
 
   onSubmit = formValues => {
@@ -34,7 +35,7 @@ class EdiEventForm extends React.Component {
   };
 
   render() {
-    const { isOpen, handleSubmit, formType } = this.props;
+    const { isOpen, handleSubmit, formType, change } = this.props;
     const title = formType === Constants.FORM_TYPE.ADD ? 'Add Event' : 'Edit Event';
 
     return (
@@ -48,9 +49,7 @@ class EdiEventForm extends React.Component {
       >
         <Field name="name" component={FormField} type="input" label="Name" className="form-control" />
 
-        <div className="modal-date-picker">
-          <Field name="startDate" type="date" component={FormField} label="Start Date" />
-        </div>
+        <Field name="startDate" component={DatePickerField} change={change} className="form-control" />
         <div className="modal-date-picker">
           <Field name="endDate" type="date" component={FormField} label="End Date" />
         </div>
@@ -70,6 +69,6 @@ const mapStateToProps = state => {
 const editEventConnect = connect(
   mapStateToProps,
   { editEvent, createEvent }
-)(EdiEventForm);
+)(EditEventForm);
 
 export default reduxForm({ form: 'editEventForm', enableReinitialize: true })(editEventConnect);
