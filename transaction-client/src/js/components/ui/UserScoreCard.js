@@ -4,7 +4,22 @@ import { Row, Col, Card, CardBody, CardHeader, Button } from 'reactstrap';
 
 import * as Constants from '../../Constants';
 
-const UseScoreCard = ({ score, teamScore, event, cardWidth }) => {
+const ScoreRow = ({ score, description }) => {
+  return (
+    <Row>
+      <Col xs="3" lg="4">
+        <div className="h5" style={{ whiteSpace: 'nowrap' }}>
+          {score}
+        </div>
+      </Col>
+      <Col xs="9" lg="8">
+        <small className="text-muted align-bottom">{description}</small>
+      </Col>
+    </Row>
+  );
+};
+
+const UserScoreCard = ({ score, teamScore, event, cardWidth }) => {
   return (
     <Card>
       <CardHeader>
@@ -26,26 +41,8 @@ const UseScoreCard = ({ score, teamScore, event, cardWidth }) => {
       <CardBody>
         <Row>
           <Col>
-            <Row>
-              <Col xs="3" lg="4">
-                <div className="h5" style={{ whiteSpace: 'nowrap' }}>
-                  {score.score}
-                </div>
-              </Col>
-              <Col xs="9" lg="8">
-                <small className="text-muted align-bottom">Personal Score</small>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs="3" lg="4">
-                <div className="h5" style={{ whiteSpace: 'nowrap' }}>
-                  {teamScore ? teamScore.score : 0}
-                </div>
-              </Col>
-              <Col xs="9" lg="8">
-                <small className="text-muted align-bottom">Team Score</small>
-              </Col>
-            </Row>
+            <ScoreRow score={score.score} description="Personal Score" />
+            <ScoreRow score={teamScore ? teamScore.score : 0} description="Team Score" />
           </Col>
           <Col className="align-self-center text-center">
             {cardWidth === Constants.USER_SCORE_CARD_WIDTH.NARROW && (
@@ -60,4 +57,4 @@ const UseScoreCard = ({ score, teamScore, event, cardWidth }) => {
   );
 };
 
-export default UseScoreCard;
+export default UserScoreCard;

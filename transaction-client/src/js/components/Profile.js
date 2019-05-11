@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Button, Row, Col, Alert } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { fetchTeam, editUser, fetchAllUserScores, fetchUser, fetchEvents, fetchAllTeamScores } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
-import UseScoreCard from './ui/UseScoreCard';
+import UserScoreCard from './ui/UserScoreCard';
 
 import * as Constants from '../Constants';
 
@@ -130,22 +130,10 @@ class Profile extends Component {
             if (!teamToDisplay) {
               if (this.state.ownProfile)
                 return (
-                  <React.Fragment>
-                    <div className="mb-3">You are currently not on a team. You have the following options:</div>
-                    <div>
-                      <Link to="/">
-                        <Button color="primary" size="sm">
-                          Create Team
-                        </Button>
-                      </Link>{' '}
-                      or{' '}
-                      <Link to="/">
-                        <Button color="primary" size="sm">
-                          Join Team
-                        </Button>
-                      </Link>
-                    </div>
-                  </React.Fragment>
+                  <Alert color="warning">
+                    You are currently not on a team. You can <Link to="/">join</Link> or <Link to="/">create</Link> a
+                    team.
+                  </Alert>
                 );
               else return <p>{userToDisplay.fname} is not part of a team.</p>;
             } else
@@ -195,7 +183,7 @@ class Profile extends Component {
 
       return (
         <Col xs="12" lg="6" key={score.eventId} className="mb-3">
-          <UseScoreCard
+          <UserScoreCard
             score={score}
             teamScore={teamScore}
             event={events[score.eventId]}

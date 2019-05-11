@@ -38,7 +38,7 @@ class App extends Component {
                 <Route path={Constants.PATHS.TEAM} exact component={Team} />
                 <Route path={`${Constants.PATHS.TEAM}/:id`} exact component={Team} />
                 <Route path="/teamslist" exact component={TeamsList} />
-                <Route path="/getting_started" exact component={GettingStarted} />
+                <Route path={Constants.PATHS.START} exact component={GettingStarted} />
                 <Route path="/free_agents" exact component={FreeAgentsList} />
                 <Route path="/incentives" exact component={Incentives} />
                 <Route path="/faq" exact component={FAQ} />

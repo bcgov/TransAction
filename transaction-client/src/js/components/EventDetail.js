@@ -1,13 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
 import moment from 'moment';
 
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
-import EventModal from './EventModal';
-import LogActivityModalBody from './LogActivityModalBody';
-import UseScoreCard from './ui/UseScoreCard';
+import UserScoreCard from './ui/UserScoreCard';
 import PageSpinner from './ui/PageSpinner';
 
 import * as Constants from '../Constants';
@@ -43,48 +41,17 @@ class EventDetail extends React.Component {
     const score = this.props.scores.user[currentUser.id][eventId];
     const teamScore = this.props.scores.team[currentUser.teamId][eventId];
     return (
-      <React.Fragment>
-        <Row>
-          <Col>
-            <UseScoreCard
-              score={score}
-              teamScore={teamScore}
-              event={this.props.event}
-              cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
-            />
-          </Col>
-        </Row>
-      </React.Fragment>
+      <Row className="mb-5">
+        <Col>
+          <UserScoreCard
+            score={score}
+            teamScore={teamScore}
+            event={this.props.event}
+            cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
+          />
+        </Col>
+      </Row>
     );
-  }
-
-  checkTeam() {
-    if (this.props.currentUser.teamId === null) {
-      return (
-        <React.Fragment>
-          <div id="centerText">
-            <Link to="/getting_started" id={this.props.event.id} name={this.props.event.name}>
-              <Button size="lg" color="primary">
-                Get Started!
-              </Button>
-            </Link>
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <Button className="float-right" color="primary" onClick={this.toggle}>
-            Add Activity
-          </Button>
-          <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Log an Activity">
-            <LogActivityModalBody modalClose={this.toggle} eventId={this.props.event.id} name="log" />
-          </EventModal>
-          {/* {this.printScores()} */}
-        </React.Fragment>
-      );
-    }
-    //TODO add else with graphical elements
   }
 
   renderContent() {
@@ -96,7 +63,17 @@ class EventDetail extends React.Component {
           {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
         </p>
         <p>{this.props.event.description}</p>
-        {this.renderScores()}
+        {this.props.currentUser.teamId ? (
+          this.renderScores()
+        ) : (
+          <Row className="mb-5">
+            <Col>
+              <Alert color="warning">
+                You are not currently not on a team. Click <Link to={Constants.PATHS.START}>HERE</Link> to get started!
+              </Alert>
+            </Col>
+          </Row>
+        )}
       </React.Fragment>
     );
   }
