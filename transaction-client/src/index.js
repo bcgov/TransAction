@@ -8,7 +8,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 import Keycloak from 'keycloak-js';
 
@@ -19,6 +19,7 @@ import reducers from './js/reducers';
 import { UPDATE_AUTH_USER } from './js/actions/types';
 
 library.add(faExternalLinkAlt);
+library.add(faExclamationCircle);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk)));

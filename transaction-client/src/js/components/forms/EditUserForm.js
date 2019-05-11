@@ -1,14 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
+import _ from 'lodash';
 
 import { editUser } from '../../actions';
 
 import FormModal from '../ui/FormModal';
-import FormField from '../ui/FormField';
+import FormInput from '../ui/FormInput';
 
 class EditUserForm extends React.Component {
   state = { submitting: false };
+
+  onInit = () => {
+    this.props.initialize(this.props.initialValues);
+  };
 
   onSubmit = formValues => {
     if (!this.state.submitting) {
@@ -37,21 +42,19 @@ class EditUserForm extends React.Component {
   }
 
   render() {
-    const { isOpen, handleSubmit } = this.props;
-
     return (
       <FormModal
-        handleSubmit={handleSubmit}
         onSubmit={this.onSubmit}
-        isOpen={isOpen}
         toggle={this.toggleModal}
         submitting={this.state.submitting}
+        onInit={this.onInit}
+        {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
         title="Edit Profile"
       >
-        <Field name="regionId" component={FormField} type="select" label="Region" className="form-control">
+        <Field name="regionId" component={FormInput} type="select" label="Region" className="form-control">
           {this.renderRegionOptions()}
         </Field>
-        <Field name="description" component={FormField} type="textarea" label="Description" className="form-control" />
+        <Field name="description" component={FormInput} type="textarea" label="Description" className="form-control" />
       </FormModal>
     );
   }
@@ -68,4 +71,14 @@ const editUserConnect = connect(
   { editUser }
 )(EditUserForm);
 
-export default reduxForm({ form: 'editUserForm', enableReinitialize: true })(editUserConnect);
+const validate = formValues => {
+  const errors = {};
+
+  if (!formValues.description) {
+    errors.description = 'Description required';
+  }
+
+  return errors;
+};
+
+export default reduxForm({ form: 'editUserForm', enableReinitialize: true, validate })(editUserConnect);

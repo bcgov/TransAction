@@ -3,16 +3,15 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner, Form } fro
 
 class FormModal extends React.Component {
   render() {
-    const { title, isOpen, toggle, handleSubmit, onSubmit, submitting } = this.props;
-
+    const { title, isOpen, toggle, handleSubmit, onSubmit, submitting, pristine, children, onInit } = this.props;
     return (
       <div>
-        <Modal isOpen={isOpen} toggle={toggle}>
+        <Modal isOpen={isOpen} toggle={toggle} onOpened={onInit}>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <ModalHeader toggle={toggle}>{title}</ModalHeader>
-            <ModalBody>{this.props.children}</ModalBody>
+            <ModalBody>{children}</ModalBody>
             <ModalFooter>
-              <Button size="sm" color="primary" type="submit" disabled={submitting}>
+              <Button size="sm" color="primary" type="submit" disabled={submitting || pristine}>
                 {submitting && <Spinner size="sm" />} Submit
               </Button>
               <Button size="sm" color="secondary" onClick={toggle} disabled={submitting}>

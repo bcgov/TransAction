@@ -1,16 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Row, Col } from 'reactstrap';
 import { Field, reduxForm } from 'redux-form';
 import { editEvent, createEvent } from '../../actions';
+import _ from 'lodash';
 
 import FormModal from '../ui/FormModal';
-import FormField from '../ui/FormField';
-import DatePickerField from '../ui/DatePickerField';
+import FormInput from '../ui/FormInput';
+import DatePickerInput from '../ui/DatePickerInput';
 
 import * as Constants from '../../Constants';
 
 class EditEventForm extends React.Component {
   state = { submitting: false };
+
+  onInit = () => {
+    this.props.initialize(this.props.initialValues);
+  };
 
   onSubmit = formValues => {
     if (!this.state.submitting) {
@@ -35,26 +41,32 @@ class EditEventForm extends React.Component {
   };
 
   render() {
-    const { isOpen, handleSubmit, formType, change } = this.props;
-    const title = formType === Constants.FORM_TYPE.ADD ? 'Add Event' : 'Edit Event';
+    const title = this.props.formType === Constants.FORM_TYPE.ADD ? 'Add Event' : 'Edit Event';
 
     return (
       <FormModal
-        handleSubmit={handleSubmit}
         onSubmit={this.onSubmit}
-        isOpen={isOpen}
         toggle={this.toggleModal}
         submitting={this.state.submitting}
+        onInit={this.onInit}
+        {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
         title={title}
       >
-        <Field name="name" component={FormField} type="input" label="Name" className="form-control" />
+        <Field name="name" component={FormInput} type="input" label="Name" className="form-control" />
 
-        <Field name="startDate" component={DatePickerField} change={change} className="form-control" />
-        <div className="modal-date-picker">
-          <Field name="endDate" type="date" component={FormField} label="End Date" />
-        </div>
+        <Row>
+          <Col>
+            <Field name="startDate" component={DatePickerInput} label="Start Date" className="form-control" />
+          </Col>
+          <Col>
+            <Field name="endDate" component={DatePickerInput} label="End Date" className="form-control" />
+          </Col>
+        </Row>
+        {/* <div className="modal-date-picker">
+          <Field name="endDate" type="date" component={FormInput} label="End Date" />
+        </div> */}
 
-        <Field name="description" component={FormField} type="textarea" label="Description" className="form-control" />
+        <Field name="description" component={FormInput} type="textarea" label="Description" className="form-control" />
       </FormModal>
     );
   }
@@ -71,4 +83,25 @@ const editEventConnect = connect(
   { editEvent, createEvent }
 )(EditEventForm);
 
-export default reduxForm({ form: 'editEventForm', enableReinitialize: true })(editEventConnect);
+const validate = formValues => {
+  const errors = {};
+
+  const startDate = new Date(formValues.startDate);
+  const endDate = new Date(formValues.endDate);
+
+  if (startDate > endDate) {
+    errors.startDate = 'Invalid start and end dates';
+  }
+
+  if (!formValues.name) {
+    errors.name = 'Name required';
+  }
+
+  if (!formValues.description) {
+    errors.description = 'Description required';
+  }
+
+  return errors;
+};
+
+export default reduxForm({ form: 'editEventForm', enableReinitialize: true, validate })(editEventConnect);
