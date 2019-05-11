@@ -7,10 +7,10 @@ import Footer from './components/ui/Footer';
 import Header from './components/ui/Header';
 import Main from './components/Main';
 import EventList from './components/EventList';
+import EventDetail from './components/EventDetail';
 import Profile from './components/Profile';
 import Team from './components/Team';
 import TeamsList from './components/TeamsList';
-import EventPage from './components/EventPage';
 import GettingStarted from './components/GettingStarted';
 import FreeAgentsList from './components/FreeAgentsList';
 import Incentives from './components/Incentives';
@@ -32,7 +32,7 @@ class App extends Component {
               <Switch>
                 <Route path="/" exact component={EventList} />
                 <Route path={Constants.PATHS.EVENT} exact component={EventList} />
-                <Route path={`${Constants.PATHS.EVENT}/:id`} exact component={EventPage} />
+                <Route path={`${Constants.PATHS.EVENT}/:id`} exact component={EventDetail} />
                 <Route path={Constants.PATHS.PROFILE} exact component={Profile} />
                 <Route path={`${Constants.PATHS.PROFILE}/:id`} exact component={Profile} />
                 <Route path={Constants.PATHS.TEAM} exact component={Team} />

@@ -10,6 +10,8 @@ import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
 import UseScoreCard from './ui/UseScoreCard';
 
+import * as Constants from '../Constants';
+
 class Profile extends Component {
   state = {
     loading: true,
@@ -193,7 +195,12 @@ class Profile extends Component {
 
       return (
         <Col xs="12" lg="6" key={score.eventId} className="mb-3">
-          <UseScoreCard score={score} teamScore={teamScore} event={events[score.eventId]} />
+          <UseScoreCard
+            score={score}
+            teamScore={teamScore}
+            event={events[score.eventId]}
+            cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
+          />
         </Col>
       );
     });

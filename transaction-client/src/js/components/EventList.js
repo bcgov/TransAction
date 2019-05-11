@@ -4,7 +4,7 @@ import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import Event from './Event';
+import EventListItem from './EventListItem';
 import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
@@ -43,7 +43,7 @@ class EventList extends Component {
 
   renderEventList() {
     const events = this.props.events.map(event => (
-      <Event
+      <EventListItem
         key={event.id}
         event={event}
         isAdmin={this.props.currentUser.isAdmin}
@@ -59,7 +59,7 @@ class EventList extends Component {
       return (
         <Row>
           <Col>
-            <Button color="primary" className="btn-sm px-3 mb-4" onClick={this.showAddEventForm}>
+            <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
               Add an Event
             </Button>
           </Col>

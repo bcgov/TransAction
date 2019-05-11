@@ -10,7 +10,9 @@ import LogActivityModalBody from './LogActivityModalBody';
 import UseScoreCard from './ui/UseScoreCard';
 import PageSpinner from './ui/PageSpinner';
 
-class EventPage extends React.Component {
+import * as Constants from '../Constants';
+
+class EventDetail extends React.Component {
   state = { loading: true, modal: false };
 
   componentDidMount() {
@@ -35,7 +37,7 @@ class EventPage extends React.Component {
     }));
   };
 
-  printScores() {
+  renderScores() {
     const currentUser = this.props.currentUser;
     const eventId = this.props.event.id;
     const score = this.props.scores.user[currentUser.id][eventId];
@@ -44,8 +46,12 @@ class EventPage extends React.Component {
       <React.Fragment>
         <Row>
           <Col>
-            <UseScoreCard score={score} teamScore={teamScore} event={this.props.event} />
-            {/* <UserScoreGraphicCard userScore={score} teamScore={teamScore} type="event" /> */}
+            <UseScoreCard
+              score={score}
+              teamScore={teamScore}
+              event={this.props.event}
+              cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
+            />
           </Col>
         </Row>
       </React.Fragment>
@@ -74,7 +80,7 @@ class EventPage extends React.Component {
           <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Log an Activity">
             <LogActivityModalBody modalClose={this.toggle} eventId={this.props.event.id} name="log" />
           </EventModal>
-          {this.printScores()}
+          {/* {this.printScores()} */}
         </React.Fragment>
       );
     }
@@ -90,7 +96,7 @@ class EventPage extends React.Component {
           {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
         </p>
         <p>{this.props.event.description}</p>
-        {this.checkTeam()}
+        {this.renderScores()}
       </React.Fragment>
     );
   }
@@ -126,4 +132,4 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(
   mapStateToProps,
   { fetchEvent, fetchUserEventScore, fetchTeamEventScore }
-)(EventPage);
+)(EventDetail);
