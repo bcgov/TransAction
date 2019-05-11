@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
 import moment from 'moment';
 
-class Event extends React.Component {
+class EventListItem extends React.Component {
   showForm = () => {
     this.props.showEditForm(this.props.event);
   };
@@ -47,4 +47,4 @@ class Event extends React.Component {
   }
 }
 
-export default Event;
+export default EventListItem;

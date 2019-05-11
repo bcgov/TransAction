@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
@@ -51,10 +52,10 @@ class EditUserForm extends React.Component {
         {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
         title="Edit Profile"
       >
-        <Field name="regionId" component={FormInput} type="select" label="Region" className="form-control">
+        <Field name="regionId" component={FormInput} type="select" label="Region">
           {this.renderRegionOptions()}
         </Field>
-        <Field name="description" component={FormInput} type="textarea" label="Description" className="form-control" />
+        <Field name="description" component={FormInput} type="textarea" label="Description" />
       </FormModal>
     );
   }
@@ -80,5 +81,9 @@ const validate = formValues => {
 
   return errors;
 };
+
+EditUserForm.propTypes = { regions: PropTypes.object.isRequired };
+
+EditUserForm.defaultProps = { regions: {} };
 
 export default reduxForm({ form: 'editUserForm', enableReinitialize: true, validate })(editUserConnect);

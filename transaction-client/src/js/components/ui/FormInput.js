@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FormGroup, Label, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -17,6 +18,14 @@ const FormInput = ({ label, type, input, meta: { touched, error }, children }) =
         ))}
     </FormGroup>
   );
+};
+
+FormInput.propTypes = {
+  input: PropTypes.object.isRequired,
+  meta: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  children: PropTypes.array,
 };
 
 export default FormInput;

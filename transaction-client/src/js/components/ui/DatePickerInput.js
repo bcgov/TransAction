@@ -1,12 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FormGroup, Label } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class DatePickerInput extends React.Component {
-  state = { date: new Date() };
-
   handleOnChange = date => {
     this.props.input.onChange(date);
   };
@@ -15,7 +14,7 @@ class DatePickerInput extends React.Component {
     const { input } = this.props;
 
     if (!input.value) {
-      this.props.input.onChange(this.state.date);
+      this.props.input.onChange(new Date());
     }
 
     input.onFocus(e);
@@ -26,6 +25,9 @@ class DatePickerInput extends React.Component {
       input,
       label,
       meta: { touched, error },
+      className,
+      todayButton,
+      dateFormat,
     } = this.props;
 
     return (
@@ -34,12 +36,12 @@ class DatePickerInput extends React.Component {
         <div>
           <DatePicker
             {...input}
-            selected={input.value ? moment(input.value).toDate() : this.state.date}
+            selected={input.value ? moment(input.value).toDate() : new Date()}
             onChange={this.handleOnChange}
             onFocus={this.handleOnFucus}
-            className="form-control"
-            todayButton={'Today'}
-            dateFormat="YYYY-MM-dd"
+            className={className}
+            todayButton={todayButton}
+            dateFormat={dateFormat}
           />
         </div>
         {touched &&
@@ -52,5 +54,19 @@ class DatePickerInput extends React.Component {
     );
   }
 }
+
+DatePickerInput.propTypes = {
+  input: PropTypes.object.isRequired,
+  meta: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  todayButton: PropTypes.string,
+  dateFormat: PropTypes.string,
+};
+
+DatePickerInput.defaultProps = {
+  className: 'form-control',
+  dateFormat: 'YYYY-MM-dd',
+};
 
 export default DatePickerInput;

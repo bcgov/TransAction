@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner, Form } from 'reactstrap';
 
 class FormModal extends React.Component {
@@ -24,5 +25,22 @@ class FormModal extends React.Component {
     );
   }
 }
+
+FormModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  toggle: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  children: PropTypes.any.isRequired,
+  onInit: PropTypes.func,
+};
+
+FormModal.defaultProps = {
+  isOpen: false,
+  submitting: false,
+};
 
 export default FormModal;

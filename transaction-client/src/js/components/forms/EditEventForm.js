@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import { Field, reduxForm } from 'redux-form';
@@ -52,21 +53,30 @@ class EditEventForm extends React.Component {
         {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
         title={title}
       >
-        <Field name="name" component={FormInput} type="input" label="Name" className="form-control" />
+        <Field name="name" component={FormInput} type="input" label="Name" />
 
         <Row>
           <Col>
-            <Field name="startDate" component={DatePickerInput} label="Start Date" className="form-control" />
+            <Field
+              name="startDate"
+              component={DatePickerInput}
+              label="Start Date"
+              className="form-control"
+              todayButton="Today"
+            />
           </Col>
           <Col>
-            <Field name="endDate" component={DatePickerInput} label="End Date" className="form-control" />
+            <Field
+              name="endDate"
+              component={DatePickerInput}
+              label="End Date"
+              className="form-control"
+              todayButton="Today"
+            />
           </Col>
         </Row>
-        {/* <div className="modal-date-picker">
-          <Field name="endDate" type="date" component={FormInput} label="End Date" />
-        </div> */}
 
-        <Field name="description" component={FormInput} type="textarea" label="Description" className="form-control" />
+        <Field name="description" component={FormInput} type="textarea" label="Description" />
       </FormModal>
     );
   }
@@ -103,5 +113,9 @@ const validate = formValues => {
 
   return errors;
 };
+
+EditEventForm.propTypes = { regions: PropTypes.object.isRequired, formType: PropTypes.string.isRequired };
+
+EditEventForm.defaultProps = { regions: {} };
 
 export default reduxForm({ form: 'editEventForm', enableReinitialize: true, validate })(editEventConnect);
