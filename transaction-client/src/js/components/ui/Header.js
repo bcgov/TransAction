@@ -61,7 +61,7 @@ class Header extends Component {
                 </NavItem>
                 <NavItem>
                   <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.TEAM}>
-                    Team
+                    Teams
                   </NavLink>
                 </NavItem>
                 <NavItem>

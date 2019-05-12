@@ -28,7 +28,12 @@ class DatePickerInput extends React.Component {
       className,
       todayButton,
       dateFormat,
+      placeholderText,
+      minDate,
+      maxDate,
     } = this.props;
+
+    const date = input.value ? moment(input.value, 'YYYY-MM-DD').toDate() : new Date();
 
     return (
       <FormGroup>
@@ -36,12 +41,15 @@ class DatePickerInput extends React.Component {
         <div>
           <DatePicker
             {...input}
-            selected={input.value ? moment(input.value).toDate() : new Date()}
+            selected={date}
             onChange={this.handleOnChange}
             onFocus={this.handleOnFucus}
             className={className}
             todayButton={todayButton}
             dateFormat={dateFormat}
+            placeholderText={placeholderText}
+            minDate={minDate}
+            maxDate={maxDate}
           />
         </div>
         {touched &&
@@ -62,11 +70,14 @@ DatePickerInput.propTypes = {
   className: PropTypes.string,
   todayButton: PropTypes.string,
   dateFormat: PropTypes.string,
+  placeholderText: PropTypes.string,
+  minDate: PropTypes.object,
+  maxDate: PropTypes.object,
 };
 
 DatePickerInput.defaultProps = {
   className: 'form-control',
-  dateFormat: 'YYYY-MM-dd',
+  dateFormat: 'yyyy-MM-dd',
 };
 
 export default DatePickerInput;

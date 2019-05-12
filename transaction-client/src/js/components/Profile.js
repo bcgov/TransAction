@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchTeam, editUser, fetchAllUserScores, fetchUser, fetchEvents, fetchAllTeamScores } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
+import LogActivityForm from './forms/LogActivityForm';
 import UserScoreCard from './ui/UserScoreCard';
 
 import * as Constants from '../Constants';
@@ -20,6 +21,8 @@ class Profile extends Component {
     userIdToDisplay: null,
     teamIdToDisplay: null,
     showEditUserForm: false,
+    showLogActivityForm: false,
+    logActivityEventId: null,
   };
 
   componentDidMount() {
@@ -56,14 +59,22 @@ class Profile extends Component {
 
         this.setState({ userIdToDisplay: userId, teamIdToDisplay: teamId });
 
-        if (teamId)
-          return Promise.all([
-            this.props.fetchAllUserScores(userId),
-            this.props.fetchAllTeamScores(teamId),
-            this.props.fetchTeam(teamId),
-            this.props.fetchEvents(),
-          ]);
-        else return Promise.all([this.props.fetchAllUserScores(userId), this.props.fetchEvents()]);
+        const actions = [];
+
+        if (this.state.ownProfile) {
+          actions.push({ func: this.props.fetchAllUserScores, param: userId });
+          actions.push({ func: this.props.fetchEvents, param: null });
+          if (teamId) {
+            actions.push({ func: this.props.fetchAllTeamScores, param: teamId });
+            actions.push({ func: this.props.fetchTeam, param: teamId });
+          }
+        }
+
+        return Promise.all(
+          actions.map(action => {
+            return action.func(action.param);
+          })
+        );
       })
       .then(() => {
         this.setState({ loading: false });
@@ -71,6 +82,16 @@ class Profile extends Component {
       .catch(() => {
         this.setState({ loading: false });
       });
+  };
+
+  showLogActivityForm = eventId => {
+    this.setState({ showLogActivityForm: true, logActivityEventId: eventId });
+  };
+
+  toggleLogActivityForm = () => {
+    this.setState(prevState => ({
+      showLogActivityForm: !prevState.showLogActivityForm,
+    }));
   };
 
   showEditUserForm = () => {
@@ -131,7 +152,7 @@ class Profile extends Component {
               if (this.state.ownProfile)
                 return (
                   <Alert color="warning">
-                    You are currently not on a team. You can <Link to="/">join</Link> or <Link to="/">create</Link> a
+                    You are not currently on a team. You can <Link to="/">join</Link> or <Link to="/">create</Link> a
                     team.
                   </Alert>
                 );
@@ -188,15 +209,30 @@ class Profile extends Component {
             teamScore={teamScore}
             event={events[score.eventId]}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
+            showLogActivityForm={this.showLogActivityForm}
           />
         </Col>
       );
     });
-    return <Row className="mb-5">{userScores}</Row>;
+
+    return (
+      <Row className="mb-5">
+        {userScores.length > 0 ? (
+          userScores
+        ) : (
+          <Col>
+            <Alert color="warning">
+              You have not participated in any events yet. Start <Link to={Constants.PATHS.START}>here</Link>.
+            </Alert>
+          </Col>
+        )}
+      </Row>
+    );
   }
 
   render() {
     const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
+    const teamToDisplay = this.props.teams.all[this.state.teamIdToDisplay];
 
     return (
       <React.Fragment>
@@ -217,15 +253,11 @@ class Profile extends Component {
             <h4>User Profile</h4>
           </Col>
           <Col>
-            {(() => {
-              if (this.state.canEdit && userToDisplay) {
-                return (
-                  <Button color="primary" size="sm" onClick={this.showEditUserForm}>
-                    Edit Profile
-                  </Button>
-                );
-              }
-            })()}
+            {this.state.canEdit && userToDisplay && !this.state.loading && (
+              <Button color="primary" size="sm" onClick={this.showEditUserForm}>
+                Edit Profile
+              </Button>
+            )}
           </Col>
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
@@ -237,32 +269,37 @@ class Profile extends Component {
             <h4>Team</h4>
           </Col>
           <Col>
-            {(() => {
-              if (this.state.ownProfile && userToDisplay && userToDisplay.teamId) {
-                return (
-                  <Button color="danger" size="sm">
-                    Leave Team
-                  </Button>
-                );
-              }
-            })()}
+            {this.state.ownProfile && teamToDisplay && !this.state.loading && (
+              <Button color="danger" size="sm">
+                Leave Team
+              </Button>
+            )}
           </Col>
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderUserTeam()}
 
-        <hr />
+        {this.state.ownProfile && (
+          <React.Fragment>
+            <hr />
 
-        <Row className="mb-3">
-          <Col>
-            <h4>Activity</h4>
-          </Col>
-        </Row>
-        {this.state.loading ? <PageSpinner /> : this.renderUserScores()}
+            <Row className="mb-3">
+              <Col>
+                <h4>Activity</h4>
+              </Col>
+            </Row>
+            {this.state.loading ? <PageSpinner /> : this.renderUserScores()}
+          </React.Fragment>
+        )}
 
         <EditUserForm
           initialValues={userToDisplay}
           isOpen={this.state.showEditUserForm}
           toggle={this.toggleEditUserForm}
+        />
+        <LogActivityForm
+          isOpen={this.state.showLogActivityForm}
+          toggle={this.toggleLogActivityForm}
+          eventId={this.state.logActivityEventId}
         />
       </React.Fragment>
     );

@@ -19,42 +19,53 @@ const ScoreRow = ({ score, description }) => {
   );
 };
 
-const UserScoreCard = ({ score, teamScore, event, cardWidth }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <Row>
-          <Col>
-            <Link to={`${Constants.PATHS.EVENT}/${event.id}`} className="no-underline">
-              <strong>{event.name}</strong>
-            </Link>
-          </Col>
-          <Col className="text-right">
-            {cardWidth === Constants.USER_SCORE_CARD_WIDTH.WIDE && (
-              <Button color="primary" className="btn-sm">
-                Log Activity
-              </Button>
-            )}
-          </Col>
-        </Row>
-      </CardHeader>
-      <CardBody>
-        <Row>
-          <Col>
-            <ScoreRow score={score.score} description="Personal Score" />
-            <ScoreRow score={teamScore ? teamScore.score : 0} description="Team Score" />
-          </Col>
-          <Col className="align-self-center text-center">
-            {cardWidth === Constants.USER_SCORE_CARD_WIDTH.NARROW && (
-              <Button color="primary" className="btn-sm">
-                Log Activity
-              </Button>
-            )}
-          </Col>
-        </Row>
-      </CardBody>
-    </Card>
-  );
-};
+class UserScoreCard extends React.Component {
+  handleOnClick = () => {
+    this.props.showLogActivityForm(this.props.event.id);
+  };
+
+  renderLogActivityButton = () => {
+    return (
+      <Button color="primary" className="btn-sm" onClick={this.handleOnClick}>
+        Log Activity
+      </Button>
+    );
+  };
+
+  render() {
+    const { score, teamScore, event, cardWidth, showLogActivityForm } = this.props;
+    return (
+      <Card>
+        <CardHeader>
+          <Row>
+            <Col>
+              <Link to={`${Constants.PATHS.EVENT}/${event.id}`} className="no-underline">
+                <strong>{event.name}</strong>
+              </Link>
+            </Col>
+            <Col className="text-right">
+              {showLogActivityForm &&
+                cardWidth === Constants.USER_SCORE_CARD_WIDTH.WIDE &&
+                this.renderLogActivityButton()}
+            </Col>
+          </Row>
+        </CardHeader>
+        <CardBody>
+          <Row>
+            <Col>
+              <ScoreRow score={score.score} description="Personal Score" />
+              <ScoreRow score={teamScore ? teamScore.score : 0} description="Team Score" />
+            </Col>
+            <Col className="align-self-center text-center">
+              {showLogActivityForm &&
+                cardWidth === Constants.USER_SCORE_CARD_WIDTH.NARROW &&
+                this.renderLogActivityButton()}
+            </Col>
+          </Row>
+        </CardBody>
+      </Card>
+    );
+  }
+}
 
 export default UserScoreCard;

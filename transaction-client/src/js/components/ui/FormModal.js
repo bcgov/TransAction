@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner, Form } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class FormModal extends React.Component {
   render() {
@@ -13,7 +14,7 @@ class FormModal extends React.Component {
             <ModalBody>{children}</ModalBody>
             <ModalFooter>
               <Button size="sm" color="primary" type="submit" disabled={submitting || pristine}>
-                {submitting && <Spinner size="sm" />} Submit
+                {submitting ? <Spinner size="sm" /> : <FontAwesomeIcon icon="save" />} Save
               </Button>
               <Button size="sm" color="secondary" onClick={toggle} disabled={submitting}>
                 Cancel

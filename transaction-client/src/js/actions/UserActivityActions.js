@@ -30,6 +30,9 @@ export const createUserActivity = activityObj => async dispatch => {
       const response = await api.post(`/useractivity`, activityObj);
 
       dispatch({ type: CREATE_USER_ACTIVITY, payload: response.data });
+      dispatch(fetchUserEventScore(activityObj.userId, activityObj.eventId));
+      dispatch(fetchTeamEventScore(activityObj.teamId, activityObj.eventId));
+
       resolve();
     } catch (e) {
       reject(e);

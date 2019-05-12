@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { FormGroup, Label, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const FormInput = ({ label, type, input, meta: { touched, error }, children }) => {
+const FormInput = ({ label, type, input, meta: { touched, error }, children, placeholderText }) => {
   return (
     <FormGroup>
-      <Label>{label}</Label>
-      <Input type={type} {...input} autoComplete="off">
+      {label.length > 0 && <Label>{label}</Label>}
+      <Input type={type} {...input} autoComplete="off" placeholder={placeholderText}>
         {children}
       </Input>
       {touched &&
@@ -26,6 +26,7 @@ FormInput.propTypes = {
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   children: PropTypes.array,
+  placeholderText: PropTypes.string,
 };
 
 export default FormInput;

@@ -55,22 +55,26 @@ class EditUserForm extends React.Component {
         <Field name="regionId" component={FormInput} type="select" label="Region">
           {this.renderRegionOptions()}
         </Field>
-        <Field name="description" component={FormInput} type="textarea" label="Description" />
+        <Field
+          name="description"
+          component={FormInput}
+          type="textarea"
+          label="Description"
+          placeholderText="Enter a short description about yourself"
+        />
       </FormModal>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    regions: state.regions,
-  };
+EditUserForm.propTypes = {
+  regions: PropTypes.object.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
-const editUserConnect = connect(
-  mapStateToProps,
-  { editUser }
-)(EditUserForm);
+EditUserForm.defaultProps = { regions: {}, isOpen: false, pristine: false };
 
 const validate = formValues => {
   const errors = {};
@@ -82,8 +86,17 @@ const validate = formValues => {
   return errors;
 };
 
-EditUserForm.propTypes = { regions: PropTypes.object.isRequired };
+const form = reduxForm({ form: 'editUserForm', enableReinitialize: true, validate })(EditUserForm);
 
-EditUserForm.defaultProps = { regions: {} };
+const mapStateToProps = state => {
+  return {
+    regions: state.regions,
+  };
+};
 
-export default reduxForm({ form: 'editUserForm', enableReinitialize: true, validate })(editUserConnect);
+const formConnect = connect(
+  mapStateToProps,
+  { editUser }
+)(form);
+
+export default formConnect;

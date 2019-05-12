@@ -14,7 +14,6 @@ import userActivityReducer from './userActivityReducer';
 
 export default combineReducers({
   form: formReducer,
-
   activities: activityReducer,
   authUser: authUserReducer,
   events: eventReducer,
