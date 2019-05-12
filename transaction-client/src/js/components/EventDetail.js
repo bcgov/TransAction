@@ -7,11 +7,12 @@ import moment from 'moment';
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
 import UserScoreCard from './ui/UserScoreCard';
 import PageSpinner from './ui/PageSpinner';
+import LogActivityForm from './forms/LogActivityForm';
 
 import * as Constants from '../Constants';
 
 class EventDetail extends React.Component {
-  state = { loading: true, modal: false };
+  state = { loading: true, showLogActivityForm: false };
 
   componentDidMount() {
     const eventId = this.props.match.params.id;
@@ -29,9 +30,13 @@ class EventDetail extends React.Component {
       });
   }
 
-  toggle = () => {
+  showLogActivityForm = () => {
+    this.setState({ showLogActivityForm: true });
+  };
+
+  toggleLogActivityForm = () => {
     this.setState(prevState => ({
-      modal: !prevState.modal,
+      showLogActivityForm: !prevState.showLogActivityForm,
     }));
   };
 
@@ -41,13 +46,14 @@ class EventDetail extends React.Component {
     const score = this.props.scores.user[currentUser.id][eventId];
     const teamScore = this.props.scores.team[currentUser.teamId][eventId];
     return (
-      <Row className="mb-5">
+      <Row className="my-5">
         <Col>
           <UserScoreCard
             score={score}
             teamScore={teamScore}
             event={this.props.event}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
+            showLogActivityForm={this.showLogActivityForm}
           />
         </Col>
       </Row>
@@ -55,6 +61,8 @@ class EventDetail extends React.Component {
   }
 
   renderContent() {
+    if (!this.props.event) return <div />;
+
     return (
       <React.Fragment>
         <h4>{this.props.event.name}</h4>
@@ -74,6 +82,11 @@ class EventDetail extends React.Component {
             </Col>
           </Row>
         )}
+        <LogActivityForm
+          isOpen={this.state.showLogActivityForm}
+          toggle={this.toggleLogActivityForm}
+          eventId={this.props.event.id}
+        />
       </React.Fragment>
     );
   }
@@ -89,7 +102,7 @@ class EventDetail extends React.Component {
             <BreadcrumbItem>
               <Link to="/event">Events</Link>
             </BreadcrumbItem>
-            {!this.state.loading && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
+            {!this.state.loading && this.props.event && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
           </Breadcrumb>
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderContent()}
