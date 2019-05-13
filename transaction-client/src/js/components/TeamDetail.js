@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { Alert, Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import _ from 'lodash';
 
 import {
@@ -12,10 +12,15 @@ import {
   editUser,
   fetchSpecificTeamRequests,
   editJoinRequest,
+  fetchAllTeamScores,
+  fetchAllUserScores,
+  fetchEvents,
 } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import ProfileFragment from './ui/ProfileFragment';
 import TeamMemberRow from './ui/TeamMemberRow';
+import UserScoreCard from './ui/UserScoreCard';
+import EditTeamForm from './forms/EditTeamForm';
 
 import * as Constants from '../Constants';
 
@@ -25,6 +30,7 @@ class Team extends Component {
     canEdit: false,
     ownTeamProfile: false,
     teamIdToDisplay: null,
+    showEditTeamForm: false,
   };
 
   componentDidMount() {
@@ -49,7 +55,14 @@ class Team extends Component {
 
     teamId = parseInt(teamId);
 
-    Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers(), this.props.fetchSpecificTeamRequests(teamId)])
+    Promise.all([
+      this.props.fetchTeam(teamId),
+      this.props.fetchUsers(),
+      this.props.fetchSpecificTeamRequests(teamId),
+      this.props.fetchAllTeamScores(teamId),
+      this.props.fetchAllUserScores(currentUser.id),
+      this.props.fetchEvents(),
+    ])
       .then(() => {
         const team = this.props.teams[teamId];
 
@@ -61,6 +74,16 @@ class Team extends Component {
         this.setState({ teamIdToDisplay: teamId, loading: false });
       })
       .catch(() => {});
+  };
+
+  showEditTeamForm = () => {
+    this.setState({ showEditTeamForm: true });
+  };
+
+  toggleEditTeamForm = () => {
+    this.setState(prevState => ({
+      showEditTeamForm: !prevState.showEditTeamForm,
+    }));
   };
 
   renderTeamInfo(teamToDisplay) {
@@ -168,7 +191,43 @@ class Team extends Component {
     );
   }
 
-  renderTeamScores() {}
+  renderTeamScores() {
+    const events = this.props.events;
+    const scores = this.props.scores;
+    const currentUser = this.props.currentUser;
+
+    const teamScores = Object.values(scores.team[this.state.teamIdToDisplay]);
+    const userScores = scores.user[currentUser.id];
+
+    const teamScoreCards = teamScores.map(score => {
+      const userScore = userScores[score.eventId];
+      return (
+        <Col xs="12" lg="6" key={score.eventId} className="mb-3">
+          <UserScoreCard
+            score={userScore}
+            teamScore={score}
+            event={events[score.eventId]}
+            cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
+            // showLogActivityForm={this.showLogActivityForm}
+          />
+        </Col>
+      );
+    });
+
+    return (
+      <Row className="mb-5">
+        {teamScoreCards.length > 0 ? (
+          teamScoreCards
+        ) : (
+          <Col>
+            <Alert color="warning">
+              Your team has not participated in any events yet. Click <Link>here</Link> to see a list of active events.
+            </Alert>
+          </Col>
+        )}
+      </Row>
+    );
+  }
 
   render() {
     const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
@@ -192,7 +251,7 @@ class Team extends Component {
           </Col>
           <Col>
             {this.state.canEdit && teamToDisplay && !this.state.loading && (
-              <Button color="primary" size="sm">
+              <Button color="primary" size="sm" onClick={this.showEditTeamForm}>
                 Edit Team
               </Button>
             )}
@@ -216,6 +275,23 @@ class Team extends Component {
             {this.state.loading ? <PageSpinner /> : this.renderTeamJoinRequests(teamToDisplay)}
           </React.Fragment>
         )}
+
+        {this.state.ownTeamProfile && (
+          <React.Fragment>
+            <Row className="mb-3">
+              <Col>
+                <h4>Activity</h4>
+              </Col>
+            </Row>
+            {this.state.loading ? <PageSpinner /> : this.renderTeamScores()}
+          </React.Fragment>
+        )}
+
+        <EditTeamForm
+          initialValues={teamToDisplay}
+          isOpen={this.state.showEditTeamForm}
+          toggle={this.toggleEditTeamForm}
+        />
       </React.Fragment>
     );
   }
@@ -224,12 +300,13 @@ class Team extends Component {
 const mapStateToProps = state => {
   return {
     currentUser: state.users.current,
-    allTeamScores: state.allTeamScores,
+    scores: state.scores,
     teams: state.teams,
     users: Object.values(state.users.all),
     roles: state.roles,
     joinRequests: Object.values(state.joinRequests),
     regions: state.regions,
+    events: state.events,
   };
 };
 
@@ -243,5 +320,8 @@ export default connect(
     fetchSpecificTeamRequests,
     editUser,
     editJoinRequest,
+    fetchAllTeamScores,
+    fetchAllUserScores,
+    fetchEvents,
   }
 )(Team);

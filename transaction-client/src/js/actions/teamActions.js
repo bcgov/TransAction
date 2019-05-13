@@ -45,7 +45,7 @@ export const fetchTeam = id => async dispatch => {
   });
 };
 
-export const editTeam = (teamObj, id) => async dispatch => {
+export const editTeam = (id, teamObj) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.put(`/teams/${id}`, teamObj);

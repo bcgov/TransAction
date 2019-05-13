@@ -117,36 +117,6 @@ class Profile extends Component {
         />
         <hr />
       </React.Fragment>
-      // <React.Fragment>
-      //   <Row>
-      //     <Col xs="12" lg="6">
-      //       <div>
-      //         {' '}
-      //         <strong>Name</strong>
-      //       </div>
-      //       <div>
-      //         {userToDisplay.fname} {userToDisplay.lname}
-      //       </div>
-      //     </Col>
-      //     <Col xs="12" lg="6">
-      //       <div>
-      //         {' '}
-      //         <strong>Region</strong>
-      //       </div>
-      //       <div>{this.props.regions[userToDisplay.regionId].name}</div>
-      //     </Col>
-      //   </Row>
-      //   <Row>
-      //     <Col>
-      //       <div>
-      //         {' '}
-      //         <strong>Description</strong>
-      //       </div>
-      //       <div>{userToDisplay.description}</div>
-      //     </Col>
-      //   </Row>
-      //   <hr />
-      // </React.Fragment>
     );
   }
 
