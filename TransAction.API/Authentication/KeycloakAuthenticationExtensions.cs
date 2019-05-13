@@ -74,9 +74,14 @@ namespace TransAction.API.Authentication
                                 newUser.Directory = "";
                             }                                                       
                             newUser.RoleId = db.GetRole("USER").RoleId;
+
                             newUser.Email = principal.FindFirstValue(ClaimTypes.Email);
-                            newUser.Fname = principal.FindFirstValue(ClaimTypes.GivenName);
-                            newUser.Lname = principal.FindFirstValue(ClaimTypes.Surname);
+                            var fullName = principal.FindFirstValue("idir_displayName").Split(",");
+                            newUser.Lname = fullName[0];
+                            var firstName = fullName[1].TrimStart();
+                            newUser.Fname = firstName.Remove(firstName.LastIndexOf(" "));
+                            //newUser.Fname = principal.FindFirstValue(ClaimTypes.GivenName);
+                            //newUser.Lname = principal.FindFirstValue(ClaimTypes.Surname);
                             newUser.Description = "Hi, this is a new User";
                             newUser.Guid = principal.FindFirstValue("idir_guid");
                             newUser.RegionId = db.GetRegion("HQ").RegionId;
@@ -101,9 +106,9 @@ namespace TransAction.API.Authentication
 
                             List<Claim> claims = new List<Claim>();
 
-                            switch (dbUser.Role.Name)
+                            switch (dbUser.Role.Name.ToLower())
                             {
-                                case "teamlead":
+                                case "team_lead":
                                     claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
                                     break;
                                 case "admin":
