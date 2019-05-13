@@ -9,7 +9,7 @@ import Main from './components/Main';
 import EventList from './components/EventList';
 import EventDetail from './components/EventDetail';
 import Profile from './components/Profile';
-import Team from './components/Team';
+import TeamDetail from './components/TeamDetail';
 import TeamsList from './components/TeamsList';
 import GettingStarted from './components/GettingStarted';
 import FreeAgentsList from './components/FreeAgentsList';
@@ -35,9 +35,8 @@ class App extends Component {
                 <Route path={`${Constants.PATHS.EVENT}/:id`} exact component={EventDetail} />
                 <Route path={Constants.PATHS.PROFILE} exact component={Profile} />
                 <Route path={`${Constants.PATHS.PROFILE}/:id`} exact component={Profile} />
-                <Route path={Constants.PATHS.TEAM} exact component={Team} />
-                <Route path={`${Constants.PATHS.TEAM}/:id`} exact component={Team} />
-                <Route path="/teamslist" exact component={TeamsList} />
+                <Route path={Constants.PATHS.TEAM} exact component={TeamsList} />
+                <Route path={`${Constants.PATHS.TEAM}/:id`} exact component={TeamDetail} />
                 <Route path={Constants.PATHS.START} exact component={GettingStarted} />
                 <Route path="/free_agents" exact component={FreeAgentsList} />
                 <Route path="/incentives" exact component={Incentives} />

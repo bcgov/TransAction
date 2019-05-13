@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbItem, Button, Row, Col, Table, Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import _ from 'lodash';
 
 import {
