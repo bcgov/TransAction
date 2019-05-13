@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using TransAction.Data.Models;
+using TransAction.Data.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace TransAction.Data.Services
@@ -90,11 +91,6 @@ namespace TransAction.Data.Services
         public IEnumerable<TraTeam> GetTeams()
         {
             return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
-            var teams = _context.TraTeam.OrderBy(c => c.TeamId)
-                .Include(p => p.User)
-                .Select(x => new {
-
-                });
 
         }
 
@@ -213,7 +209,7 @@ namespace TransAction.Data.Services
                 .Where(p => p.EventId == eventId)                    
                     .Include(x => x.Activity)
                     .GroupBy(x => new { x.EventId }) 
-                    .Select(x => new
+                    .Select(x => new 
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
                     }).Select(c => c.Score).Sum();
@@ -251,11 +247,31 @@ namespace TransAction.Data.Services
             return userAct;
         }
 
+        public IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId)
+        {
+            var teams = _context.TraUserActivity
+                .Where(p => p.EventId == eventId)
+                    .Include(x => x.Activity)
+                    .Include(x => x.Event)
+                    .GroupBy(x => new { x.TeamId, x.EventId })
+                    .Select(x => new TeamSpecificScoreDto()
+                    {
+                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                        eventId = x.Key.EventId,
+                        teamId = x.Key.TeamId
+                    }).OrderByDescending(x => x.score)
+                    .ToList().Take(number);
+            
+            return teams;
+
+
+        }
+
         public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId)
         {
             var memberId = _context.TraUser.Where(x => x.TeamId == teamId).Select(x => x.UserId);
             var teamAct = _context.TraUserActivity
-                .Where(p => p.TeamId == teamId && memberId.Contains(p.UserId))
+                .Where(p =>memberId.Contains(p.UserId))
                     .Include(x =>  x.Activity)
                     .Include(x => x.Event).Where(x => x.Event.IsActive == true)                    
                     //.Where(x => x.Event.IsActive == true)
@@ -304,6 +320,24 @@ namespace TransAction.Data.Services
         {
             return _context.TraRole.FirstOrDefault(c => c.RoleId == id);
         }
+
+        public void CreateRole(TraRole traRole)
+        {
+            _context.TraRole.Add(traRole);
+        }
+
+        public bool RoleExists(string Name)
+        {
+            var checkRole = _context.TraRole.FirstOrDefault(c => c.Name == Name);
+            if (checkRole != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public IEnumerable<TraMemberReq> GetRequests()
@@ -339,5 +373,7 @@ namespace TransAction.Data.Services
 
             return teamRequests;
         }
+
+
     }
 }

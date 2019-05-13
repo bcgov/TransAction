@@ -24,28 +24,35 @@ namespace TransAction.Data.Models
             {
                 if (entry.State == EntityState.Added)
                 {
-
-                   var createTimeStampProp = entry.Member("DbCreateTimestamp");
-                   createTimeStampProp.CurrentValue = currentTime;
-
-
-                    var concurrencyControl = entry.Member("ConcurrencyControlNumber");
-                    Int64 controlNumber = 1;
-                    concurrencyControl.CurrentValue = controlNumber;
+                    //try
+                   // {
+                        var createTimeStampProp = entry.Member("DbCreateTimestamp");
+                        createTimeStampProp.CurrentValue = currentTime;
 
 
-                    var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");                   
-                    lastUpdateTimeStampProp.CurrentValue = currentTime;
-                                       
-                    
-                    var createUserId = entry.Member("DbCreateUserid");
-                    createUserId.CurrentValue = "Test Value";
-
-                    var lastUserId = entry.Member("DbLastUpdateUserid");
-                    lastUserId.CurrentValue = "Test Value";
+                        var concurrencyControl = entry.Member("ConcurrencyControlNumber");
+                        Int64 controlNumber = 1;
+                        concurrencyControl.CurrentValue = controlNumber;
 
 
+                        var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
+                        lastUpdateTimeStampProp.CurrentValue = currentTime;
 
+
+                        var createUserId = entry.Member("DbCreateUserid");
+                        createUserId.CurrentValue = "Test Value";
+
+                        var lastUserId = entry.Member("DbLastUpdateUserid");
+                        lastUserId.CurrentValue = "Test Value";
+
+                        
+                   // }
+                    //catch(Exception e)
+                    //{
+                    //    //if(e.Message == )
+                    //    continue;
+                    //}
+                                                         
 
                 }
                 else if (entry.State == EntityState.Modified)

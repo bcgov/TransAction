@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TransAction.API.Authorization;
+using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -15,9 +17,11 @@ namespace TransAction.API.Controllers
     public class ActivityController : Controller
     {
         private ITransActionRepo _transActionRepo;
+        private IHttpContextAccessor _httpContextAccessor;
         public ActivityController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
-            _transActionRepo = transActionRepo;         
+            _transActionRepo = transActionRepo;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet()]
@@ -57,6 +61,14 @@ namespace TransAction.API.Controllers
         [HttpPost()]
         public IActionResult CreateActivity([FromBody] ActivityCreateDto createActivity)
         {
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            if(getUser.TeamId == null)
+            {
+                return BadRequest();
+            }
+
+
             if (createActivity == null)
             {
                 return BadRequest();
@@ -93,6 +105,13 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult ActivityUpdate(int id, [FromBody] ActivityUpdateDto updateActivity)
         {
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            if (getUser.TeamId == null)
+            {
+                return BadRequest();
+            }
+
             var activityEntity = _transActionRepo.GetActivity(id);
             if (activityEntity == null) return NotFound();
             if (updateActivity == null) return NotFound();

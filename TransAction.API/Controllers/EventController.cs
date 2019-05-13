@@ -18,14 +18,10 @@ namespace TransAction.API.Controllers
         private ITransActionRepo _transActionRepo;
         public EventController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
-            _transActionRepo = transActionRepo;
-            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value; // nameIdentifeir gives the Id and the .Name gives the username
-            var userEmail = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
-            var checkUser = _transActionRepo.UserExists(userId,userEmail);
-         //   if (!checkUser) ExitController();
-            
+            _transActionRepo = transActionRepo;           
         }
 
+        
         [HttpGet()]
         public IActionResult GetEvents()
         {
@@ -60,7 +56,7 @@ namespace TransAction.API.Controllers
 
         }
 
-        //[ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
+        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPost()]
         public IActionResult CreateEvent([FromBody] EventCreateDto createEvent)
         {
@@ -81,6 +77,12 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
+            if(createEvent.StartDate > createEvent.EndDate)
+            {
+                var hello = createEvent.StartDate > createEvent.EndDate;
+                return BadRequest();
+            }
+
             var newEvent = Mapper.Map<TraEvent>(createEvent);
             newEvent.IsActive = true;
             
@@ -98,6 +100,7 @@ namespace TransAction.API.Controllers
 
         }
 
+        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
         public IActionResult EventUpdate(int id, [FromBody] EventUpdateDto updateEvent)
         {
