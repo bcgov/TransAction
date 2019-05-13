@@ -44,9 +44,12 @@ namespace TransAction.Data.Services
         TraUserActivity GetUserActivity(int id);
         bool UserActivityExists(string Name);
         void CreateUserActivity(TraUserActivity traUserActivity);
+        IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId); 
 
         IEnumerable<TraRole> GetRoles();
         TraRole GetRole(int id);
+        void CreateRole(TraRole traRole);
+        bool RoleExists(string Name);
 
         IEnumerable<TraMemberReq> GetRequests();
         TraMemberReq GetRequest(int id);

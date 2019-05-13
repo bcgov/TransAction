@@ -76,10 +76,7 @@ namespace TransAction.API.Controllers
             //{
             //    return BadRequest();
             //}
-
-            var minutes = createUserActivity.Hours * 60;
-            createUserActivity.Minutes = minutes + createUserActivity.Minutes;
-            
+                                   
             var newUserActivity = Mapper.Map<TraUserActivity>(createUserActivity);
 
             _transActionRepo.CreateUserActivity(newUserActivity);
@@ -170,6 +167,14 @@ namespace TransAction.API.Controllers
         public IActionResult CurrentUserScore(int userId)
         {
             var result = _transActionRepo.CurrentUserScore(userId);
+            return Ok(result);
+        }
+
+        [HttpGet("event/{eventId}/top/{number}")]
+        public IActionResult TopTeams(int number, int eventId)
+        {
+            var result = _transActionRepo.TopTeams(number, eventId);
+
             return Ok(result);
         }
     }

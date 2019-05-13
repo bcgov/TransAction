@@ -133,6 +133,9 @@ namespace TransAction.API
                 //for roles
                 cfg.CreateMap<TraRole, RoleDto>();
                 cfg.CreateMap<RoleDto, TraRole>();
+                cfg.CreateMap<RoleCreateDto, TraRole>();
+                cfg.CreateMap<RoleUpdateDto, TraRole>();
+                cfg.CreateMap<TraRole, RoleUpdateDto>();
 
                 //for MemberReq
 

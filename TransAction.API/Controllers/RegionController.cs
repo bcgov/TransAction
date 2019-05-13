@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TransAction.API.Authorization;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -52,7 +53,7 @@ namespace TransAction.API.Controllers
             }
 
         }
-
+        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPost()]
         public IActionResult CreateRegion([FromBody] RegionCreateDto createRegion)
         {
@@ -88,6 +89,7 @@ namespace TransAction.API.Controllers
             
         }
 
+        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
         public IActionResult RegionUpdate(int id, [FromBody] RegionUpdateDto updateRegion)
         {

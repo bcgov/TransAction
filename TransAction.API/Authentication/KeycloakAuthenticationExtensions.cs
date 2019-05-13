@@ -106,9 +106,9 @@ namespace TransAction.API.Authentication
 
                             List<Claim> claims = new List<Claim>();
 
-                            switch (dbUser.Role.Name)
+                            switch (dbUser.Role.Name.ToLower())
                             {
-                                case "teamlead":
+                                case "team_lead":
                                     claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
                                     break;
                                 case "admin":

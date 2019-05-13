@@ -100,6 +100,12 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UserUpdate(int id, [FromBody] UserUpdateDto updateUser)
         {
+            //string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            //var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            //if(getUser.UserId != id)
+            //{
+            //    return BadRequest();
+            //}
             var userEntity = _transActionRepo.GetUser(id);
            if (userEntity == null) return NotFound();
             if (updateUser == null) return NotFound();
@@ -127,12 +133,16 @@ namespace TransAction.API.Controllers
             }
             //checking for if team is full 
             //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
+            
             var users = _transActionRepo.GetUsers();
-            var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
-            if(members >= 5)
+            if(updateUser.TeamId != null)
             {
-                return BadRequest("Team Full");
-            }
+                var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
+                if (members >= 5)
+                {
+                    return BadRequest("Team Full");
+                }
+            }          
 
 
             Mapper.Map(updateUser, userEntity);

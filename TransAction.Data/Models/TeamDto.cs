@@ -13,7 +13,9 @@ namespace TransAction.Data.Models
         public int RegionId { get; set; }
         public string Description { get; set; }
         public int Goal { get; set; }
+        [JsonProperty("TeamLeadId")]
         public int UserId { get; set; }
+        public Array TeamMemberIds { get; set; }
         public int NumMembers { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
