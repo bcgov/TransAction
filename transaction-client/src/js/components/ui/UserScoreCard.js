@@ -53,7 +53,7 @@ class UserScoreCard extends React.Component {
         <CardBody>
           <Row>
             <Col>
-              <ScoreRow score={score.score} description="Personal Score" />
+              <ScoreRow score={score ? score.score : 0} description="Personal Score" />
               <ScoreRow score={teamScore ? teamScore.score : 0} description="Team Score" />
             </Col>
             <Col className="align-self-center text-center">
