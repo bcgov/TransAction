@@ -67,7 +67,7 @@ class Team extends Component {
         const team = this.props.teams[teamId];
 
         // If team lead
-        if (!team && team.userId === currentUser.id) this.setState({ canEdit: true });
+        if (!team && team.teamLeaderId === currentUser.id) this.setState({ canEdit: true });
 
         if (currentUser.teamId === teamId) this.setState({ ownTeamProfile: true });
 
@@ -116,7 +116,7 @@ class Team extends Component {
                   Leave
                 </Button>
               ) : (
-                currentUser.id === teamToDisplay.userId && (
+                currentUser.id === teamToDisplay.teamLeaderId && (
                   <Button color="danger" size="sm" className="w75">
                     Remove
                   </Button>
@@ -265,7 +265,7 @@ class Team extends Component {
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderTeamMembers(teamToDisplay)}
 
-        {teamToDisplay && this.props.currentUser.id === teamToDisplay.userId && (
+        {teamToDisplay && this.props.currentUser.id === teamToDisplay.teamLeaderId && (
           <React.Fragment>
             <Row className="mb-3">
               <Col>

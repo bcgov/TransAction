@@ -65,9 +65,9 @@ class TeamsList extends Component {
           <th scope="row" />
           <td>{team.name}</td>
           <td>
-            {this.props.users[team.userId].fname} {this.props.users[team.userId].lname}
+            {this.props.users[team.teamLeaderId].fname} {this.props.users[team.teamLeaderId].lname}
           </td>
-          <td>{this.props.regions[this.props.users[team.userId].regionId].name}</td>
+          <td>{this.props.regions[this.props.users[team.teamLeaderId].regionId].name}</td>
           <td>
             <Link to={`/team/${team.id}`}>
               <Button>View Team</Button>
