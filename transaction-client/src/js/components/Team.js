@@ -1,31 +1,17 @@
 import React, { Component } from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Container,
-  Spinner,
-  Button,
-  Row,
-  Table,
-  Modal,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Breadcrumb, BreadcrumbItem, Button, Row, Col, Table, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import _ from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import {
   fetchCurrentUser,
   fetchTeam,
   editTeam,
   fetchUsers,
-  fetchRoles,
-  fetchCurrentTeam,
   editUser,
-  fetchRole,
-  fetchAllTeamScores,
   fetchSpecificTeamRequests,
-  fetchRegions,
   editJoinRequest,
 } from '../actions';
 // import DescriptionForm from './DescriptionForm';
@@ -33,30 +19,71 @@ import TitleForm from './TitleForm';
 import ProgressBar from './ProgressBar';
 import ProgressModalBody from './ProgressModalBody';
 import EventModal from './EventModal';
-import TeamReadOnly from './TeamReadOnly';
-import TeamUserReadOnly from './TeamUserReadOnly';
-import NoTeamPage from './NoTeamPage';
-import TeamAdminView from './TeamAdminView';
+import PageSpinner from './ui/PageSpinner';
+import ProfileFragment from './ui/ProfileFragment';
+import TeamMemberRow from './ui/TeamMemberRow';
+
+import * as Constants from '../Constants';
 
 class Team extends Component {
-  state = { loading: true, modal: false, clickable: true, modalLeave: false };
+  state = {
+    loading: true,
+    canEdit: false,
+    ownTeamProfile: false,
+    teamIdToDisplay: null,
+    // modal: false,
+    // clickable: true,
+    // modalLeave: false,
+  };
 
   componentDidMount() {
-    // this.toggleSpinner();
+    // Promise.all([
+    //   this.props.fetchTeam(this.props.paramId),
+    //   this.props.fetchUsers(),
+    //   this.props.fetchCurrentTeam(this.props.currentUser.teamId),
+    //   this.props.fetchSpecificTeamRequests(this.props.currentUser.teamId),
+    // ])
+    //   .then(() => {
+    //     this.toggleSpinner();
+    //   })
+    //   .catch(() => {
+    //     this.toggleSpinner();
+    //   });
 
-    Promise.all([
-      this.props.fetchTeam(this.props.paramId),
-      this.props.fetchUsers(),
-      this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-      this.props.fetchSpecificTeamRequests(this.props.currentUser.teamId),
-    ])
-      .then(() => {
-        this.toggleSpinner();
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
+    this.init(this.props.match.params.id);
   }
+
+  componentDidUpdate(prevProps) {
+    // Re-init if URL param has changed
+    const prevId = prevProps.match.params.id;
+    const currId = this.props.match.params.id;
+    if (currId !== prevId) {
+      this.init(currId);
+    }
+  }
+
+  init = teamId => {
+    const currentUser = this.props.currentUser;
+
+    this.setState({ loading: true, canEdit: false, ownTeamProfile: false });
+
+    if (currentUser.isAdmin) this.setState({ canEdit: true });
+
+    teamId = parseInt(teamId);
+
+    Promise.all([this.props.fetchTeam(teamId), this.props.fetchUsers(), this.props.fetchSpecificTeamRequests(teamId)])
+      .then(() => {
+        const team = this.props.teams[teamId];
+
+        // If team lead
+        if (!team && team.userId === currentUser.id) this.setState({ canEdit: true });
+
+        if (currentUser.teamId === teamId) this.setState({ ownTeamProfile: true });
+
+        this.setState({ teamIdToDisplay: teamId, loading: false });
+      })
+      .catch(() => {});
+  };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -75,63 +102,59 @@ class Team extends Component {
     }));
   };
 
-  //TODO could be taken out into its own component?
-  decideRender() {
-    if (this.state.loading) {
-      return (
-        <div className="col-1 offset-6">
-          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
-        </div>
-      );
-    }
-    //Loading DONE
-    else {
-      //paramId is passed
-      if (this.props.paramId !== null) {
-        //if the team id does not exist
-        if (!this.props.teams) {
-          return <div>hmmmmmm.. we couldnt find that team :(</div>;
-        }
-        //if the paramId is the same as user teamid
-        if (this.props.paramId === this.props.currentUser.teamId) {
-          //If they are a team lead or admin
-          if (this.props.currentRole.name !== 'user') {
-            return this.teamInfo();
-          }
-          //a regular user, therefor seeing his team in read only
-          else {
-            return <TeamUserReadOnly paramId={this.props.paramId} />;
-          }
-        }
-        //paramid is NOT the same as user teamid; viewing someones team from the outside
-        else {
-          //If they are an admin
-          if (this.props.currentRole.name === 'Admin') {
-            return <TeamAdminView paramId={this.props.paramId} />;
-          } else {
-            return <TeamReadOnly paramId={this.props.paramId} />;
-          }
-        }
-      } else {
-        //no paramId passed
-        //we have no teamid and no id was passed as param; load choices
-        if (!this.props.currentUser.teamId) {
-          return <NoTeamPage />;
-        }
-        //Following the user's teamid
-        else {
-          //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
-          if (this.props.currentUser.roleName !== 'user') {
-            return this.teamInfo();
-          }
-          //a regular user, therefor seeing his team in read only
-          else {
-            return <TeamUserReadOnly paramId={this.props.currentUser.teamId} />;
-          }
-        }
-      }
-    }
-  }
+  // //TODO could be taken out into its own component?
+  // decideRender() {
+  //   if (this.state.loading) {
+  //     return <PageSpinner />;
+  //   }
+  //   //Loading DONE
+  //   else {
+  //     //paramId is passed
+  //     if (this.props.paramId !== null) {
+  //       //if the team id does not exist
+  //       if (!this.props.teams) {
+  //         return <div>hmmmmmm.. we couldnt find that team :(</div>;
+  //       }
+  //       //if the paramId is the same as user teamid
+  //       if (this.props.paramId === this.props.currentUser.teamId) {
+  //         //If they are a team lead or admin
+  //         if (this.props.currentRole.name !== 'user') {
+  //           return this.teamInfo();
+  //         }
+  //         //a regular user, therefor seeing his team in read only
+  //         else {
+  //           return <TeamUserReadOnly paramId={this.props.paramId} />;
+  //         }
+  //       }
+  //       //paramid is NOT the same as user teamid; viewing someones team from the outside
+  //       else {
+  //         //If they are an admin
+  //         if (this.props.currentRole.name === 'Admin') {
+  //           return <TeamAdminView paramId={this.props.paramId} />;
+  //         } else {
+  //           return <TeamReadOnly paramId={this.props.paramId} />;
+  //         }
+  //       }
+  //     } else {
+  //       //no paramId passed
+  //       //we have no teamid and no id was passed as param; load choices
+  //       if (!this.props.currentUser.teamId) {
+  //         return <NoTeamPage />;
+  //       }
+  //       //Following the user's teamid
+  //       else {
+  //         //If they are a team lead or admin. Really wish the values for each role were sorted in order to prevent multiple checks
+  //         if (this.props.currentUser.roleName !== 'user') {
+  //           return this.teamInfo();
+  //         }
+  //         //a regular user, therefor seeing his team in read only
+  //         else {
+  //           return <TeamUserReadOnly paramId={this.props.currentUser.teamId} />;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   onSubmit = formValues => {
     const userObj = { ...this.props.currentTeam, ...formValues };
@@ -378,44 +401,164 @@ class Team extends Component {
     );
   }
 
-  render() {
+  renderTeamInfo(teamToDisplay) {
     return (
-      <Container>
+      <React.Fragment>
+        <ProfileFragment
+          {..._.pick(teamToDisplay, 'name', 'description')}
+          regionName={this.props.regions[teamToDisplay.regionId].name}
+        />
+        <hr />
+      </React.Fragment>
+    );
+  }
+
+  renderTeamMembers(teamToDisplay) {
+    const users = this.props.users;
+    const regions = this.props.regions;
+    const currentUser = this.props.currentUser;
+
+    const teamMemberElements = users
+      .filter(user => {
+        return user.teamId === teamToDisplay.id;
+      })
+      .map(user => {
+        return (
+          <TeamMemberRow key={user.id} user={user} regions={regions}>
+            <React.Fragment>
+              {user.id === currentUser.id ? (
+                <Button color="danger" size="sm" className="w75">
+                  Leave
+                </Button>
+              ) : (
+                currentUser.id === teamToDisplay.userId && (
+                  <Button color="danger" size="sm" className="w75">
+                    Remove
+                  </Button>
+                )
+              )}
+            </React.Fragment>
+          </TeamMemberRow>
+        );
+      });
+
+    return (
+      <React.Fragment>
+        <Row className="mb-2">
+          <Col xs="6" lg="4">
+            <strong>Name</strong>
+          </Col>
+          <Col xs="3" lg="4">
+            <strong>Region</strong>
+          </Col>
+          <Col xs="3" lg="4" />
+        </Row>
+        {teamMemberElements}
+        <hr />
+      </React.Fragment>
+    );
+  }
+
+  renderTeamJoinRequests(teamToDisplay) {
+    const users = this.props.users;
+    const regions = this.props.regions;
+    const joinRequestsUserIds = this.props.joinRequests
+      .filter(request => {
+        return request.teamId === teamToDisplay.id;
+      })
+      .map(request => {
+        return request.userId;
+      });
+
+    const teamMemberElements = users
+      .filter(user => {
+        return joinRequestsUserIds.includes(user.id);
+      })
+      .map(user => {
+        return (
+          <TeamMemberRow key={user.id} user={user} regions={regions}>
+            <React.Fragment>
+              <Button color="success" size="sm" className="w75 mr-1">
+                Accept
+              </Button>
+              <Button color="danger" size="sm" className="w75">
+                Reject
+              </Button>
+            </React.Fragment>
+          </TeamMemberRow>
+        );
+      });
+
+    return (
+      <React.Fragment>
+        <Row className="mb-2">
+          <Col xs="6" lg="4">
+            <strong>Name</strong>
+          </Col>
+          <Col xs="3" lg="4">
+            <strong>Region</strong>
+          </Col>
+          <Col xs="3" lg="4" />
+        </Row>
+        {teamMemberElements}
+        <hr />
+      </React.Fragment>
+    );
+  }
+
+  render() {
+    const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
+
+    return (
+      <React.Fragment>
         <Row>
           <Breadcrumb>
             <BreadcrumbItem>
               <Link to="/">Home</Link>
             </BreadcrumbItem>
             <BreadcrumbItem>
-              <Link to="/teamslist">Teams</Link>
+              <Link to="/team">Teams</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>Team</BreadcrumbItem>
+            <BreadcrumbItem active>{teamToDisplay && teamToDisplay.name}</BreadcrumbItem>
           </Breadcrumb>
         </Row>
-        <h1>
-          Team Page <br />
-        </h1>
-        {this.decideRender()}
-      </Container>
+        <Row className="mb-3">
+          <Col xs="2">
+            <h4>Team Profile</h4>
+          </Col>
+          <Col>
+            {this.state.canEdit && teamToDisplay && !this.state.loading && (
+              <Button color="primary" size="sm">
+                Edit Team
+              </Button>
+            )}
+          </Col>
+        </Row>
+        {this.state.loading ? <PageSpinner /> : this.renderTeamInfo(teamToDisplay)}
+        <Row className="mb-3">
+          <Col>
+            <h4>Team Members</h4>
+          </Col>
+        </Row>
+        {this.state.loading ? <PageSpinner /> : this.renderTeamMembers(teamToDisplay)}
+        <Row className="mb-3">
+          <Col>
+            <h4>Team Join Requests</h4>
+          </Col>
+        </Row>
+        {this.state.loading ? <PageSpinner /> : this.renderTeamJoinRequests(teamToDisplay)}
+      </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  var parameter;
-  if (!ownProps.match.params.id) {
-    parameter = null;
-  } else {
-    parameter = parseInt(ownProps.match.params.id);
-  }
+const mapStateToProps = state => {
   return {
-    paramId: parameter,
     currentUser: state.users.current,
     allTeamScores: state.allTeamScores,
     teams: state.teams,
-    users: Object.values(state.users),
+    users: Object.values(state.users.all),
     roles: state.roles,
-    currentTeam: state.teams.current,
     joinRequests: Object.values(state.joinRequests),
     regions: state.regions,
   };
@@ -428,13 +571,8 @@ export default connect(
     fetchTeam,
     editTeam,
     fetchUsers,
-    fetchRoles,
-    fetchCurrentTeam,
     fetchSpecificTeamRequests,
     editUser,
-    fetchRole,
-    fetchAllTeamScores,
-    fetchRegions,
     editJoinRequest,
   }
 )(Team);

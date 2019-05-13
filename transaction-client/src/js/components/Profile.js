@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Breadcrumb, BreadcrumbItem, Button, Row, Col, Alert } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import _ from 'lodash';
 
 import { fetchTeam, editUser, fetchAllUserScores, fetchUser, fetchEvents, fetchAllTeamScores } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
 import LogActivityForm from './forms/LogActivityForm';
 import UserScoreCard from './ui/UserScoreCard';
+import ProfileFragment from './ui/ProfileFragment';
 
 import * as Constants from '../Constants';
 
@@ -109,91 +110,77 @@ class Profile extends Component {
 
     return (
       <React.Fragment>
-        <Row>
-          <Col xs="12" lg="6">
-            <div>
-              {' '}
-              <strong>Name</strong>
-            </div>
-            <div>
-              {userToDisplay.fname} {userToDisplay.lname}
-            </div>
-          </Col>
-          <Col xs="12" lg="6">
-            <div>
-              {' '}
-              <strong>Region</strong>
-            </div>
-            <div>{this.props.regions[userToDisplay.regionId].name}</div>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <div>
-              {' '}
-              <strong>Description</strong>
-            </div>
-            <div>{userToDisplay.description}</div>
-          </Col>
-        </Row>
+        <ProfileFragment
+          name={`${userToDisplay.fname} ${userToDisplay.lname}`}
+          description={userToDisplay.description}
+          regionName={this.props.regions[userToDisplay.regionId].name}
+        />
+        <hr />
       </React.Fragment>
+      // <React.Fragment>
+      //   <Row>
+      //     <Col xs="12" lg="6">
+      //       <div>
+      //         {' '}
+      //         <strong>Name</strong>
+      //       </div>
+      //       <div>
+      //         {userToDisplay.fname} {userToDisplay.lname}
+      //       </div>
+      //     </Col>
+      //     <Col xs="12" lg="6">
+      //       <div>
+      //         {' '}
+      //         <strong>Region</strong>
+      //       </div>
+      //       <div>{this.props.regions[userToDisplay.regionId].name}</div>
+      //     </Col>
+      //   </Row>
+      //   <Row>
+      //     <Col>
+      //       <div>
+      //         {' '}
+      //         <strong>Description</strong>
+      //       </div>
+      //       <div>{userToDisplay.description}</div>
+      //     </Col>
+      //   </Row>
+      //   <hr />
+      // </React.Fragment>
     );
   }
 
   renderUserTeam() {
-    const teamToDisplay = this.props.teams.all[this.state.teamIdToDisplay];
+    const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
     const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
 
     return (
-      <Row className="mb-5">
-        <Col>
-          {(() => {
-            if (!teamToDisplay) {
-              if (this.state.ownProfile)
+      <React.Fragment>
+        <Row>
+          <Col>
+            {(() => {
+              if (!teamToDisplay) {
+                if (this.state.ownProfile)
+                  return (
+                    <Alert color="warning">
+                      You are not currently on a team. You can <Link to="/">join</Link> or <Link to="/">create</Link> a
+                      team.
+                    </Alert>
+                  );
+                else return <p>{userToDisplay.fname} is not part of a team.</p>;
+              } else
                 return (
-                  <Alert color="warning">
-                    You are not currently on a team. You can <Link to="/">join</Link> or <Link to="/">create</Link> a
-                    team.
-                  </Alert>
+                  <ProfileFragment
+                    {..._.pick(teamToDisplay, 'name', 'description')}
+                    regionName={this.props.regions[teamToDisplay.regionId].name}
+                    profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
+                  />
                 );
-              else return <p>{userToDisplay.fname} is not part of a team.</p>;
-            } else
-              return (
-                <React.Fragment>
-                  <Row>
-                    <Col>
-                      <div>
-                        {' '}
-                        <strong>Name</strong>
-                      </div>
-                      <div>
-                        <Link to={`/team/${teamToDisplay.id}`} className="no-underline">
-                          {teamToDisplay.name} <FontAwesomeIcon icon="external-link-alt" />
-                        </Link>
-                      </div>
-                    </Col>
-                    <Col>
-                      <div>
-                        {' '}
-                        <strong>Region</strong>
-                      </div>
-                      <div>{this.props.regions[teamToDisplay.regionId].name}</div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <div>
-                        {' '}
-                        <strong>Description</strong>
-                      </div>
-                      <div>{teamToDisplay.description}</div>
-                    </Col>
-                  </Row>
-                </React.Fragment>
-              );
-          })()}
-        </Col>
-      </Row>
+            })()}
+          </Col>
+        </Row>
+        <hr />
+      </React.Fragment>
     );
   }
 
@@ -232,7 +219,7 @@ class Profile extends Component {
 
   render() {
     const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
-    const teamToDisplay = this.props.teams.all[this.state.teamIdToDisplay];
+    const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
 
     return (
       <React.Fragment>
@@ -262,8 +249,6 @@ class Profile extends Component {
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
 
-        <hr />
-
         <Row className="mb-3">
           <Col xs="2">
             <h4>Team</h4>
@@ -280,8 +265,6 @@ class Profile extends Component {
 
         {this.state.ownProfile && (
           <React.Fragment>
-            <hr />
-
             <Row className="mb-3">
               <Col>
                 <h4>Activity</h4>
