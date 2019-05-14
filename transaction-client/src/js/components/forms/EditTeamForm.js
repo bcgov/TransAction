@@ -52,7 +52,7 @@ class EditTeamForm extends React.Component {
         {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
         title="Edit Profile"
       >
-        <Field name="name" component={FormInput} type="text" label="Name" />
+        <Field name="name" component={FormInput} type="text" label="Name" placeholderText="Enter team name" />
         <Field name="regionId" component={FormInput} type="select" label="Region">
           {this.renderRegionOptions()}
         </Field>
@@ -62,6 +62,16 @@ class EditTeamForm extends React.Component {
           type="textarea"
           label="Description"
           placeholderText="Enter a short description about yourself"
+        />
+        <Field
+          name="goal"
+          component={FormInput}
+          type="text"
+          label="Goal"
+          placeholderText="Enter team point goal"
+          tooltipText="The TransAction points goal for your team. Points are calculated using your team's workout
+          intensity and duration. One minute of work out equals one point, and then multiplied by the work out
+          intensity."
         />
       </FormModal>
     );

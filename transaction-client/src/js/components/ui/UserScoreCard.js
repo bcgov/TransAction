@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Row, Col, Card, CardBody, CardHeader, Button } from 'reactstrap';
+import { Row, Col, Card, CardBody, CardHeader, Button, Progress } from 'reactstrap';
 
 import * as Constants from '../../Constants';
 
@@ -33,7 +34,11 @@ class UserScoreCard extends React.Component {
   };
 
   render() {
-    const { score, teamScore, event, cardWidth, showLogActivityForm } = this.props;
+    const { score, teamScore, event, cardWidth, showLogActivityForm, goal } = this.props;
+
+    let progress = 0;
+    if (goal > 0 && teamScore) progress = (teamScore.score / goal) * 100;
+
     return (
       <Card>
         <CardHeader>
@@ -62,10 +67,22 @@ class UserScoreCard extends React.Component {
                 this.renderLogActivityButton()}
             </Col>
           </Row>
+          <Row>
+            <Col>{teamScore && goal && <Progress value={progress}>{`${progress}%`}</Progress>}</Col>
+          </Row>
         </CardBody>
       </Card>
     );
   }
 }
+
+UserScoreCard.propTypes = {
+  score: PropTypes.object,
+  teamScore: PropTypes.object,
+  event: PropTypes.object.isRequired,
+  cardWidth: PropTypes.string.isRequired,
+  showLogActivityForm: PropTypes.func,
+  goal: PropTypes.number,
+};
 
 export default UserScoreCard;

@@ -208,6 +208,7 @@ class Team extends Component {
     const events = this.props.events;
     const scores = this.props.scores;
     const currentUser = this.props.currentUser;
+    const currentTeam = this.props.teams[this.state.teamIdToDisplay];
 
     const teamScores = Object.values(scores.team[this.state.teamIdToDisplay]);
     const userScores = scores.user[currentUser.id];
@@ -222,6 +223,7 @@ class Team extends Component {
             event={events[score.eventId]}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
             showLogActivityForm={this.showLogActivityForm}
+            goal={currentTeam.goal}
           />
         </Col>
       );

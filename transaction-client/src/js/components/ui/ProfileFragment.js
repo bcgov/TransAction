@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Row, Col, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { Row, Col, Button, Popover, PopoverBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class ProfileFragment extends React.Component {
@@ -56,10 +56,10 @@ class ProfileFragment extends React.Component {
                 />
               </div>
               <Popover placement="top" isOpen={this.state.showPointTip} target="point-tip">
-                <PopoverHeader>What is this?</PopoverHeader>
                 <PopoverBody>
                   The TransAction points goal set by your team leader. Points are calculated using your team's workout
-                  intensity and duration.
+                  intensity and duration. One minute of work out equals one point, and then multiplied by the work out
+                  intensity.
                 </PopoverBody>
               </Popover>
             </Col>
@@ -83,6 +83,7 @@ ProfileFragment.propTypes = {
   description: PropTypes.string.isRequired,
   regionName: PropTypes.string.isRequired,
   profileLink: PropTypes.string,
+  goal: PropTypes.number,
 };
 
 export default ProfileFragment;
