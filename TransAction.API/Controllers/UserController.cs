@@ -127,10 +127,7 @@ namespace TransAction.API.Controllers
             {
                 updateUser.RoleId = roleId;               
             }
-            if (userEntity.TeamId != null && updateUser.TeamId == null)
-            {
-                updateUser.IsFreeAgent = true;
-            }
+
             //checking for if team is full 
             //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
             
