@@ -50,7 +50,7 @@ class EditTeamForm extends React.Component {
         submitting={this.state.submitting}
         onInit={this.onInit}
         {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
-        title="Edit Profile"
+        title="Edit Team"
       >
         <Field name="name" component={FormInput} type="text" label="Name" placeholderText="Enter team name" />
         <Field name="regionId" component={FormInput} type="select" label="Region">

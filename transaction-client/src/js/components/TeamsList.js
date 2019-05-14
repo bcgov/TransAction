@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, Breadcrumb, BreadcrumbItem, Row, Button, Table } from 'reactstrap';
+import { Container, BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
 
-import { fetchTeams, fetchUsers, postJoinRequest, fetchJoinRequests } from '../actions';
+import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
+import BreadcrumbFragment from './ui/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 
@@ -12,19 +13,13 @@ class TeamsList extends Component {
   state = { loading: true, clickable: true };
 
   componentDidMount() {
-    // this.toggleSpinner();
+    this.setState({ loading: true });
     Promise.all([this.props.fetchTeams(), this.props.fetchUsers()])
       .then(() => {
-        this.toggleSpinner();
+        this.setState({ loading: false });
       })
       .catch(() => {});
   }
-
-  toggleSpinner = () => {
-    this.setState(prevState => ({
-      loading: !prevState.loading,
-    }));
-  };
 
   sendJoinRequest(team) {
     this.setState({ clickable: false });
@@ -104,6 +99,32 @@ class TeamsList extends Component {
     }
   }
 
+  renderTeamList() {
+    return (
+      <Table striped size="sm">
+        <thead>
+          <tr>
+            <th scope="row" />
+            <th>Team Name</th>
+            <th>Team Leader</th>
+            <th>Region</th>
+            <th>Members</th>
+            <th>Request</th>
+          </tr>
+        </thead>
+        <tbody>{this.teamTable()}</tbody>
+      </Table>
+    );
+  }
+
+  renderContent() {
+    return (
+      <Row>
+        <Col>this.renderTeamList()</Col>
+      </Row>
+    );
+  }
+
   showTeams() {
     const teams = this.props.teams.map(team => {
       return (
@@ -118,14 +139,9 @@ class TeamsList extends Component {
   render() {
     return (
       <Container>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Teams</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
+        <BreadcrumbFragment>
+          <BreadcrumbItem active>Teams</BreadcrumbItem>
+        </BreadcrumbFragment>
         <div>{this.decideRender()}</div>
       </Container>
     );
@@ -143,5 +159,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, postJoinRequest, fetchJoinRequests }
+  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests }
 )(TeamsList);

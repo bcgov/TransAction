@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -8,6 +7,8 @@ import EventListItem from './EventListItem';
 import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
+import BreadcrumbFragment from './ui/BreadcrumbFragment';
+
 import * as Constants from '../Constants';
 class EventList extends Component {
   state = { loading: true, showEventForm: false, eventFormType: Constants.FORM_TYPE.ADD, eventFormInitialValues: null };
@@ -80,14 +81,9 @@ class EventList extends Component {
   render() {
     return (
       <React.Fragment>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Events</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
+        <BreadcrumbFragment>
+          <BreadcrumbItem active>Events</BreadcrumbItem>
+        </BreadcrumbFragment>
         {this.renderContent()}
         <EditEventForm
           initialValues={this.state.eventFormInitialValues}

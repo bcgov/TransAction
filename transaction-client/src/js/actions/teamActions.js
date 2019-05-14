@@ -81,6 +81,8 @@ export const fetchTeams = () => async dispatch => {
   });
 };
 
+// Add / Remove members
+
 //Team Requests
 export const fetchJoinRequests = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
@@ -106,7 +108,7 @@ export const fetchSpecificTeamRequests = id => async dispatch => {
   });
 };
 
-export const postJoinRequest = reqObj => async dispatch => {
+export const createJoinRequest = reqObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/teamrequests`, reqObj);

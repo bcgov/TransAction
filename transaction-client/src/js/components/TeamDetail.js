@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Alert, Breadcrumb, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { Alert, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import _ from 'lodash';
 
 import {
@@ -18,6 +18,7 @@ import {
 } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import ProfileFragment from './ui/ProfileFragment';
+import BreadcrumbFragment from './ui/BreadcrumbFragment';
 import UserScoreCard from './ui/UserScoreCard';
 import EditTeamForm from './forms/EditTeamForm';
 import LogActivityForm from './forms/LogActivityForm';
@@ -179,17 +180,12 @@ class Team extends Component {
 
     return (
       <React.Fragment>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link to="/team">Teams</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>{teamToDisplay && teamToDisplay.name}</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
+        <BreadcrumbFragment>
+          <BreadcrumbItem>
+            <Link to="/team">Teams</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem active>{teamToDisplay && teamToDisplay.name}</BreadcrumbItem>
+        </BreadcrumbFragment>
         <Row className="mb-3">
           <Col xs="2">
             <h4>Team Profile</h4>

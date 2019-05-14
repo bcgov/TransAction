@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Button, Row, Col, Alert } from 'reactstrap';
+import { BreadcrumbItem, Button, Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
 
 import { fetchTeam, editUser, fetchAllUserScores, fetchUser, fetchEvents, fetchAllTeamScores } from '../actions';
@@ -11,6 +11,7 @@ import EditUserForm from './forms/EditUserForm';
 import LogActivityForm from './forms/LogActivityForm';
 import UserScoreCard from './ui/UserScoreCard';
 import ProfileFragment from './ui/ProfileFragment';
+import BreadcrumbFragment from './ui/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 
@@ -133,8 +134,8 @@ class Profile extends Component {
                 if (this.state.ownProfile)
                   return (
                     <Alert color="warning">
-                      You are not currently on a team. You can <Link to="/">join</Link> or <Link to="/">create</Link> a
-                      team.
+                      You are not currently on a team. You can <Link to={Constants.PATHS.TEAM}>join</Link> or{' '}
+                      <Link to="/">create</Link> a team.
                     </Alert>
                   );
                 else return <p>{userToDisplay.fname} is not part of a team.</p>;
@@ -193,17 +194,12 @@ class Profile extends Component {
 
     return (
       <React.Fragment>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link to="/profile">Profile</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
+        <BreadcrumbFragment>
+          <BreadcrumbItem>
+            <Link to="/profile">Profile</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
+        </BreadcrumbFragment>
 
         <Row className="mb-3">
           <Col xs="2">

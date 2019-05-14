@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Container, Col, Row, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import EventModal from './EventModal';
-import CreateTeamModalBody from './CreateTeamModalBody';
+// import EventModal from './EventModal';
+// import CreateTeamModalBody from './CreateTeamModalBody';
+
+import * as Constants from '../Constants';
 
 class GettingStarted extends Component {
   state = { modal: false };
@@ -43,9 +45,9 @@ class GettingStarted extends Component {
               <Button size="lg" color="primary" className="mb-4" onClick={this.toggle}>
                 Create Team
               </Button>
-              <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
+              {/* <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
                 <CreateTeamModalBody modalClose={this.toggle} name="create" />
-              </EventModal>
+              </EventModal> */}
             </Col>
             <Col xs="6" id="borderRoleDifferences">
               <h3 className="mt-4">Team Member</h3>
@@ -62,7 +64,7 @@ class GettingStarted extends Component {
                 <br />
                 <li>Win at all costs.</li>
               </ul>
-              <Link to="/teamslist">
+              <Link to={Constants.PATHS.TEAM}>
                 <Button size="lg" color="primary" className="mb-4">
                   Join Team
                 </Button>

@@ -4,7 +4,7 @@ import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { connect } from 'react-redux';
 import { fetchCurrentUser, editUser } from '../actions';
 import EventModal from './EventModal';
-import CreateTeamModalBody from './CreateTeamModalBody';
+// import CreateTeamModalBody from './CreateTeamModalBody';
 
 class NoTeamPage extends Component {
   state = { modal: false, redirect: false, modalAgent: false };
@@ -121,9 +121,9 @@ class NoTeamPage extends Component {
             {' '}
             Create Team
           </Button>
-          <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
+          {/* <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
             <CreateTeamModalBody onSubmit={this.onSubmit} modalClose={this.toggle} name="create" />
-          </EventModal>
+          </EventModal> */}
           {this.showFreeAgent()}
         </React.Fragment>
       );

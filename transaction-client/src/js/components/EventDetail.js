@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
+import { BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
 import moment from 'moment';
 
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
 import UserScoreCard from './ui/UserScoreCard';
 import PageSpinner from './ui/PageSpinner';
 import LogActivityForm from './forms/LogActivityForm';
+import BreadcrumbFragment from './ui/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 
@@ -94,17 +95,12 @@ class EventDetail extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link to="/event">Events</Link>
-            </BreadcrumbItem>
-            {!this.state.loading && this.props.event && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
-          </Breadcrumb>
-        </Row>
+        <BreadcrumbFragment>
+          <BreadcrumbItem>
+            <Link to="/event">Events</Link>
+          </BreadcrumbItem>
+          {!this.state.loading && this.props.event && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
+        </BreadcrumbFragment>
         {this.state.loading ? <PageSpinner /> : this.renderContent()}
       </React.Fragment>
     );
