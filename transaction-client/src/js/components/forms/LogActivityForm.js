@@ -13,17 +13,19 @@ import DatePickerInput from '../ui/DatePickerInput';
 import PageSpinner from '../ui/PageSpinner';
 
 class LogActivityForm extends React.Component {
-  state = { submitting: false, loading: true };
+  state = { submitting: false, loading: false };
 
   onInit = () => {
-    this.setState({ loading: true });
-    this.props
-      .fetchActivityList()
-      .then(() => {
-        this.props.initialize(this.props.initialValues);
-        this.setState({ loading: false });
-      })
-      .catch(() => {});
+    if (this.props.activities.length === 0) {
+      this.setState({ loading: true });
+      this.props
+        .fetchActivityList()
+        .then(() => {
+          this.props.initialize(this.props.initialValues);
+          this.setState({ loading: false });
+        })
+        .catch(() => {});
+    }
   };
 
   onSubmit = formValues => {
@@ -49,7 +51,7 @@ class LogActivityForm extends React.Component {
   };
 
   renderActivityOptions = () => {
-    const activityOptions = Object.values(this.props.activities).map(activity => {
+    const activityOptions = this.props.activities.map(activity => {
       return (
         <option value={activity.id} key={activity.id}>
           {activity.name} - {activity.intensity}
@@ -173,7 +175,7 @@ const form = reduxForm({ form: 'logActivityForm', enableReinitialize: true, vali
 const mapStateToProps = (state, ownProps) => {
   const currentUser = state.users.current;
   return {
-    activities: state.activities,
+    activities: Object.values(state.activities),
     initialValues: {
       eventId: ownProps.eventId,
       userId: currentUser.id,

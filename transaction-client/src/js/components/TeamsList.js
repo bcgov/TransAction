@@ -1,31 +1,30 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Container, Breadcrumb, BreadcrumbItem, Spinner, Row, Button, Table } from 'reactstrap';
 import { connect } from 'react-redux';
-import { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser, fetchJoinRequests } from '../actions';
+import { Link } from 'react-router-dom';
+import { Container, Breadcrumb, BreadcrumbItem, Row, Button, Table } from 'reactstrap';
+
+import { fetchTeams, fetchUsers, postJoinRequest, fetchJoinRequests } from '../actions';
+import PageSpinner from './ui/PageSpinner';
+
+import * as Constants from '../Constants';
 
 class TeamsList extends Component {
   state = { loading: true, clickable: true };
+
+  componentDidMount() {
+    // this.toggleSpinner();
+    Promise.all([this.props.fetchTeams(), this.props.fetchUsers()])
+      .then(() => {
+        this.toggleSpinner();
+      })
+      .catch(() => {});
+  }
+
   toggleSpinner = () => {
     this.setState(prevState => ({
       loading: !prevState.loading,
     }));
   };
-  componentDidMount() {
-    // this.toggleSpinner();
-    Promise.all([
-      this.props.fetchTeams(),
-      this.props.fetchUsers(),
-      this.props.fetchRegions(),
-      this.props.fetchCurrentUser(),
-    ])
-      .then(() => {
-        this.toggleSpinner();
-      })
-      .catch(() => {
-        this.toggleSpinner();
-      });
-  }
 
   sendJoinRequest(team) {
     this.setState({ clickable: false });
@@ -63,16 +62,15 @@ class TeamsList extends Component {
       return (
         <tr key={team.id}>
           <th scope="row" />
-          <td>{team.name}</td>
+          <td>
+            <Link className="no-underline" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+              {team.name}
+            </Link>
+          </td>
           <td>
             {this.props.users[team.teamLeaderId].fname} {this.props.users[team.teamLeaderId].lname}
           </td>
           <td>{this.props.regions[this.props.users[team.teamLeaderId].regionId].name}</td>
-          <td>
-            <Link to={`/team/${team.id}`}>
-              <Button>View Team</Button>
-            </Link>
-          </td>
           <td>{team.numMembers}</td>
           <td>{this.checkClickable(team)}</td>
         </tr>
@@ -83,22 +81,17 @@ class TeamsList extends Component {
 
   decideRender() {
     if (this.state.loading === true) {
-      return (
-        <div className="col-1 offset-6">
-          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
-        </div>
-      );
+      return <PageSpinner />;
     } else {
       return (
         <div>
-          <Table striped>
+          <Table striped size="sm">
             <thead>
               <tr>
                 <th scope="row" />
                 <th>Team Name</th>
                 <th>Team Leader</th>
                 <th>Region</th>
-                <th>Page</th>
                 <th>Members</th>
                 <th>Request</th>
               </tr>
@@ -130,10 +123,9 @@ class TeamsList extends Component {
             <BreadcrumbItem>
               <Link to="/">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>TeamList</BreadcrumbItem>
+            <BreadcrumbItem active>Teams</BreadcrumbItem>
           </Breadcrumb>
         </Row>
-        <h3>List of Teams: </h3>
         <div>{this.decideRender()}</div>
       </Container>
     );
@@ -141,15 +133,15 @@ class TeamsList extends Component {
 }
 const mapStateToProps = state => {
   return {
-    teams: Object.values(state.team),
-    users: Object.values(state.users),
+    teams: Object.values(state.teams),
+    users: state.users.all,
     regions: state.regions,
-    currentUser: state.currentUser,
+    currentUser: state.users.current,
     joinRequests: state.joinRequests,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser, fetchJoinRequests }
+  { fetchTeams, fetchUsers, postJoinRequest, fetchJoinRequests }
 )(TeamsList);

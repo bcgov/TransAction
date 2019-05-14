@@ -8,7 +8,7 @@ import {
   fetchCurrentUser,
   fetchTeam,
   editTeam,
-  fetchUsers,
+  fetchUser,
   editUser,
   fetchSpecificTeamRequests,
   editJoinRequest,
@@ -18,10 +18,11 @@ import {
 } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import ProfileFragment from './ui/ProfileFragment';
-import TeamMemberRow from './ui/TeamMemberRow';
 import UserScoreCard from './ui/UserScoreCard';
 import EditTeamForm from './forms/EditTeamForm';
 import LogActivityForm from './forms/LogActivityForm';
+import TeamJoinRequestPanel from './TeamJoinRequestPanel';
+import TeamMembersPanel from './TeamMembersPanel';
 
 import * as Constants from '../Constants';
 
@@ -60,7 +61,6 @@ class Team extends Component {
 
     Promise.all([
       this.props.fetchTeam(teamId),
-      this.props.fetchUsers(),
       this.props.fetchSpecificTeamRequests(teamId),
       this.props.fetchAllTeamScores(teamId),
       this.props.fetchAllUserScores(currentUser.id),
@@ -68,15 +68,35 @@ class Team extends Component {
     ])
       .then(() => {
         const team = this.props.teams[teamId];
+        const joinRequest = this.props.joinRequests;
 
         // If team lead
         if (!team && team.teamLeaderId === currentUser.id) this.setState({ canEdit: true });
 
         if (currentUser.teamId === teamId) this.setState({ ownTeamProfile: true });
 
+        let usersToFetch = team.teamMemberIds.filter(userId => {
+          return !(userId in this.props.users);
+        });
+
+        usersToFetch = usersToFetch.concat(
+          joinRequest.map(request => {
+            return request.userId;
+          })
+        );
+
+        return Promise.all(
+          usersToFetch.map(user => {
+            return this.props.fetchUser(user);
+          })
+        );
+      })
+      .then(() => {
         this.setState({ teamIdToDisplay: teamId, loading: false });
       })
-      .catch(() => {});
+      .catch(e => {
+        console.error(e);
+      });
   };
 
   showLogActivityForm = eventId => {
@@ -106,99 +126,6 @@ class Team extends Component {
           {..._.pick(teamToDisplay, 'name', 'description', 'goal')}
           regionName={this.props.regions[teamToDisplay.regionId].name}
         />
-        <hr />
-      </React.Fragment>
-    );
-  }
-
-  renderTeamMembers(teamToDisplay) {
-    const users = this.props.users;
-    const regions = this.props.regions;
-    const currentUser = this.props.currentUser;
-
-    const teamMemberElements = users
-      .filter(user => {
-        return user.teamId === teamToDisplay.id;
-      })
-      .map(user => {
-        return (
-          <TeamMemberRow key={user.id} user={user} regions={regions}>
-            <React.Fragment>
-              {user.id === currentUser.id ? (
-                <Button color="danger" size="sm" className="w75">
-                  Leave
-                </Button>
-              ) : (
-                currentUser.id === teamToDisplay.teamLeaderId && (
-                  <Button color="danger" size="sm" className="w75">
-                    Remove
-                  </Button>
-                )
-              )}
-            </React.Fragment>
-          </TeamMemberRow>
-        );
-      });
-
-    return (
-      <React.Fragment>
-        <Row className="mb-2">
-          <Col xs="6" lg="4">
-            <strong>Name</strong>
-          </Col>
-          <Col xs="3" lg="4">
-            <strong>Region</strong>
-          </Col>
-          <Col xs="3" lg="4" />
-        </Row>
-        {teamMemberElements}
-        <hr />
-      </React.Fragment>
-    );
-  }
-
-  renderTeamJoinRequests(teamToDisplay) {
-    const users = this.props.users;
-    const regions = this.props.regions;
-    const joinRequestsUserIds = this.props.joinRequests
-      .filter(request => {
-        return request.teamId === teamToDisplay.id;
-      })
-      .map(request => {
-        return request.userId;
-      });
-
-    const teamMemberElements = users
-      .filter(user => {
-        return joinRequestsUserIds.includes(user.id);
-      })
-      .map(user => {
-        return (
-          <TeamMemberRow key={user.id} user={user} regions={regions}>
-            <React.Fragment>
-              <Button color="success" size="sm" className="w75 mr-1">
-                Accept
-              </Button>
-              <Button color="danger" size="sm" className="w75">
-                Reject
-              </Button>
-            </React.Fragment>
-          </TeamMemberRow>
-        );
-      });
-
-    return (
-      <React.Fragment>
-        <Row className="mb-2">
-          <Col xs="6" lg="4">
-            <strong>Name</strong>
-          </Col>
-          <Col xs="3" lg="4">
-            <strong>Region</strong>
-          </Col>
-          <Col xs="3" lg="4" />
-        </Row>
-        {teamMemberElements}
         <hr />
       </React.Fragment>
     );
@@ -246,6 +173,9 @@ class Team extends Component {
 
   render() {
     const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
+    const joinRequests = this.props.joinRequests.filter(request => {
+      return request.teamId === this.state.teamIdToDisplay;
+    });
 
     return (
       <React.Fragment>
@@ -273,23 +203,36 @@ class Team extends Component {
           </Col>
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderTeamInfo(teamToDisplay)}
+
         <Row className="mb-3">
           <Col>
             <h4>Team Members</h4>
           </Col>
         </Row>
-        {this.state.loading ? <PageSpinner /> : this.renderTeamMembers(teamToDisplay)}
-
-        {teamToDisplay && this.props.currentUser.id === teamToDisplay.teamLeaderId && (
-          <React.Fragment>
-            <Row className="mb-3">
-              <Col>
-                <h4>Team Join Requests</h4>
-              </Col>
-            </Row>
-            {this.state.loading ? <PageSpinner /> : this.renderTeamJoinRequests(teamToDisplay)}
-          </React.Fragment>
+        {this.state.loading ? (
+          <PageSpinner />
+        ) : (
+          <TeamMembersPanel
+            teamToDisplay={teamToDisplay}
+            users={this.props.users}
+            regions={this.props.regions}
+            currentUser={this.props.currentUser}
+          />
         )}
+
+        {teamToDisplay &&
+          this.props.currentUser.id === teamToDisplay.teamLeaderId &&
+          joinRequests.length > 0 &&
+          teamToDisplay.numMembers < 5 && (
+            <React.Fragment>
+              <Row className="mb-3">
+                <Col>
+                  <h4>Team Join Requests</h4>
+                </Col>
+              </Row>
+              {this.state.loading ? <PageSpinner /> : <TeamJoinRequestPanel teamToDisplay={teamToDisplay} />}
+            </React.Fragment>
+          )}
 
         {this.state.ownTeamProfile && (
           <React.Fragment>
@@ -322,7 +265,7 @@ const mapStateToProps = state => {
     currentUser: state.users.current,
     scores: state.scores,
     teams: state.teams,
-    users: Object.values(state.users.all),
+    users: state.users.all,
     roles: state.roles,
     joinRequests: Object.values(state.joinRequests),
     regions: state.regions,
@@ -336,7 +279,7 @@ export default connect(
     fetchCurrentUser,
     fetchTeam,
     editTeam,
-    fetchUsers,
+    fetchUser,
     fetchSpecificTeamRequests,
     editUser,
     editJoinRequest,

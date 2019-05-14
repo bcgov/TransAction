@@ -365,7 +365,8 @@ namespace TransAction.Data.Services
                         MemberReqId = x.MemberReqId,
                         TeamId = teamId,
                         UserId = x.UserId,
-                        IsActive = x.IsActive
+                        IsActive = x.IsActive,
+                        ConcurrencyControlNumber = x.ConcurrencyControlNumber
                     })
                     .ToList();
 

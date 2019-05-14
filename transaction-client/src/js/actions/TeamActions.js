@@ -9,6 +9,7 @@ import {
   FETCH_SPECIFIC_TEAM_REQUESTS,
   FETCH_JOIN_REQUESTS,
   EDIT_JOIN_REQUEST,
+  DELETE_JOIN_REQUEST,
 } from './types';
 import history from '../history';
 
@@ -117,11 +118,39 @@ export const postJoinRequest = reqObj => async dispatch => {
   });
 };
 
-export const editJoinRequest = (reqObj, id) => async dispatch => {
+export const editJoinRequest = (id, reqObj) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.put(`/teamrequests/${id}`, reqObj);
       dispatch({ type: EDIT_JOIN_REQUEST, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const acceptJoinRequest = (id, reqObj) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      reqObj = { ...reqObj, isActive: false };
+      await api.put(`/teamrequests/${id}`, reqObj);
+      dispatch({ type: DELETE_JOIN_REQUEST, payload: id });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const rejectJoinRequest = (id, reqObj) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      reqObj = { ...reqObj, isActive: false };
+
+      await api.put(`/teamrequests/${id}`, reqObj);
+      dispatch({ type: DELETE_JOIN_REQUEST, payload: id });
+
       resolve();
     } catch (e) {
       reject(e);
