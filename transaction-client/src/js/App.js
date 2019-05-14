@@ -3,8 +3,8 @@ import { Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
 
 import history from './history';
-import Footer from './components/ui/Footer';
-import Header from './components/ui/Header';
+import Footer from './components/fragments/Footer';
+import Header from './components/fragments/Header';
 import Main from './components/Main';
 import EventList from './components/EventList';
 import EventDetail from './components/EventDetail';

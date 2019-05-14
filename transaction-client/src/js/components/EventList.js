@@ -7,7 +7,7 @@ import EventListItem from './EventListItem';
 import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
-import BreadcrumbFragment from './ui/BreadcrumbFragment';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 class EventList extends Component {

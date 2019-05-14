@@ -5,12 +5,12 @@ import { Container, BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
 
 import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
-import BreadcrumbFragment from './ui/BreadcrumbFragment';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 
 class TeamsList extends Component {
-  state = { loading: true, clickable: true };
+  state = { loading: true };
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -21,38 +21,7 @@ class TeamsList extends Component {
       .catch(() => {});
   }
 
-  sendJoinRequest(team) {
-    this.setState({ clickable: false });
-
-    const reqObj = { teamId: team.id, userId: this.props.currentUser.id };
-    this.props
-      .postJoinRequest(reqObj)
-      .then(() => {
-        this.fetchJoinRequests();
-      })
-      .then(() => {
-        this.setState({ clickable: true });
-      })
-      .catch(() => {
-        this.setState({ clickable: true });
-      });
-  }
-
-  checkClickable(team) {
-    if (this.props.currentUser.teamId === null) {
-      if (team.numMembers >= 5) {
-        return <Button color="secondary">Team Is Full</Button>;
-      } else if (this.state.clickable === true) {
-        return (
-          <Button color="primary" onClick={() => this.sendJoinRequest(team)}>
-            Request to Join Team!
-          </Button>
-        );
-      }
-    }
-  }
-
-  teamTable() {
+  renderTeamRows() {
     var teams = this.props.teams.map(team => {
       return (
         <tr key={team.id}>
@@ -67,36 +36,11 @@ class TeamsList extends Component {
           </td>
           <td>{this.props.regions[this.props.users[team.teamLeaderId].regionId].name}</td>
           <td>{team.numMembers}</td>
-          <td>{this.checkClickable(team)}</td>
+          <td />
         </tr>
       );
     });
     return teams;
-  }
-
-  decideRender() {
-    if (this.state.loading === true) {
-      return <PageSpinner />;
-    } else {
-      return (
-        <div>
-          <Table striped size="sm">
-            <thead>
-              <tr>
-                <th scope="row" />
-                <th>Team Name</th>
-                <th>Team Leader</th>
-                <th>Region</th>
-                <th>Members</th>
-                <th>Request</th>
-              </tr>
-            </thead>
-            <tbody>{this.teamTable()}</tbody>
-          </Table>
-          <br />
-        </div>
-      );
-    }
   }
 
   renderTeamList() {
@@ -112,7 +56,7 @@ class TeamsList extends Component {
             <th>Request</th>
           </tr>
         </thead>
-        <tbody>{this.teamTable()}</tbody>
+        <tbody>{this.renderTeamRows()}</tbody>
       </Table>
     );
   }
@@ -120,20 +64,9 @@ class TeamsList extends Component {
   renderContent() {
     return (
       <Row>
-        <Col>this.renderTeamList()</Col>
+        <Col>{this.renderTeamList()}</Col>
       </Row>
     );
-  }
-
-  showTeams() {
-    const teams = this.props.teams.map(team => {
-      return (
-        <div key={team.id}>
-          <Link to={`/team/${team.id}`}>{team.name}</Link>
-        </div>
-      );
-    });
-    return teams;
   }
 
   render() {
@@ -142,7 +75,7 @@ class TeamsList extends Component {
         <BreadcrumbFragment>
           <BreadcrumbItem active>Teams</BreadcrumbItem>
         </BreadcrumbFragment>
-        <div>{this.decideRender()}</div>
+        {this.state.loading ? <PageSpinner /> : this.renderContent()}
       </Container>
     );
   }

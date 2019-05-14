@@ -9,9 +9,9 @@ import { fetchTeam, editUser, fetchAllUserScores, fetchUser, fetchEvents, fetchA
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
 import LogActivityForm from './forms/LogActivityForm';
-import UserScoreCard from './ui/UserScoreCard';
-import ProfileFragment from './ui/ProfileFragment';
-import BreadcrumbFragment from './ui/BreadcrumbFragment';
+import UserScoreCard from './fragments/UserScoreCard';
+import ProfileFragment from './fragments/ProfileFragment';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 

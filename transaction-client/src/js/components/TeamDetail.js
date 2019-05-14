@@ -17,13 +17,15 @@ import {
   fetchEvents,
 } from '../actions';
 import PageSpinner from './ui/PageSpinner';
-import ProfileFragment from './ui/ProfileFragment';
-import BreadcrumbFragment from './ui/BreadcrumbFragment';
-import UserScoreCard from './ui/UserScoreCard';
+
+import ProfileFragment from './fragments/ProfileFragment';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+import UserScoreCard from './fragments/UserScoreCard';
+import TeamJoinRequestPanel from './fragments/TeamJoinRequestPanel';
+import TeamMembersPanel from './fragments/TeamMembersPanel';
+
 import EditTeamForm from './forms/EditTeamForm';
 import LogActivityForm from './forms/LogActivityForm';
-import TeamJoinRequestPanel from './TeamJoinRequestPanel';
-import TeamMembersPanel from './TeamMembersPanel';
 
 import * as Constants from '../Constants';
 

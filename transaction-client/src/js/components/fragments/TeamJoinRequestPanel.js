@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Row, Col } from 'reactstrap';
 
-import { rejectJoinRequest } from '../actions';
-import TeamMemberRow from './ui/TeamMemberRow';
+import { rejectJoinRequest } from '../../actions';
+import TeamMemberRow from './TeamMemberRow';
 
 class TeamJoinRequestPanel extends React.Component {
   AcceptRequest = requestId => {};

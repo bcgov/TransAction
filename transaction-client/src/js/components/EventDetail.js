@@ -5,10 +5,10 @@ import { BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
 import moment from 'moment';
 
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
-import UserScoreCard from './ui/UserScoreCard';
+import UserScoreCard from './fragments/UserScoreCard';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import PageSpinner from './ui/PageSpinner';
 import LogActivityForm from './forms/LogActivityForm';
-import BreadcrumbFragment from './ui/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 

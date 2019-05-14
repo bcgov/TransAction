@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Row, Col } from 'reactstrap';
 
-import TeamMemberRow from './ui/TeamMemberRow';
+import TeamMemberRow from './TeamMemberRow';
 
 class TeamMembersPanel extends React.Component {
   render() {
