@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions } from '../actions';
+import DialogModal from './ui/DialogModal';
+
 class Main extends Component {
   state = { loading: true };
 
@@ -14,7 +16,14 @@ class Main extends Component {
   }
 
   render() {
-    return this.state.loading ? <div>Loading...</div> : this.props.children;
+    return this.state.loading ? (
+      <div>Loading...</div>
+    ) : (
+      <React.Fragment>
+        {this.props.children}
+        <DialogModal />
+      </React.Fragment>
+    );
   }
 }
 

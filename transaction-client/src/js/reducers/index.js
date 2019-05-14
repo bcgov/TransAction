@@ -3,6 +3,7 @@ import { reducer as formReducer } from 'redux-form';
 
 import activityReducer from './activityReducer';
 import authUserReducer from './authUserReducer';
+import dialogModalReducer from './dialogModalReducer';
 import eventReducer from './eventReducer';
 import joinRequestsReducer from './joinRequestsReducer';
 import regionsReducer from './regionsReducer';
@@ -16,6 +17,7 @@ export default combineReducers({
   form: formReducer,
   activities: activityReducer,
   authUser: authUserReducer,
+  dialogModal: dialogModalReducer,
   events: eventReducer,
   joinRequests: joinRequestsReducer,
   teams: teamsReducer,

@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Container, BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
 
-import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
+import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests, showGlobalModal } from '../actions';
+
 import PageSpinner from './ui/PageSpinner';
+
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
@@ -21,6 +23,14 @@ class TeamsList extends Component {
       .catch(() => {});
   }
 
+  sendJoinRequest = () => {};
+
+  confirmSendRequest = team => {
+    const body = `Send join team request to ${team.name}?`;
+    const title = 'Request to Join';
+    this.props.showGlobalModal({ body, title });
+  };
+
   renderTeamRows() {
     var teams = this.props.teams.map(team => {
       return (
@@ -36,7 +46,11 @@ class TeamsList extends Component {
           </td>
           <td>{this.props.regions[this.props.users[team.teamLeaderId].regionId].name}</td>
           <td>{team.numMembers}</td>
-          <td />
+          <td>
+            <Button size="sm" color="primary" onClick={() => this.confirmSendRequest(team)}>
+              Request to Join
+            </Button>
+          </td>
         </tr>
       );
     });
@@ -92,5 +106,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests }
+  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests, showGlobalModal }
 )(TeamsList);
