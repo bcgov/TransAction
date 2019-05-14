@@ -52,7 +52,7 @@ class LogActivityForm extends React.Component {
     const activityOptions = Object.values(this.props.activities).map(activity => {
       return (
         <option value={activity.id} key={activity.id}>
-          {activity.name}
+          {activity.name} - {activity.intensity}
         </option>
       );
     });

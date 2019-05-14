@@ -21,6 +21,7 @@ import ProfileFragment from './ui/ProfileFragment';
 import TeamMemberRow from './ui/TeamMemberRow';
 import UserScoreCard from './ui/UserScoreCard';
 import EditTeamForm from './forms/EditTeamForm';
+import LogActivityForm from './forms/LogActivityForm';
 
 import * as Constants from '../Constants';
 
@@ -31,6 +32,8 @@ class Team extends Component {
     ownTeamProfile: false,
     teamIdToDisplay: null,
     showEditTeamForm: false,
+    showLogActivityForm: false,
+    logActivityEventId: null,
   };
 
   componentDidMount() {
@@ -76,6 +79,16 @@ class Team extends Component {
       .catch(() => {});
   };
 
+  showLogActivityForm = eventId => {
+    this.setState({ showLogActivityForm: true, logActivityEventId: eventId });
+  };
+
+  toggleLogActivityForm = () => {
+    this.setState(prevState => ({
+      showLogActivityForm: !prevState.showLogActivityForm,
+    }));
+  };
+
   showEditTeamForm = () => {
     this.setState({ showEditTeamForm: true });
   };
@@ -90,7 +103,7 @@ class Team extends Component {
     return (
       <React.Fragment>
         <ProfileFragment
-          {..._.pick(teamToDisplay, 'name', 'description')}
+          {..._.pick(teamToDisplay, 'name', 'description', 'goal')}
           regionName={this.props.regions[teamToDisplay.regionId].name}
         />
         <hr />
@@ -208,7 +221,7 @@ class Team extends Component {
             teamScore={score}
             event={events[score.eventId]}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
-            // showLogActivityForm={this.showLogActivityForm}
+            showLogActivityForm={this.showLogActivityForm}
           />
         </Col>
       );
@@ -291,6 +304,11 @@ class Team extends Component {
           initialValues={teamToDisplay}
           isOpen={this.state.showEditTeamForm}
           toggle={this.toggleEditTeamForm}
+        />
+        <LogActivityForm
+          isOpen={this.state.showLogActivityForm}
+          toggle={this.toggleLogActivityForm}
+          eventId={this.state.logActivityEventId}
         />
       </React.Fragment>
     );
