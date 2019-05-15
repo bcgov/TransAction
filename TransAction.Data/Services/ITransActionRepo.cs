@@ -56,7 +56,7 @@ namespace TransAction.Data.Services
         IEnumerable<TraMemberReq> GetRequests();
         TraMemberReq GetRequest(int id);
         void CreateRequest(TraMemberReq traMember);
-        IEnumerable<CurrentTeamRequestsDto> CurrentTeamReq(int teamId);
+        IEnumerable<MemberReqDto> CurrentTeamReq(int teamId);
 
         bool Save();
     }

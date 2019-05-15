@@ -223,6 +223,7 @@ namespace TransAction.Data.Services
             var userAct = _context.TraUserActivity
                 .Where(p => p.EventId == eventId && p.UserId == userId)
                     .Include(x => x.Activity)
+                    .Include(x => x.Event)
                     .GroupBy(x => new { x.UserId, x.EventId })
                     .Select(x => new
                     {
@@ -382,17 +383,18 @@ namespace TransAction.Data.Services
             _context.TraMemberReq.Add(traMember);
         }
 
-        public IEnumerable<CurrentTeamRequestsDto> CurrentTeamReq(int teamId)
+        public IEnumerable<MemberReqDto> CurrentTeamReq(int teamId)
         {
             var teamRequests = _context.TraMemberReq
                 .Where(p => p.TeamId == teamId)
                 .Where(p => p.IsActive == true)
-                    .Select(x => new CurrentTeamRequestsDto()
+                    .Select(x => new MemberReqDto()
                     {
                         MemberReqId = x.MemberReqId,
                         TeamId = teamId,
                         UserId = x.UserId,
-                        IsActive = x.IsActive
+                        IsActive = x.IsActive,
+                        ConcurrencyControlNumber = x.ConcurrencyControlNumber          
                     })
                     .ToList();
 
