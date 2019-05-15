@@ -64,7 +64,6 @@ export const createTeam = formValues => async dispatch => {
   const response = await api.post('/teams', formValues);
 
   dispatch({ type: CREATE_TEAM, payload: response.data });
-  dispatch({ type: FETCH_CURRENT_TEAM, payload: response.data });
 
   history.push('/team');
 };
@@ -132,12 +131,13 @@ export const editJoinRequest = (id, reqObj) => async dispatch => {
   });
 };
 
-export const acceptJoinRequest = (id, reqObj) => async dispatch => {
+export const acceptJoinRequest = reqObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      reqObj = { ...reqObj, isActive: false };
-      await api.put(`/teamrequests/${id}`, reqObj);
-      dispatch({ type: DELETE_JOIN_REQUEST, payload: id });
+      const response = await api.post(`/teams/join`, reqObj);
+
+      dispatch({ type: FETCH_TEAM, payload: response.data });
+      dispatch({ type: DELETE_JOIN_REQUEST, payload: reqObj.id });
       resolve();
     } catch (e) {
       reject(e);
@@ -145,14 +145,38 @@ export const acceptJoinRequest = (id, reqObj) => async dispatch => {
   });
 };
 
-export const rejectJoinRequest = (id, reqObj) => async dispatch => {
+export const rejectJoinRequest = reqObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       reqObj = { ...reqObj, isActive: false };
 
-      await api.put(`/teamrequests/${id}`, reqObj);
-      dispatch({ type: DELETE_JOIN_REQUEST, payload: id });
+      await api.put(`/teamrequests/${reqObj.id}`, reqObj);
+      dispatch({ type: DELETE_JOIN_REQUEST, payload: reqObj.id });
 
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const joinTeam = joinObj => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.post(`/teams/join`, joinObj);
+      dispatch({ type: FETCH_TEAM, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const leaveTeam = (teamId, userId) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.post(`/teams/remove`, { teamId, userId });
+      dispatch({ type: FETCH_TEAM, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);

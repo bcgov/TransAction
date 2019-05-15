@@ -2,14 +2,18 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Row, Col } from 'reactstrap';
 
-import { rejectJoinRequest } from '../../actions';
+import { rejectJoinRequest, acceptJoinRequest, fetchUser } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
 
 class TeamJoinRequestPanel extends React.Component {
-  AcceptRequest = requestId => {};
+  acceptRequest = request => {
+    this.props.acceptJoinRequest(request).then(() => {
+      this.props.fetchUser(request.userId);
+    });
+  };
 
   rejectRequest = request => {
-    this.props.rejectJoinRequest(request.id, request).then(() => {});
+    this.props.rejectJoinRequest(request).then(() => {});
   };
 
   render() {
@@ -24,7 +28,7 @@ class TeamJoinRequestPanel extends React.Component {
       return (
         <TeamMemberRow key={user.id} user={user} regions={regions}>
           <React.Fragment>
-            <Button color="success" size="sm" className="w75 mr-1">
+            <Button color="success" size="sm" className="w75 mr-1" onClick={() => this.acceptRequest(joinRequest)}>
               Accept
             </Button>
             <Button color="danger" size="sm" className="w75" onClick={() => this.rejectRequest(joinRequest)}>
@@ -65,5 +69,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { rejectJoinRequest }
+  { rejectJoinRequest, acceptJoinRequest, fetchUser }
 )(TeamJoinRequestPanel);

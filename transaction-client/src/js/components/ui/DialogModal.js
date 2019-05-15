@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 
@@ -15,7 +15,7 @@ class DialogModal extends React.Component {
   handleOnClick = () => {
     this.setState({ clicked: true });
     const callback = this.props.callback;
-
+    console.log(callback);
     if (callback) {
       callback().then(() => {
         this.closeDialog();
@@ -24,11 +24,11 @@ class DialogModal extends React.Component {
   };
 
   closeDialog = () => {
-    this.props.hideGlobalModal();
+    //this.props.hideGlobalModal();
   };
 
   render() {
-    const { isOpen, title, body, secondary } = this.props.dialogOptions;
+    const { isOpen, title, body, secondary } = this.props;
     return (
       <div>
         <Modal isOpen={isOpen} toggle={this.closeDialog} onOpened={this.init}>

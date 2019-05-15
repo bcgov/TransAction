@@ -26,9 +26,14 @@ class TeamsList extends Component {
   sendJoinRequest = () => {};
 
   confirmSendRequest = team => {
-    const body = `Send join team request to ${team.name}?`;
+    const body = (
+      <React.Fragment>
+        Send join team request to <strong>{team.name}</strong>?
+      </React.Fragment>
+    );
     const title = 'Request to Join';
-    this.props.showGlobalModal({ body, title });
+    const secondary = true;
+    this.props.showGlobalModal({ body, title, secondary });
   };
 
   renderTeamRows() {

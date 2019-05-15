@@ -102,6 +102,10 @@ class Team extends Component {
       });
   };
 
+  userBelongsToTeam = () => {
+    return this.state.teamIdToDisplay === this.props.currentUser.teamId;
+  };
+
   showLogActivityForm = eventId => {
     this.setState({ showLogActivityForm: true, logActivityEventId: eventId });
   };
@@ -232,7 +236,7 @@ class Team extends Component {
             </React.Fragment>
           )}
 
-        {this.state.ownTeamProfile && (
+        {this.userBelongsToTeam() && (
           <React.Fragment>
             <Row className="mb-3">
               <Col>
