@@ -189,7 +189,7 @@ namespace TransAction.API.Controllers
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-            return Ok(addUserToTeam);
+            return GetTeam(addUserToTeam.TeamId);
         }
 
         [HttpPost("remove")]
@@ -245,7 +245,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return Ok(removeUser);
+            return GetTeam(removeUser.TeamId);
         }
 
     }
