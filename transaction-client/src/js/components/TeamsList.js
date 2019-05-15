@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
+import { BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
 
-import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests, showGlobalModal } from '../actions';
+import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 
@@ -16,27 +16,27 @@ class TeamsList extends Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-    Promise.all([this.props.fetchTeams(), this.props.fetchUsers()])
+    Promise.all([this.props.fetchTeams(), this.props.fetchUsers(), this.props.fetchJoinRequests()])
       .then(() => {
         this.setState({ loading: false });
       })
       .catch(() => {});
   }
 
-  sendJoinRequest = () => {};
-
-  confirmSendRequest = team => {
-    const body = (
-      <React.Fragment>
-        Send join team request to <strong>{team.name}</strong>?
-      </React.Fragment>
-    );
-    const title = 'Request to Join';
-    const secondary = true;
-    this.props.showGlobalModal({ body, title, secondary });
+  sendJoinRequest = (userId, teamId) => {
+    this.props.createJoinRequest({ userId, teamId });
   };
 
   renderTeamRows() {
+    const { currentUser, users, regions } = this.props;
+    const userRequests = this.props.joinRequests
+      .filter(request => {
+        return request.userId === currentUser.id;
+      })
+      .map(request => {
+        return request.teamId;
+      });
+
     var teams = this.props.teams.map(team => {
       return (
         <tr key={team.id}>
@@ -47,15 +47,19 @@ class TeamsList extends Component {
             </Link>
           </td>
           <td>
-            {this.props.users[team.teamLeaderId].fname} {this.props.users[team.teamLeaderId].lname}
+            {users[team.teamLeaderId].fname} {users[team.teamLeaderId].lname}
           </td>
-          <td>{this.props.regions[this.props.users[team.teamLeaderId].regionId].name}</td>
+          <td>{regions[users[team.teamLeaderId].regionId].name}</td>
           <td>{team.numMembers}</td>
-          <td>
-            <Button size="sm" color="primary" onClick={() => this.confirmSendRequest(team)}>
-              Request to Join
-            </Button>
-          </td>
+          {!currentUser.teamId && (
+            <td>
+              {!userRequests.includes(team.id) && (
+                <Button size="sm" color="primary" onClick={() => this.sendJoinRequest(currentUser.id, team.id)}>
+                  Request to Join
+                </Button>
+              )}
+            </td>
+          )}
         </tr>
       );
     });
@@ -72,7 +76,7 @@ class TeamsList extends Component {
             <th>Team Leader</th>
             <th>Region</th>
             <th>Members</th>
-            <th>Request</th>
+            {!this.props.currentUser.teamId && <th>Request</th>}
           </tr>
         </thead>
         <tbody>{this.renderTeamRows()}</tbody>
@@ -90,12 +94,12 @@ class TeamsList extends Component {
 
   render() {
     return (
-      <Container>
+      <React.Fragment>
         <BreadcrumbFragment>
           <BreadcrumbItem active>Teams</BreadcrumbItem>
         </BreadcrumbFragment>
         {this.state.loading ? <PageSpinner /> : this.renderContent()}
-      </Container>
+      </React.Fragment>
     );
   }
 }
@@ -105,11 +109,11 @@ const mapStateToProps = state => {
     users: state.users.all,
     regions: state.regions,
     currentUser: state.users.current,
-    joinRequests: state.joinRequests,
+    joinRequests: Object.values(state.joinRequests),
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests, showGlobalModal }
+  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests }
 )(TeamsList);

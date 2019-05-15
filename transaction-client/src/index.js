@@ -8,7 +8,13 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faExternalLinkAlt, faExclamationCircle, faSave, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faExternalLinkAlt,
+  faExclamationCircle,
+  faSave,
+  faQuestionCircle,
+  faStar,
+} from '@fortawesome/free-solid-svg-icons';
 
 import Keycloak from 'keycloak-js';
 
@@ -22,6 +28,7 @@ library.add(faExternalLinkAlt);
 library.add(faExclamationCircle);
 library.add(faSave);
 library.add(faQuestionCircle);
+library.add(faStar);
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk)));

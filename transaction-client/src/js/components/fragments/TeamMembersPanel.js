@@ -19,8 +19,10 @@ class TeamMembersPanel extends React.Component {
     const users = Object.values(_.pick(this.props.users, teamToDisplay.teamMemberIds));
 
     const teamMemberElements = users.map(user => {
+      const teamLead = teamToDisplay.teamLeaderId === user.id;
+
       return (
-        <TeamMemberRow key={user.id} user={user} regions={regions}>
+        <TeamMemberRow key={user.id} user={user} regions={regions} teamLead={teamLead}>
           <React.Fragment>
             {teamToDisplay.numMembers > 1 &&
               (user.id === currentUser.id ? (

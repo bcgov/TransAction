@@ -32,8 +32,6 @@ import * as Constants from '../Constants';
 class Team extends Component {
   state = {
     loading: true,
-    canEdit: false,
-    ownTeamProfile: false,
     teamIdToDisplay: null,
     showEditTeamForm: false,
     showLogActivityForm: false,
@@ -56,27 +54,29 @@ class Team extends Component {
   init = teamId => {
     const currentUser = this.props.currentUser;
 
-    this.setState({ loading: true, canEdit: false, ownTeamProfile: false });
-
-    if (currentUser.isAdmin) this.setState({ canEdit: true });
+    this.setState({ loading: true });
 
     teamId = parseInt(teamId);
 
-    Promise.all([
-      this.props.fetchTeam(teamId),
-      this.props.fetchSpecificTeamRequests(teamId),
-      this.props.fetchAllTeamScores(teamId),
-      this.props.fetchAllUserScores(currentUser.id),
-      this.props.fetchEvents(),
-    ])
+    Promise.all([this.props.fetchTeam(teamId), this.props.fetchSpecificTeamRequests(teamId)])
       .then(() => {
         const team = this.props.teams[teamId];
         const joinRequest = this.props.joinRequests;
 
-        // If team lead
-        if (!team && team.teamLeaderId === currentUser.id) this.setState({ canEdit: true });
+        if (team) this.setState({ teamIdToDisplay: team.id });
 
-        if (currentUser.teamId === teamId) this.setState({ ownTeamProfile: true });
+        let apiActions = [];
+
+        if (this.userBelongsToTeam()) {
+          apiActions = [
+            { action: this.props.fetchAllTeamScores, param: teamId },
+            { action: this.props.fetchAllUserScores, param: currentUser.id },
+            { action: this.props.fetchEvents, param: null },
+          ];
+        }
+
+        if (this.userBelongsToTeam() && this.userIsTeamleadOrAdmin())
+          apiActions.push({ action: this.props.fetchSpecificTeamRequests, param: teamId });
 
         let usersToFetch = team.teamMemberIds.filter(userId => {
           return !(userId in this.props.users);
@@ -88,21 +88,35 @@ class Team extends Component {
           })
         );
 
+        usersToFetch.forEach(user => {
+          apiActions.push({ action: this.props.fetchUser, param: user });
+        });
+
         return Promise.all(
-          usersToFetch.map(user => {
-            return this.props.fetchUser(user);
+          apiActions.map(action => {
+            return action.action(action.param);
           })
         );
       })
       .then(() => {
-        this.setState({ teamIdToDisplay: teamId, loading: false });
+        this.setState({ loading: false });
       })
       .catch(e => {
         console.error(e);
       });
   };
 
+  userIsTeamleadOrAdmin = () => {
+    const team = this.props.teams[this.state.teamIdToDisplay];
+    const currentUser = this.props.currentUser;
+
+    if (!team) return false;
+
+    return currentUser.isAdmin || team.teamLeaderId === currentUser.id;
+  };
+
   userBelongsToTeam = () => {
+    if (!this.props.currentUser.teamId) return false;
     return this.state.teamIdToDisplay === this.props.currentUser.teamId;
   };
 
@@ -197,7 +211,7 @@ class Team extends Component {
             <h4>Team Profile</h4>
           </Col>
           <Col>
-            {this.state.canEdit && teamToDisplay && !this.state.loading && (
+            {this.userIsTeamleadOrAdmin() && teamToDisplay && !this.state.loading && (
               <Button color="primary" size="sm" onClick={this.showEditTeamForm}>
                 Edit Team
               </Button>
