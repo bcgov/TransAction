@@ -370,7 +370,7 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TraMemberReq> GetRequests()
         {
-            return _context.TraMemberReq.OrderBy(c => c.MemberReqId).ToList();
+            return _context.TraMemberReq.Where(x =>x.IsActive== true).OrderBy(c => c.MemberReqId).ToList();
         }
 
         public TraMemberReq GetRequest(int id)
@@ -402,7 +402,58 @@ namespace TransAction.Data.Services
 
             return teamRequests;
         }
+ /*...........................................................................................................*/   
+        public IEnumerable<TraTopic> GetTopics()
+        {
+            return _context.TraTopic.OrderBy(c => c.TopicId).ToList(); 
+        }
 
+        public TraTopic GetTopic(int id)
+        {
+            return _context.TraTopic.FirstOrDefault(c => c.TopicId == id);
+        }
 
+        public void CreateTopic(TraTopic traTopic)
+        {
+            _context.TraTopic.Add(traTopic);
+        }
+
+        public bool TopicExists(string Title)
+        {
+            var checkTopic = _context.TraTopic.FirstOrDefault(c => c.Title == Title);
+            if (checkTopic != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
+        {
+            return _context.TraTopicMessage
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c=> c.TopicMessageId).ToList();
+ 
+        }
+
+        public TraTopicMessage GetTopicMessage(int topicId, int messageId)
+        {
+            return _context.TraTopicMessage
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).FirstOrDefault(c => c.TopicMessageId == messageId);
+        }
+
+        public void CreateTopicMessage(TraTopicMessage traTopicMessage)
+        {
+            _context.TraTopicMessage.Add(traTopicMessage);
+        }
+
+        public bool TopicMessageExist(string Name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
+
+

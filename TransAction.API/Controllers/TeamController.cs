@@ -99,6 +99,7 @@ namespace TransAction.API.Controllers
             }
             
             var newTeam = Mapper.Map<TraTeam>(createTeam);
+            newTeam.UserId = getUser.UserId; // SETS THE USER TO BE THE TEAM LEADER
             _transActionRepo.CreateTeam(newTeam);
 
             if (!_transActionRepo.Save())

@@ -58,6 +58,16 @@ namespace TransAction.Data.Services
         void CreateRequest(TraMemberReq traMember);
         IEnumerable<MemberReqDto> CurrentTeamReq(int teamId);
 
+
+        IEnumerable<TraTopic> GetTopics();
+        TraTopic GetTopic(int id);
+        void CreateTopic(TraTopic traTopic);
+        bool TopicExists(string Title);
+
+        IEnumerable<TraTopicMessage> GetTopicMessages(int topicId);
+        TraTopicMessage GetTopicMessage(int topicId, int messageId);
+        void CreateTopicMessage(TraTopicMessage traTopicMessage);
+        bool TopicMessageExist(string Name);
         bool Save();
     }
 }
