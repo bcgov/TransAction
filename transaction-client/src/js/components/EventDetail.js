@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { BreadcrumbItem, Row, Col } from 'reactstrap';
+import Markdown from 'react-markdown';
 import moment from 'moment';
 
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
@@ -59,7 +60,7 @@ class EventDetail extends React.Component {
           {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
           {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
         </p>
-        <p>{this.props.event.description}</p>
+        <Markdown source={this.props.event.description} allowedTypes={Constants.MARKDOWN.ALLOWED} />
         <EventScoresPanel event={this.props.event} />
         <EventTeamStandings eventId={this.props.event.id} />
       </React.Fragment>

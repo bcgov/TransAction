@@ -1,6 +1,7 @@
 @import './vendor/bootstrap-theme.scss';
 
 @import 'vendor-overrides.scss';
+@import 'carousel.scss';
 
 .no-underline {
   text-decoration: none;
@@ -12,6 +13,10 @@ button.w75 {
 
 .hover-pointer {
   cursor: pointer;
+}
+
+.event-description {
+  white-space: pre-wrap;
 }
 
 // Check stuff below

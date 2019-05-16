@@ -53,7 +53,7 @@ class ProfileTeamPanel extends React.Component {
             <h4>Team</h4>
           </Col>
           <Col>
-            {selfProfile && teamToDisplay && (
+            {selfProfile && teamToDisplay && teamToDisplay.numMembers > 1 && (
               <Button color="danger" size="sm">
                 Leave Team
               </Button>

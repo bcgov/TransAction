@@ -5,6 +5,7 @@ import { Container } from 'reactstrap';
 import history from './history';
 import Footer from './components/fragments/Footer';
 import Header from './components/fragments/Header';
+import Home from './components/Home';
 import Main from './components/Main';
 import EventList from './components/EventList';
 import EventDetail from './components/EventDetail';
@@ -30,7 +31,7 @@ class App extends Component {
             <Header />
             <Container>
               <Switch>
-                <Route path="/" exact component={EventList} />
+                <Route path="/" exact component={Home} />
                 <Route path={Constants.PATHS.EVENT} exact component={EventList} />
                 <Route path={`${Constants.PATHS.EVENT}/:id`} exact component={EventDetail} />
                 <Route path={Constants.PATHS.PROFILE} exact component={Profile} />

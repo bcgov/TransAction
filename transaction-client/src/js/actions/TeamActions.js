@@ -12,6 +12,7 @@ import {
   DELETE_JOIN_REQUEST,
 } from './types';
 import history from '../history';
+import * as Constants from '../Constants';
 
 export const fetchCurrentTeam = () => async (dispatch, getStore) => {
   return new Promise(async (resolve, reject) => {
@@ -65,7 +66,7 @@ export const createTeam = formValues => async dispatch => {
 
   dispatch({ type: CREATE_TEAM, payload: response.data });
 
-  history.push('/team');
+  history.push(`${Constants.PATHS.TEAM}/${response.data.id}`);
 };
 
 export const fetchTeams = () => async dispatch => {

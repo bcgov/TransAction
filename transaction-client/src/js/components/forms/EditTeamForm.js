@@ -25,7 +25,7 @@ class EditTeamForm extends React.Component {
 
     if (this.props.formType === Constants.FORM_TYPE.ADD) {
       this.props.createTeam(formValues).then(() => {
-        this.toggleModal();
+        //this.toggleModal();
       });
     } else {
       this.props.editTeam(formValues.id, formValues).then(() => {
@@ -41,13 +41,22 @@ class EditTeamForm extends React.Component {
   };
 
   renderRegionOptions() {
-    return Object.values(this.props.regions).map(region => {
+    const regionOptions = Object.values(this.props.regions).map(region => {
       return (
         <option value={region.id} key={region.id}>
           {region.name}
         </option>
       );
     });
+
+    regionOptions.unshift(<option value={0} key={0} />);
+    regionOptions.unshift(
+      <option value={-1} key={-1}>
+        Select a region
+      </option>
+    );
+
+    return regionOptions;
   }
 
   render() {
@@ -99,6 +108,10 @@ EditTeamForm.defaultProps = { regions: {}, isOpen: false, pristine: false };
 
 const validate = formValues => {
   const errors = {};
+
+  if (!formValues.regionId || formValues.regionId <= 0) {
+    errors.regionId = 'Region required';
+  }
 
   if (!formValues.name) {
     errors.name = 'Name required';

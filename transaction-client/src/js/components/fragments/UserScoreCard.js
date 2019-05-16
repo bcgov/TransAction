@@ -37,7 +37,7 @@ class UserScoreCard extends React.Component {
     const { score, teamScore, event, cardWidth, showLogActivityForm, goal } = this.props;
 
     let progress = 0;
-    if (goal > 0 && teamScore) progress = (teamScore.score / goal) * 100;
+    if (goal > 0 && teamScore) progress = ((teamScore.score / goal) * 100).toFixed(0);
 
     return (
       <Card>

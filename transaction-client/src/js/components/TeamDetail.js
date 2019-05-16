@@ -184,7 +184,8 @@ class Team extends Component {
         ) : (
           <Col>
             <Alert color="warning">
-              Your team has not participated in any events yet. Click <Link>here</Link> to see a list of active events.
+              Your team has not participated in any events yet. Click <Link to={Constants.PATHS.EVENT}>here</Link> to
+              see a list of active events.
             </Alert>
           </Col>
         )}

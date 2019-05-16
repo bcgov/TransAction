@@ -48,7 +48,7 @@ class ProfileScoresPanel extends React.Component {
 
   renderUserScores() {
     const { events, userIdToDisplay, teamIdToDisplay, scores } = this.props;
-    console.log(this.props);
+
     const userScores = Object.values(scores.user[userIdToDisplay]).map(score => {
       const teamScore = scores.team[teamIdToDisplay][score.eventId];
 

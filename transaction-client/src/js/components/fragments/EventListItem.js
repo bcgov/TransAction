@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
+import Markdown from 'react-markdown';
 import moment from 'moment';
+
+import * as Constants from '../../Constants';
 
 class EventListItem extends React.Component {
   showForm = () => {
@@ -36,7 +39,7 @@ class EventListItem extends React.Component {
               {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
               {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
             </p>
-            <p>{this.props.event.description}</p>
+            <Markdown source={this.props.event.description} allowedTypes={Constants.MARKDOWN.ALLOWED} />
             <p>
               <Link to={`/event/${this.props.event.id}`}>View Details</Link>
             </p>
