@@ -51,6 +51,7 @@ class EditEventForm extends React.Component {
         toggle={this.toggleModal}
         submitting={this.state.submitting}
         onInit={this.onInit}
+        size="lg"
         {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
         title={title}
       >

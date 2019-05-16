@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class FormModal extends React.Component {
   render() {
-    const { title, isOpen, toggle, handleSubmit, onSubmit, submitting, pristine, children, onInit } = this.props;
+    const { title, isOpen, toggle, handleSubmit, onSubmit, submitting, pristine, children, onInit, size } = this.props;
     return (
       <div>
-        <Modal isOpen={isOpen} toggle={toggle} onOpened={onInit}>
+        <Modal isOpen={isOpen} toggle={toggle} onOpened={onInit} size={size}>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <ModalHeader toggle={toggle}>{title}</ModalHeader>
             <ModalBody>{children}</ModalBody>
@@ -37,11 +37,13 @@ FormModal.propTypes = {
   pristine: PropTypes.bool.isRequired,
   children: PropTypes.any.isRequired,
   onInit: PropTypes.func,
+  size: PropTypes.string,
 };
 
 FormModal.defaultProps = {
   isOpen: false,
   submitting: false,
+  size: '',
 };
 
 export default FormModal;

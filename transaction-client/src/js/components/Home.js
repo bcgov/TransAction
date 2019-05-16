@@ -1,6 +1,8 @@
 import React from 'react';
 import { UncontrolledCarousel, Row, Col } from 'reactstrap';
 
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+
 const items = [
   {
     src: '/images/carousel01.jpg',
@@ -31,11 +33,17 @@ class Home extends React.Component {
 
   render() {
     return (
-      <Row>
-        <Col>
-          <UncontrolledCarousel items={this.state.slides} />
-        </Col>
-      </Row>
+      <React.Fragment>
+        <BreadcrumbFragment />
+        <Row>
+          <Col sm="6">
+            <div className="large-welcome-text">Welcome to TransAction</div>
+          </Col>
+          <Col sm="6">
+            <UncontrolledCarousel items={this.state.slides} />
+          </Col>
+        </Row>
+      </React.Fragment>
     );
   }
 }
