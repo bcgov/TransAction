@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
-import { editTeam } from '../../actions';
+import { editTeam, createTeam } from '../../actions';
 
 import FormModal from '../ui/FormModal';
 import FormInput from '../ui/FormInput';
+
+import * as Constants from '../../Constants';
 
 class EditTeamForm extends React.Component {
   state = { submitting: false };
@@ -21,9 +23,15 @@ class EditTeamForm extends React.Component {
       this.setState({ submitting: true });
     }
 
-    this.props.editTeam(formValues.id, formValues).then(() => {
-      this.toggleModal();
-    });
+    if (this.props.formType === Constants.FORM_TYPE.ADD) {
+      this.props.createTeam(formValues).then(() => {
+        this.toggleModal();
+      });
+    } else {
+      this.props.editTeam(formValues.id, formValues).then(() => {
+        this.toggleModal();
+      });
+    }
   };
 
   toggleModal = () => {
@@ -43,6 +51,8 @@ class EditTeamForm extends React.Component {
   }
 
   render() {
+    const title = this.props.formType === Constants.FORM_TYPE.ADD ? 'Create Team' : 'Edit Team';
+
     return (
       <FormModal
         onSubmit={this.onSubmit}
@@ -50,7 +60,7 @@ class EditTeamForm extends React.Component {
         submitting={this.state.submitting}
         onInit={this.onInit}
         {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
-        title="Edit Team"
+        title={title}
       >
         <Field name="name" component={FormInput} type="text" label="Name" placeholderText="Enter team name" />
         <Field name="regionId" component={FormInput} type="select" label="Region">
@@ -70,7 +80,7 @@ class EditTeamForm extends React.Component {
           label="Goal"
           placeholderText="Enter team point goal"
           tooltipText="The TransAction points goal for your team. Points are calculated using your team's workout
-          intensity and duration. One minute of work out equals one point, and then multiplied by the work out
+          intensity and duration. One minute of workout equals one point, and then multiplied by the workout
           intensity."
         />
       </FormModal>
@@ -90,6 +100,10 @@ EditTeamForm.defaultProps = { regions: {}, isOpen: false, pristine: false };
 const validate = formValues => {
   const errors = {};
 
+  if (!formValues.name) {
+    errors.name = 'Name required';
+  }
+
   if (!formValues.description) {
     errors.description = 'Description required';
   }
@@ -107,7 +121,7 @@ const mapStateToProps = state => {
 
 const formConnect = connect(
   mapStateToProps,
-  { editTeam }
+  { editTeam, createTeam }
 )(form);
 
 export default formConnect;

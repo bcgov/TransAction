@@ -7,6 +7,7 @@ import {
   FETCH_TEAM_SCORES,
   FETCH_USER_EVENT_SCORE,
   FETCH_TEAM_EVENT_SCORE,
+  FETCH_TEAM_STANDINGS,
 } from './types';
 
 //Activity Actions
@@ -92,6 +93,19 @@ export const fetchAllTeamScores = teamId => async dispatch => {
       const response = await api.get(`/useractivity/team/${teamId}`);
 
       dispatch({ type: FETCH_TEAM_SCORES, payload: { teamId, data: response.data } });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchTeamStandings = (eventId, teamCount = 20) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/event/${eventId}/top/${teamCount}`);
+
+      dispatch({ type: FETCH_TEAM_STANDINGS, payload: { eventId, data: response.data } });
       resolve();
     } catch (e) {
       reject(e);

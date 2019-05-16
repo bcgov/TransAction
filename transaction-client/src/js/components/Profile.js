@@ -23,6 +23,7 @@ class Profile extends Component {
     userIdToDisplay: null,
     teamIdToDisplay: null,
     showEditUserForm: false,
+    showEditTeamForm: false,
     showLogActivityForm: false,
     logActivityEventId: null,
   };
@@ -134,8 +135,7 @@ class Profile extends Component {
                 if (this.state.ownProfile)
                   return (
                     <Alert color="warning">
-                      You are not currently on a team. You can <Link to={Constants.PATHS.TEAM}>join</Link> or{' '}
-                      <Link to="/">create</Link> a team.
+                      You are not currently on a team. Get started <Link to={Constants.PATHS.START}>here</Link>.
                     </Alert>
                   );
                 else return <p>{userToDisplay.fname} is not part of a team.</p>;
@@ -180,7 +180,7 @@ class Profile extends Component {
         ) : (
           <Col>
             <Alert color="warning">
-              You have not participated in any events yet. Start <Link to={Constants.PATHS.START}>here</Link>.
+              You have not participated in any events yet. Get started <Link to={Constants.PATHS.START}>here</Link>.
             </Alert>
           </Col>
         )}
@@ -245,6 +245,7 @@ class Profile extends Component {
           isOpen={this.state.showEditUserForm}
           toggle={this.toggleEditUserForm}
         />
+
         <LogActivityForm
           isOpen={this.state.showLogActivityForm}
           toggle={this.toggleLogActivityForm}

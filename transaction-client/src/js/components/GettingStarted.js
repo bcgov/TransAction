@@ -1,23 +1,26 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem, Container, Col, Row, Button } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Col, Row, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
-// import EventModal from './EventModal';
-// import CreateTeamModalBody from './CreateTeamModalBody';
 
+import EditTeamForm from './forms/EditTeamForm';
 import * as Constants from '../Constants';
 
 class GettingStarted extends Component {
-  state = { modal: false };
+  state = { showEditTeamForm: false };
 
-  toggle = () => {
+  showEditTeamForm = () => {
+    this.setState({ showEditTeamForm: true });
+  };
+
+  toggleEditTeamForm = () => {
     this.setState(prevState => ({
-      modal: !prevState.modal,
+      showEditTeamForm: !prevState.showEditTeamForm,
     }));
   };
 
   renderText() {
     return (
-      <Container>
+      <React.Fragment>
         <h1>Getting Started</h1>
         <div className="mb-4">
           You participate in TransAction by becoming a member of a team. A team is composed of a "Team Leader" and up to
@@ -42,12 +45,9 @@ class GettingStarted extends Component {
                 <br />
                 <li>Go Crazy!</li>
               </ul>
-              <Button size="lg" color="primary" className="mb-4" onClick={this.toggle}>
+              <Button color="primary" className="mb-4" onClick={this.showEditTeamForm}>
                 Create Team
               </Button>
-              {/* <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
-                <CreateTeamModalBody modalClose={this.toggle} name="create" />
-              </EventModal> */}
             </Col>
             <Col xs="6" id="borderRoleDifferences">
               <h3 className="mt-4">Team Member</h3>
@@ -65,7 +65,7 @@ class GettingStarted extends Component {
                 <li>Win at all costs.</li>
               </ul>
               <Link to={Constants.PATHS.TEAM}>
-                <Button size="lg" color="primary" className="mb-4">
+                <Button color="primary" className="mb-4">
                   Join Team
                 </Button>
               </Link>
@@ -76,10 +76,7 @@ class GettingStarted extends Component {
           <h4 id="centerText">How Does it Work?</h4>
           Teams enter daily activity time in TransAction, and you monitor your team's progress and standings on the
           homepage. You will not only compete against other teams, but your individual time will also help your
-          geographic area compete in the 4-way battle between regions and headquarters. toggleAgent={
-            this.toggleAgent
-          }{' '}
-          isOpen={this.state.modalAgent}
+          geographic area compete in the 4-way battle between regions and headquarters.
           <br /> Exercise time is entered for each day and points are assigned based on level of intensity. Time entered
           is converted to points. High, medium and low intensity exercises are multiplied by factors of 3, 2, and 1,
           respectively. You can view your activity log entries on the calendar. More information can be found in the FAQ
@@ -92,22 +89,27 @@ class GettingStarted extends Component {
           <br />
           <br />
         </div>
-      </Container>
+      </React.Fragment>
     );
   }
 
   render() {
     return (
-      <Container>
+      <React.Fragment>
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to="/">Home</Link>
-            <Link to={`/event/${this.props.id}`}>{this.props.name}</Link>
           </BreadcrumbItem>
           <BreadcrumbItem active>Getting Started</BreadcrumbItem>
         </Breadcrumb>
         {this.renderText()}
-      </Container>
+        <EditTeamForm
+          isOpen={this.state.showEditTeamForm}
+          toggle={this.toggleEditTeamForm}
+          initialValues={{ goal: 0 }}
+          formType={Constants.FORM_TYPE.ADD}
+        />
+      </React.Fragment>
     );
   }
 }

@@ -58,7 +58,7 @@ class ProfileFragment extends React.Component {
               <Popover placement="top" isOpen={this.state.showPointTip} target="point-tip">
                 <PopoverBody>
                   The TransAction points goal set by your team leader. Points are calculated using your team's workout
-                  intensity and duration. One minute of work out equals one point, and then multiplied by the work out
+                  intensity and duration. One minute of work out equals one point, and then multiplied by the workout
                   intensity.
                 </PopoverBody>
               </Popover>

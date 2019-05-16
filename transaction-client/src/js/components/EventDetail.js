@@ -9,6 +9,7 @@ import UserScoreCard from './fragments/UserScoreCard';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import PageSpinner from './ui/PageSpinner';
 import LogActivityForm from './forms/LogActivityForm';
+import EventTeamStandings from './EventTeamStandings';
 
 import * as Constants from '../Constants';
 
@@ -83,6 +84,7 @@ class EventDetail extends React.Component {
             </Col>
           </Row>
         )}
+        <EventTeamStandings eventId={this.props.event.id} />
         <LogActivityForm
           isOpen={this.state.showLogActivityForm}
           toggle={this.toggleLogActivityForm}

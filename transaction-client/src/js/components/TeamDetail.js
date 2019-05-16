@@ -265,6 +265,7 @@ class Team extends Component {
           initialValues={teamToDisplay}
           isOpen={this.state.showEditTeamForm}
           toggle={this.toggleEditTeamForm}
+          formType={Constants.FORM_TYPE.EDIT}
         />
         <LogActivityForm
           isOpen={this.state.showLogActivityForm}

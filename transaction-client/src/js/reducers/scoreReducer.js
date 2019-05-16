@@ -1,9 +1,16 @@
 import _ from 'lodash';
-import { FETCH_USER_SCORES, FETCH_TEAM_SCORES, FETCH_USER_EVENT_SCORE, FETCH_TEAM_EVENT_SCORE } from '../actions/types';
+import {
+  FETCH_USER_SCORES,
+  FETCH_TEAM_SCORES,
+  FETCH_USER_EVENT_SCORE,
+  FETCH_TEAM_EVENT_SCORE,
+  FETCH_TEAM_STANDINGS,
+} from '../actions/types';
 
 const DEFAULT_STATE = {
   user: {},
   team: {},
+  teamStandings: [],
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -40,6 +47,8 @@ export default (state = DEFAULT_STATE, action) => {
           },
         },
       };
+    case FETCH_TEAM_STANDINGS:
+      return { ...state, teamStandings: { ...state.teamStandings, [action.payload.eventId]: action.payload.data } };
     default:
       return state;
   }
