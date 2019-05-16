@@ -159,17 +159,13 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createTopic.Title == null)
+            if (createTopic.Body == null)
             {
                 return BadRequest();
             }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-            if (_transActionRepo.RoleExists(createTopic.Title))
-            {
-                return BadRequest();
             }
 
             var newTopic = Mapper.Map<TraTopic>(createTopic);
