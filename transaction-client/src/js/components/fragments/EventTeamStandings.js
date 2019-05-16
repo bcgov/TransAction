@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Progress, Table } from 'reactstrap';
+import { Progress, Table } from 'reactstrap';
 
-import { fetchTeamStandings, fetchTeams } from '../actions';
-import PageSpinner from './ui/PageSpinner';
+import { fetchTeamStandings, fetchTeams } from '../../actions';
+import PageSpinner from '../ui/PageSpinner';
 
 class EventTeamStandings extends React.Component {
   state = { loading: true };
@@ -27,14 +27,6 @@ class EventTeamStandings extends React.Component {
     const teamStandingRows = teamStandings.map((standing, index) => {
       const { teamId, score } = standing;
       return (
-        // <Row key={teamId}>
-        //   <Col xs="6" sm="auto">
-        //     {`#${index + 1} ${teams[teamId].name}`}
-        //   </Col>
-        //   <Col>
-        //     <Progress value={(score / topScore) * 100}>{score}</Progress>
-        //   </Col>
-        // </Row>
         <tr key={teamId}>
           <th scope="row" style={{ whiteSpace: 'nowrap', width: '1%' }}>
             {`#${index + 1}`}

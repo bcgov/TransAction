@@ -9,7 +9,7 @@ import UserScoreCard from './fragments/UserScoreCard';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import PageSpinner from './ui/PageSpinner';
 import LogActivityForm from './forms/LogActivityForm';
-import EventTeamStandings from './EventTeamStandings';
+import EventTeamStandings from './fragments/EventTeamStandings';
 
 import * as Constants from '../Constants';
 

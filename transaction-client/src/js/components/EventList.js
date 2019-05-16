@@ -3,7 +3,7 @@ import { BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import EventListItem from './EventListItem';
+import EventListItem from './fragments/EventListItem';
 import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents } from '../actions';
