@@ -5,13 +5,13 @@ import { connect } from 'react-redux';
 import { BreadcrumbItem, Button, Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
 
-import { fetchTeam, editUser, fetchAllUserScores, fetchUser, fetchEvents, fetchAllTeamScores } from '../actions';
+import { fetchTeam, editUser, fetchUser } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
-import LogActivityForm from './forms/LogActivityForm';
 import ProfileFragment from './fragments/ProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
+import ProfileTeamPanel from './fragments/ProfileTeamPanel';
 
 import * as Constants from '../Constants';
 
@@ -22,8 +22,6 @@ class Profile extends Component {
     teamIdToDisplay: null,
     showEditUserForm: false,
     showEditTeamForm: false,
-    showLogActivityForm: false,
-    logActivityEventId: null,
   };
 
   componentDidMount() {
@@ -45,13 +43,17 @@ class Profile extends Component {
     userId = parseInt(userId);
 
     if (isNaN(userId)) userId = this.props.currentUser.id;
-
     this.props
       .fetchUser(userId)
       .then(() => {
         const teamId = this.props.users.all[userId].teamId;
+        this.setState({ userIdToDisplay: userId, teamIdToDisplay: teamId });
 
-        this.setState({ loading: false, userIdToDisplay: userId, teamIdToDisplay: teamId });
+        if (teamId) return this.props.fetchTeam(teamId);
+        else return Promise.resolve();
+      })
+      .then(() => {
+        this.setState({ loading: false });
       })
       .catch(e => {
         //this.setState({ loading: false });
@@ -73,16 +75,6 @@ class Profile extends Component {
     if (userId === this.props.currentUser.id) return true;
 
     return false;
-  };
-
-  showLogActivityForm = eventId => {
-    this.setState({ showLogActivityForm: true, logActivityEventId: eventId });
-  };
-
-  toggleLogActivityForm = () => {
-    this.setState(prevState => ({
-      showLogActivityForm: !prevState.showLogActivityForm,
-    }));
   };
 
   showEditUserForm = () => {
@@ -145,7 +137,6 @@ class Profile extends Component {
 
   render() {
     const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
-    const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
 
     return (
       <React.Fragment>
@@ -170,21 +161,15 @@ class Profile extends Component {
         </Row>
         {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
 
-        <Row className="mb-3">
-          <Col xs="2">
-            <h4>Team</h4>
-          </Col>
-          <Col>
-            {this.selfProfile() && teamToDisplay && !this.state.loading && (
-              <Button color="danger" size="sm">
-                Leave Team
-              </Button>
-            )}
-          </Col>
-        </Row>
-        {this.state.loading ? <PageSpinner /> : this.renderUserTeam()}
+        {!this.state.loading && (
+          <ProfileTeamPanel
+            selfProfile={this.selfProfile()}
+            teamIdToDisplay={this.state.teamIdToDisplay}
+            userIdToDisplay={this.state.userIdToDisplay}
+          />
+        )}
 
-        {this.selfProfile() && (
+        {!this.state.loading && this.selfProfile() && (
           <ProfileScoresPanel
             userIdToDisplay={this.state.userIdToDisplay}
             teamIdToDisplay={this.state.teamIdToDisplay}
@@ -195,12 +180,6 @@ class Profile extends Component {
           initialValues={userToDisplay}
           isOpen={this.state.showEditUserForm}
           toggle={this.toggleEditUserForm}
-        />
-
-        <LogActivityForm
-          isOpen={this.state.showLogActivityForm}
-          toggle={this.toggleLogActivityForm}
-          eventId={this.state.logActivityEventId}
         />
       </React.Fragment>
     );
@@ -214,7 +193,6 @@ const mapStateToProps = state => {
     regions: state.regions,
     roles: state.roles,
     teams: state.teams,
-    scores: state.scores,
     events: state.events,
   };
 };
@@ -225,8 +203,5 @@ export default connect(
     fetchUser,
     fetchTeam,
     editUser,
-    fetchAllUserScores,
-    fetchAllTeamScores,
-    fetchEvents,
   }
 )(Profile);

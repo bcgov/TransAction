@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Alert } from 'reactstrap';
 
-import { fetchAllUserScores, fetchAllTeamScores, fetchEvents, fetchTeam } from '../../actions';
+import { fetchAllUserScores, fetchAllTeamScores, fetchEvents } from '../../actions';
 import PageSpinner from '../ui/PageSpinner';
 import UserScoreCard from './UserScoreCard';
 import LogActivityForm from '../forms/LogActivityForm';
@@ -17,7 +17,7 @@ class ProfileScoresPanel extends React.Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    const { fetchAllUserScores, fetchAllTeamScores, fetchEvents, fetchTeam, currentUser } = this.props;
+    const { fetchAllUserScores, fetchAllTeamScores, fetchEvents, currentUser } = this.props;
     const actionPromises = [
       utils.buildActionWithParam(fetchAllUserScores, currentUser.id),
       utils.buildActionWithParam(fetchEvents),
@@ -25,7 +25,6 @@ class ProfileScoresPanel extends React.Component {
 
     if (currentUser.teamId) {
       actionPromises.push(utils.buildActionWithParam(fetchAllTeamScores, currentUser.teamId));
-      actionPromises.push(utils.buildActionWithParam(fetchTeam, currentUser.teamId));
     }
 
     Promise.all(
@@ -49,6 +48,7 @@ class ProfileScoresPanel extends React.Component {
 
   renderUserScores() {
     const { events, userIdToDisplay, teamIdToDisplay, scores } = this.props;
+    console.log(this.props);
     const userScores = Object.values(scores.user[userIdToDisplay]).map(score => {
       const teamScore = scores.team[teamIdToDisplay][score.eventId];
 
@@ -119,5 +119,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchAllUserScores, fetchAllTeamScores, fetchEvents, fetchTeam }
+  { fetchAllUserScores, fetchAllTeamScores, fetchEvents }
 )(ProfileScoresPanel);
