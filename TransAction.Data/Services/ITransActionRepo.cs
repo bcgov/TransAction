@@ -63,10 +63,13 @@ namespace TransAction.Data.Services
         TraTopic GetTopic(int id);
         void CreateTopic(TraTopic traTopic);
         bool TopicExists(string Title);
+        void DeleteTopic(TraTopic traTopic);
 
         IEnumerable<TraTopicMessage> GetTopicMessages(int topicId);
         TraTopicMessage GetTopicMessage(int messageId);
         void CreateTopicMessage(TraTopicMessage traTopicMessage);
+        void DeleteTopicMessage(TraTopicMessage traTopicMessage);
+
 
         bool Save();
     }

@@ -66,8 +66,7 @@ namespace TransAction.Data.Models
                 {
                     Console.WriteLine(e);
                     throw;
-                }
-              
+                }              
             }
 
             return result;

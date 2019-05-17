@@ -197,5 +197,45 @@ namespace TransAction.API.Controllers
             }
             
         }
+
+        [HttpDelete("topic/{topicId}")]
+        public IActionResult DeleteTopic(int topicId)
+        {
+            var topic = _transActionRepo.GetTopic(topicId);
+            if (!_transActionRepo.TopicExists(topic.Title))
+            {
+                return NotFound();
+            }
+            var messages = _transActionRepo.GetTopicMessages(topicId);
+            foreach(var message in messages)
+            {
+                _transActionRepo.DeleteTopicMessage(message);
+            }
+            _transActionRepo.DeleteTopic(topic);
+
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+            return NoContent();
+        }
+
+        [HttpDelete("message/{messageId}")]
+        public IActionResult DeleteMessage(int messageId)
+        {
+            var message = _transActionRepo.GetTopicMessage(messageId);
+            if (message == null)
+            {
+                return NotFound();
+            }
+            var deleteMessage = _transActionRepo.GetTopicMessage(messageId);
+            _transActionRepo.DeleteTopicMessage(deleteMessage);
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+            return NoContent();
+
+        }
     }
 }

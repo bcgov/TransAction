@@ -448,6 +448,15 @@ namespace TransAction.Data.Services
             _context.TraTopicMessage.Add(traTopicMessage);
         }
 
+        public void DeleteTopicMessage(TraTopicMessage traTopicMessage)
+        {
+            _context.TraTopicMessage.Remove(traTopicMessage);
+        }
+
+        public void DeleteTopic(TraTopic traTopic)
+        {
+            _context.TraTopic.Remove(traTopic);
+        }
 
     }
 }
