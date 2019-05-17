@@ -36,10 +36,12 @@ class Home extends React.Component {
       <React.Fragment>
         <BreadcrumbFragment />
         <Row>
-          <Col sm="6">
+          <Col>
             <div className="large-welcome-text">Welcome to TransAction</div>
           </Col>
-          <Col sm="6">
+        </Row>
+        <Row>
+          <Col>
             <UncontrolledCarousel items={this.state.slides} />
           </Col>
         </Row>
