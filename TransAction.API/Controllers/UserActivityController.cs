@@ -177,5 +177,12 @@ namespace TransAction.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("event/{eventId}/region")]
+        public IActionResult RegionScore(int eventId)
+        {
+            var result = _transActionRepo.RegionalScore(eventId);
+            return Ok(result);
+        }
     }
 }
