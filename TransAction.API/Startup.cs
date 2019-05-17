@@ -151,6 +151,12 @@ namespace TransAction.API
                 cfg.CreateMap<TopicCreateDto,TraTopic>();
                 cfg.CreateMap<TopicUpdateDto,TraTopic>();
                 cfg.CreateMap<TraTopic,TopicUpdateDto>();
+
+                cfg.CreateMap<TraTopicMessage,MessageDto>();
+                cfg.CreateMap<MessageDto, TraTopicMessage>();
+                cfg.CreateMap<MessageCreateDto,TraTopicMessage>();
+                cfg.CreateMap<MessageUpdateDto,TraTopicMessage>();
+                cfg.CreateMap<TraTopicMessage, MessageUpdateDto>();
             });
 
             app.UseCors(CORS_ALLOW_ALL);

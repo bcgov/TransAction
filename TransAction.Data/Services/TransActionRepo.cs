@@ -438,10 +438,9 @@ namespace TransAction.Data.Services
  
         }
 
-        public TraTopicMessage GetTopicMessage(int topicId, int messageId)
+        public TraTopicMessage GetTopicMessage(int messageId)
         {
-            return _context.TraTopicMessage
-                .Include(x => x.Topic).Where(x => x.TopicId == topicId).FirstOrDefault(c => c.TopicMessageId == messageId);
+            return _context.TraTopicMessage.FirstOrDefault(c => c.TopicMessageId == messageId);
         }
 
         public void CreateTopicMessage(TraTopicMessage traTopicMessage)
@@ -449,10 +448,7 @@ namespace TransAction.Data.Services
             _context.TraTopicMessage.Add(traTopicMessage);
         }
 
-        public bool TopicMessageExist(string Name)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
 

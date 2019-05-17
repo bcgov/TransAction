@@ -70,10 +70,6 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.RoleExists(createTopic.Title))
-            {
-                return BadRequest();
-            }
 
             var newTopic = Mapper.Map<TraTopic>(createTopic);
 
@@ -132,25 +128,7 @@ namespace TransAction.API.Controllers
             }
         }
 
-        [HttpGet("{topicId}/message/{messageId}")]
-        public IActionResult GetMessage(int topicId, int messageId)
-        {
-            try
-            {
-                var getMessage = _transActionRepo.GetTopicMessage(topicId, messageId);
-                if (getMessage == null)
-                {
-                    return NotFound();
-                }
-                var getMessages = Mapper.Map<IEnumerable<MessageDto>>(getMessage);
-                return Ok(getMessages);
-            }
-
-            catch (Exception)
-            {
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
-        }
+       
 
         [HttpPost("{topicId}/message")]
         public IActionResult CreateMessage([FromBody] MessageDto createTopic)
@@ -168,20 +146,56 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newTopic = Mapper.Map<TraTopic>(createTopic);
+            var newMessage = Mapper.Map<TraTopicMessage>(createTopic);
 
 
-            _transActionRepo.CreateTopic(newTopic);
+            _transActionRepo.CreateTopicMessage(newMessage);
 
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<TopicDto>(newTopic);
+            var createdPointOfInterestToReturn = Mapper.Map<MessageDto>(newMessage);
             return CreatedAtRoute("GetThatTopic", new { id = createdPointOfInterestToReturn.TopicId }, createdPointOfInterestToReturn);
 
         }
 
+        [HttpPut("message/{id}")]
+        public IActionResult MessageUpdate(int id, [FromBody] MessageUpdateDto updateMessage)
+        {
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+
+            var user = _transActionRepo.GetCurrentUser(getUser.Guid);
+            if(user.UserId == updateMessage.UserId)
+            {
+                var messageEntity = _transActionRepo.GetTopicMessage(id);
+                if (messageEntity == null) return NotFound();
+                if (updateMessage == null) return NotFound();
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Mapper.Map(updateMessage, messageEntity);
+
+
+                if (!_transActionRepo.Save())
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+
+                var getMessage = _transActionRepo.GetTopicMessage(id);
+                var getTopicResult = Mapper.Map<MessageDto>(getMessage);
+                return Ok(getTopicResult);
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
+        }
     }
 }

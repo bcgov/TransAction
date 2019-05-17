@@ -65,9 +65,9 @@ namespace TransAction.Data.Services
         bool TopicExists(string Title);
 
         IEnumerable<TraTopicMessage> GetTopicMessages(int topicId);
-        TraTopicMessage GetTopicMessage(int topicId, int messageId);
+        TraTopicMessage GetTopicMessage(int messageId);
         void CreateTopicMessage(TraTopicMessage traTopicMessage);
-        bool TopicMessageExist(string Name);
+
         bool Save();
     }
 }
