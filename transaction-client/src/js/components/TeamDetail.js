@@ -49,19 +49,13 @@ class Team extends Component {
 
         if (team) this.setState({ teamIdToDisplay: team.id });
 
-        let apiActions = [];
-
         let usersToFetch = team.teamMemberIds.filter(userId => {
           return !(userId in this.props.users);
         });
 
-        usersToFetch.forEach(user => {
-          apiActions.push({ action: this.props.fetchUser, param: user });
-        });
-
         return Promise.all(
-          apiActions.map(action => {
-            return action.action(action.param);
+          usersToFetch.map(user => {
+            return this.props.fetchUser(user);
           })
         );
       })

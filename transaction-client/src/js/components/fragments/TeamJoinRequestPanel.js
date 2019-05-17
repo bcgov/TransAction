@@ -19,8 +19,6 @@ class TeamJoinRequestPanel extends React.Component {
           return request.userId;
         });
 
-        console.log(usersToFetch);
-
         return Promise.all(
           usersToFetch.map(user => {
             return this.props.fetchUser(user);
