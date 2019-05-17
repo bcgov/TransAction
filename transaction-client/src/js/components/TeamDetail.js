@@ -4,18 +4,7 @@ import { Link } from 'react-router-dom';
 import { Alert, BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import _ from 'lodash';
 
-import {
-  fetchCurrentUser,
-  fetchTeam,
-  editTeam,
-  fetchUser,
-  editUser,
-  fetchSpecificTeamRequests,
-  editJoinRequest,
-  fetchAllTeamScores,
-  fetchAllUserScores,
-  fetchEvents,
-} from '../actions';
+import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 
 import ProfileFragment from './fragments/ProfileFragment';
@@ -23,9 +12,8 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import UserScoreCard from './fragments/UserScoreCard';
 import TeamJoinRequestPanel from './fragments/TeamJoinRequestPanel';
 import TeamMembersPanel from './fragments/TeamMembersPanel';
-
+import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import EditTeamForm from './forms/EditTeamForm';
-import LogActivityForm from './forms/LogActivityForm';
 
 import * as Constants from '../Constants';
 
@@ -34,8 +22,6 @@ class Team extends Component {
     loading: true,
     teamIdToDisplay: null,
     showEditTeamForm: false,
-    showLogActivityForm: false,
-    logActivityEventId: null,
   };
 
   componentDidMount() {
@@ -52,41 +38,22 @@ class Team extends Component {
   }
 
   init = teamId => {
-    const currentUser = this.props.currentUser;
-
     this.setState({ loading: true });
 
     teamId = parseInt(teamId);
 
-    Promise.all([this.props.fetchTeam(teamId), this.props.fetchSpecificTeamRequests(teamId)])
+    this.props
+      .fetchTeam(teamId)
       .then(() => {
         const team = this.props.teams[teamId];
-        const joinRequest = this.props.joinRequests;
 
         if (team) this.setState({ teamIdToDisplay: team.id });
 
         let apiActions = [];
 
-        if (this.userBelongsToTeam()) {
-          apiActions = [
-            { action: this.props.fetchAllTeamScores, param: teamId },
-            { action: this.props.fetchAllUserScores, param: currentUser.id },
-            { action: this.props.fetchEvents, param: null },
-          ];
-        }
-
-        if (this.userBelongsToTeam() && this.userIsTeamleadOrAdmin())
-          apiActions.push({ action: this.props.fetchSpecificTeamRequests, param: teamId });
-
         let usersToFetch = team.teamMemberIds.filter(userId => {
           return !(userId in this.props.users);
         });
-
-        usersToFetch = usersToFetch.concat(
-          joinRequest.map(request => {
-            return request.userId;
-          })
-        );
 
         usersToFetch.forEach(user => {
           apiActions.push({ action: this.props.fetchUser, param: user });
@@ -115,19 +82,18 @@ class Team extends Component {
     return currentUser.isAdmin || team.teamLeaderId === currentUser.id;
   };
 
+  userIsTeamlead = () => {
+    const team = this.props.teams[this.state.teamIdToDisplay];
+    const currentUser = this.props.currentUser;
+
+    if (!team) return false;
+
+    return team.teamLeaderId === currentUser.id;
+  };
+
   userBelongsToTeam = () => {
     if (!this.props.currentUser.teamId) return false;
     return this.state.teamIdToDisplay === this.props.currentUser.teamId;
-  };
-
-  showLogActivityForm = eventId => {
-    this.setState({ showLogActivityForm: true, logActivityEventId: eventId });
-  };
-
-  toggleLogActivityForm = () => {
-    this.setState(prevState => ({
-      showLogActivityForm: !prevState.showLogActivityForm,
-    }));
   };
 
   showEditTeamForm = () => {
@@ -195,9 +161,6 @@ class Team extends Component {
 
   render() {
     const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
-    const joinRequests = this.props.joinRequests.filter(request => {
-      return request.teamId === this.state.teamIdToDisplay;
-    });
 
     return (
       <React.Fragment>
@@ -237,29 +200,15 @@ class Team extends Component {
           />
         )}
 
-        {teamToDisplay &&
-          this.props.currentUser.id === teamToDisplay.teamLeaderId &&
-          joinRequests.length > 0 &&
-          teamToDisplay.numMembers < 5 && (
-            <React.Fragment>
-              <Row className="mb-3">
-                <Col>
-                  <h4>Team Join Requests</h4>
-                </Col>
-              </Row>
-              {this.state.loading ? <PageSpinner /> : <TeamJoinRequestPanel teamToDisplay={teamToDisplay} />}
-            </React.Fragment>
-          )}
+        {teamToDisplay && this.userIsTeamlead() && teamToDisplay.numMembers < 5 && (
+          <TeamJoinRequestPanel team={teamToDisplay} />
+        )}
 
-        {this.userBelongsToTeam() && (
-          <React.Fragment>
-            <Row className="mb-3">
-              <Col>
-                <h4>Activity</h4>
-              </Col>
-            </Row>
-            {this.state.loading ? <PageSpinner /> : this.renderTeamScores()}
-          </React.Fragment>
+        {this.userBelongsToTeam() && teamToDisplay && (
+          <ProfileScoresPanel
+            userIdToDisplay={this.props.currentUser.id}
+            teamIdToDisplay={this.state.teamIdToDisplay}
+          />
         )}
 
         <EditTeamForm
@@ -267,11 +216,6 @@ class Team extends Component {
           isOpen={this.state.showEditTeamForm}
           toggle={this.toggleEditTeamForm}
           formType={Constants.FORM_TYPE.EDIT}
-        />
-        <LogActivityForm
-          isOpen={this.state.showLogActivityForm}
-          toggle={this.toggleLogActivityForm}
-          eventId={this.state.logActivityEventId}
         />
       </React.Fragment>
     );
@@ -300,9 +244,5 @@ export default connect(
     fetchUser,
     fetchSpecificTeamRequests,
     editUser,
-    editJoinRequest,
-    fetchAllTeamScores,
-    fetchAllUserScores,
-    fetchEvents,
   }
 )(Team);

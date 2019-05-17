@@ -2,10 +2,39 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Row, Col } from 'reactstrap';
 
-import { rejectJoinRequest, acceptJoinRequest, fetchUser } from '../../actions';
+import { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
+import PageSpinner from '../ui/PageSpinner';
 
 class TeamJoinRequestPanel extends React.Component {
+  state = { loading: true };
+
+  componentDidMount() {
+    this.setState({ loading: true });
+
+    const { team, fetchSpecificTeamRequests } = this.props;
+    fetchSpecificTeamRequests(team.id)
+      .then(() => {
+        const usersToFetch = this.props.joinRequests.map(request => {
+          return request.userId;
+        });
+
+        console.log(usersToFetch);
+
+        return Promise.all(
+          usersToFetch.map(user => {
+            return this.props.fetchUser(user);
+          })
+        );
+      })
+      .then(() => {
+        this.setState({ loading: false });
+      })
+      .catch(e => {
+        console.error(e);
+      });
+  }
+
   acceptRequest = request => {
     this.props.acceptJoinRequest(request).then(() => {
       this.props.fetchUser(request.userId);
@@ -16,11 +45,8 @@ class TeamJoinRequestPanel extends React.Component {
     this.props.rejectJoinRequest(request).then(() => {});
   };
 
-  render() {
-    const { regions, teamToDisplay, users } = this.props;
-    const joinRequests = Object.values(this.props.joinRequests).filter(request => {
-      return request.teamId === teamToDisplay.id;
-    });
+  renderContent() {
+    const { regions, team, users, joinRequests } = this.props;
 
     const teamMemberElements = joinRequests.map(joinRequest => {
       const user = users[joinRequest.userId];
@@ -40,34 +66,47 @@ class TeamJoinRequestPanel extends React.Component {
     });
 
     return (
-      <React.Fragment>
-        <Row className="mb-2">
-          <Col xs="6" lg="4">
-            <strong>Name</strong>
-          </Col>
-          <Col xs="3" lg="4">
-            <strong>Region</strong>
-          </Col>
-          <Col xs="3" lg="4" />
-        </Row>
-        {teamMemberElements}
-        <hr />
-      </React.Fragment>
+      joinRequests.length > 0 &&
+      team.numMembers < 5 && (
+        <React.Fragment>
+          <Row className="mb-3">
+            <Col>
+              <h4>Team Join Requests</h4>
+            </Col>
+          </Row>
+          <Row className="mb-2">
+            <Col xs="6" lg="4">
+              <strong>Name</strong>
+            </Col>
+            <Col xs="3" lg="4">
+              <strong>Region</strong>
+            </Col>
+            <Col xs="3" lg="4" />
+          </Row>
+          {teamMemberElements}
+          <hr />
+        </React.Fragment>
+      )
     );
+  }
+
+  render() {
+    return this.state.loading ? <PageSpinner /> : this.renderContent();
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    teams: Object.values(state.teams),
     users: state.users.all,
     regions: state.regions,
     currentUser: state.users.current,
-    joinRequests: state.joinRequests,
+    joinRequests: Object.values(state.joinRequests).filter(request => {
+      return request.teamId === ownProps.team.id;
+    }),
   };
 };
 
 export default connect(
   mapStateToProps,
-  { rejectJoinRequest, acceptJoinRequest, fetchUser }
+  { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests }
 )(TeamJoinRequestPanel);
