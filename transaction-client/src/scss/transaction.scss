@@ -1,3 +1,74 @@
 @import './vendor/bootstrap-theme.scss';
 
 @import 'vendor-overrides.scss';
+@import 'carousel.scss';
+
+.no-underline {
+  text-decoration: none;
+}
+
+button.w75 {
+  width: 75px;
+}
+
+.hover-pointer {
+  cursor: pointer;
+}
+
+.event-description {
+  white-space: pre-wrap;
+}
+
+.large-welcome-text {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+// Check stuff below
+
+textarea.form-control {
+  height: 250px;
+}
+
+#progress {
+  width: 40%;
+  display: -ms-flexbox;
+  display: flex;
+  height: 2rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+}
+
+.titleform {
+  display: inline-block;
+}
+
+#centerText {
+  text-align: center;
+}
+#borderRoleDifferences {
+  border: 2px solid;
+}
+
+#progressCard {
+  display: -ms-flexbox;
+  display: flex;
+  height: 2rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+}
+
+#labelCardProgress {
+  height: 2rem;
+  width: 5%;
+}
+
+#log-time {
+  width: 50%;
+  display: inline-block;
+}

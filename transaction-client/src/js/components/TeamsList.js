@@ -1,155 +1,119 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Container, Breadcrumb, BreadcrumbItem, Spinner, Row, Button, Table } from 'reactstrap';
 import { connect } from 'react-redux';
-import { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser, fetchJoinRequests } from '../actions';
+import { Link } from 'react-router-dom';
+import { BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
+
+import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
+
+import PageSpinner from './ui/PageSpinner';
+
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+
+import * as Constants from '../Constants';
 
 class TeamsList extends Component {
-  state = { loading: true, clickable: true };
-  toggleSpinner = () => {
-    this.setState(prevState => ({
-      loading: !prevState.loading,
-    }));
-  };
+  state = { loading: true };
+
   componentDidMount() {
-    // this.toggleSpinner();
-    Promise.all([
-      this.props.fetchTeams(),
-      this.props.fetchUsers(),
-      this.props.fetchRegions(),
-      this.props.fetchCurrentUser(),
-    ])
+    this.setState({ loading: true });
+    Promise.all([this.props.fetchTeams(), this.props.fetchUsers(), this.props.fetchJoinRequests()])
       .then(() => {
-        this.toggleSpinner();
+        this.setState({ loading: false });
       })
-      .catch(() => {
-        this.toggleSpinner();
+      .catch(() => {});
+  }
+
+  sendJoinRequest = (userId, teamId) => {
+    this.props.createJoinRequest({ userId, teamId });
+  };
+
+  renderTeamRows() {
+    const { currentUser, users, regions } = this.props;
+    const userRequests = this.props.joinRequests
+      .filter(request => {
+        return request.userId === currentUser.id;
+      })
+      .map(request => {
+        return request.teamId;
       });
-  }
 
-  sendJoinRequest(team) {
-    this.setState({ clickable: false });
-
-    const reqObj = { teamId: team.id, userId: this.props.currentUser.id };
-    this.props
-      .postJoinRequest(reqObj)
-      .then(() => {
-        this.fetchJoinRequests();
-      })
-      .then(() => {
-        this.setState({ clickable: true });
-      })
-      .catch(() => {
-        this.setState({ clickable: true });
-      });
-  }
-
-  checkClickable(team) {
-    if (this.props.currentUser.teamId === null) {
-      if (team.numMembers >= 5) {
-        return <Button color="secondary">Team Is Full</Button>;
-      } else if (this.state.clickable === true) {
-        return (
-          <Button color="primary" onClick={() => this.sendJoinRequest(team)}>
-            Request to Join Team!
-          </Button>
-        );
-      }
-    }
-  }
-
-  teamTable() {
     var teams = this.props.teams.map(team => {
       return (
         <tr key={team.id}>
           <th scope="row" />
-          <td>{team.name}</td>
           <td>
-            {this.props.users[team.userId].fname} {this.props.users[team.userId].lname}
-          </td>
-          <td>{this.props.regions[this.props.users[team.userId].regionId].name}</td>
-          <td>
-            <Link to={`/team/${team.id}`}>
-              <Button>View Team</Button>
+            <Link className="no-underline" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+              {team.name}
             </Link>
           </td>
+          <td>
+            {users[team.teamLeaderId].fname} {users[team.teamLeaderId].lname}
+          </td>
+          <td>{regions[users[team.teamLeaderId].regionId].name}</td>
           <td>{team.numMembers}</td>
-          <td>{this.checkClickable(team)}</td>
+          {!currentUser.teamId && (
+            <td>
+              {!userRequests.includes(team.id) && (
+                <Button size="sm" color="primary" onClick={() => this.sendJoinRequest(currentUser.id, team.id)}>
+                  Request to Join
+                </Button>
+              )}
+            </td>
+          )}
         </tr>
       );
     });
     return teams;
   }
 
-  decideRender() {
-    if (this.state.loading === true) {
-      return (
-        <div className="col-1 offset-6">
-          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Table striped>
-            <thead>
-              <tr>
-                <th scope="row" />
-                <th>Team Name</th>
-                <th>Team Leader</th>
-                <th>Region</th>
-                <th>Page</th>
-                <th>Members</th>
-                <th>Request</th>
-              </tr>
-            </thead>
-            <tbody>{this.teamTable()}</tbody>
-          </Table>
-          <br />
-        </div>
-      );
-    }
+  renderTeamList() {
+    return (
+      <Table size="sm" hover borderless>
+        <thead>
+          <tr>
+            <th scope="row" />
+            <th>Team Name</th>
+            <th>Team Leader</th>
+            <th>Region</th>
+            <th>Members</th>
+            {!this.props.currentUser.teamId && <th>Request</th>}
+          </tr>
+        </thead>
+        <tbody>{this.renderTeamRows()}</tbody>
+      </Table>
+    );
   }
 
-  showTeams() {
-    const teams = this.props.teams.map(team => {
-      return (
-        <div key={team.id}>
-          <Link to={`/team/${team.id}`}>{team.name}</Link>
-        </div>
-      );
-    });
-    return teams;
+  renderContent() {
+    return (
+      <Row>
+        <Col>{this.renderTeamList()}</Col>
+      </Row>
+    );
   }
 
   render() {
     return (
-      <Container>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>TeamList</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
-        <h3>List of Teams: </h3>
-        <div>{this.decideRender()}</div>
-      </Container>
+      <React.Fragment>
+        <BreadcrumbFragment>
+          <BreadcrumbItem active>Teams</BreadcrumbItem>
+        </BreadcrumbFragment>
+        {this.state.loading ? <PageSpinner /> : this.renderContent()}
+      </React.Fragment>
     );
   }
 }
 const mapStateToProps = state => {
   return {
-    teams: Object.values(state.team),
-    users: Object.values(state.users),
+    teams: Object.values(state.teams),
+    users: state.users.all,
     regions: state.regions,
-    currentUser: state.currentUser,
-    joinRequests: state.joinRequests,
+    currentUser: state.users.current,
+    joinRequests: Object.values(state.joinRequests),
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, fetchRegions, postJoinRequest, fetchCurrentUser, fetchJoinRequests }
+  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests }
 )(TeamsList);

@@ -10,7 +10,7 @@ import {
   fetchTeam,
   editUser,
   fetchCurrentTeam,
-  fetchCurrentRole,
+  fetchRole,
 } from '../actions';
 
 class FreeAgentsList extends Component {
@@ -32,7 +32,7 @@ class FreeAgentsList extends Component {
       .then(() => {
         Promise.all([
           this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-          this.props.fetchCurrentRole(this.props.currentUser.roleId),
+          this.props.fetchRole(this.props.currentUser.roleId),
         ]);
       })
       .then(() => {
@@ -172,5 +172,5 @@ const mapStateToProps = state => {
 };
 export default connect(
   mapStateToProps,
-  { fetchUsers, fetchCurrentUser, fetchRoles, fetchRegions, fetchTeam, editUser, fetchCurrentTeam, fetchCurrentRole }
+  { fetchUsers, fetchCurrentUser, fetchRoles, fetchRegions, fetchTeam, editUser, fetchCurrentTeam, fetchRole }
 )(FreeAgentsList);

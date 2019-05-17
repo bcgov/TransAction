@@ -33,7 +33,7 @@ objects:
         build: ${NAME}-artifacts${SUFFIX}
       name: ${NAME}-artifacts${SUFFIX}
     spec:
-      completionDeadlineSeconds: 240
+      completionDeadlineSeconds: 600
       nodeSelector: null
       output:
         to:
@@ -73,7 +73,7 @@ objects:
       name: ${NAME}${SUFFIX}
     spec:
       nodeSelector: null
-      completionDeadlineSeconds: 180
+      completionDeadlineSeconds: 600
       output:
         to:
           kind: ImageStreamTag
