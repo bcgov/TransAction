@@ -68,7 +68,7 @@ class TeamsList extends Component {
 
   renderTeamList() {
     return (
-      <Table striped size="sm">
+      <Table size="sm" hover borderless>
         <thead>
           <tr>
             <th scope="row" />
