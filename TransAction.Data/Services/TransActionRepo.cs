@@ -262,7 +262,6 @@ namespace TransAction.Data.Services
                         teamId = x.Key.TeamId
                     }).OrderByDescending(x => x.score)
                     .ToList().Take(number);
-
             return teams;
 
 
