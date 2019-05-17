@@ -10,7 +10,7 @@ namespace TransAction.Data.Models
         public int RegionId { get; set; }
         public string Description { get; set; }
         public int Goal { get; set; }
-        public int UserId { get; set; }
+        //public int UserId { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace TransAction.Data.Services
             return _context.TraEvent.OrderBy(c => c.EventId).ToList();
         }
 
-/*-----------------------------------------------------------------------------------------------------------------------------*/
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public TraUser GetUser(int id)
         {
@@ -87,7 +87,7 @@ namespace TransAction.Data.Services
         {
             return (_context.SaveChanges() >= 0);
         }
-/*-----------------------------------------------------------------------------------------------------------------------------*/
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraTeam> GetTeams()
         {
             return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
@@ -116,7 +116,7 @@ namespace TransAction.Data.Services
                 return false;
             }
         }
-/*-----------------------------------------------------------------------------------------------------------------------------*/
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraRegion> GetRegions()
         {
             return _context.TraRegion.OrderBy(c => c.RegionId).ToList();
@@ -144,7 +144,7 @@ namespace TransAction.Data.Services
             _context.TraRegion.Add(traRegion);
         }
 
- /*-----------------------------------------------------------------------------------------------------------------------------*/
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public IEnumerable<TraActivity> GetActivities()
         {
@@ -171,7 +171,7 @@ namespace TransAction.Data.Services
 
         public void CreateActivity(TraActivity traActivity)
         {
-            _context.TraActivity.Add(traActivity); 
+            _context.TraActivity.Add(traActivity);
         }
 
         public IEnumerable<TraUserActivity> GetUserActivities()
@@ -201,15 +201,15 @@ namespace TransAction.Data.Services
         {
             _context.TraUserActivity.Add(traUserActivity);
         }
-/*-----------------------------------------------------------------------------------------------------------------------------*/
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
         public int EventSpecificScore(int eventId)
-        {               
-           
+        {
+
             var userAct = _context.TraUserActivity
-                .Where(p => p.EventId == eventId)                    
+                .Where(p => p.EventId == eventId)
                     .Include(x => x.Activity)
-                    .GroupBy(x => new { x.EventId }) 
-                    .Select(x => new 
+                    .GroupBy(x => new { x.EventId })
+                    .Select(x => new
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
                     }).Select(c => c.Score).Sum();
@@ -219,10 +219,11 @@ namespace TransAction.Data.Services
         }
 
         public int UserSpecificScore(int userId, int eventId)
-        {           
+        {
             var userAct = _context.TraUserActivity
                 .Where(p => p.EventId == eventId && p.UserId == userId)
                     .Include(x => x.Activity)
+                    .Include(x => x.Event)
                     .GroupBy(x => new { x.UserId, x.EventId })
                     .Select(x => new
                     {
@@ -243,7 +244,7 @@ namespace TransAction.Data.Services
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
                     }).Select(c => c.Score).Sum();
-    
+
             return userAct;
         }
 
@@ -261,7 +262,6 @@ namespace TransAction.Data.Services
                         teamId = x.Key.TeamId
                     }).OrderByDescending(x => x.score)
                     .ToList().Take(number);
-            
             return teams;
 
 
@@ -271,9 +271,9 @@ namespace TransAction.Data.Services
         {
             var memberId = _context.TraUser.Where(x => x.TeamId == teamId).Select(x => x.UserId);
             var teamAct = _context.TraUserActivity
-                .Where(p =>memberId.Contains(p.UserId))
-                    .Include(x =>  x.Activity)
-                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)                    
+                .Where(p => memberId.Contains(p.UserId))
+                    .Include(x => x.Activity)
+                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
                     //.Where(x => x.Event.IsActive == true)
                     .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new TeamSpecificScoreDto()
@@ -295,21 +295,48 @@ namespace TransAction.Data.Services
                 .Where(p => p.UserId == id)
                     .Include(x => x.Activity)//.Where(x => x.Event.IsActive == true)
                     .Include(x => x.Event).Where(x => x.Event.IsActive == true)
-                    .GroupBy(x => new { x.TeamId, x.EventId})
+                    .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new UserScoreDto()
                     {
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
                         EventId = x.Key.EventId,
                         UserId = id,
-                        
+
                     })
                     .ToList();
 
-           
+
 
             return userAct;
         }
-/*-----------------------------------------------------------------------------------------------------------------------------*/
+
+        public IEnumerable<RegionScoreDto> RegionalScore(int eventId)
+        {
+            var teamAct = _context.TraUserActivity
+                .Where(p => p.EventId == eventId)
+                    .Include(x => x.Activity)
+                    .Include(x => x.Event)
+                    .Include(x => x.Team)
+                    .GroupBy(x => new { x.Team.RegionId, x.EventId })
+                    .Select(x => new RegionScoreDto
+                    {
+                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),//.Sum(y => y.score),      
+                        EventId = x.Key.EventId,
+                        RegionId = x.Select(c => c.Team.RegionId).FirstOrDefault()
+                    });
+
+            //var result = new RegionScoreDto
+            //{
+            //    EventId = eventId,
+            //    RegionId = z,
+            //    score = teamAct
+            //};
+
+
+
+            return teamAct;
+        }
+        /*-----------------------------------------------------------------------------------------------------------------------------*/
 
         public IEnumerable<TraRole> GetRoles()
         {
@@ -342,7 +369,7 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TraMemberReq> GetRequests()
         {
-            return _context.TraMemberReq.OrderBy(c => c.MemberReqId).ToList();
+            return _context.TraMemberReq.Where(x =>x.IsActive== true).OrderBy(c => c.MemberReqId).ToList();
         }
 
         public TraMemberReq GetRequest(int id)
@@ -355,17 +382,18 @@ namespace TransAction.Data.Services
             _context.TraMemberReq.Add(traMember);
         }
 
-        public IEnumerable<CurrentTeamRequestsDto> CurrentTeamReq(int teamId)
+        public IEnumerable<MemberReqDto> CurrentTeamReq(int teamId)
         {
             var teamRequests = _context.TraMemberReq
                 .Where(p => p.TeamId == teamId)
                 .Where(p => p.IsActive == true)
-                    .Select(x => new CurrentTeamRequestsDto()
+                    .Select(x => new MemberReqDto()
                     {
                         MemberReqId = x.MemberReqId,
                         TeamId = teamId,
                         UserId = x.UserId,
-                        IsActive = x.IsActive
+                        IsActive = x.IsActive,
+                        ConcurrencyControlNumber = x.ConcurrencyControlNumber          
                     })
                     .ToList();
 
@@ -373,7 +401,58 @@ namespace TransAction.Data.Services
 
             return teamRequests;
         }
+ /*...........................................................................................................*/   
+        public IEnumerable<TraTopic> GetTopics()
+        {
+            return _context.TraTopic.OrderBy(c => c.TopicId).ToList(); 
+        }
 
+        public TraTopic GetTopic(int id)
+        {
+            return _context.TraTopic.FirstOrDefault(c => c.TopicId == id);
+        }
 
+        public void CreateTopic(TraTopic traTopic)
+        {
+            _context.TraTopic.Add(traTopic);
+        }
+
+        public bool TopicExists(string Title)
+        {
+            var checkTopic = _context.TraTopic.FirstOrDefault(c => c.Title == Title);
+            if (checkTopic != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
+        {
+            return _context.TraTopicMessage
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c=> c.TopicMessageId).ToList();
+ 
+        }
+
+        public TraTopicMessage GetTopicMessage(int topicId, int messageId)
+        {
+            return _context.TraTopicMessage
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).FirstOrDefault(c => c.TopicMessageId == messageId);
+        }
+
+        public void CreateTopicMessage(TraTopicMessage traTopicMessage)
+        {
+            _context.TraTopicMessage.Add(traTopicMessage);
+        }
+
+        public bool TopicMessageExist(string Name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
+
+
