@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { fetchTeam, editUser, fetchUser } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import EditUserForm from './forms/EditUserForm';
-import ProfileFragment from './fragments/ProfileFragment';
+import UserProfileFragment from './fragments/UserProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import ProfileTeamPanel from './fragments/ProfileTeamPanel';
@@ -93,7 +93,7 @@ class Profile extends Component {
 
     return (
       <React.Fragment>
-        <ProfileFragment
+        <UserProfileFragment
           name={`${userToDisplay.fname} ${userToDisplay.lname}`}
           description={userToDisplay.description}
           regionName={this.props.regions[userToDisplay.regionId].name}
@@ -121,7 +121,7 @@ class Profile extends Component {
                 else return <p>{userToDisplay.fname} is not part of a team.</p>;
               } else
                 return (
-                  <ProfileFragment
+                  <UserProfileFragment
                     {..._.pick(teamToDisplay, 'name', 'description')}
                     regionName={this.props.regions[teamToDisplay.regionId].name}
                     profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
@@ -151,7 +151,7 @@ class Profile extends Component {
             <Col xs="2">
               <h4>User Profile</h4>
             </Col>
-            <Col>
+            <Col className="text-right">
               {this.userCanEditProfile() && userToDisplay && !this.state.loading && (
                 <Button color="primary" size="sm" onClick={this.showEditUserForm}>
                   Edit Profile

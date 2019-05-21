@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 
-import ProfileFragment from './fragments/ProfileFragment';
+import TeamProfileFragment from './fragments/TeamProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import TeamJoinRequestPanel from './fragments/TeamJoinRequestPanel';
 import TeamMembersPanel from './fragments/TeamMembersPanel';
@@ -103,7 +103,7 @@ class Team extends Component {
   renderTeamInfo(teamToDisplay) {
     return (
       <React.Fragment>
-        <ProfileFragment
+        <TeamProfileFragment
           {..._.pick(teamToDisplay, 'name', 'description', 'goal')}
           regionName={this.props.regions[teamToDisplay.regionId].name}
         />

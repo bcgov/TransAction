@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button, Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
 
-import ProfileFragment from './ProfileFragment';
+import TeamProfileFragment from './TeamProfileFragment';
 
 import * as Constants from '../../Constants';
 
@@ -28,7 +28,7 @@ class ProfileTeamPanel extends React.Component {
                 else return <p>{userToDisplay.fname} is not part of a team.</p>;
               } else
                 return (
-                  <ProfileFragment
+                  <TeamProfileFragment
                     {..._.pick(teamToDisplay, 'name', 'description')}
                     regionName={this.props.regions[teamToDisplay.regionId].name}
                     profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
@@ -51,7 +51,7 @@ class ProfileTeamPanel extends React.Component {
           <Col xs="2">
             <h4>Team</h4>
           </Col>
-          <Col>
+          <Col className="text-right">
             {selfProfile && teamToDisplay && teamToDisplay.numMembers > 1 && (
               <Button color="danger" size="sm">
                 Leave Team
