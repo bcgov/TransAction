@@ -49,17 +49,16 @@ class ProfileScoresPanel extends React.Component {
   renderUserScores() {
     const { events, userIdToDisplay, teamIdToDisplay, scores } = this.props;
 
-    const userScores = Object.values(scores.user[userIdToDisplay]).map(score => {
-      const teamScore = scores.team[teamIdToDisplay][score.eventId];
+    const userScores = Object.values(scores.team[teamIdToDisplay]).map(teamScore => {
+      const score = scores.user[userIdToDisplay][teamScore.eventId];
 
       return (
-        <Col xs="12" lg="6" key={score.eventId} className="mb-3">
+        <Col xs="12" lg="6" key={teamScore.eventId} className="mb-3">
           <UserScoreCard
             score={score}
             teamScore={teamScore}
-            event={events[score.eventId]}
+            event={events[teamScore.eventId]}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
-            showLogActivityForm={this.showLogActivityForm}
           />
         </Col>
       );
