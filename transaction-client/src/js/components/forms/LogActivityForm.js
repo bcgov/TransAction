@@ -162,8 +162,8 @@ const validate = formValues => {
       errors.activityHours = 'Enter a positive number';
     }
 
-    if (hours + minutes <= 0) {
-      errors.activityHours = 'Must be greater than 0';
+    if (hours * 60 + minutes < 15) {
+      errors.activityHours = 'Less than 15 minutes';
     }
   }
 

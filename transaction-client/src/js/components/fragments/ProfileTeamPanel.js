@@ -37,7 +37,6 @@ class ProfileTeamPanel extends React.Component {
             })()}
           </Col>
         </Row>
-        <hr />
       </React.Fragment>
     );
   }

@@ -3,6 +3,10 @@
 @import 'vendor-overrides.scss';
 @import 'carousel.scss';
 
+body {
+  background-color: #e2e1e0;
+}
+
 .no-underline {
   text-decoration: none;
 }
@@ -23,6 +27,14 @@ button.w75 {
   font-size: 4.5rem;
   font-weight: 900;
   line-height: 1.2;
+}
+
+.card-wrapper {
+  padding: 16px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  margin-bottom: 16px;
 }
 
 // Check stuff below

@@ -12,6 +12,7 @@ import ProfileFragment from './fragments/ProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import ProfileTeamPanel from './fragments/ProfileTeamPanel';
+import CardWrapper from './ui/CardWrapper';
 
 import * as Constants from '../Constants';
 
@@ -97,7 +98,6 @@ class Profile extends Component {
           description={userToDisplay.description}
           regionName={this.props.regions[userToDisplay.regionId].name}
         />
-        <hr />
       </React.Fragment>
     );
   }
@@ -130,7 +130,6 @@ class Profile extends Component {
             })()}
           </Col>
         </Row>
-        <hr />
       </React.Fragment>
     );
   }
@@ -147,33 +146,39 @@ class Profile extends Component {
           <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
         </BreadcrumbFragment>
 
-        <Row className="mb-3">
-          <Col xs="2">
-            <h4>User Profile</h4>
-          </Col>
-          <Col>
-            {this.userCanEditProfile() && userToDisplay && !this.state.loading && (
-              <Button color="primary" size="sm" onClick={this.showEditUserForm}>
-                Edit Profile
-              </Button>
-            )}
-          </Col>
-        </Row>
-        {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
+        <CardWrapper>
+          <Row className="mb-3">
+            <Col xs="2">
+              <h4>User Profile</h4>
+            </Col>
+            <Col>
+              {this.userCanEditProfile() && userToDisplay && !this.state.loading && (
+                <Button color="primary" size="sm" onClick={this.showEditUserForm}>
+                  Edit Profile
+                </Button>
+              )}
+            </Col>
+          </Row>
+          {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
+        </CardWrapper>
 
         {!this.state.loading && (
-          <ProfileTeamPanel
-            selfProfile={this.selfProfile()}
-            teamIdToDisplay={this.state.teamIdToDisplay}
-            userIdToDisplay={this.state.userIdToDisplay}
-          />
+          <CardWrapper>
+            <ProfileTeamPanel
+              selfProfile={this.selfProfile()}
+              teamIdToDisplay={this.state.teamIdToDisplay}
+              userIdToDisplay={this.state.userIdToDisplay}
+            />
+          </CardWrapper>
         )}
 
         {!this.state.loading && this.selfProfile() && (
-          <ProfileScoresPanel
-            userIdToDisplay={this.state.userIdToDisplay}
-            teamIdToDisplay={this.state.teamIdToDisplay}
-          />
+          <CardWrapper>
+            <ProfileScoresPanel
+              userIdToDisplay={this.state.userIdToDisplay}
+              teamIdToDisplay={this.state.teamIdToDisplay}
+            />
+          </CardWrapper>
         )}
 
         <EditUserForm

@@ -44,7 +44,7 @@ class EventScoresPanel extends React.Component {
     const teamScore = scores.team[currentUser.teamId][event.id];
 
     return (
-      <Row className="my-5">
+      <Row className="mt-5">
         <Col>
           <UserScoreCard
             score={score}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {  BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { BreadcrumbItem, Button, Row, Col } from 'reactstrap';
 import _ from 'lodash';
 
 import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
@@ -13,6 +13,7 @@ import TeamJoinRequestPanel from './fragments/TeamJoinRequestPanel';
 import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import EditTeamForm from './forms/EditTeamForm';
+import CardWrapper from './ui/CardWrapper';
 
 import * as Constants from '../Constants';
 
@@ -106,7 +107,6 @@ class Team extends Component {
           {..._.pick(teamToDisplay, 'name', 'description', 'goal')}
           regionName={this.props.regions[teamToDisplay.regionId].name}
         />
-        <hr />
       </React.Fragment>
     );
   }
@@ -122,46 +122,54 @@ class Team extends Component {
           </BreadcrumbItem>
           <BreadcrumbItem active>{teamToDisplay && teamToDisplay.name}</BreadcrumbItem>
         </BreadcrumbFragment>
-        <Row className="mb-3">
-          <Col xs="2">
-            <h4>Team Profile</h4>
-          </Col>
-          <Col>
-            {this.userIsTeamleadOrAdmin() && teamToDisplay && !this.state.loading && (
-              <Button color="primary" size="sm" onClick={this.showEditTeamForm}>
-                Edit Team
-              </Button>
-            )}
-          </Col>
-        </Row>
-        {this.state.loading ? <PageSpinner /> : this.renderTeamInfo(teamToDisplay)}
 
-        <Row className="mb-3">
-          <Col>
-            <h4>Team Members</h4>
-          </Col>
-        </Row>
-        {this.state.loading ? (
-          <PageSpinner />
-        ) : (
-          <TeamMembersPanel
-            teamToDisplay={teamToDisplay}
-            users={this.props.users}
-            regions={this.props.regions}
-            currentUser={this.props.currentUser}
-          />
-        )}
+        <CardWrapper>
+          <Row className="mb-3">
+            <Col xs="2">
+              <h4>Team Profile</h4>
+            </Col>
+            <Col>
+              {this.userIsTeamleadOrAdmin() && teamToDisplay && !this.state.loading && (
+                <Button color="primary" size="sm" onClick={this.showEditTeamForm}>
+                  Edit Team
+                </Button>
+              )}
+            </Col>
+          </Row>
+          {this.state.loading ? <PageSpinner /> : this.renderTeamInfo(teamToDisplay)}
+        </CardWrapper>
+        <CardWrapper>
+          <Row className="mb-3">
+            <Col>
+              <h4>Team Members</h4>
+            </Col>
+          </Row>
+          {this.state.loading ? (
+            <PageSpinner />
+          ) : (
+            <TeamMembersPanel
+              teamToDisplay={teamToDisplay}
+              users={this.props.users}
+              regions={this.props.regions}
+              currentUser={this.props.currentUser}
+            />
+          )}
+        </CardWrapper>
 
         {teamToDisplay && this.userIsTeamlead() && teamToDisplay.numMembers < 5 && (
-          <TeamJoinRequestPanel team={teamToDisplay} />
+          <CardWrapper>
+            <TeamJoinRequestPanel team={teamToDisplay} />{' '}
+          </CardWrapper>
         )}
 
-        {this.userBelongsToTeam() && teamToDisplay && (
-          <ProfileScoresPanel
-            userIdToDisplay={this.props.currentUser.id}
-            teamIdToDisplay={this.state.teamIdToDisplay}
-          />
-        )}
+        <CardWrapper>
+          {this.userBelongsToTeam() && teamToDisplay && (
+            <ProfileScoresPanel
+              userIdToDisplay={this.props.currentUser.id}
+              teamIdToDisplay={this.state.teamIdToDisplay}
+            />
+          )}
+        </CardWrapper>
 
         <EditTeamForm
           initialValues={teamToDisplay}

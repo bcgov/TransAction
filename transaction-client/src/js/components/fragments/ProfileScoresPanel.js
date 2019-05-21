@@ -65,7 +65,7 @@ class ProfileScoresPanel extends React.Component {
     });
 
     return (
-      <Row className="mb-5">
+      <Row>
         {userScores.length > 0 ? (
           userScores
         ) : (
