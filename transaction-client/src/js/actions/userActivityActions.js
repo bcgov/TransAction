@@ -8,6 +8,7 @@ import {
   FETCH_USER_EVENT_SCORE,
   FETCH_TEAM_EVENT_SCORE,
   FETCH_TEAM_STANDINGS,
+  FETCH_REGION_STANDINGS,
 } from './types';
 
 //Activity Actions
@@ -106,6 +107,19 @@ export const fetchTeamStandings = (eventId, teamCount = 20) => async dispatch =>
       const response = await api.get(`/useractivity/event/${eventId}/top/${teamCount}`);
 
       dispatch({ type: FETCH_TEAM_STANDINGS, payload: { eventId, data: response.data } });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const fetchRegionStandings = eventId => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/useractivity/event/${eventId}/region`);
+
+      dispatch({ type: FETCH_REGION_STANDINGS, payload: { eventId, data: response.data } });
       resolve();
     } catch (e) {
       reject(e);

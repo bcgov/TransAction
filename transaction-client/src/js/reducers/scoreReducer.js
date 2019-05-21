@@ -5,12 +5,14 @@ import {
   FETCH_USER_EVENT_SCORE,
   FETCH_TEAM_EVENT_SCORE,
   FETCH_TEAM_STANDINGS,
+  FETCH_REGION_STANDINGS,
 } from '../actions/types';
 
 const DEFAULT_STATE = {
   user: {},
   team: {},
   teamStandings: [],
+  regionStandings: [],
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -49,6 +51,14 @@ export default (state = DEFAULT_STATE, action) => {
       };
     case FETCH_TEAM_STANDINGS:
       return { ...state, teamStandings: { ...state.teamStandings, [action.payload.eventId]: action.payload.data } };
+    case FETCH_REGION_STANDINGS:
+      return {
+        ...state,
+        regionStandings: {
+          ...state.regionStandings,
+          [action.payload.eventId]: _.mapKeys(action.payload.data, 'regionId'),
+        },
+      };
     default:
       return state;
   }

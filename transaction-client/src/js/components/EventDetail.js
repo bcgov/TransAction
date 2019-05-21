@@ -9,6 +9,7 @@ import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import PageSpinner from './ui/PageSpinner';
 import EventTeamStandings from './fragments/EventTeamStandings';
+import EventRegionStandings from './fragments/EventRegionStandings';
 import EventScoresPanel from './fragments/EventScoresPanel';
 import CardWrapper from './ui/CardWrapper';
 
@@ -43,6 +44,9 @@ class EventDetail extends React.Component {
           </p>
           <Markdown source={this.props.event.description} allowedTypes={Constants.MARKDOWN.ALLOWED} />
           <EventScoresPanel event={this.props.event} />
+        </CardWrapper>
+        <CardWrapper>
+          <EventRegionStandings eventId={this.props.event.id} />
         </CardWrapper>
         <CardWrapper>
           <EventTeamStandings eventId={this.props.event.id} />
