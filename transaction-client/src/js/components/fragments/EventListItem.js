@@ -4,6 +4,8 @@ import { Row, Col, Button } from 'reactstrap';
 import Markdown from 'react-markdown';
 import moment from 'moment';
 
+import CardWrapper from '../ui/CardWrapper';
+
 import * as Constants from '../../Constants';
 
 class EventListItem extends React.Component {
@@ -26,8 +28,8 @@ class EventListItem extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
-        <Row className="mb-5">
+      <CardWrapper>
+        <Row>
           <Col>
             <div className="mb-2">
               <Link to={`/event/${this.props.event.id}`} className="h4 no-underline">
@@ -45,7 +47,7 @@ class EventListItem extends React.Component {
             </p>
           </Col>
         </Row>
-      </React.Fragment>
+      </CardWrapper>
     );
   }
 }

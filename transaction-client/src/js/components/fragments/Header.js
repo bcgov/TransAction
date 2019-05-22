@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { NavLink as RRNavLink, Link } from 'react-router-dom';
 import { Container, Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
@@ -74,6 +75,13 @@ class Header extends Component {
                     FAQ
                   </NavLink>
                 </NavItem>
+                {/* {this.props.currentUser.isAdmin && (
+                  <NavItem>
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/admin">
+                      Admin
+                    </NavLink>
+                  </NavItem>
+                )} */}
               </Nav>
             </Collapse>
           </Container>
@@ -83,4 +91,13 @@ class Header extends Component {
   }
 }
 
-export default Header;
+const mapStateToProps = state => {
+  return {
+    currentUser: state.users.current,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(Header);

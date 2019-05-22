@@ -44,14 +44,14 @@ class EventScoresPanel extends React.Component {
     const teamScore = scores.team[currentUser.teamId][event.id];
 
     return (
-      <Row className="my-5">
+      <Row className="mt-5">
         <Col>
           <UserScoreCard
-            score={score}
-            teamScore={teamScore}
+            score={score ? score.score : 0}
+            teamScore={teamScore ? teamScore.score : 0}
             event={this.props.event}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
-            showLogActivityForm={this.showLogActivityForm}
+            refreshStandings={true}
           />
         </Col>
       </Row>
@@ -66,7 +66,7 @@ class EventScoresPanel extends React.Component {
         {this.props.currentUser.teamId ? (
           this.renderScores()
         ) : (
-          <Row className="mb-5">
+          <Row>
             <Col>
               <Alert color="warning">
                 You are not currently not on a team. Click <Link to={Constants.PATHS.START}>HERE</Link> to get started!

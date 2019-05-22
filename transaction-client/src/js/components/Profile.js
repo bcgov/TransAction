@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { BreadcrumbItem, Button, Row, Col, Alert } from 'reactstrap';
+import { BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
 
 import { fetchTeam, editUser, fetchUser } from '../actions';
 import PageSpinner from './ui/PageSpinner';
-import EditUserForm from './forms/EditUserForm';
-import ProfileFragment from './fragments/ProfileFragment';
+import UserProfileFragment from './fragments/UserProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
-import ProfileTeamPanel from './fragments/ProfileTeamPanel';
+import UserProfileTeamPanel from './fragments/UserProfileTeamPanel';
+import CardWrapper from './ui/CardWrapper';
 
 import * as Constants from '../Constants';
 
@@ -20,8 +20,6 @@ class Profile extends Component {
     loading: true,
     userIdToDisplay: null,
     teamIdToDisplay: null,
-    showEditUserForm: false,
-    showEditTeamForm: false,
   };
 
   componentDidMount() {
@@ -77,31 +75,6 @@ class Profile extends Component {
     return false;
   };
 
-  showEditUserForm = () => {
-    this.setState({ showEditUserForm: true });
-  };
-
-  toggleEditUserForm = () => {
-    this.setState(prevState => ({
-      showEditUserForm: !prevState.showEditUserForm,
-    }));
-  };
-
-  renderUserInfo() {
-    const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
-
-    return (
-      <React.Fragment>
-        <ProfileFragment
-          name={`${userToDisplay.fname} ${userToDisplay.lname}`}
-          description={userToDisplay.description}
-          regionName={this.props.regions[userToDisplay.regionId].name}
-        />
-        <hr />
-      </React.Fragment>
-    );
-  }
-
   renderUserTeam() {
     const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
     const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
@@ -121,7 +94,7 @@ class Profile extends Component {
                 else return <p>{userToDisplay.fname} is not part of a team.</p>;
               } else
                 return (
-                  <ProfileFragment
+                  <UserProfileFragment
                     {..._.pick(teamToDisplay, 'name', 'description')}
                     regionName={this.props.regions[teamToDisplay.regionId].name}
                     profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
@@ -130,7 +103,6 @@ class Profile extends Component {
             })()}
           </Col>
         </Row>
-        <hr />
       </React.Fragment>
     );
   }
@@ -147,40 +119,38 @@ class Profile extends Component {
           <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
         </BreadcrumbFragment>
 
-        <Row className="mb-3">
-          <Col xs="2">
-            <h4>User Profile</h4>
-          </Col>
-          <Col>
-            {this.userCanEditProfile() && userToDisplay && !this.state.loading && (
-              <Button color="primary" size="sm" onClick={this.showEditUserForm}>
-                Edit Profile
-              </Button>
-            )}
-          </Col>
-        </Row>
-        {this.state.loading ? <PageSpinner /> : this.renderUserInfo()}
+        <CardWrapper>
+          {this.state.loading ? (
+            <PageSpinner />
+          ) : (
+            userToDisplay && (
+              <UserProfileFragment
+                canEdit={this.userCanEditProfile()}
+                userToDisplay={userToDisplay}
+                regionName={this.props.regions[userToDisplay.regionId].name}
+              />
+            )
+          )}
+        </CardWrapper>
 
         {!this.state.loading && (
-          <ProfileTeamPanel
-            selfProfile={this.selfProfile()}
-            teamIdToDisplay={this.state.teamIdToDisplay}
-            userIdToDisplay={this.state.userIdToDisplay}
-          />
+          <CardWrapper>
+            <UserProfileTeamPanel
+              selfProfile={this.selfProfile()}
+              teamIdToDisplay={this.state.teamIdToDisplay}
+              userIdToDisplay={this.state.userIdToDisplay}
+            />
+          </CardWrapper>
         )}
 
         {!this.state.loading && this.selfProfile() && (
-          <ProfileScoresPanel
-            userIdToDisplay={this.state.userIdToDisplay}
-            teamIdToDisplay={this.state.teamIdToDisplay}
-          />
+          <CardWrapper>
+            <ProfileScoresPanel
+              userIdToDisplay={this.state.userIdToDisplay}
+              teamIdToDisplay={this.state.teamIdToDisplay}
+            />
+          </CardWrapper>
         )}
-
-        <EditUserForm
-          initialValues={userToDisplay}
-          isOpen={this.state.showEditUserForm}
-          toggle={this.toggleEditUserForm}
-        />
       </React.Fragment>
     );
   }

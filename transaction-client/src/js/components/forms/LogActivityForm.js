@@ -6,7 +6,7 @@ import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { fetchActivityList, createUserActivity } from '../../actions';
+import { fetchActivityList, createUserActivity, fetchTeamStandings } from '../../actions';
 import FormModal from '../ui/FormModal';
 import FormInput from '../ui/FormInput';
 import DatePickerInput from '../ui/DatePickerInput';
@@ -38,6 +38,10 @@ class LogActivityForm extends React.Component {
       this.props
         .createUserActivity(formValues)
         .then(() => {
+          if (this.props.refreshStandings) {
+            this.props.fetchTeamStandings(this.props.eventId);
+          }
+
           this.toggleModal();
         })
         .catch(() => {});
@@ -158,8 +162,8 @@ const validate = formValues => {
       errors.activityHours = 'Enter a positive number';
     }
 
-    if (hours + minutes <= 0) {
-      errors.activityHours = 'Must be greater than 0';
+    if (hours * 60 + minutes < 15) {
+      errors.activityHours = 'Less than 15 minutes';
     }
   }
 
@@ -189,7 +193,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const formConnect = connect(
   mapStateToProps,
-  { fetchActivityList, createUserActivity }
+  { fetchActivityList, createUserActivity, fetchTeamStandings }
 )(form);
 
 export default formConnect;

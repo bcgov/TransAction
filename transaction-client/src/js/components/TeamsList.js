@@ -6,7 +6,7 @@ import { BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
 import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
-
+import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
@@ -37,7 +37,7 @@ class TeamsList extends Component {
         return request.teamId;
       });
 
-    var teams = this.props.teams.map(team => {
+    var teams = Object.values(this.props.teams).map(team => {
       return (
         <tr key={team.id}>
           <th scope="row" />
@@ -68,27 +68,67 @@ class TeamsList extends Component {
 
   renderTeamList() {
     return (
-      <Table size="sm" hover borderless>
-        <thead>
-          <tr>
-            <th scope="row" />
-            <th>Team Name</th>
-            <th>Team Leader</th>
-            <th>Region</th>
-            <th>Members</th>
-            {!this.props.currentUser.teamId && <th>Request</th>}
-          </tr>
-        </thead>
-        <tbody>{this.renderTeamRows()}</tbody>
-      </Table>
+      <React.Fragment>
+        <h4>All TransAction Teams</h4>
+        <Table size="sm" hover borderless className="mt-3">
+          <thead>
+            <tr>
+              <th scope="row" />
+              <th>Team Name</th>
+              <th>Team Leader</th>
+              <th>Region</th>
+              <th>Members</th>
+              {!this.props.currentUser.teamId && <th>Request</th>}
+            </tr>
+          </thead>
+          <tbody>{this.renderTeamRows()}</tbody>
+        </Table>
+      </React.Fragment>
+    );
+  }
+
+  renderTeamProfile() {
+    const { currentUser, teams } = this.props;
+
+    let output = null;
+
+    if (currentUser.teamId) {
+      output = (
+        <p>
+          You are on team <strong>{teams[currentUser.teamId].name}</strong>!{' '}
+          <Link to={`${Constants.PATHS.TEAM}/${currentUser.teamId}`}>View Details</Link>.
+        </p>
+      );
+    } else {
+      output = (
+        <p>
+          You are not on a team. <Link to={Constants.PATHS.START}>Get started</Link> or join one of the teams below!
+        </p>
+      );
+    }
+
+    return (
+      <React.Fragment>
+        <h4>Personal Team Status</h4>
+        {output}
+      </React.Fragment>
     );
   }
 
   renderContent() {
     return (
-      <Row>
-        <Col>{this.renderTeamList()}</Col>
-      </Row>
+      <React.Fragment>
+        <CardWrapper>
+          <Row>
+            <Col>{this.renderTeamProfile()}</Col>
+          </Row>
+        </CardWrapper>
+        <CardWrapper>
+          <Row>
+            <Col>{this.renderTeamList()}</Col>
+          </Row>
+        </CardWrapper>
+      </React.Fragment>
     );
   }
 
@@ -105,7 +145,7 @@ class TeamsList extends Component {
 }
 const mapStateToProps = state => {
   return {
-    teams: Object.values(state.teams),
+    teams: state.teams,
     users: state.users.all,
     regions: state.regions,
     currentUser: state.users.current,

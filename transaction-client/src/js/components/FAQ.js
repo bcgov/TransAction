@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BreadcrumbItem, Row, Col } from 'reactstrap';
+
+import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 class FAQ extends Component {
@@ -8,7 +10,7 @@ class FAQ extends Component {
       <Row>
         <Col>
           <h4>Frequently Asked Questions</h4>
-          <div className="mb-5 mt-3">
+          <div className="mt-3">
             <h6>What counts as an activity?</h6>
             <p>
               Any physical activity that is more than 15 consecutive minutes that challenges your current level of
@@ -113,7 +115,7 @@ class FAQ extends Component {
           <BreadcrumbItem active>FAQ</BreadcrumbItem>
         </BreadcrumbFragment>
 
-        {this.renderContent()}
+        <CardWrapper>{this.renderContent()}</CardWrapper>
       </React.Fragment>
     );
   }

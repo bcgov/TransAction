@@ -1,16 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { BreadcrumbItem, Row, Col } from 'reactstrap';
+import { BreadcrumbItem } from 'reactstrap';
 import Markdown from 'react-markdown';
 import moment from 'moment';
 
 import { fetchEvent, fetchUserEventScore, fetchTeamEventScore } from '../actions';
-import UserScoreCard from './fragments/UserScoreCard';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import PageSpinner from './ui/PageSpinner';
 import EventTeamStandings from './fragments/EventTeamStandings';
+import EventRegionStandings from './fragments/EventRegionStandings';
 import EventScoresPanel from './fragments/EventScoresPanel';
+import CardWrapper from './ui/CardWrapper';
 
 import * as Constants from '../Constants';
 
@@ -30,39 +31,26 @@ class EventDetail extends React.Component {
       });
   }
 
-  renderScores() {
-    const currentUser = this.props.currentUser;
-    const eventId = this.props.event.id;
-    const score = this.props.scores.user[currentUser.id][eventId];
-    const teamScore = this.props.scores.team[currentUser.teamId][eventId];
-    return (
-      <Row className="my-5">
-        <Col>
-          <UserScoreCard
-            score={score}
-            teamScore={teamScore}
-            event={this.props.event}
-            cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
-            showLogActivityForm={this.showLogActivityForm}
-          />
-        </Col>
-      </Row>
-    );
-  }
-
   renderContent() {
     if (!this.props.event) return <div />;
 
     return (
       <React.Fragment>
-        <h4>{this.props.event.name}</h4>
-        <p className="text-muted">
-          {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
-          {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
-        </p>
-        <Markdown source={this.props.event.description} allowedTypes={Constants.MARKDOWN.ALLOWED} />
-        <EventScoresPanel event={this.props.event} />
-        <EventTeamStandings eventId={this.props.event.id} />
+        <CardWrapper>
+          <h4>{this.props.event.name}</h4>
+          <p className="text-muted">
+            {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
+            {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
+          </p>
+          <Markdown source={this.props.event.description} allowedTypes={Constants.MARKDOWN.ALLOWED} />
+          <EventScoresPanel event={this.props.event} />
+        </CardWrapper>
+        <CardWrapper>
+          <EventRegionStandings eventId={this.props.event.id} />
+        </CardWrapper>
+        <CardWrapper>
+          <EventTeamStandings eventId={this.props.event.id} />
+        </CardWrapper>
       </React.Fragment>
     );
   }
