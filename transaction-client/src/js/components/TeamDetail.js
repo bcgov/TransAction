@@ -128,9 +128,7 @@ class Team extends Component {
         </CardWrapper>
 
         {teamToDisplay && this.userIsTeamlead() && teamToDisplay.numMembers < 5 && (
-          <CardWrapper>
-            <TeamJoinRequestPanel team={teamToDisplay} />{' '}
-          </CardWrapper>
+          <TeamJoinRequestPanel team={teamToDisplay} />
         )}
 
         {this.userBelongsToTeam() && teamToDisplay && (

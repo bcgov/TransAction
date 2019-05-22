@@ -5,6 +5,7 @@ import { Button, Row, Col } from 'reactstrap';
 import { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
 import PageSpinner from '../ui/PageSpinner';
+import CardWrapper from '../ui/CardWrapper';
 
 class TeamJoinRequestPanel extends React.Component {
   state = { loading: true };
@@ -66,7 +67,7 @@ class TeamJoinRequestPanel extends React.Component {
     return (
       joinRequests.length > 0 &&
       team.numMembers < 5 && (
-        <React.Fragment>
+        <CardWrapper>
           <Row className="mb-3">
             <Col>
               <h4>Team Join Requests</h4>
@@ -83,7 +84,7 @@ class TeamJoinRequestPanel extends React.Component {
           </Row>
           {teamMemberElements}
           <hr />
-        </React.Fragment>
+        </CardWrapper>
       )
     );
   }
