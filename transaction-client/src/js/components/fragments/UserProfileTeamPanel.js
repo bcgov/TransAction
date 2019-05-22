@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import TeamProfileFragment from './TeamProfileFragment';
 
 import * as Constants from '../../Constants';
 
-class ProfileTeamPanel extends React.Component {
+class UserProfileTeamPanel extends React.Component {
   renderUserTeam() {
     const teamToDisplay = this.props.teams[this.props.teamIdToDisplay];
     const userToDisplay = this.props.users.all[this.props.userIdToDisplay];
@@ -49,12 +50,12 @@ class ProfileTeamPanel extends React.Component {
       <React.Fragment>
         <Row className="mb-3">
           <Col xs="2">
-            <h4>Team</h4>
+            <h4>Team Status</h4>
           </Col>
           <Col className="text-right">
             {selfProfile && teamToDisplay && teamToDisplay.numMembers > 1 && (
               <Button color="danger" size="sm">
-                Leave Team
+                <FontAwesomeIcon icon="sign-out-alt" /> Leave
               </Button>
             )}
           </Col>
@@ -81,4 +82,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   null
-)(ProfileTeamPanel);
+)(UserProfileTeamPanel);

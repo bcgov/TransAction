@@ -84,7 +84,7 @@ class ProfileScoresPanel extends React.Component {
       <React.Fragment>
         <Row className="mb-3">
           <Col>
-            <h4>Activity</h4>
+            <h4>Activity Summary</h4>
           </Col>
         </Row>
         {this.renderUserScores()}
