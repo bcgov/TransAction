@@ -49,15 +49,31 @@ class ProfileScoresPanel extends React.Component {
   renderUserScores() {
     const { events, userIdToDisplay, teamIdToDisplay, scores } = this.props;
 
-    const userScores = Object.values(scores.team[teamIdToDisplay]).map(teamScore => {
-      const score = scores.user[userIdToDisplay][teamScore.eventId];
+    const combinedScores = [];
+    const userScores = scores.user[userIdToDisplay];
+    const teamScores = scores.team[teamIdToDisplay];
 
-      return (
-        <Col xs="12" lg="6" key={teamScore.eventId} className="mb-3">
+    if (userScores) {
+      Object.values(userScores).forEach(score => {
+        combinedScores[score.eventId] = { ...combinedScores[score.eventId], userScore: score.score };
+      });
+    }
+
+    if (teamScores) {
+      Object.values(teamScores).forEach(score => {
+        combinedScores[score.eventId] = { ...combinedScores[score.eventId], teamScore: score.score };
+      });
+    }
+
+    const userScoreCards = [];
+
+    Object.keys(combinedScores).forEach(key => {
+      userScoreCards.push(
+        <Col xs="12" lg="6" key={key} className="mb-3">
           <UserScoreCard
-            score={score}
-            teamScore={teamScore}
-            event={events[teamScore.eventId]}
+            score={combinedScores[key].userScore}
+            teamScore={combinedScores[key].teamScore}
+            event={events[key]}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
           />
         </Col>
@@ -66,8 +82,8 @@ class ProfileScoresPanel extends React.Component {
 
     return (
       <Row>
-        {userScores.length > 0 ? (
-          userScores
+        {userScoreCards.length > 0 ? (
+          userScoreCards
         ) : (
           <Col>
             <Alert color="warning">

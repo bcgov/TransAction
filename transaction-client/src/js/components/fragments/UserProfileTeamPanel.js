@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Row, Col, Alert } from 'reactstrap';
-import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import TeamProfileFragment from './TeamProfileFragment';
@@ -30,8 +29,9 @@ class UserProfileTeamPanel extends React.Component {
               } else
                 return (
                   <TeamProfileFragment
-                    {..._.pick(teamToDisplay, 'name', 'description')}
+                    team={teamToDisplay}
                     regionName={this.props.regions[teamToDisplay.regionId].name}
+                    linkToProfile={true}
                     profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
                   />
                 );

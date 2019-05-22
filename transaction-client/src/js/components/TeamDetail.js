@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BreadcrumbItem, Button, Row, Col } from 'reactstrap';
-import _ from 'lodash';
 
 import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
@@ -100,17 +99,6 @@ class Team extends Component {
     }));
   };
 
-  renderTeamInfo(teamToDisplay) {
-    return (
-      <React.Fragment>
-        <TeamProfileFragment
-          {..._.pick(teamToDisplay, 'name', 'description', 'goal')}
-          regionName={this.props.regions[teamToDisplay.regionId].name}
-        />
-      </React.Fragment>
-    );
-  }
-
   render() {
     const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
 
@@ -124,20 +112,17 @@ class Team extends Component {
         </BreadcrumbFragment>
 
         <CardWrapper>
-          <Row className="mb-3">
-            <Col xs="2">
-              <h4>Team Profile</h4>
-            </Col>
-            <Col>
-              {this.userIsTeamleadOrAdmin() && teamToDisplay && !this.state.loading && (
-                <Button color="primary" size="sm" onClick={this.showEditTeamForm}>
-                  Edit Team
-                </Button>
-              )}
-            </Col>
-          </Row>
-          {this.state.loading ? <PageSpinner /> : this.renderTeamInfo(teamToDisplay)}
+          {this.state.loading ? (
+            <PageSpinner />
+          ) : (
+            <TeamProfileFragment
+              canEdit={true}
+              team={teamToDisplay}
+              regionName={this.props.regions[teamToDisplay.regionId].name}
+            />
+          )}
         </CardWrapper>
+
         <CardWrapper>
           <Row className="mb-3">
             <Col>
@@ -162,14 +147,14 @@ class Team extends Component {
           </CardWrapper>
         )}
 
-        <CardWrapper>
-          {this.userBelongsToTeam() && teamToDisplay && (
+        {this.userBelongsToTeam() && teamToDisplay && (
+          <CardWrapper>
             <ProfileScoresPanel
               userIdToDisplay={this.props.currentUser.id}
               teamIdToDisplay={this.state.teamIdToDisplay}
             />
-          )}
-        </CardWrapper>
+          </CardWrapper>
+        )}
 
         <EditTeamForm
           initialValues={teamToDisplay}

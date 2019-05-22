@@ -70,8 +70,8 @@ class UserScoreCard extends React.Component {
           <CardBody>
             <Row>
               <Col>
-                <ScoreRow score={score ? score.score : 0} description="Personal Score" />
-                <ScoreRow score={teamScore ? teamScore.score : 0} description="Team Score" />
+                <ScoreRow score={score ? score : 0} description="Personal Score" />
+                <ScoreRow score={teamScore ? teamScore : 0} description="Team Score" />
               </Col>
               <Col className="align-self-center text-center">
                 {cardWidth === Constants.USER_SCORE_CARD_WIDTH.NARROW && this.renderLogActivityButton()}
@@ -94,8 +94,8 @@ class UserScoreCard extends React.Component {
 }
 
 UserScoreCard.propTypes = {
-  score: PropTypes.object,
-  teamScore: PropTypes.object,
+  score: PropTypes.number,
+  teamScore: PropTypes.number,
   event: PropTypes.object.isRequired,
   cardWidth: PropTypes.string.isRequired,
   showLogActivityForm: PropTypes.func,

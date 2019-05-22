@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Row, Col } from 'reactstrap';
 import _ from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { leaveTeam, fetchUser, fetchCurrentUser } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
@@ -26,13 +27,13 @@ class TeamMembersPanel extends React.Component {
           <React.Fragment>
             {teamToDisplay.numMembers > 1 &&
               (user.id === currentUser.id ? (
-                <Button color="danger" size="sm" className="w75" onClick={() => this.handleRemoveUser(user)}>
-                  Leave
+                <Button color="danger" size="sm" className="team-remove" onClick={() => this.handleRemoveUser(user)}>
+                  <FontAwesomeIcon icon="sign-out-alt" /> Leave
                 </Button>
               ) : (
                 currentUser.id === teamToDisplay.teamLeaderId && (
-                  <Button color="danger" size="sm" className="w75" onClick={() => this.handleRemoveUser(user)}>
-                    Remove
+                  <Button color="danger" size="sm" className="team-remove" onClick={() => this.handleRemoveUser(user)}>
+                    <FontAwesomeIcon icon="minus-square" /> Remove
                   </Button>
                 )
               ))}

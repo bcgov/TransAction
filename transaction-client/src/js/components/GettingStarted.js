@@ -15,6 +15,7 @@ import {
 import { Link } from 'react-router-dom';
 
 import EditTeamForm from './forms/EditTeamForm';
+import CardWrapper from './ui/CardWrapper';
 import * as Constants from '../Constants';
 
 class GettingStarted extends React.Component {
@@ -32,7 +33,7 @@ class GettingStarted extends React.Component {
 
   renderText() {
     return (
-      <React.Fragment>
+      <CardWrapper>
         <Row className="mb-5">
           <Col>
             <h4>How does TransAction work?</h4>
@@ -103,7 +104,7 @@ class GettingStarted extends React.Component {
             </Col>
           </Row>
         )}
-      </React.Fragment>
+      </CardWrapper>
     );
   }
 

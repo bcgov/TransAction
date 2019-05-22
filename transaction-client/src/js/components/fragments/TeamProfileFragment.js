@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Button, Popover, PopoverBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import * as Constants from '../../Constants';
 
 class TeamProfileFragment extends React.Component {
   state = { showPointTip: false };
@@ -12,65 +15,58 @@ class TeamProfileFragment extends React.Component {
   };
 
   render() {
-    const { name, description, regionName, profileLink, goal } = this.props;
+    const { team, regionName, canEdit, linkToProfile, currentUser } = this.props;
 
     return (
       <React.Fragment>
         <Row>
-          <Col>
-            <div>
-              <strong>Name</strong>
-            </div>
-            <div>
-              {profileLink ? (
-                <Link to={profileLink} className="no-underline">
-                  {name}{' '}
-                  <Button color="link">
-                    <FontAwesomeIcon icon="external-link-alt" />
-                  </Button>
-                </Link>
-              ) : (
-                name
-              )}
-            </div>
+          <Col xs="12" md="auto">
+            <img
+              className="profile-frame"
+              src="/images/team-profile-placeholder.png"
+              width="200"
+              height="200"
+              alt="Team Profile"
+            />
           </Col>
           <Col>
-            <div>
-              <strong>Region</strong>
-            </div>
-            <div>{regionName}</div>
+            {linkToProfile ? (
+              <Link className="display-4 no-underline" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+                {team.name}
+              </Link>
+            ) : (
+              <span className="display-4">{team.name}</span>
+            )}
+            <span className="text-muted ml-2">from {regionName}</span>
+            <p>{team.description}</p>
+            {team.id === currentUser.teamId && (
+              <React.Fragment>
+                <div>
+                  <strong>Team Goal:</strong> {`${team.goal} Points`}{' '}
+                  <FontAwesomeIcon
+                    className="text-primary hover-pointer"
+                    id="point-tip"
+                    icon="question-circle"
+                    onMouseOver={() => this.togglePointTip(true)}
+                    onMouseOut={() => this.togglePointTip(false)}
+                  />
+                </div>
+                <Popover placement="top" isOpen={this.state.showPointTip} target="point-tip">
+                  <PopoverBody>
+                    The TransAction points goal set by your team leader. Points are calculated using your team's workout
+                    intensity and duration. One minute of work out equals one point, and then multiplied by the workout
+                    intensity.
+                  </PopoverBody>
+                </Popover>
+              </React.Fragment>
+            )}
           </Col>
-          {goal && (
-            <Col>
-              <div>
-                <strong>Goal</strong>
-              </div>
-              <div>
-                {`${goal} Points`}{' '}
-                <FontAwesomeIcon
-                  className="text-primary hover-pointer"
-                  id="point-tip"
-                  icon="question-circle"
-                  onMouseOver={() => this.togglePointTip(true)}
-                  onMouseOut={() => this.togglePointTip(false)}
-                />
-              </div>
-              <Popover placement="top" isOpen={this.state.showPointTip} target="point-tip">
-                <PopoverBody>
-                  The TransAction points goal set by your team leader. Points are calculated using your team's workout
-                  intensity and duration. One minute of work out equals one point, and then multiplied by the workout
-                  intensity.
-                </PopoverBody>
-              </Popover>
-            </Col>
-          )}
-        </Row>
-        <Row>
-          <Col>
-            <div>
-              <strong>Description</strong>
-            </div>
-            <div>{description}</div>
+          <Col xs="auto">
+            {canEdit && (
+              <Button color="primary" size="sm" onClick={this.showEditUserForm}>
+                <FontAwesomeIcon icon="edit" /> Edit
+              </Button>
+            )}
           </Col>
         </Row>
       </React.Fragment>
@@ -79,11 +75,24 @@ class TeamProfileFragment extends React.Component {
 }
 
 TeamProfileFragment.propTypes = {
-  name: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  team: PropTypes.object.isRequired,
   regionName: PropTypes.string.isRequired,
-  profileLink: PropTypes.string,
-  goal: PropTypes.number,
+  canEdit: PropTypes.bool,
+  linkToProfile: PropTypes.bool,
 };
 
-export default TeamProfileFragment;
+TeamProfileFragment.defaultProps = {
+  canEdit: false,
+  linkToProfile: false,
+};
+
+const mapStateToProps = state => {
+  return {
+    currentUser: state.users.current,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(TeamProfileFragment);
