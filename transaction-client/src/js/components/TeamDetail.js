@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { BreadcrumbItem, Row, Col } from 'reactstrap';
 
 import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
@@ -11,16 +11,12 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import TeamJoinRequestPanel from './fragments/TeamJoinRequestPanel';
 import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
-import EditTeamForm from './forms/EditTeamForm';
 import CardWrapper from './ui/CardWrapper';
-
-import * as Constants from '../Constants';
 
 class Team extends Component {
   state = {
     loading: true,
     teamIdToDisplay: null,
-    showEditTeamForm: false,
   };
 
   componentDidMount() {
@@ -89,16 +85,6 @@ class Team extends Component {
     return this.state.teamIdToDisplay === this.props.currentUser.teamId;
   };
 
-  showEditTeamForm = () => {
-    this.setState({ showEditTeamForm: true });
-  };
-
-  toggleEditTeamForm = () => {
-    this.setState(prevState => ({
-      showEditTeamForm: !prevState.showEditTeamForm,
-    }));
-  };
-
   render() {
     const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
 
@@ -155,13 +141,6 @@ class Team extends Component {
             />
           </CardWrapper>
         )}
-
-        <EditTeamForm
-          initialValues={teamToDisplay}
-          isOpen={this.state.showEditTeamForm}
-          toggle={this.toggleEditTeamForm}
-          formType={Constants.FORM_TYPE.EDIT}
-        />
       </React.Fragment>
     );
   }

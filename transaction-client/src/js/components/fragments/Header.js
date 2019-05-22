@@ -75,13 +75,13 @@ class Header extends Component {
                     FAQ
                   </NavLink>
                 </NavItem>
-                {this.props.currentUser.isAdmin && (
+                {/* {this.props.currentUser.isAdmin && (
                   <NavItem>
                     <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/admin">
                       Admin
                     </NavLink>
                   </NavItem>
-                )}
+                )} */}
               </Nav>
             </Collapse>
           </Container>

@@ -5,13 +5,25 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Button, Popover, PopoverBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import EditTeamForm from '../forms/EditTeamForm';
 import * as Constants from '../../Constants';
 
 class TeamProfileFragment extends React.Component {
-  state = { showPointTip: false };
+  state = { showPointTip: false, showEditTeamForm: false };
 
   togglePointTip = param => {
     this.setState({ showPointTip: param });
+  };
+
+  showEditTeamForm = () => {
+    console.log('here');
+    this.setState({ showEditTeamForm: true });
+  };
+
+  toggleEditTeamForm = () => {
+    this.setState(prevState => ({
+      showEditTeamForm: !prevState.showEditTeamForm,
+    }));
   };
 
   render() {
@@ -63,12 +75,19 @@ class TeamProfileFragment extends React.Component {
           </Col>
           <Col xs="auto">
             {canEdit && (
-              <Button color="primary" size="sm" onClick={this.showEditUserForm}>
+              <Button color="primary" size="sm" onClick={this.showEditTeamForm}>
                 <FontAwesomeIcon icon="edit" /> Edit
               </Button>
             )}
           </Col>
         </Row>
+
+        <EditTeamForm
+          initialValues={team}
+          isOpen={this.state.showEditTeamForm}
+          toggle={this.toggleEditTeamForm}
+          formType={Constants.FORM_TYPE.EDIT}
+        />
       </React.Fragment>
     );
   }
