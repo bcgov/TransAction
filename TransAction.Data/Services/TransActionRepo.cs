@@ -312,30 +312,47 @@ namespace TransAction.Data.Services
         }
 
         public IEnumerable<RegionScoreDto> RegionalScore(int eventId)
-        {
+        {        
+            //var userAct = _context.TraUserActivity
+            //     .Include(x => x.User)
+            //     .ThenInclude(x => x.Team).Where(x => x.User.Team != null)
+            //    .GroupBy(x => x.User.Team.RegionId);
+
+            //RegionScoreDto[] activity = new RegionScoreDto[userAct.Count()];
+            //foreach (var region in userAct)
+            //{
+            //    int regionScore = 0;
+            //    int count = 0;
+            //    foreach (var act in region)
+            //    {
+            //        regionScore = regionScore + (act.Minutes * act.Activity.Intensity); // gives an error saying that it is getting NULL.
+            //    }
+            //    RegionScoreDto newAct = new RegionScoreDto()
+            //    {
+            //        score = regionScore,
+            //        RegionId = region.Select(x => x.User.RegionId).FirstOrDefault(),
+            //        EventId = eventId
+            //    };
+            //    activity[count++] = newAct;
+            //}
+
+
             var teamAct = _context.TraUserActivity
-                .Where(p => p.EventId == eventId)
+                .Where(p => p.EventId == eventId /*temp2.Contains(p.UserActivityId)*/)
                     .Include(x => x.Activity)
                     .Include(x => x.Event)
-                    .Include(x => x.Team)
-                    .GroupBy(x => new { x.Team.RegionId, x.EventId })
+                    .Include(x => x.Team)  
+                    .GroupBy(x =>  x.Team.RegionId)
                     .Select(x => new RegionScoreDto
                     {
-                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),//.Sum(y => y.score),      
-                        EventId = x.Key.EventId,
+                        score = (x.Sum(y => y.Minutes * y.Activity.Intensity)*1000) /*/ (x.Select(c => temp1.Where(y => y.Team.RegionId == y.User.RegionId)).Count())*/,
+                        //(x.Select(c => c.User.TraUserActivity.Where(y => y.EventId == eventId)).Count())
+                        EventId = eventId,
                         RegionId = x.Select(c => c.Team.RegionId).FirstOrDefault()
                     });
 
-            //var result = new RegionScoreDto
-            //{
-            //    EventId = eventId,
-            //    RegionId = z,
-            //    score = teamAct
-            //};
-
-
-
             return teamAct;
+
         }
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 

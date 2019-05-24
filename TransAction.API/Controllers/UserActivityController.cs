@@ -63,7 +63,11 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-
+            //making sure the user enters atleast 15 mins
+            if(createUserActivity.Minutes < 15)
+            {
+                return BadRequest();
+            }
             if (createUserActivity.Name == null || createUserActivity.Description == null)
             {
                 return BadRequest();
@@ -179,9 +183,19 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("event/{eventId}/region")]
-        public IActionResult RegionScore(int eventId)
-        {
+        public IActionResult RegionScore(int eventId){
+          
             var result = _transActionRepo.RegionalScore(eventId);
+            var users = _transActionRepo.GetUsers().ToList();
+            var teams = _transActionRepo.GetTeams().GroupBy(x => x.RegionId).ToList();
+            var teamId = teams.Select(x => x.Select( c => c.TeamId)).ToList();
+            var temp = users.Where(x => teams.Any());
+            var temp1 = _transActionRepo.GetUserActivities().Where(x => temp.Any()).Where(x => x.EventId == eventId);
+            //trying to get all the users activities in those teams
+            var getUsers = _transActionRepo.GetUsers();          
+            //var getAllUsers = getUsers.GroupBy(x => new { x.TeamId, teamId }).ToList();
+            //var userAct = _transActionRepo.GetUserActivities().GroupBy(x => new { x.EventId, getAllUsers });
+
             return Ok(result);
         }
     }
