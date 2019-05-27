@@ -262,6 +262,7 @@ namespace TransAction.Data.Services
                         teamId = x.Key.TeamId
                     }).OrderByDescending(x => x.score)
                     .ToList().Take(number);
+
             return teams;
 
 
@@ -311,7 +312,7 @@ namespace TransAction.Data.Services
         }
 
         public IEnumerable<RegionScoreDto> RegionalScore(int eventId)
-        {        
+        {
             //var userAct = _context.TraUserActivity
             //     .Include(x => x.User)
             //     .ThenInclude(x => x.Team).Where(x => x.User.Team != null)
@@ -340,11 +341,11 @@ namespace TransAction.Data.Services
                 .Where(p => p.EventId == eventId /*temp2.Contains(p.UserActivityId)*/)
                     .Include(x => x.Activity)
                     .Include(x => x.Event)
-                    .Include(x => x.Team)  
-                    .GroupBy(x =>  x.Team.RegionId)
+                    .Include(x => x.Team)
+                    .GroupBy(x => x.Team.RegionId)
                     .Select(x => new RegionScoreDto
                     {
-                        score = (x.Sum(y => y.Minutes * y.Activity.Intensity)*1000) /*/ (x.Select(c => temp1.Where(y => y.Team.RegionId == y.User.RegionId)).Count())*/,
+                        score = (x.Sum(y => y.Minutes * y.Activity.Intensity) * 1000) /*/ (x.Select(c => temp1.Where(y => y.Team.RegionId == y.User.RegionId)).Count())*/,
                         //(x.Select(c => c.User.TraUserActivity.Where(y => y.EventId == eventId)).Count())
                         EventId = eventId,
                         RegionId = x.Select(c => c.Team.RegionId).FirstOrDefault()
@@ -386,7 +387,7 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TraMemberReq> GetRequests()
         {
-            return _context.TraMemberReq.Where(x =>x.IsActive== true).OrderBy(c => c.MemberReqId).ToList();
+            return _context.TraMemberReq.Where(x => x.IsActive == true).OrderBy(c => c.MemberReqId).ToList();
         }
 
         public TraMemberReq GetRequest(int id)
@@ -410,7 +411,7 @@ namespace TransAction.Data.Services
                         TeamId = teamId,
                         UserId = x.UserId,
                         IsActive = x.IsActive,
-                        ConcurrencyControlNumber = x.ConcurrencyControlNumber          
+                        ConcurrencyControlNumber = x.ConcurrencyControlNumber
                     })
                     .ToList();
 
@@ -418,10 +419,10 @@ namespace TransAction.Data.Services
 
             return teamRequests;
         }
- /*...........................................................................................................*/   
+        /*...........................................................................................................*/
         public IEnumerable<TraTopic> GetTopics()
         {
-            return _context.TraTopic.OrderBy(c => c.TopicId).ToList(); 
+            return _context.TraTopic.OrderBy(c => c.TopicId).ToList();
         }
 
         public TraTopic GetTopic(int id)
@@ -450,8 +451,8 @@ namespace TransAction.Data.Services
         public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
         {
             return _context.TraTopicMessage
-                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c=> c.TopicMessageId).ToList();
- 
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c => c.TopicMessageId).ToList();
+
         }
 
         public TraTopicMessage GetTopicMessage(int messageId)
@@ -474,41 +475,6 @@ namespace TransAction.Data.Services
             _context.TraTopic.Remove(traTopic);
         }
 
-        public bool TopicExists(string Title)
-        {
-            var checkTopic = _context.TraTopic.FirstOrDefault(c => c.Title == Title);
-            if (checkTopic != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
-        {
-            return _context.TraTopicMessage
-                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c=> c.TopicMessageId).ToList();
- 
-        }
-
-        public TraTopicMessage GetTopicMessage(int topicId, int messageId)
-        {
-            return _context.TraTopicMessage
-                .Include(x => x.Topic).Where(x => x.TopicId == topicId).FirstOrDefault(c => c.TopicMessageId == messageId);
-        }
-
-        public void CreateTopicMessage(TraTopicMessage traTopicMessage)
-        {
-            _context.TraTopicMessage.Add(traTopicMessage);
-        }
-
-        public bool TopicMessageExist(string Name)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 

@@ -1,5 +1,6 @@
 import 'react-app-polyfill/ie9';
 import 'core-js/es/object';
+import 'core-js/es/array/includes';
 
 import React from 'react';
 import ReactDOM from 'react-dom';

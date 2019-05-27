@@ -19,7 +19,7 @@ namespace TransAction.Data.Services
         bool UserExists(string Name, string Email);
         void CreateUser(TraUser traUser);
         TraUser GetCurrentUser(string guid);
-        
+
         IEnumerable<TraTeam> GetTeams();
         TraTeam GetTeam(int id);
         bool TeamExists(string Name);
@@ -46,7 +46,7 @@ namespace TransAction.Data.Services
         void CreateUserActivity(TraUserActivity traUserActivity);
         IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId);
         IEnumerable<RegionScoreDto> RegionalScore(int eventId);
-        
+
 
         IEnumerable<TraRole> GetRoles();
         TraRole GetRole(int id);
@@ -71,10 +71,6 @@ namespace TransAction.Data.Services
         void DeleteTopicMessage(TraTopicMessage traTopicMessage);
 
 
-        IEnumerable<TraTopicMessage> GetTopicMessages(int topicId);
-        TraTopicMessage GetTopicMessage(int topicId, int messageId);
-        void CreateTopicMessage(TraTopicMessage traTopicMessage);
-        bool TopicMessageExist(string Name);
         bool Save();
     }
 }
