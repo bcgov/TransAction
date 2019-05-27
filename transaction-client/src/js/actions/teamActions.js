@@ -50,6 +50,8 @@ export const fetchTeam = id => async dispatch => {
 export const editTeam = (id, teamObj) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
+      teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
+
       const response = await api.put(`/teams/${id}`, teamObj);
 
       dispatch({ type: FETCH_TEAM, payload: response.data });
@@ -61,12 +63,22 @@ export const editTeam = (id, teamObj) => async dispatch => {
   });
 };
 
-export const createTeam = formValues => async dispatch => {
-  const response = await api.post('/teams', formValues);
+export const createTeam = teamObj => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
 
-  dispatch({ type: CREATE_TEAM, payload: response.data });
+      const response = await api.post('/teams', teamObj);
 
-  history.push(`${Constants.PATHS.TEAM}/${response.data.id}`);
+      dispatch({ type: CREATE_TEAM, payload: response.data });
+
+      history.push(`${Constants.PATHS.TEAM}/${response.data.id}`);
+      resolve();
+    } catch (e) {
+      console.log('ERROR in createteam');
+      reject(e);
+    }
+  });
 };
 
 export const fetchTeams = () => async dispatch => {

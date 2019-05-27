@@ -16,7 +16,6 @@ class TeamProfileFragment extends React.Component {
   };
 
   showEditTeamForm = () => {
-    console.log('here');
     this.setState({ showEditTeamForm: true });
   };
 

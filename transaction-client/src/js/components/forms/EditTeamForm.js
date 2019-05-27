@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
-import { editTeam, createTeam } from '../../actions';
+import { editTeam, createTeam, fetchCurrentUser } from '../../actions';
 
 import FormModal from '../ui/FormModal';
 import FormInput from '../ui/FormInput';
@@ -25,7 +25,7 @@ class EditTeamForm extends React.Component {
 
     if (this.props.formType === Constants.FORM_TYPE.ADD) {
       this.props.createTeam(formValues).then(() => {
-        //this.toggleModal();
+        this.props.fetchCurrentUser();
       });
     } else {
       this.props.editTeam(formValues.id, formValues).then(() => {
@@ -139,12 +139,13 @@ const form = reduxForm({ form: 'editTeamForm', enableReinitialize: true, validat
 const mapStateToProps = state => {
   return {
     regions: state.regions,
+    currentUser: state.users.current,
   };
 };
 
 const formConnect = connect(
   mapStateToProps,
-  { editTeam, createTeam }
+  { editTeam, createTeam, fetchCurrentUser }
 )(form);
 
 export default formConnect;

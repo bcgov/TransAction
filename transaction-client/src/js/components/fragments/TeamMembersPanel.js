@@ -54,7 +54,6 @@ class TeamMembersPanel extends React.Component {
           <Col xs="3" lg="4" />
         </Row>
         {teamMemberElements}
-        <hr />
       </React.Fragment>
     );
   }

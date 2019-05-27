@@ -42,7 +42,7 @@ class Header extends Component {
               />
             </NavbarBrand>
             <div className="navbar-brand">
-              <img className="mx-2" src="/images/eaf-logo.png" width="44" height="44" alt="EAF Logo" />
+              {/* <img className="mx-2" src="/images/eaf-logo.png" width="44" height="44" alt="EAF Logo" /> */}
               Transaction
             </div>
             <NavbarToggler onClick={this.toggleNavbar} />

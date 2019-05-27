@@ -83,14 +83,13 @@ class TeamJoinRequestPanel extends React.Component {
             <Col xs="3" lg="4" />
           </Row>
           {teamMemberElements}
-          <hr />
         </CardWrapper>
       )
     );
   }
 
   render() {
-    return this.state.loading ? <PageSpinner /> : this.renderContent();
+    return !this.state.loading && this.renderContent();
   }
 }
 
