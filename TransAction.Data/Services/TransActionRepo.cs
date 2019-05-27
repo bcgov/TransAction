@@ -474,6 +474,41 @@ namespace TransAction.Data.Services
             _context.TraTopic.Remove(traTopic);
         }
 
+        public bool TopicExists(string Title)
+        {
+            var checkTopic = _context.TraTopic.FirstOrDefault(c => c.Title == Title);
+            if (checkTopic != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
+        {
+            return _context.TraTopicMessage
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c=> c.TopicMessageId).ToList();
+ 
+        }
+
+        public TraTopicMessage GetTopicMessage(int topicId, int messageId)
+        {
+            return _context.TraTopicMessage
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).FirstOrDefault(c => c.TopicMessageId == messageId);
+        }
+
+        public void CreateTopicMessage(TraTopicMessage traTopicMessage)
+        {
+            _context.TraTopicMessage.Add(traTopicMessage);
+        }
+
+        public bool TopicMessageExist(string Name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

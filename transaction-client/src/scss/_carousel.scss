@@ -1,0 +1,39 @@
+// .carousel {
+//   width: 400px;
+//   height: 300px;
+// }
+
+.carousel-control-next,
+.carousel-control-prev {
+  cursor: pointer;
+}
+
+.carousel-inner .carousel-item {
+  text-align: center;
+}
+
+.carousel-item > img {
+  width: 100%;
+}
+
+@media (min-width: 300px) {
+  .carousel-inner .carousel-item {
+    height: 120px;
+  }
+}
+
+@media (min-width: 576px) {
+  .carousel-inner .carousel-item {
+    height: 200px;
+  }
+}
+
+@media (min-width: 992px) {
+  .carousel-item > img {
+    height: 100%;
+  }
+
+  .carousel-inner .carousel-item {
+    height: 400px;
+  }
+}

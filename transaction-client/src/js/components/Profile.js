@@ -1,312 +1,177 @@
 import React, { Component } from 'react';
-import ProfileOfficeForm from './ProfileOfficeForm.js';
-import _ from 'lodash';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Breadcrumb, BreadcrumbItem, Container, Progress, Spinner, Button, Row, Col } from 'reactstrap';
-import {
-  fetchCurrentUser,
-  fetchTeam,
-  editUser,
-  fetchRegions,
-  fetchAllUserScores,
-  fetchEvents,
-  fetchRoles,
-  fetchCurrentRole,
-  fetchAllTeamScores,
-  fetchCurrentTeam,
-  fetchUsers,
-} from '../actions';
-import DescriptionForm from './DescriptionForm';
-import EventModal from './EventModal';
-import CreateTeamModalBody from './CreateTeamModalBody';
-import UserScoreGraphicCard from './UserScoreGraphicCard';
-import ProfileReadOnly from './ProfileReadOnly';
-import ProfileAdminView from './ProfileAdminView';
+import { BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
+import _ from 'lodash';
+
+import { fetchTeam, editUser, fetchUser } from '../actions';
+import PageSpinner from './ui/PageSpinner';
+import UserProfileFragment from './fragments/UserProfileFragment';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+import ProfileScoresPanel from './fragments/ProfileScoresPanel';
+import UserProfileTeamPanel from './fragments/UserProfileTeamPanel';
+import CardWrapper from './ui/CardWrapper';
+
+import * as Constants from '../Constants';
 
 class Profile extends Component {
-  state = { loading: true, modal: false };
-  toggleSpinner = () => {
-    this.setState(prevState => ({
-      loading: !prevState.loading,
-    }));
+  state = {
+    loading: true,
+    userIdToDisplay: null,
+    teamIdToDisplay: null,
   };
-
-  toggle = () => {
-    this.setState(prevState => ({
-      modal: !prevState.modal,
-    }));
-  };
-
-  decideRender() {
-    if (this.state.loading) {
-      return (
-        <div className="col-1 offset-6">
-          <Spinner color="primary" style={{ width: '5rem', height: '5rem' }} />
-        </div>
-      );
-    } else {
-      if (!this.props.users[this.props.paramId] && this.props.paramId !== null)
-        return <div>Hmmmm, We couldnt find that user :(</div>;
-      //Loading DONE
-      else {
-        console.log(this.props.paramId);
-        //no paramId passed
-        if (!this.props.paramId) {
-          //Following the user's profile
-          //Doesnt matter what the role is, its the users profile.
-
-          return this.userInfo();
-        }
-        //paramId is passed
-        else {
-          console.log('param Id passed');
-          //if the paramId is the same as user profileid
-          if (this.props.paramId === this.props.currentUser.id) {
-            //role doesnt matter, its the users page
-            return this.userInfo();
-          }
-          //paramid is NOT the same as user id; viewing someones profile from the outside
-          else {
-            //If they are an admin
-
-            if (this.props.roles[this.props.currentUser.roleId].name === 'Admin') {
-              return <ProfileAdminView userId={this.props.paramId} />;
-            } else {
-              //return read only
-
-              return <ProfileReadOnly userId={this.props.paramId} />;
-            }
-          }
-        }
-      }
-    }
-  }
 
   componentDidMount() {
-    //NOTE: I dont know why i need to nest things like this, but it doesnt work without it
-    Promise.all([this.props.fetchEvents(), this.props.fetchRoles(), this.props.fetchCurrentUser()])
+    this.init(this.props.match.params.id);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Re-init if URL param has changed
+    const prevId = prevProps.match.params.id;
+    const currId = this.props.match.params.id;
+    if (currId !== prevId && parseInt(prevId) !== this.props.currentUser.id) {
+      this.init(currId);
+    }
+  }
+
+  init = userId => {
+    this.setState({ loading: true });
+
+    userId = parseInt(userId);
+
+    if (isNaN(userId)) userId = this.props.currentUser.id;
+    this.props
+      .fetchUser(userId)
       .then(() => {
-        Promise.all([
-          this.props.fetchAllUserScores(this.props.currentUser.id),
-          this.props.fetchAllTeamScores(this.props.currentUser.teamId),
-          this.props.fetchRegions(),
-          this.props.fetchUsers(),
-          this.props.fetchTeam(this.props.currentUser.teamId),
-          this.props.fetchCurrentTeam(this.props.currentUser.teamId),
-          this.props.fetchCurrentRole(this.props.currentUser.roleId),
-        ])
-          .then(() => {
-            this.toggleSpinner();
-          })
-          .catch(() => {
-            this.toggleSpinner();
-          });
+        const teamId = this.props.users.all[userId].teamId;
+        this.setState({ userIdToDisplay: userId, teamIdToDisplay: teamId });
+
+        if (teamId) return this.props.fetchTeam(teamId);
+        else return Promise.resolve();
       })
-      .catch(() => {
-        // this.toggleSpinner();
+      .then(() => {
+        this.setState({ loading: false });
+      })
+      .catch(e => {
+        //this.setState({ loading: false });
+        console.error(e);
       });
-  }
-
-  onSubmit = formValues => {
-    const userObj = { ...this.props.currentUser, ...formValues };
-    this.props.editUser(userObj, userObj.id).then(() => {
-      this.props.fetchCurrentUser().then(() => {
-        this.props.fetchAllTeamScores(this.props.currentUser.teamId);
-      });
-    });
   };
 
-  printProgress() {
-    if (this.props.currentUser.teamId !== null) {
-      return (
-        <React.Fragment>
-          <h3>Team Progress: </h3>
-          <div id="progress">{this.progressBar()}</div>
-        </React.Fragment>
-      );
-    }
-  }
+  userCanEditProfile = () => {
+    if (this.props.currentUser.isAdmin) return true;
 
-  progressBar() {
-    if (this.props.currentTeam.goal > 0 && this.props.currentUser.teamId !== null) {
-      return (
-        <Progress
-          bar
-          animated
-          color="primary"
-          value={(this.props.currentTeam.progressamt / this.props.currentTeam.goal) * 100}
-        >
-          Check out this hot progress
-        </Progress>
-      );
-    }
-  }
-
-  leaveTeam = () => {
-    const leaveAlert = window.confirm('Do you really want to leave the team?');
-    if (leaveAlert === true) {
-      const team = { teamId: null };
-      this.onSubmit(team);
-    }
+    return this.selfProfile();
   };
 
-  //TODO Button logic
-  printTeam = () => {
-    if (this.props.currentUser.teamId !== null) {
-      return (
-        <h3 className="mt-3">
-          Team: {this.props.currentTeam.name}
-          <Link to="/team">
-            <Button color="primary" className="ml-3 mb-2">
-              Visit Team
-            </Button>
-          </Link>
-          <Button color="secondary" className="ml-3 mb-2" onClick={this.leaveTeam}>
-            {' '}
-            Leave Team
-          </Button>
-        </h3>
-      );
-    } else {
-      return (
-        <h3 className="mt-3">
-          Team: No Team!
-          <Link to="/teamslist">
-            <Button color="primary" className="ml-3 mb-2">
-              {' '}
-              Find Team
-            </Button>
-          </Link>
-          <Button color="primary" className="ml-3 mb-2" onClick={this.toggle}>
-            {' '}
-            Create Team
-          </Button>
-          <EventModal toggle={this.toggle} isOpen={this.state.modal} text="Create a Team!">
-            <CreateTeamModalBody
-              onSubmit={this.onSubmit}
-              user={this.props.currentUser}
-              modalClose={this.toggle}
-              name="create"
-            />
-          </EventModal>
-        </h3>
-      );
-    }
+  selfProfile = () => {
+    const userId = parseInt(this.props.match.params.id);
+
+    if (!userId) return true;
+
+    if (userId === this.props.currentUser.id) return true;
+
+    return false;
   };
 
-  findEventName(id) {
-    var name = '';
-    this.props.events.forEach(element => {
-      if (element.id === id) {
-        name = element.name;
-      }
-    });
-    return name;
-  }
+  renderUserTeam() {
+    const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
+    const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
 
-  findTeamEventScore(eventId) {
-    var score = -1;
-    this.props.allTeamScores.forEach(element => {
-      if (element.eventId === eventId) {
-        score = element.score;
-      }
-    });
-    return score;
-  }
-
-  printUserScores() {
-    const scores = this.props.allUserScores.map(element => (
-      <Col key={element.eventId}>
-        <UserScoreGraphicCard
-          userScore={element.score}
-          //hardcoded value needs to change
-          teamScore={this.findTeamEventScore(element.eventId)}
-          name={this.findEventName(element.eventId)}
-          type="profile"
-        />
-      </Col>
-    ));
-    return scores;
-  }
-
-  userInfo() {
     return (
-      <div>
-        <h3>
-          Name: {this.props.currentUser.fname} {this.props.currentUser.lname}{' '}
-        </h3>
-        <h3>
-          <ProfileOfficeForm
-            initialValues={_.pick(this.props.currentUser, 'regionId')}
-            userRegion={this.props.currentUser.regionId}
-            regions={this.props.regions}
-            onSubmit={this.onSubmit}
-          />
-        </h3>
-        {this.printTeam()}
-
-        <DescriptionForm initialValues={_.pick(this.props.currentUser, 'description')} onSubmit={this.onSubmit} />
-        <Row className="mt-3 mb-3 "> {this.printUserScores()}</Row>
-      </div>
+      <React.Fragment>
+        <Row>
+          <Col>
+            {(() => {
+              if (!teamToDisplay) {
+                if (this.selfProfile())
+                  return (
+                    <Alert color="warning">
+                      You are not currently on a team. Get started <Link to={Constants.PATHS.START}>here</Link>.
+                    </Alert>
+                  );
+                else return <p>{userToDisplay.fname} is not part of a team.</p>;
+              } else
+                return (
+                  <UserProfileFragment
+                    {..._.pick(teamToDisplay, 'name', 'description')}
+                    regionName={this.props.regions[teamToDisplay.regionId].name}
+                    profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
+                  />
+                );
+            })()}
+          </Col>
+        </Row>
+      </React.Fragment>
     );
   }
 
   render() {
+    const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
+
     return (
-      <Container>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>MyProfile</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
-        <h1>Personal Profile </h1>
-        <div>{this.decideRender()}</div>
-      </Container>
+      <React.Fragment>
+        <BreadcrumbFragment>
+          <BreadcrumbItem>
+            <Link to="/profile">Profile</Link>
+          </BreadcrumbItem>
+          <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
+        </BreadcrumbFragment>
+
+        <CardWrapper>
+          {this.state.loading ? (
+            <PageSpinner />
+          ) : (
+            userToDisplay && (
+              <UserProfileFragment
+                canEdit={this.userCanEditProfile()}
+                userToDisplay={userToDisplay}
+                regionName={this.props.regions[userToDisplay.regionId].name}
+              />
+            )
+          )}
+        </CardWrapper>
+
+        {!this.state.loading && (
+          <CardWrapper>
+            <UserProfileTeamPanel
+              selfProfile={this.selfProfile()}
+              teamIdToDisplay={this.state.teamIdToDisplay}
+              userIdToDisplay={this.state.userIdToDisplay}
+            />
+          </CardWrapper>
+        )}
+
+        {!this.state.loading && this.selfProfile() && (
+          <CardWrapper>
+            <ProfileScoresPanel
+              userIdToDisplay={this.state.userIdToDisplay}
+              teamIdToDisplay={this.state.teamIdToDisplay}
+            />
+          </CardWrapper>
+        )}
+      </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  var parameter;
-  if (!ownProps.match.params.id) {
-    parameter = null;
-  } else {
-    parameter = parseInt(ownProps.match.params.id);
-  }
-
+const mapStateToProps = state => {
   return {
-    paramId: parameter,
-    currentUser: state.currentUser,
+    currentUser: state.users.current,
     users: state.users,
-    team: state.team,
-    regions: Object.values(state.regions),
-    allUserScores: Object.values(state.allUserScores),
-    allTeamScores: Object.values(state.allTeamScores),
-    events: Object.values(state.events),
+    regions: state.regions,
     roles: state.roles,
-    currentRole: state.currentRole,
-    currentTeam: state.currentTeam,
+    teams: state.teams,
+    events: state.events,
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    fetchCurrentUser,
-    fetchUsers,
+    fetchUser,
     fetchTeam,
     editUser,
-    fetchRegions,
-    fetchAllUserScores,
-    fetchAllTeamScores,
-    fetchEvents,
-    fetchRoles,
-    fetchCurrentRole,
-    fetchCurrentTeam,
   }
 )(Profile);

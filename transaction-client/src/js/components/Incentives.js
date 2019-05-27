@@ -1,26 +1,23 @@
 import React, { Component } from 'react';
-import { Container, Row, Breadcrumb, BreadcrumbItem } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { BreadcrumbItem } from 'reactstrap';
+
+import CardWrapper from './ui/CardWrapper';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 class Incentives extends Component {
   render() {
     return (
-      <Container>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Incentives</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
+      <React.Fragment>
+        <BreadcrumbFragment>
+          <BreadcrumbItem active>Incentives</BreadcrumbItem>
+        </BreadcrumbFragment>
 
-        <div id="centerText">
+        <CardWrapper>
           To keep us all encouraged as we follow our TransAction - Healthy Workplace Challenge, we have lots of
           incentives, such as the ones you see in the pictures here! Door prizes will be drawn weekly, and a grand prize
           will go to the victorious team.{' '}
-        </div>
-      </Container>
+        </CardWrapper>
+      </React.Fragment>
     );
   }
 }

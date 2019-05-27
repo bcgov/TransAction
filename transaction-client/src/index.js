@@ -12,8 +12,11 @@ import Keycloak from 'keycloak-js';
 import App from './js/App';
 import Api from './js/api/api';
 import reducers from './js/reducers';
+import initFontAwesome from './js/fontAwesome';
 
 import { UPDATE_AUTH_USER } from './js/actions/types';
+
+initFontAwesome();
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk)));
