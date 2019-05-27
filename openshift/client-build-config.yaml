@@ -57,7 +57,7 @@ objects:
         sourceStrategy:
           from:
             kind: ImageStreamTag
-            name: nodejs-8-rhel7:latest
+            name: nodejs-8-rhel7:1
         type: Source
       triggers:
         - type: ConfigChange
