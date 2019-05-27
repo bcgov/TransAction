@@ -109,6 +109,8 @@ EditTeamForm.defaultProps = { regions: {}, isOpen: false, pristine: false };
 const validate = formValues => {
   const errors = {};
 
+  const goal = parseInt(formValues.goal);
+
   if (!formValues.regionId || formValues.regionId <= 0) {
     errors.regionId = 'Region required';
   }
@@ -119,6 +121,14 @@ const validate = formValues => {
 
   if (!formValues.description) {
     errors.description = 'Description required';
+  }
+
+  if (!formValues.goal || isNaN(formValues.goal)) {
+    errors.goal = 'Please enter a valid number';
+  }
+
+  if (goal >= 10000000) {
+    errors.goal = 'Please set a smaller goal :)';
   }
 
   return errors;

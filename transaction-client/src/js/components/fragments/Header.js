@@ -41,7 +41,10 @@ class Header extends Component {
                 alt="B.C. Government Logo"
               />
             </NavbarBrand>
-            <div className="navbar-brand">Transaction</div>
+            <div className="navbar-brand">
+              <img className="mx-2" src="/images/eaf-logo.png" width="44" height="44" alt="EAF Logo" />
+              Transaction
+            </div>
             <NavbarToggler onClick={this.toggleNavbar} />
             <Collapse isOpen={!this.state.collapsed} navbar>
               <Nav className="navbar-nav">

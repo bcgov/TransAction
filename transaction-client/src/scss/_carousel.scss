@@ -1,7 +1,8 @@
-// .carousel {
-//   width: 400px;
-//   height: 300px;
-// }
+@import './vendor/variables.scss';
+
+.carousel {
+  background-color: rgba(map-get($theme-colors, primary), 0.1);
+}
 
 .carousel-control-next,
 .carousel-control-prev {
@@ -13,7 +14,9 @@
 }
 
 .carousel-item > img {
-  width: 100%;
+  width: auto !important;
+  margin: 0 auto;
+  height: 100%;
 }
 
 @media (min-width: 300px) {
@@ -29,11 +32,7 @@
 }
 
 @media (min-width: 992px) {
-  .carousel-item > img {
-    height: 100%;
-  }
-
   .carousel-inner .carousel-item {
-    height: 400px;
+    height: 300px;
   }
 }
