@@ -4,6 +4,8 @@ export const PATHS = { EVENT: '/event', PROFILE: '/profile', TEAM: '/team', STAR
 
 export const FORM_TYPE = { ADD: 'add', EDIT: 'edit' };
 
+export const PROFILE_TYPE = { TEAM: 'team', USER: 'user' };
+
 export const USER_SCORE_CARD_WIDTH = { WIDE: 'wide', NARROW: 'narrow' };
 
 export const MARKDOWN = {

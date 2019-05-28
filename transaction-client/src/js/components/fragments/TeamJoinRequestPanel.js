@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Row, Col } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 
 import { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
 // import PageSpinner from '../ui/PageSpinner';
 import CardWrapper from '../ui/CardWrapper';
+import OneClickButton from '../ui/OneClickButton';
 
 class TeamJoinRequestPanel extends React.Component {
   state = { loading: true };
@@ -53,12 +54,22 @@ class TeamJoinRequestPanel extends React.Component {
       return (
         <TeamMemberRow key={user.id} user={user} regions={regions}>
           <React.Fragment>
-            <Button color="success" size="sm" className="w75 mr-1" onClick={() => this.acceptRequest(joinRequest)}>
+            <OneClickButton
+              color="success"
+              size="sm"
+              className="w75 mr-1"
+              handleOnClick={() => this.acceptRequest(joinRequest)}
+            >
               Accept
-            </Button>
-            <Button color="danger" size="sm" className="w75" onClick={() => this.rejectRequest(joinRequest)}>
+            </OneClickButton>
+            <OneClickButton
+              color="danger"
+              size="sm"
+              className="w75"
+              handleOnClick={() => this.rejectRequest(joinRequest)}
+            >
               Reject
-            </Button>
+            </OneClickButton>
           </React.Fragment>
         </TeamMemberRow>
       );

@@ -6,6 +6,8 @@ import { Row, Col, Button, Popover, PopoverBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import EditTeamForm from '../forms/EditTeamForm';
+import ProfileImage from '../ui/ProfileImage';
+
 import * as Constants from '../../Constants';
 
 class TeamProfileFragment extends React.Component {
@@ -32,12 +34,12 @@ class TeamProfileFragment extends React.Component {
       <React.Fragment>
         <Row>
           <Col xs="12" md="auto">
-            <img
-              className="profile-frame"
+            <ProfileImage
               src="/images/team-profile-placeholder.png"
-              width="200"
-              height="200"
               alt="Team Profile"
+              interactive={canEdit}
+              profileId={team.id}
+              type={Constants.PROFILE_TYPE.TEAM}
             />
           </Col>
           <Col>

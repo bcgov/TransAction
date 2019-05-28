@@ -30,7 +30,6 @@ class Home extends React.Component {
         <CardWrapper style={{ marginTop: '16px' }}>
           <Row>
             <Col>
-              {/* <div className="large-welcome-text text-center mb-4">Welcome to TransAction</div> */}
               <UncontrolledCarousel items={this.state.slides} />
             </Col>
           </Row>

@@ -4,6 +4,9 @@ import { Row, Col, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import EditUserForm from '../forms/EditUserForm';
+import ProfileImage from '../ui/ProfileImage';
+
+import * as Constants from '../../Constants';
 
 class UserProfileFragment extends React.Component {
   state = { showPointTip: false, showEditUserForm: false };
@@ -25,12 +28,12 @@ class UserProfileFragment extends React.Component {
       <React.Fragment>
         <Row>
           <Col xs="12" md="auto">
-            <img
-              className="profile-frame"
+            <ProfileImage
               src="/images/profile-placeholder.png"
-              width="200"
-              height="200"
               alt="User Profile"
+              interactive={canEdit}
+              profileId={userToDisplay.id}
+              type={Constants.PROFILE_TYPE.USER}
             />
           </Col>
           <Col>

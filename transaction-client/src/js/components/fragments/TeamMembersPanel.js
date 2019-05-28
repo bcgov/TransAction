@@ -8,10 +8,15 @@ import { leaveTeam, fetchUser, fetchCurrentUser } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
 
 class TeamMembersPanel extends React.Component {
+  state = { clicked: false };
+
   handleRemoveUser = user => {
+    this.setState({ clicked: true });
     this.props.leaveTeam(user.teamId, user.id).then(() => {
       if (user.id === this.props.currentUser.id) this.props.fetchCurrentUser();
       else this.props.fetchUser(user.id);
+
+      this.setState({ clicked: false });
     });
   };
 
@@ -27,12 +32,24 @@ class TeamMembersPanel extends React.Component {
           <React.Fragment>
             {teamToDisplay.numMembers > 1 &&
               (user.id === currentUser.id ? (
-                <Button color="danger" size="sm" className="team-remove" onClick={() => this.handleRemoveUser(user)}>
+                <Button
+                  color="danger"
+                  size="sm"
+                  className="team-remove"
+                  onClick={() => this.handleRemoveUser(user)}
+                  disabled={this.state.clicked}
+                >
                   <FontAwesomeIcon icon="sign-out-alt" /> Leave
                 </Button>
               ) : (
                 currentUser.id === teamToDisplay.teamLeaderId && (
-                  <Button color="danger" size="sm" className="team-remove" onClick={() => this.handleRemoveUser(user)}>
+                  <Button
+                    color="danger"
+                    size="sm"
+                    className="team-remove"
+                    onClick={() => this.handleRemoveUser(user)}
+                    disabled={this.state.clicked}
+                  >
                     <FontAwesomeIcon icon="minus-square" /> Remove
                   </Button>
                 )

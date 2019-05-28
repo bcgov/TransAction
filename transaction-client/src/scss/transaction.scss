@@ -2,6 +2,7 @@
 
 @import 'vendor-overrides.scss';
 @import 'carousel.scss';
+@import 'profile-image.scss';
 
 body {
   background-color: #e2e1e0;
@@ -37,55 +38,8 @@ button.team-remove {
   margin-bottom: 16px;
 }
 
-img.profile-frame {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
 // Check stuff below
 
 textarea.form-control {
   height: 250px;
-}
-
-#progress {
-  width: 40%;
-  display: -ms-flexbox;
-  display: flex;
-  height: 2rem;
-  overflow: hidden;
-  font-size: 0.75rem;
-  background-color: #e9ecef;
-  border-radius: 0.25rem;
-}
-
-.titleform {
-  display: inline-block;
-}
-
-#centerText {
-  text-align: center;
-}
-#borderRoleDifferences {
-  border: 2px solid;
-}
-
-#progressCard {
-  display: -ms-flexbox;
-  display: flex;
-  height: 2rem;
-  overflow: hidden;
-  font-size: 0.75rem;
-  background-color: #e9ecef;
-  border-radius: 0.25rem;
-}
-
-#labelCardProgress {
-  height: 2rem;
-  width: 5%;
-}
-
-#log-time {
-  width: 50%;
-  display: inline-block;
 }

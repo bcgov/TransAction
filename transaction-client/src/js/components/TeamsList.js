@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
+import { BreadcrumbItem, Row, Col, Table } from 'reactstrap';
 
 import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+import OneClickButton from './ui/OneClickButton';
 
 import * as Constants from '../Constants';
 
@@ -54,9 +55,13 @@ class TeamsList extends Component {
           {!currentUser.teamId && (
             <td>
               {!userRequests.includes(team.id) && (
-                <Button size="sm" color="primary" onClick={() => this.sendJoinRequest(currentUser.id, team.id)}>
+                <OneClickButton
+                  size="sm"
+                  color="primary"
+                  handleOnClick={() => this.sendJoinRequest(currentUser.id, team.id)}
+                >
                   Request to Join
-                </Button>
+                </OneClickButton>
               )}
             </td>
           )}
