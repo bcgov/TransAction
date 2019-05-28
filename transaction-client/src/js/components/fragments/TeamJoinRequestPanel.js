@@ -4,7 +4,7 @@ import { Button, Row, Col } from 'reactstrap';
 
 import { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
-import PageSpinner from '../ui/PageSpinner';
+// import PageSpinner from '../ui/PageSpinner';
 import CardWrapper from '../ui/CardWrapper';
 
 class TeamJoinRequestPanel extends React.Component {

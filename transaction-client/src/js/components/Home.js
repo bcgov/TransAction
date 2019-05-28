@@ -1,7 +1,10 @@
 import React from 'react';
-import { UncontrolledCarousel, Row, Col } from 'reactstrap';
+import { UncontrolledCarousel, Row, Col, Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import CardWrapper from './ui/CardWrapper';
+
+import * as Constants from '../Constants';
 
 const carouselIds = ['01', '02', '03', '04'];
 
@@ -35,6 +38,7 @@ class Home extends React.Component {
         <CardWrapper>
           <Row>
             <Col>
+              <h4 className="text-center">Welcome to TransAction</h4>
               <p>
                 TransAction (Healthy Workplace Challenge) is a voluntary initiative sponsored by the ministry’s Employee
                 Advisory Forum (EAF) and ministry executive as a fun, dynamic way of getting active during Healthy
@@ -51,6 +55,17 @@ class Home extends React.Component {
                 duration of the program. The next TransAction is scheduled to take place in October 2017, this program
                 has been running since October 2010 and we hope to support this initiative for many years to come.
               </p>
+              <div className="text-center mt-5">
+                <Link to={Constants.PATHS.START}>
+                  <Button color="primary">Get Started</Button>
+                </Link>
+              </div>
+            </Col>
+          </Row>
+        </CardWrapper>
+        <CardWrapper>
+          <Row>
+            <Col>
               <img className="w-100" src="/images/eaf-banner.jpg" alt="Employee Advisory Forum" />
             </Col>
           </Row>

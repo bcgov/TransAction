@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+  Alert,
   Breadcrumb,
   BreadcrumbItem,
   Col,
@@ -58,7 +59,7 @@ class GettingStarted extends React.Component {
           </Col>
         </Row>
         {!this.props.currentUser.teamId && (
-          <Row className="mb-5">
+          <Row>
             <Col>
               <CardDeck>
                 <Card>
@@ -101,6 +102,9 @@ class GettingStarted extends React.Component {
                   </CardFooter>
                 </Card>
               </CardDeck>
+              <Alert color="primary" className="mt-5">
+                <strong>TODO:</strong> Some privacy disclaimer here. Need actual wording.
+              </Alert>
             </Col>
           </Row>
         )}
