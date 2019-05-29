@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import _ from 'lodash';
 
@@ -23,5 +24,13 @@ class OneClickButton extends React.Component {
     );
   }
 }
+
+OneClickButton.propTypes = {
+  size: PropTypes.string,
+  color: PropTypes.string,
+  className: PropTypes.string,
+  children: PropTypes.string.isRequired,
+  handleOnClick: PropTypes.func.isRequired,
+};
 
 export default OneClickButton;

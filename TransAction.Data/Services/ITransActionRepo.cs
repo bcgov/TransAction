@@ -70,6 +70,10 @@ namespace TransAction.Data.Services
         void CreateTopicMessage(TraTopicMessage traTopicMessage);
         void DeleteTopicMessage(TraTopicMessage traTopicMessage);
 
+        TraImage GetProfileImage(string guid);
+        TraImage GetUserProfileImage(int userId);
+        void AddProfileImage(TraImage image);
+
 
         bool Save();
     }

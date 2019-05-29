@@ -8,8 +8,10 @@ namespace TransAction.Data.Models
         public TraTeam()
         {
             TraEventTeam = new HashSet<TraEventTeam>();
+            TraImage = new HashSet<TraImage>();
             TraMemberReq = new HashSet<TraMemberReq>();
             TraUser = new HashSet<TraUser>();
+            TraUserActivity = new HashSet<TraUserActivity>();
         }
 
         public int TeamId { get; set; }
@@ -27,9 +29,9 @@ namespace TransAction.Data.Models
         public virtual TraRegion Region { get; set; }
         public virtual TraUser User { get; set; }
         public virtual ICollection<TraEventTeam> TraEventTeam { get; set; }
+        public virtual ICollection<TraImage> TraImage { get; set; }
         public virtual ICollection<TraMemberReq> TraMemberReq { get; set; }
         public virtual ICollection<TraUser> TraUser { get; set; }
-        //
         public virtual ICollection<TraUserActivity> TraUserActivity { get; set; }
 
 

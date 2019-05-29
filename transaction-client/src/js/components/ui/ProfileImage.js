@@ -1,14 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
 
-// import * as Constants from '../../Constants';
+import * as Constants from '../../Constants';
 
 class ProfileImage extends React.Component {
   handleChangeClicked = () => {};
 
   render() {
-    const { src, alt, interactive } = this.props;
+    const { src, alt, type, profileId, currentUser, interactive } = this.props;
 
     const className = interactive ? 'interactive' : '';
 
@@ -26,6 +27,18 @@ class ProfileImage extends React.Component {
     );
   }
 }
+
+ProfileImage.propTypes = {
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  interactive: PropTypes.bool,
+  profileId: PropTypes.number,
+};
+
+ProfileImage.defaultProps = {
+  interactive: false,
+};
 
 const mapStateToProps = state => {
   return {

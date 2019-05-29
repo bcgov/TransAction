@@ -8,6 +8,7 @@ namespace TransAction.Data.Models
         public TraUser()
         {
             TraEventUser = new HashSet<TraEventUser>();
+            TraImage = new HashSet<TraImage>();
             TraMemberReq = new HashSet<TraMemberReq>();
             TraTeam = new HashSet<TraTeam>();
             TraTopic = new HashSet<TraTopic>();
@@ -26,7 +27,7 @@ namespace TransAction.Data.Models
         public string Email { get; set; }
         public int RoleId { get; set; }
         public int? TeamId { get; set; }
-        public Boolean IsFreeAgent { get; set; }
+        public bool? IsFreeAgent { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
         public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
@@ -37,6 +38,7 @@ namespace TransAction.Data.Models
         public virtual TraRole Role { get; set; }
         public virtual TraTeam Team { get; set; }
         public virtual ICollection<TraEventUser> TraEventUser { get; set; }
+        public virtual ICollection<TraImage> TraImage { get; set; }
         public virtual ICollection<TraMemberReq> TraMemberReq { get; set; }
         public virtual ICollection<TraTeam> TraTeam { get; set; }
         public virtual ICollection<TraTopic> TraTopic { get; set; }

@@ -468,6 +468,21 @@ namespace TransAction.Data.Services
             _context.TraTopic.Remove(traTopic);
         }
 
+        public TraImage GetUserProfileImage(int userId)
+        {
+            return _context.TraImage.Where(x => x.UserId == userId).FirstOrDefault();
+        }
+
+        public TraImage GetProfileImage(string guid)
+        {
+            return _context.TraImage.Where(x => x.Guid == guid).FirstOrDefault();
+        }
+
+        public void AddProfileImage(TraImage image)
+        {
+            _context.TraImage.Add(image);
+        }
+
     }
 }
 
