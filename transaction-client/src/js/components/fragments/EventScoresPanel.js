@@ -74,11 +74,13 @@ class EventScoresPanel extends React.Component {
             </Col>
           </Row>
         )}
-        <LogActivityForm
-          isOpen={this.state.showLogActivityForm}
-          toggle={this.toggleLogActivityForm}
-          eventId={this.props.event.id}
-        />
+        {this.state.showLogActivityForm && (
+          <LogActivityForm
+            isOpen={this.state.showLogActivityForm}
+            toggle={this.toggleLogActivityForm}
+            eventId={this.props.event.id}
+          />
+        )}
       </React.Fragment>
     );
   }

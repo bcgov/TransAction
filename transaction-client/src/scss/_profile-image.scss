@@ -27,3 +27,9 @@
 .profile-frame.interactive:hover .profile-frame-overlay {
   opacity: 1;
 }
+
+.profile-frame-image {
+  object-fit: 'cover';
+  width: 200px;
+  height: 200px;
+}

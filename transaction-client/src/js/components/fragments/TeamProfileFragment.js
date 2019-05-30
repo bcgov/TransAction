@@ -82,13 +82,14 @@ class TeamProfileFragment extends React.Component {
             )}
           </Col>
         </Row>
-
-        <EditTeamForm
-          initialValues={team}
-          isOpen={this.state.showEditTeamForm}
-          toggle={this.toggleEditTeamForm}
-          formType={Constants.FORM_TYPE.EDIT}
-        />
+        {this.state.showEditTeamForm && (
+          <EditTeamForm
+            initialValues={team}
+            isOpen={this.state.showEditTeamForm}
+            toggle={this.toggleEditTeamForm}
+            formType={Constants.FORM_TYPE.EDIT}
+          />
+        )}
       </React.Fragment>
     );
   }

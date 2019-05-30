@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
-using TransAction.Data.Services;
-namespace TransAction.Data.Models
+
+namespace TransAction.API.Models
 {
-    public partial class TransActionContext : DbContext
+    public partial class Transaction_DevContext : DbContext
     {
-        public TransActionContext()
+        public Transaction_DevContext()
         {
         }
 
-        public TransActionContext(DbContextOptions<TransActionContext> options)
+        public Transaction_DevContext(DbContextOptions<Transaction_DevContext> options)
             : base(options)
         {
         }
@@ -31,20 +28,19 @@ namespace TransAction.Data.Models
         public virtual DbSet<TraTopicMessage> TraTopicMessage { get; set; }
         public virtual DbSet<TraUser> TraUser { get; set; }
         public virtual DbSet<TraUserActivity> TraUserActivity { get; set; }
-        public DbQuery<TraUserView> TraUserView { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=sqltst.th.gov.bc.ca;Database=Transaction_Dev;Trusted_Connection=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
-
-            var userView = modelBuilder.Query<TraUserView>().ToView("TRA_USER_VW");
-            userView.Property(e => e.UserId).HasColumnName("USER_ID");
-            userView.Property(e => e.RegionId).HasColumnName("REGION_ID");
-            userView.Property(e => e.RoleId).HasColumnName("ROLE_ID");
-            userView.Property(e => e.TeamId).HasColumnName("TEAM_ID");
-            userView.Property(e => e.IsFreeAgent).HasColumnName("IS_FREE_AGENT");
-            userView.Property(e => e.ConcurrencyControlNumber).HasColumnName("CONCURRENCY_CONTROL_NUMBER");
-            userView.Property(e => e.ProfileImageGuid).HasColumnName("PROFILE_IMAGE_GUID");
 
             modelBuilder.Entity<TraActivity>(entity =>
             {
@@ -868,7 +864,5 @@ namespace TransAction.Data.Models
                     .HasConstraintName("FK_USER_ACTIVITY_USER");
             });
         }
-
-
     }
 }

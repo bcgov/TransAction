@@ -49,8 +49,8 @@ namespace TransAction.API.Controllers
                 }
                 var getUser = _transActionRepo.GetUser(id);
                 var getUserResult = Mapper.Map<UserDto>(getUser);
-                return Ok(getUserResult);
 
+                return Ok(getUserResult);
             }
 
             catch (Exception)
@@ -159,8 +159,8 @@ namespace TransAction.API.Controllers
             try
             {
                 
-                string userGuid = UserHelper.GetUserGuid(_httpContextAccessor); 
-                var getUsers = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+                string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+                var getUsers = _transActionRepo.GetCurrentUser(userGuid);
 
                 if (getUsers == null)
                 {

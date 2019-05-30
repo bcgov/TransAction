@@ -24,12 +24,16 @@ class UserProfileFragment extends React.Component {
   render() {
     const { regionName, canEdit, userToDisplay } = this.props;
 
+    const imageUrl = userToDisplay.profileImageGuid
+      ? `${Constants.API_URL}/images/${userToDisplay.profileImageGuid}`
+      : '/images/profile-placeholder.png';
+
     return (
       <React.Fragment>
         <Row>
           <Col xs="12" md="auto">
             <ProfileImage
-              src="/images/profile-placeholder.png"
+              src={imageUrl}
               alt="User Profile"
               interactive={canEdit}
               profileId={userToDisplay.id}
@@ -49,12 +53,13 @@ class UserProfileFragment extends React.Component {
             )}
           </Col>
         </Row>
-
-        <EditUserForm
-          initialValues={userToDisplay}
-          isOpen={this.state.showEditUserForm}
-          toggle={this.toggleEditUserForm}
-        />
+        {this.state.showEditUserForm && (
+          <EditUserForm
+            initialValues={userToDisplay}
+            isOpen={this.state.showEditUserForm}
+            toggle={this.toggleEditUserForm}
+          />
+        )}
       </React.Fragment>
     );
   }

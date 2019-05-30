@@ -1,13 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace TransAction.Data.Models
 {
-    public class UserDto
+    public partial class TraUserView
     {
-        [JsonProperty("id")]
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Directory { get; set; }
@@ -19,7 +17,7 @@ namespace TransAction.Data.Models
         public string Email { get; set; }
         public int RoleId { get; set; }
         public int? TeamId { get; set; }
-        public Boolean IsFreeAgent { get; set; }
+        public bool? IsFreeAgent { get; set; }
         public long ConcurrencyControlNumber { get; set; }
         public string ProfileImageGuid { get; set; }
     }

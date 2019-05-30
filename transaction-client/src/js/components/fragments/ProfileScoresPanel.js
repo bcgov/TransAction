@@ -121,11 +121,13 @@ class ProfileScoresPanel extends React.Component {
     ) : (
       <React.Fragment>
         {this.renderContent()}
-        <LogActivityForm
-          isOpen={this.state.showLogActivityForm}
-          toggle={this.toggleLogActivityForm}
-          eventId={this.state.logActivityEventId}
-        />
+        {this.state.showLogActivityForm && (
+          <LogActivityForm
+            isOpen={this.state.showLogActivityForm}
+            toggle={this.toggleLogActivityForm}
+            eventId={this.state.logActivityEventId}
+          />
+        )}
       </React.Fragment>
     );
   }

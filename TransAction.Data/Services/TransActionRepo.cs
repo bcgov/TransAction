@@ -47,14 +47,14 @@ namespace TransAction.Data.Services
 
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
-        public TraUser GetUser(int id)
+        public TraUserView GetUser(int id)
         {
-            return _context.TraUser.FirstOrDefault(c => c.UserId == id);
+            return _context.TraUserView.FirstOrDefault(c => c.UserId == id);
         }
 
-        public IEnumerable<TraUser> GetUsers()
+        public IEnumerable<TraUserView> GetUsers()
         {
-            return _context.TraUser.OrderBy(c => c.UserId).ToList();
+            return _context.TraUserView.OrderBy(c => c.UserId).ToList();
         }
 
 
@@ -77,9 +77,9 @@ namespace TransAction.Data.Services
             }
         }
 
-        public TraUser GetCurrentUser(string guid)
+        public TraUserView GetCurrentUser(string guid)
         {
-            return _context.TraUser.FirstOrDefault(c => c.Guid == guid);
+            return _context.TraUserView.FirstOrDefault(c => c.Guid == guid);
         }
 
 
@@ -471,6 +471,11 @@ namespace TransAction.Data.Services
         public TraImage GetUserProfileImage(int userId)
         {
             return _context.TraImage.Where(x => x.UserId == userId).FirstOrDefault();
+        }
+
+        public TraImage GetTeamProfileImage(int teamId)
+        {
+            return _context.TraImage.Where(x => x.TeamId == teamId).FirstOrDefault();
         }
 
         public TraImage GetProfileImage(string guid)

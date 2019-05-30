@@ -143,9 +143,10 @@ namespace TransAction.API.Controllers
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var role = _transActionRepo.GetRole(getUser.RoleId);
 
             var user = _transActionRepo.GetCurrentUser(getUser.Guid);
-            if(user.UserId == teamUpdate.UserId || user.Role.Name.ToLower() == "admin")
+            if(user.UserId == teamUpdate.UserId || role.Name.ToLower() == "admin")
             {
                 var teamEntity = _transActionRepo.GetTeam(id);
                 if (teamEntity == null) return NotFound();

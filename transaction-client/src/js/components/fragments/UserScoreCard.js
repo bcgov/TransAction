@@ -82,12 +82,14 @@ class UserScoreCard extends React.Component {
             </Row>
           </CardBody>
         </Card>
-        <LogActivityForm
-          isOpen={this.state.showLogActivityForm}
-          toggle={this.toggleLogActivityForm}
-          eventId={event.id}
-          refreshStandings={refreshStandings}
-        />
+        {this.state.showLogActivityForm && (
+          <LogActivityForm
+            isOpen={this.state.showLogActivityForm}
+            toggle={this.toggleLogActivityForm}
+            eventId={event.id}
+            refreshStandings={refreshStandings}
+          />
+        )}
       </React.Fragment>
     );
   }

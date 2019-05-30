@@ -14,7 +14,7 @@ using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/images")]
     [ApiController]
     public class ImageController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace TransAction.API.Controllers
 
         private static readonly string JPEG = "image/jpeg";
         private static readonly string PNG = "image/png";
-        private static readonly double MAX_SIZE = 256.0;
+        private static readonly double MAX_SIZE = 512.0;
 
         public ImageController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
         {
@@ -31,6 +31,7 @@ namespace TransAction.API.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        [AllowAnonymous]
         [HttpGet("{guid}", Name = "GetImageByGuid")]
         public IActionResult GetImageByGuid(string guid)
         {
@@ -52,7 +53,6 @@ namespace TransAction.API.Controllers
             return File(image.Data, image.ContentType, image.Filename);
         }
 
-        [AllowAnonymous]
         [HttpGet("user/{id}", Name = "GetImageByUserId")]
         public IActionResult GetImageByUserId(int id)
         {
@@ -73,12 +73,37 @@ namespace TransAction.API.Controllers
             return File(image.Data, image.ContentType, image.Filename);
         }
 
+        [HttpGet("user/{id}", Name = "GetImageByTeamId")]
+        public IActionResult GetImageByTeamId(int id)
+        {
+            TraImage image = null;
+
+            try
+            {
+                image = _transActionRepo.GetTeamProfileImage(id);
+
+                if (image == null)
+                    return NotFound();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return File(image.Data, image.ContentType, image.Filename);
+        }
+
         [HttpPost()]
         public IActionResult UploadProfileImage([FromForm]ImagePostDto model)
         {
             if (model.TeamId == null && model.UserId == null)
             {
                 return BadRequest("Need to specify either User Id or Team Id.");
+            }
+
+            if (model.TeamId != null && model.UserId != null)
+            {
+                return BadRequest("Do not specify both User Id and Team Id.");
             }
 
             if (model.Data.ContentType != JPEG && model.Data.ContentType != PNG)
@@ -91,6 +116,26 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
+            if(model.UserId != null)
+            {
+                var image = _transActionRepo.GetUserProfileImage(model.UserId.Value);
+
+                if(image != null)
+                {
+                    return BadRequest("User already has profile image.");
+                }
+            }
+
+            if (model.TeamId != null)
+            {
+                var image = _transActionRepo.GetTeamProfileImage(model.TeamId.Value);
+
+                if (image != null)
+                {
+                    return BadRequest("Team already has profile image.");
+                }
+            }
+
             TraImage traImage = new TraImage();
 
             byte[] bytes = null;
@@ -101,13 +146,15 @@ namespace TransAction.API.Controllers
 
                 using (Image<Rgba32> image = Image.Load(bytes))
                 {
-                    int maxDimension = Math.Max(image.Width, image.Height);
+                    int maxWidthOrLength = Math.Max(image.Width, image.Height);
 
-                    if (maxDimension > MAX_SIZE)
+                    if (maxWidthOrLength > MAX_SIZE)
                     {
-                        double ratio = MAX_SIZE / maxDimension;
+                        double ratio = MAX_SIZE / maxWidthOrLength;
                         image.Mutate(x => x.Resize(Convert.ToInt32(image.Width * ratio), Convert.ToInt32(image.Height * ratio)));
                     }
+
+                    memoryStream.SetLength(0);
 
                     if (model.Data.ContentType == JPEG)
                     {
@@ -125,8 +172,9 @@ namespace TransAction.API.Controllers
                 }
             }
 
-            traImage.Data = bytes;
             traImage.UserId = model.UserId;
+            traImage.TeamId = model.TeamId;
+            traImage.Data = bytes;
             traImage.Guid = Guid.NewGuid().ToString();
             traImage.Filename = model.Data.FileName;
             traImage.Filesize = model.Data.Length;

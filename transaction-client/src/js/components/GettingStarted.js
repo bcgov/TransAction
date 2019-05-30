@@ -20,15 +20,15 @@ import CardWrapper from './ui/CardWrapper';
 import * as Constants from '../Constants';
 
 class GettingStarted extends React.Component {
-  state = { showEditTeamForm: false };
+  state = { showCreateTeamForm: false };
 
-  showEditTeamForm = () => {
-    this.setState({ showEditTeamForm: true });
+  showCreateTeamForm = () => {
+    this.setState({ showCreateTeamForm: true });
   };
 
-  toggleEditTeamForm = () => {
+  toggleCreateTeamForm = () => {
     this.setState(prevState => ({
-      showEditTeamForm: !prevState.showEditTeamForm,
+      showCreateTeamForm: !prevState.showCreateTeamForm,
     }));
   };
 
@@ -76,7 +76,7 @@ class GettingStarted extends React.Component {
                     </p>
                   </CardBody>
                   <CardFooter className="text-center">
-                    <Button color="primary" onClick={this.showEditTeamForm}>
+                    <Button color="primary" onClick={this.showCreateTeamForm}>
                       Create Team
                     </Button>
                   </CardFooter>
@@ -122,12 +122,14 @@ class GettingStarted extends React.Component {
           <BreadcrumbItem active>Getting Started</BreadcrumbItem>
         </Breadcrumb>
         {this.renderText()}
-        <EditTeamForm
-          isOpen={this.state.showEditTeamForm}
-          toggle={this.toggleEditTeamForm}
-          initialValues={{ goal: 0 }}
-          formType={Constants.FORM_TYPE.ADD}
-        />
+        {this.state.showCreateTeamForm && (
+          <EditTeamForm
+            isOpen={this.state.showCreateTeamForm}
+            toggle={this.toggleCreateTeamForm}
+            initialValues={{ goal: 0 }}
+            formType={Constants.FORM_TYPE.ADD}
+          />
+        )}
       </React.Fragment>
     );
   }

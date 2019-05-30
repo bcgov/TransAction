@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-const apiUrl = window.RUNTIME_REACT_APP_API_HOST
-  ? `${window.location.protocol}//${window.RUNTIME_REACT_APP_API_HOST}/api`
-  : process.env.REACT_APP_API_HOST;
+import { API_URL } from '../Constants';
 
 const api = axios.create({
-  baseURL: `${apiUrl}`,
+  baseURL: `${API_URL}`,
   'Access-Control-Allow-Origin': '*',
 });
 

@@ -97,6 +97,7 @@ namespace TransAction.API
 
                 // for profile 
                 cfg.CreateMap<TraUser, UserDto>();
+                cfg.CreateMap<TraUserView, UserDto>();
                 cfg.CreateMap<UserDto, TraUser>();
                 cfg.CreateMap<UserCreateDto, TraUser>();
                 cfg.CreateMap<UserUpdateDto, TraUser>();

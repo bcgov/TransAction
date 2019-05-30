@@ -14,11 +14,11 @@ namespace TransAction.Data.Services
         void CreateEvent(TraEvent traEvent);
         bool EventExists(string Name);
 
-        IEnumerable<TraUser> GetUsers();
-        TraUser GetUser(int id);
+        IEnumerable<TraUserView> GetUsers();
+        TraUserView GetUser(int id);
         bool UserExists(string Name, string Email);
         void CreateUser(TraUser traUser);
-        TraUser GetCurrentUser(string guid);
+        TraUserView GetCurrentUser(string guid);
 
         IEnumerable<TraTeam> GetTeams();
         TraTeam GetTeam(int id);
@@ -72,6 +72,7 @@ namespace TransAction.Data.Services
 
         TraImage GetProfileImage(string guid);
         TraImage GetUserProfileImage(int userId);
+        TraImage GetTeamProfileImage(int teamId);
         void AddProfileImage(TraImage image);
 
 

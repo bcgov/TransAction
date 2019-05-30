@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions } from '../actions';
 import DialogModal from './ui/DialogModal';
+import PageSpinner from './ui/PageSpinner';
 
 class Main extends Component {
   state = { loading: true };
@@ -17,7 +18,7 @@ class Main extends Component {
 
   render() {
     return this.state.loading ? (
-      <div>Loading...</div>
+      <PageSpinner />
     ) : (
       <React.Fragment>
         {this.props.children}
