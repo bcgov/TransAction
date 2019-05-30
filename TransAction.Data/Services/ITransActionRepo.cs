@@ -14,11 +14,11 @@ namespace TransAction.Data.Services
         void CreateEvent(TraEvent traEvent);
         bool EventExists(string Name);
 
-        IEnumerable<TraUserView> GetUsers();
-        TraUserView GetUser(int id);
+        IEnumerable<TraUser> GetUsers();
+        TraUser GetUser(int id);
         bool UserExists(string Name, string Email);
         void CreateUser(TraUser traUser);
-        TraUserView GetCurrentUser(string guid);
+        TraUser GetCurrentUser(string guid);
 
         IEnumerable<TraTeam> GetTeams();
         TraTeam GetTeam(int id);

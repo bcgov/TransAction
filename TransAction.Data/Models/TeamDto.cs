@@ -18,5 +18,7 @@ namespace TransAction.Data.Models
         public Array TeamMemberIds { get; set; }
         public int NumMembers { get; set; }
         public long ConcurrencyControlNumber { get; set; }
+        [JsonProperty("images")]
+        public HashSet<ImageDto> TraImage { get; set; }
     }
 }

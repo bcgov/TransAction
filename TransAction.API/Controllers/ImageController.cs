@@ -96,6 +96,8 @@ namespace TransAction.API.Controllers
         [HttpPost()]
         public IActionResult UploadProfileImage([FromForm]ImagePostDto model)
         {
+            bool newRecord = true;
+
             if (model.TeamId == null && model.UserId == null)
             {
                 return BadRequest("Need to specify either User Id or Team Id.");
@@ -116,13 +118,16 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            if(model.UserId != null)
+            TraImage traImage = new TraImage();
+
+            if (model.UserId != null)
             {
                 var image = _transActionRepo.GetUserProfileImage(model.UserId.Value);
 
-                if(image != null)
+                if (image != null)
                 {
-                    return BadRequest("User already has profile image.");
+                    traImage = image;
+                    newRecord = false;
                 }
             }
 
@@ -132,11 +137,10 @@ namespace TransAction.API.Controllers
 
                 if (image != null)
                 {
-                    return BadRequest("Team already has profile image.");
+                    traImage = image;
+                    newRecord = false;
                 }
             }
-
-            TraImage traImage = new TraImage();
 
             byte[] bytes = null;
             using (var memoryStream = new MemoryStream())
@@ -180,7 +184,8 @@ namespace TransAction.API.Controllers
             traImage.Filesize = model.Data.Length;
             traImage.ContentType = model.Data.ContentType;
 
-            _transActionRepo.AddProfileImage(traImage);
+            if (newRecord)
+                _transActionRepo.AddProfileImage(traImage);
 
             if (!_transActionRepo.Save())
             {

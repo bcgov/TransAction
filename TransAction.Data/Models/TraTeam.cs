@@ -33,7 +33,5 @@ namespace TransAction.Data.Models
         public virtual ICollection<TraMemberReq> TraMemberReq { get; set; }
         public virtual ICollection<TraUser> TraUser { get; set; }
         public virtual ICollection<TraUserActivity> TraUserActivity { get; set; }
-
-
     }
 }

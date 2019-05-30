@@ -21,6 +21,7 @@ namespace TransAction.Data.Models
         public int? TeamId { get; set; }
         public Boolean IsFreeAgent { get; set; }
         public long ConcurrencyControlNumber { get; set; }
-        public string ProfileImageGuid { get; set; }
+        [JsonProperty("images")]
+        public HashSet<ImageDto> TraImage { get; set; }
     }
 }

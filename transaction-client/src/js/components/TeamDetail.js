@@ -102,7 +102,7 @@ class Team extends Component {
             <PageSpinner />
           ) : (
             <TeamProfileFragment
-              canEdit={true}
+              canEdit={this.userIsTeamleadOrAdmin()}
               team={teamToDisplay}
               regionName={this.props.regions[teamToDisplay.regionId].name}
             />

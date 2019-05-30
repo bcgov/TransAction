@@ -30,12 +30,17 @@ class TeamProfileFragment extends React.Component {
   render() {
     const { team, regionName, canEdit, linkToProfile, currentUser } = this.props;
 
+    const imageUrl =
+      team.images.length > 0
+        ? `${Constants.API_URL}/images/${team.images[0].guid}`
+        : '/images/team-profile-placeholder.png';
+
     return (
       <React.Fragment>
         <Row>
           <Col xs="12" md="auto">
             <ProfileImage
-              src="/images/team-profile-placeholder.png"
+              src={imageUrl}
               alt="Team Profile"
               interactive={canEdit}
               profileId={team.id}

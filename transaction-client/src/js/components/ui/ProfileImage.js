@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
 
 import ImageUploadModal from './ImageUploadModal';
+import { fetchUser, fetchCurrentUser, fetchTeam } from '../../actions';
 import api from '../../api/api';
 
 import * as Constants from '../../Constants';
@@ -22,7 +23,7 @@ class ProfileImage extends React.Component {
   };
 
   handleUpload = async file => {
-    const { type, profileId } = this.props;
+    const { type, profileId, currentUser, fetchUser, fetchCurrentUser, fetchTeam } = this.props;
 
     const formData = new FormData();
     formData.append('data', file);
@@ -34,6 +35,13 @@ class ProfileImage extends React.Component {
     }
 
     await api.post('/images', formData);
+
+    if (type === Constants.PROFILE_TYPE.USER) {
+      if (currentUser.id === profileId) fetchCurrentUser();
+      else fetchUser(profileId);
+    } else if (type === Constants.PROFILE_TYPE.TEAM) {
+      fetchTeam(profileId);
+    }
 
     this.toggleUploadImageModal();
   };
@@ -89,5 +97,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  null
+  { fetchUser, fetchCurrentUser, fetchTeam }
 )(ProfileImage);

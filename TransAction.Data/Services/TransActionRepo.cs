@@ -47,14 +47,14 @@ namespace TransAction.Data.Services
 
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
-        public TraUserView GetUser(int id)
+        public TraUser GetUser(int id)
         {
-            return _context.TraUserView.FirstOrDefault(c => c.UserId == id);
+            return _context.TraUser.FirstOrDefault(c => c.UserId == id);
         }
 
-        public IEnumerable<TraUserView> GetUsers()
+        public IEnumerable<TraUser> GetUsers()
         {
-            return _context.TraUserView.OrderBy(c => c.UserId).ToList();
+            return _context.TraUser.Include(x => x.TraImage).OrderBy(c => c.UserId).ToList();
         }
 
 
@@ -77,9 +77,9 @@ namespace TransAction.Data.Services
             }
         }
 
-        public TraUserView GetCurrentUser(string guid)
+        public TraUser GetCurrentUser(string guid)
         {
-            return _context.TraUserView.FirstOrDefault(c => c.Guid == guid);
+            return _context.TraUser.Include(x => x.TraImage).FirstOrDefault(c => c.Guid == guid);
         }
 
 
@@ -90,13 +90,13 @@ namespace TransAction.Data.Services
         /*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraTeam> GetTeams()
         {
-            return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
+            return _context.TraTeam.Include(x => x.TraImage).OrderBy(c => c.TeamId).ToList();
 
         }
 
         public TraTeam GetTeam(int id)
         {
-            return _context.TraTeam.FirstOrDefault(c => c.TeamId == id);
+            return _context.TraTeam.Include(x => x.TraImage).FirstOrDefault(c => c.TeamId == id);
         }
 
         public void CreateTeam(TraTeam traTeam)

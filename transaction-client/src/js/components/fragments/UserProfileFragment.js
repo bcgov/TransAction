@@ -24,9 +24,10 @@ class UserProfileFragment extends React.Component {
   render() {
     const { regionName, canEdit, userToDisplay } = this.props;
 
-    const imageUrl = userToDisplay.profileImageGuid
-      ? `${Constants.API_URL}/images/${userToDisplay.profileImageGuid}`
-      : '/images/profile-placeholder.png';
+    const imageUrl =
+      userToDisplay.images.length > 0
+        ? `${Constants.API_URL}/images/${userToDisplay.images[0].guid}`
+        : '/images/profile-placeholder.png';
 
     return (
       <React.Fragment>
