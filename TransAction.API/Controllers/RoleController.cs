@@ -13,17 +13,19 @@ namespace TransAction.API.Controllers
     [Route("api/roles")]
     public class RoleController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        public RoleController(ITransActionRepo transActionRepo)
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IMapper _mapper;
+        public RoleController(ITransActionRepo transActionRepo, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
+            _mapper = mapper;
         }
 
         [HttpGet()]
         public IActionResult GetRoles()
         {
             var roles = _transActionRepo.GetRoles();
-            var getRoles = Mapper.Map<IEnumerable<RoleDto>>(roles);
+            var getRoles = _mapper.Map<IEnumerable<RoleDto>>(roles);
             return Ok(getRoles);
 
         }
@@ -40,7 +42,7 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getRole = _transActionRepo.GetRole(id);
-                var getRoleResult = Mapper.Map<RoleDto>(getRole);
+                var getRoleResult = _mapper.Map<RoleDto>(getRole);
                 return Ok(getRoleResult);
 
             }
@@ -73,7 +75,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            var newRole = Mapper.Map<TraRole>(createRole);
+            var newRole = _mapper.Map<TraRole>(createRole);
 
 
             _transActionRepo.CreateRole(newRole);
@@ -83,7 +85,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<RoleDto>(newRole);
+            var createdPointOfInterestToReturn = _mapper.Map<RoleDto>(newRole);
             return CreatedAtRoute("GetThatRole", new { id = createdPointOfInterestToReturn.RoleId }, createdPointOfInterestToReturn);
 
 
@@ -101,7 +103,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Mapper.Map(updateRole, roleEntity);
+            _mapper.Map(updateRole, roleEntity);
 
 
             if (!_transActionRepo.Save())

@@ -15,10 +15,12 @@ namespace TransAction.API.Controllers
     [Route("api/events")]
     public class EventController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        public EventController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IMapper _mapper;
+        public EventController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
-            _transActionRepo = transActionRepo;           
+            _transActionRepo = transActionRepo;
+            _mapper = mapper;
         }
 
         
@@ -26,7 +28,7 @@ namespace TransAction.API.Controllers
         public IActionResult GetEvents()
         {
             var events = _transActionRepo.GetEvents();
-            var getEvents = Mapper.Map<IEnumerable<EventDto>>(events);
+            var getEvents = _mapper.Map<IEnumerable<EventDto>>(events);
             return Ok(getEvents);
 
         }
@@ -44,7 +46,7 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getEvent = _transActionRepo.GetEvent(id);
-                var getEventResult = Mapper.Map<EventDto>(getEvent);
+                var getEventResult = _mapper.Map<EventDto>(getEvent);
                 return Ok(getEventResult);
 
             }
@@ -83,7 +85,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            var newEvent = Mapper.Map<TraEvent>(createEvent);
+            var newEvent = _mapper.Map<TraEvent>(createEvent);
             newEvent.IsActive = true;
             
 
@@ -94,7 +96,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<EventDto>(newEvent);
+            var createdPointOfInterestToReturn = _mapper.Map<EventDto>(newEvent);
             return CreatedAtRoute("GetThatEvent", new { id = createdPointOfInterestToReturn.EventId }, createdPointOfInterestToReturn);
 
 
@@ -112,7 +114,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Mapper.Map(updateEvent,eventEntity);
+            _mapper.Map(updateEvent,eventEntity);
 
 
             if (!_transActionRepo.Save())

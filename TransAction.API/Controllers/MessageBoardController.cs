@@ -15,19 +15,21 @@ namespace TransAction.API.Controllers
     [Route("api/messageboard")]
     public class MessageBoardController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        private IHttpContextAccessor _httpContextAccessor;
-        public MessageBoardController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
+        public MessageBoardController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         [HttpGet()]
         public IActionResult GetTopics()
         {
             var topics = _transActionRepo.GetTopics();
-            var getTopics = Mapper.Map<IEnumerable<TopicDto>>(topics);
+            var getTopics = _mapper.Map<IEnumerable<TopicDto>>(topics);
             return Ok(getTopics);
         }
 
@@ -44,7 +46,7 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getTopic = _transActionRepo.GetTopic(id);
-                var getTopicResult = Mapper.Map<TopicDto>(getTopic);
+                var getTopicResult = _mapper.Map<TopicDto>(getTopic);
                 return Ok(getTopicResult);
 
             }
@@ -71,7 +73,7 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newTopic = Mapper.Map<TraTopic>(createTopic);
+            var newTopic = _mapper.Map<TraTopic>(createTopic);
 
 
             _transActionRepo.CreateTopic(newTopic);
@@ -81,7 +83,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<TopicDto>(newTopic);
+            var createdPointOfInterestToReturn = _mapper.Map<TopicDto>(newTopic);
             return CreatedAtRoute("GetThatTopic", new { id = createdPointOfInterestToReturn.TopicId }, createdPointOfInterestToReturn);
 
         }
@@ -97,7 +99,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Mapper.Map(updateTopic, topicEntity);
+            _mapper.Map(updateTopic, topicEntity);
 
 
             if (!_transActionRepo.Save())
@@ -118,7 +120,7 @@ namespace TransAction.API.Controllers
                 {
                     return NotFound();
                 }
-                var getMessages = Mapper.Map<IEnumerable<MessageDto>>(getMessage);
+                var getMessages = _mapper.Map<IEnumerable<MessageDto>>(getMessage);
                 return Ok(getMessages);
             }
 
@@ -146,7 +148,7 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newMessage = Mapper.Map<TraTopicMessage>(createTopic);
+            var newMessage = _mapper.Map<TraTopicMessage>(createTopic);
 
 
             _transActionRepo.CreateTopicMessage(newMessage);
@@ -156,7 +158,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<MessageDto>(newMessage);
+            var createdPointOfInterestToReturn = _mapper.Map<MessageDto>(newMessage);
             return CreatedAtRoute("GetThatTopic", new { id = createdPointOfInterestToReturn.TopicId }, createdPointOfInterestToReturn);
 
         }
@@ -178,7 +180,7 @@ namespace TransAction.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                Mapper.Map(updateMessage, messageEntity);
+                _mapper.Map(updateMessage, messageEntity);
 
 
                 if (!_transActionRepo.Save())
@@ -187,7 +189,7 @@ namespace TransAction.API.Controllers
                 }
 
                 var getMessage = _transActionRepo.GetTopicMessage(id);
-                var getTopicResult = Mapper.Map<MessageDto>(getMessage);
+                var getTopicResult = _mapper.Map<MessageDto>(getMessage);
                 return Ok(getTopicResult);
 
             }

@@ -18,8 +18,8 @@ namespace TransAction.API.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-        private ITransActionRepo _transActionRepo;
-        private IHttpContextAccessor _httpContextAccessor;
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private static readonly string JPEG = "image/jpeg";
         private static readonly string PNG = "image/png";

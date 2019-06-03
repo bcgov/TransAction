@@ -13,10 +13,13 @@ namespace TransAction.API.Controllers
     [Route("api/Regions")]
     public class RegionController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        public RegionController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IMapper _mapper;
+        
+        public RegionController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
+            _mapper = mapper;
         }
 
 
@@ -24,7 +27,7 @@ namespace TransAction.API.Controllers
         public IActionResult GetRegions()
         {
             var regions = _transActionRepo.GetRegions();
-            var getRegions = Mapper.Map<IEnumerable<RegionDto>>(regions);
+            var getRegions = _mapper.Map<IEnumerable<RegionDto>>(regions);
             return Ok(getRegions);
 
         }
@@ -42,7 +45,7 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getRegion = _transActionRepo.GetRegion(id);
-                var getRegionResult = Mapper.Map<RegionDto>(getRegion);
+                var getRegionResult = _mapper.Map<RegionDto>(getRegion);
                 return Ok(getRegionResult);
 
             }
@@ -74,7 +77,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            var newRegion = Mapper.Map<TraRegion>(createRegion);
+            var newRegion = _mapper.Map<TraRegion>(createRegion);
 
             _transActionRepo.CreateRegion(newRegion);
 
@@ -84,7 +87,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<RegionDto>(newRegion);
+            var createdPointOfInterestToReturn = _mapper.Map<RegionDto>(newRegion);
             return CreatedAtRoute("GetThatRegion", new { id = createdPointOfInterestToReturn.RegionId }, createdPointOfInterestToReturn);
             
         }
@@ -101,7 +104,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Mapper.Map(updateRegion, regionEntity);
+            _mapper.Map(updateRegion, regionEntity);
 
 
             if (!_transActionRepo.Save())

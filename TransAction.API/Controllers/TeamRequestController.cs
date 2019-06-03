@@ -12,17 +12,19 @@ namespace TransAction.API.Controllers
     [Route("api/teamrequests")]
     public class TeamRequestController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        public TeamRequestController(ITransActionRepo transActionRepo)
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IMapper _mapper;
+        public TeamRequestController(ITransActionRepo transActionRepo, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
+            _mapper = mapper;
         }
 
         [HttpGet()]
         public IActionResult GetRequests()
         {
             var request = _transActionRepo.GetRequests();
-            var getRequest = Mapper.Map<IEnumerable<MemberReqDto>>(request);
+            var getRequest = _mapper.Map<IEnumerable<MemberReqDto>>(request);
             return Ok(getRequest);
         }
 
@@ -38,7 +40,7 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getRequest = _transActionRepo.GetRequest(id);
-                var getUserResult = Mapper.Map<MemberReqDto>(getRequest);
+                var getUserResult = _mapper.Map<MemberReqDto>(getRequest);
                 return Ok(getUserResult);
 
             }
@@ -62,7 +64,7 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newRequest = Mapper.Map<TraMemberReq>(createRequest);
+            var newRequest = _mapper.Map<TraMemberReq>(createRequest);
             newRequest.IsActive = true;
 
             _transActionRepo.CreateRequest(newRequest);
@@ -72,7 +74,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<MemberReqDto>(newRequest);
+            var createdPointOfInterestToReturn = _mapper.Map<MemberReqDto>(newRequest);
             return CreatedAtRoute("GetThatEvent", new { id = createdPointOfInterestToReturn.MemberReqId }, createdPointOfInterestToReturn);
 
 
@@ -89,7 +91,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Mapper.Map(updateRequest, requestEntity);
+            _mapper.Map(updateRequest, requestEntity);
 
 
             if (!_transActionRepo.Save())

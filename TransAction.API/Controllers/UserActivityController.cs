@@ -14,20 +14,22 @@ namespace TransAction.API.Controllers
     [Route("api/useractivity")]
     public class UserActivityController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        private IHttpContextAccessor _httpContextAccessor;
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
 
-        public UserActivityController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
+        public UserActivityController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         [HttpGet()]
         public IActionResult GetUserActivity()
         {
             var userActivity = _transActionRepo.GetUserActivities();
-            var getUserActivities = Mapper.Map<IEnumerable<UserActivityDto>>(userActivity);
+            var getUserActivities = _mapper.Map<IEnumerable<UserActivityDto>>(userActivity);
             return Ok(getUserActivities);
 
         }
@@ -44,7 +46,7 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getUserActivity = _transActionRepo.GetUserActivity(id);
-                var getUserResult = Mapper.Map<UserActivityDto>(getUserActivity);
+                var getUserResult = _mapper.Map<UserActivityDto>(getUserActivity);
                 return Ok(getUserResult);
 
             }
@@ -81,7 +83,7 @@ namespace TransAction.API.Controllers
             //    return BadRequest();
             //}
                                    
-            var newUserActivity = Mapper.Map<TraUserActivity>(createUserActivity);
+            var newUserActivity = _mapper.Map<TraUserActivity>(createUserActivity);
 
             _transActionRepo.CreateUserActivity(newUserActivity);
 
@@ -90,7 +92,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdUserToReturn = Mapper.Map<UserActivityDto>(newUserActivity);
+            var createdUserToReturn = _mapper.Map<UserActivityDto>(newUserActivity);
             return CreatedAtRoute("GetThatUserActivity", new { id = createdUserToReturn.UserId }, createdUserToReturn);
         }
 
@@ -106,7 +108,7 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            Mapper.Map(updateUserActivity, userActivityEntity);
+            _mapper.Map(updateUserActivity, userActivityEntity);
 
             if (!_transActionRepo.Save())
             {

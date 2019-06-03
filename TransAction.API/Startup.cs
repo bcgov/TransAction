@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TransAction.API.Authentication;
 using TransAction.API.Authorization;
-using TransAction.API.Controllers;
+using TransAction.API.Mapping;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -31,6 +32,8 @@ namespace TransAction.API
         {
             //Adding services
             services.AddHttpContextAccessor();
+
+            services.AddAutoMapper(typeof(Startup).Assembly);
 
             services.AddScoped<ITransActionRepo, TransActionRepo>();
             services.AddScoped<IAuthorizationRepo, AuthorizationRepo>();
@@ -85,82 +88,7 @@ namespace TransAction.API
             else
             {
                 app.UseExceptionHandler("/error");
-            }
-
-            AutoMapper.Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<TraEvent, EventDto>();
-                cfg.CreateMap<EventDto, TraEvent>();
-                cfg.CreateMap<EventCreateDto, TraEvent>();
-                cfg.CreateMap<EventUpdateDto, TraEvent>();
-                cfg.CreateMap<TraEvent, EventUpdateDto>();
-
-                cfg.CreateMap<TraImage, ImageDto>();
-
-                // for profile 
-                cfg.CreateMap<TraUser, UserDto>();
-                cfg.CreateMap<TraUserView, UserDto>();
-                cfg.CreateMap<UserDto, TraUser>();
-                cfg.CreateMap<UserCreateDto, TraUser>();
-                cfg.CreateMap<UserUpdateDto, TraUser>();
-                cfg.CreateMap<TraUser, UserUpdateDto>();
-
-                //for teams
-                cfg.CreateMap<TraTeam, TeamDto>();
-                cfg.CreateMap<TeamDto, TraTeam>();
-                cfg.CreateMap<TeamCreateDto, TraTeam>();
-                cfg.CreateMap<TeamUpdateDto, TraTeam>();
-                cfg.CreateMap<TraTeam, TeamUpdateDto>();
-
-                //for regions
-                cfg.CreateMap<TraRegion, RegionDto>();
-                cfg.CreateMap<RegionDto, TraRegion>();
-                cfg.CreateMap<RegionCreateDto, TraRegion>();
-                cfg.CreateMap<RegionUpdateDto, TraRegion>();
-                cfg.CreateMap<TraRegion, RegionUpdateDto>();
-
-                //for activity                
-                cfg.CreateMap<TraActivity, ActivityDto>();
-                cfg.CreateMap<ActivityDto, TraActivity>();
-                cfg.CreateMap<ActivityCreateDto, TraActivity>();
-                cfg.CreateMap<ActivityUpdateDto, TraActivity>();
-                cfg.CreateMap<TraActivity, ActivityUpdateDto>();
-
-                //for user activity
-                cfg.CreateMap<TraUserActivity, UserActivityDto>();
-                cfg.CreateMap<UserActivityDto, TraUserActivity>();
-                cfg.CreateMap<UserActivityCreateDto, TraUserActivity>();
-                cfg.CreateMap<UserActivityUpdateDto, TraUserActivity>();
-                cfg.CreateMap<TraUserActivity, UserActivityUpdateDto>();
-
-                //for roles
-                cfg.CreateMap<TraRole, RoleDto>();
-                cfg.CreateMap<RoleDto, TraRole>();
-                cfg.CreateMap<RoleCreateDto, TraRole>();
-                cfg.CreateMap<RoleUpdateDto, TraRole>();
-                cfg.CreateMap<TraRole, RoleUpdateDto>();
-
-                //for MemberReq
-
-                cfg.CreateMap<TraMemberReq, MemberReqDto>();
-                cfg.CreateMap<MemberReqDto, TraMemberReq>();
-                cfg.CreateMap<MemberReqCreateDto, TraMemberReq>();
-                cfg.CreateMap<MemberReqUpdateDto, TraMemberReq>();
-                cfg.CreateMap<TraMemberReq, MemberReqUpdateDto>();
-
-                //MessageBoard
-                cfg.CreateMap<TraTopic,TopicDto>();
-                cfg.CreateMap<TopicDto,TraTopic>();
-                cfg.CreateMap<TopicCreateDto,TraTopic>();
-                cfg.CreateMap<TopicUpdateDto,TraTopic>();
-                cfg.CreateMap<TraTopic,TopicUpdateDto>();
-
-                cfg.CreateMap<TraTopicMessage,MessageDto>();
-                cfg.CreateMap<MessageDto, TraTopicMessage>();
-                cfg.CreateMap<MessageCreateDto,TraTopicMessage>();
-                cfg.CreateMap<MessageUpdateDto,TraTopicMessage>();
-                cfg.CreateMap<TraTopicMessage, MessageUpdateDto>();
-            });
+            }            
 
             app.UseCors(CORS_ALLOW_ALL);
             app.UseAuthentication();

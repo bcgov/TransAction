@@ -17,10 +17,13 @@ namespace TransAction.API.Controllers
     {
         private ITransActionRepo _transActionRepo;
         private IHttpContextAccessor _httpContextAccessor;
-        public TeamController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
+        private IMapper _mapper;
+
+        public TeamController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
 
@@ -29,7 +32,7 @@ namespace TransAction.API.Controllers
         {
             var teams = _transActionRepo.GetTeams();
          
-            var getTeams = Mapper.Map<IEnumerable<TeamDto>>(teams);
+            var getTeams = _mapper.Map<IEnumerable<TeamDto>>(teams);
             var users = _transActionRepo.GetUsers();
             foreach (var team in getTeams)
             {                
@@ -56,7 +59,7 @@ namespace TransAction.API.Controllers
                 var getTeam = _transActionRepo.GetTeam(id);
                 var users = _transActionRepo.GetUsers();
                 var members = users.Where(x => x.TeamId == id);                
-                var getTeamResult = Mapper.Map<TeamDto>(getTeam);
+                var getTeamResult = _mapper.Map<TeamDto>(getTeam);
                 getTeamResult.NumMembers = members.Count();
                 getTeamResult.TeamMemberIds = members.Select(x => x.UserId).ToArray();
                 return Ok(getTeamResult);
@@ -98,7 +101,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
             
-            var newTeam = Mapper.Map<TraTeam>(createTeam);
+            var newTeam = _mapper.Map<TraTeam>(createTeam);
             newTeam.UserId = getUser.UserId; // SETS THE USER TO BE THE TEAM LEADER
             _transActionRepo.CreateTeam(newTeam);
 
@@ -107,7 +110,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }         
 
-            var createdTeamToReturn = Mapper.Map<TeamDto>(newTeam);
+            var createdTeamToReturn = _mapper.Map<TeamDto>(newTeam);
             
             var user = _transActionRepo.GetUser(newTeam.UserId);
             user.TeamId = createdTeamToReturn.TeamId;
@@ -123,8 +126,8 @@ namespace TransAction.API.Controllers
             }
             user.IsFreeAgent = false;
 
-            var userUpdate = Mapper.Map<UserUpdateDto>(user);
-            Mapper.Map<TraUser>(userUpdate);
+            var userUpdate = _mapper.Map<UserUpdateDto>(user);
+            _mapper.Map<TraUser>(userUpdate);
 
             createdTeamToReturn.NumMembers = 1; // intially team will have only one member when created
 
@@ -155,7 +158,7 @@ namespace TransAction.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                Mapper.Map(teamUpdate, teamEntity);
+                _mapper.Map(teamUpdate, teamEntity);
                 if (!_transActionRepo.Save())
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
