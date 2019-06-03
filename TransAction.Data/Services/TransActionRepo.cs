@@ -415,12 +415,15 @@ namespace TransAction.Data.Services
         /*...........................................................................................................*/
         public IEnumerable<TraTopic> GetTopics()
         {
-            return _context.TraTopic.OrderBy(c => c.TopicId).ToList();
+            return _context.TraTopic
+                .Include(x => x.TraTopicMessage)
+                    .ThenInclude(m => m.User)
+                .OrderBy(c => c.TopicId).ToList();
         }
 
         public TraTopic GetTopic(int id)
         {
-            return _context.TraTopic.FirstOrDefault(c => c.TopicId == id);
+            return _context.TraTopic.Include(x => x.TraTopicMessage).FirstOrDefault(c => c.TopicId == id);
         }
 
         public void CreateTopic(TraTopic traTopic)

@@ -10,8 +10,6 @@ namespace TransAction.Data.Models
     {
         
         public string Username { get; set; }
-        public string Directory { get; set; }
-        public string Guid { get; set; }
         public int RegionId { get; set; }
         public string Fname { get; set; }
         public string Lname { get; set; }

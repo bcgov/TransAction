@@ -10,27 +10,27 @@ const Footer = () => {
           <Nav className="navbar-nav">
             <NavItem>
               <NavLink tag={RRNavLink} to="#">
-                Disclaimer
+                <small>Disclaimer</small>
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink tag={RRNavLink} to="#">
-                Privacy
+                <small>Privacy</small>
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink tag={RRNavLink} to="#">
-                Accessibility
+                <small>Accessibility</small>
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink tag={RRNavLink} to="#">
-                Copyright
+                <small>Copyright</small>
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink tag={RRNavLink} to="#">
-                Contact Us
+                <small>Contact Us</small>
               </NavLink>
             </NavItem>
           </Nav>

@@ -19,19 +19,19 @@
   height: 100%;
 }
 
-@media (min-width: 300px) {
+@include media-breakpoint-down(xs) {
   .carousel-inner .carousel-item {
     height: 120px;
   }
 }
 
-@media (min-width: 576px) {
+@include media-breakpoint-up(sm) {
   .carousel-inner .carousel-item {
     height: 200px;
   }
 }
 
-@media (min-width: 992px) {
+@include media-breakpoint-up(lg) {
   .carousel-inner .carousel-item {
     height: 300px;
   }

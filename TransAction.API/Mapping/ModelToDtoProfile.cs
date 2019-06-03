@@ -43,11 +43,14 @@ namespace TransAction.API.Mapping
             CreateMap<TraMemberReq, MemberReqUpdateDto>();
 
             //MessageBoard
-            CreateMap<TraTopic, TopicDto>();
-            CreateMap<TraTopic, TopicUpdateDto>();
+            CreateMap<TraTopic, TopicDto>()
+                .ForMember(dto => dto.PostCount, opt => opt.MapFrom(model => model.TraTopicMessage.Count))
+                .ForMember(dto => dto.UserName, opt => opt.MapFrom(model => $"{model.User.Fname} {model.User.Lname}"));
+            //CreateMap<TraTopic, TopicUpdateDto>();
 
-            CreateMap<TraTopicMessage, MessageDto>();
-            CreateMap<TraTopicMessage, MessageUpdateDto>();
+            CreateMap<TraTopicMessage, MessageDto>()
+                .ForMember(dto => dto.UserName, opt => opt.MapFrom(model => $"{model.User.Fname} {model.User.Lname}")); ;
+            //CreateMap<TraTopicMessage, MessageUpdateDto>();
         }
     }
 }

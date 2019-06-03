@@ -3,6 +3,7 @@
 @import 'vendor-overrides.scss';
 @import 'carousel.scss';
 @import 'profile-image.scss';
+@import 'drop-zone.scss';
 
 body {
   background-color: #e2e1e0;
@@ -36,57 +37,6 @@ button.team-remove {
   border-radius: 2px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   margin-bottom: 16px;
-}
-
-.dropzone {
-  width: 100%;
-  text-align: center;
-}
-
-.dropzone-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px;
-  border-width: 2px;
-  border-radius: 2px;
-  border-color: #eeeeee;
-  border-style: dashed;
-  background-color: #fafafa;
-  color: #bdbdbd;
-  outline: none;
-  transition: border 0.24s ease-in-out;
-}
-
-.dropzone-container.accept {
-  border-color: #00e676;
-}
-
-.dropzone-container.reject {
-  border-color: #ff1744;
-}
-
-.dropzone-container.active {
-  border-color: #2196f3;
-}
-
-.dropzone-preview {
-  width: 100%;
-  height: 100%;
-  object-fit: 'cover';
-}
-
-.dropzone-preview-frame {
-  background-color: white;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  padding: 8px;
-  position: relative;
-  width: 100%;
-  height: auto;
-  max-width: 250px;
-  max-height: 250px;
-  margin: 0 auto;
 }
 
 // Check stuff below

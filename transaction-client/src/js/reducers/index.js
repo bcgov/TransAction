@@ -6,6 +6,7 @@ import authUserReducer from './authUserReducer';
 import dialogModalReducer from './dialogModalReducer';
 import eventReducer from './eventReducer';
 import joinRequestsReducer from './joinRequestsReducer';
+import messageReducer from './messageReducer';
 import regionsReducer from './regionsReducer';
 import rolesReducer from './rolesReducer';
 import scoreReducer from './scoreReducer';
@@ -26,4 +27,5 @@ export default combineReducers({
   scores: scoreReducer,
   users: usersReducer,
   userActivities: userActivityReducer,
+  messages: messageReducer,
 });

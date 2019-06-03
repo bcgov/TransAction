@@ -15,5 +15,6 @@ namespace TransAction.Data.Models
         public DateTime DbCreateTimestamp { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
         public long ConcurrencyControlNumber { get; set; }
+        public string UserName { get; set; }
     }
 }

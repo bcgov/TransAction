@@ -10,8 +10,6 @@ namespace TransAction.Data.Models
         [JsonProperty("id")]
         public int UserId { get; set; }
         public string Username { get; set; }
-        public string Directory { get; set; }
-        public string Guid { get; set; }
         public int RegionId { get; set; }
         public string Fname { get; set; }
         public string Lname { get; set; }

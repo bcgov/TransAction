@@ -60,7 +60,7 @@ class EventDetail extends React.Component {
       <React.Fragment>
         <BreadcrumbFragment>
           <BreadcrumbItem>
-            <Link to="/event">Events</Link>
+            <Link to={Constants.PATHS.EVENT}>Events</Link>
           </BreadcrumbItem>
           {!this.state.loading && this.props.event && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
         </BreadcrumbFragment>

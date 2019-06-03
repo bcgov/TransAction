@@ -75,7 +75,7 @@ class TeamsList extends Component {
     return (
       <React.Fragment>
         <h4>All TransAction Teams</h4>
-        <Table size="sm" hover borderless className="mt-3">
+        <Table size="sm" hover borderless responsive className="mt-3">
           <thead>
             <tr>
               <th scope="row" />

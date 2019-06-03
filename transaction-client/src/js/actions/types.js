@@ -2,6 +2,7 @@ export const CREATE_EVENT = 'CREATE_EVENT';
 export const FETCH_EVENTS = 'FETCH_EVENTS';
 export const FETCH_EVENT = 'FETCH_EVENT';
 export const EDIT_EVENT = 'EDIT_EVENT';
+export const ARCHIVE_EVENT = 'ARCHIVE_EVENT';
 
 export const FETCH_USER = 'FETCH_USER';
 export const FETCH_USERS = 'FETCH_USERS';
@@ -43,3 +44,12 @@ export const DELETE_JOIN_REQUEST = 'DELETE_JOIN_REQUEST';
 export const SHOW_DIALOG_MODAL = 'SHOW_DIALOG_MODAL';
 export const HIDE_DIALOG_MODAL = 'HIDE_DIALOG_MODAL';
 export const TOGGLE_DIALOG_MODAL = 'TOGGLE_DIALOG_MODAL';
+
+export const FETCH_TOPICS = 'FETCH_TOPICS';
+export const FETCH_TOPIC = 'FETCH_TOPIC';
+export const CREATE_TOPIC = 'CREATE_TOPIC';
+export const EDIT_TOPIC = 'EDIT_TOPIC';
+export const FETCH_POSTS = 'FETCH_POSTS';
+export const FETCH_POST = 'FETCH_POST';
+export const CREATE_POST = 'CREATE_POST';
+export const EDIT_POST = 'EDIT_POST';

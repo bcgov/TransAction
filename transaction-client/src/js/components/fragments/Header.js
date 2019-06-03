@@ -23,7 +23,7 @@ class Header extends Component {
   render() {
     return (
       <header>
-        <Navbar className="navbar navbar-expand-lg navbar-dark">
+        <Navbar expand="lg" className="navbar-dark">
           <Container>
             <NavbarBrand tag={Link} onClick={this.hideNavbar} to="/">
               <img
@@ -41,10 +41,7 @@ class Header extends Component {
                 alt="B.C. Government Logo"
               />
             </NavbarBrand>
-            <div className="navbar-brand">
-              {/* <img className="mx-2" src="/images/eaf-logo.png" width="44" height="44" alt="EAF Logo" /> */}
-              Transaction
-            </div>
+            <div className="navbar-brand">Transaction</div>
             <NavbarToggler onClick={this.toggleNavbar} />
             <Collapse isOpen={!this.state.collapsed} navbar>
               <Nav className="navbar-nav">
@@ -69,13 +66,18 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/incentives">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.INCENTIVES}>
                     Incentives
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/faq">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.FAQ}>
                     FAQ
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.MESSAGES}>
+                    Messages
                   </NavLink>
                 </NavItem>
                 {/* {this.props.currentUser.isAdmin && (

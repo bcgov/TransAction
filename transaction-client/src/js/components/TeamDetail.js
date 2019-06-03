@@ -13,6 +13,8 @@ import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as Constants from '../Constants';
+
 class Team extends Component {
   state = {
     loading: true,
@@ -92,7 +94,7 @@ class Team extends Component {
       <React.Fragment>
         <BreadcrumbFragment>
           <BreadcrumbItem>
-            <Link to="/team">Teams</Link>
+            <Link to={Constants.PATHS.TEAM}>Teams</Link>
           </BreadcrumbItem>
           <BreadcrumbItem active>{teamToDisplay && teamToDisplay.name}</BreadcrumbItem>
         </BreadcrumbFragment>
