@@ -8,7 +8,7 @@ import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import MessagePostFragment from './fragments/MessagePostFragment';
-import CreateMessageForm from './forms/CreateMessageForm';
+import CreateMessageForm from './forms/EditMessageForm';
 
 import * as Constants from '../Constants';
 
@@ -47,20 +47,23 @@ class MessageBoardTopicDetail extends React.Component {
         <Row>
           <Col>
             <span className="h4">{topic.title}</span>
-            <Button color="primary" size="sm" className="float-right" onClick={this.showReplyForm}>
-              Reply
-            </Button>
           </Col>
         </Row>
         <ListGroup className="mt-3">
-          <MessagePostFragment message={firstMessage} index={0} />
+          <MessagePostFragment post={firstMessage} index={0} topic={topic} />
           {topic.messages.slice(1).map((message, index) => {
-            return <MessagePostFragment key={message.id} message={message} index={index + 1} />;
+            return <MessagePostFragment key={message.id} post={message} index={index + 1} />;
           })}
         </ListGroup>
         <Row className="mt-3">
           <Col>
-            <Button color="primary" size="sm" className="float-right" onClick={this.showReplyForm}>
+            <Button
+              color="primary"
+              size="sm"
+              className="float-right"
+              onClick={this.showReplyForm}
+              style={{ marginRight: '24px' }}
+            >
               Reply
             </Button>
           </Col>
@@ -70,6 +73,7 @@ class MessageBoardTopicDetail extends React.Component {
             isOpen={this.state.showReplyForm}
             toggle={this.toggleReplyForm}
             initialValues={{ topicId: this.state.topicId, userId: this.props.currentUser.id }}
+            formType={Constants.FORM_TYPE.ADD}
           />
         )}
       </React.Fragment>

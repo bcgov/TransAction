@@ -1,4 +1,4 @@
-import { FETCH_TOPICS, FETCH_TOPIC, CREATE_POST } from '../actions/types';
+import { FETCH_TOPICS, FETCH_TOPIC, EDIT_TOPIC, CREATE_POST, EDIT_POST } from '../actions/types';
 import _ from 'lodash';
 
 const DEFAULT_STATE = {};
@@ -10,6 +10,8 @@ export default (state = DEFAULT_STATE, action) => {
     case FETCH_TOPIC:
       return { ...state, [action.payload.id]: { ...state[action.payload.id], ...action.payload } };
     case CREATE_POST:
+    case EDIT_TOPIC:
+    case EDIT_POST:
       //   const messages = [...state[action.payload.topicId].messages, action.payload];
       //   console.log(messages);
       return state;

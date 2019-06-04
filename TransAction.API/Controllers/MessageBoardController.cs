@@ -132,7 +132,7 @@ namespace TransAction.API.Controllers
 
        
 
-        [HttpPost("{topicId}/message")]
+        [HttpPost("message")]
         public IActionResult CreateMessage([FromBody] MessageUpdateDto createTopic)
         {
             if (createTopic == null)

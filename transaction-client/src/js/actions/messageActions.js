@@ -1,5 +1,5 @@
 import api from '../api/api';
-import { FETCH_TOPICS, FETCH_TOPIC, CREATE_POST } from './types';
+import { FETCH_TOPICS, FETCH_TOPIC, EDIT_TOPIC, CREATE_POST, EDIT_POST } from './types';
 
 export const fetchTopics = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
@@ -25,11 +25,35 @@ export const fetchTopicDetail = topicId => async dispatch => {
   });
 };
 
-export const createPost = (topicId, message) => async dispatch => {
+export const editTopic = topic => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.post(`/messageboard/${topicId}/message`, message);
+      const response = await api.put(`/messageboard/${topic.id}`, topic);
+      dispatch({ type: EDIT_TOPIC, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const createPost = message => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.post(`/messageboard/message`, message);
       dispatch({ type: CREATE_POST, payload: response.data });
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+export const editPost = message => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.put(`/messageboard/message/${message.id}`, message);
+      dispatch({ type: EDIT_POST, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);
