@@ -22,30 +22,33 @@ class MessageBoard extends React.Component {
     const { messages } = this.props;
 
     return (
-      <Table bordered>
-        <thead>
-          <tr>
-            <th>Topic</th>
-            <th>Author</th>
-            <th>Posts</th>
-          </tr>
-        </thead>
-        <tbody>
-          {messages.map(message => {
-            return (
-              <tr key={message.id}>
-                <td>
-                  <Link to={`${Constants.PATHS.MESSAGES}/${message.id}`}>{message.title}</Link>
-                </td>
-                <td>
-                  <Link to={`${Constants.PATHS.PROFILE}/${message.userId}`}>{message.userName}</Link>
-                </td>
-                <td>{message.postCount}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+      <React.Fragment>
+        <h4>Message Board</h4>
+        <Table size="sm" hover borderless responsive className="mt-3">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Author</th>
+              <th>Posts</th>
+            </tr>
+          </thead>
+          <tbody>
+            {messages.map(message => {
+              return (
+                <tr key={message.id}>
+                  <td>
+                    <Link to={`${Constants.PATHS.MESSAGES}/${message.id}`}>{message.title}</Link>
+                  </td>
+                  <td>
+                    <Link to={`${Constants.PATHS.PROFILE}/${message.userId}`}>{message.userName}</Link>
+                  </td>
+                  <td>{message.postCount}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </React.Fragment>
     );
   }
 
@@ -55,7 +58,6 @@ class MessageBoard extends React.Component {
         <BreadcrumbFragment>
           <BreadcrumbItem>Messages</BreadcrumbItem>
         </BreadcrumbFragment>
-
         {this.state.loading ? <PageSpinner /> : <CardWrapper>{this.renderContent()}</CardWrapper>}
       </React.Fragment>
     );

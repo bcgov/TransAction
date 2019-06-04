@@ -66,6 +66,11 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.MESSAGES}>
+                    Messages
+                  </NavLink>
+                </NavItem>
+                <NavItem>
                   <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.INCENTIVES}>
                     Incentives
                   </NavLink>
@@ -73,11 +78,6 @@ class Header extends Component {
                 <NavItem>
                   <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.FAQ}>
                     FAQ
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.MESSAGES}>
-                    Messages
                   </NavLink>
                 </NavItem>
                 {/* {this.props.currentUser.isAdmin && (
