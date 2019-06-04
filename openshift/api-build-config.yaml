@@ -48,7 +48,7 @@ objects:
               value: TransAction.API/TransAction.API.csproj
           from:
             kind: ImageStreamTag
-            name: "dotnet-22-rhel7:latest"
+            name: "dotnet-22-rhel7:2.2"
         type: Source
 parameters:
   - description: A name used for all objects

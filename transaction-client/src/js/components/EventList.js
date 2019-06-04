@@ -85,12 +85,14 @@ class EventList extends Component {
           <BreadcrumbItem active>Events</BreadcrumbItem>
         </BreadcrumbFragment>
         {this.renderContent()}
-        <EditEventForm
-          initialValues={this.state.eventFormInitialValues}
-          isOpen={this.state.showEventForm}
-          toggle={this.toggleEventForm}
-          formType={this.state.eventFormType}
-        />
+        {this.state.showEventForm && (
+          <EditEventForm
+            initialValues={this.state.eventFormInitialValues}
+            isOpen={this.state.showEventForm}
+            toggle={this.toggleEventForm}
+            formType={this.state.eventFormType}
+          />
+        )}
       </React.Fragment>
     );
   }

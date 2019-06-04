@@ -5,7 +5,7 @@ namespace TransAction.Data.Models
 {
     public partial class TraEventUser
     {
-        public int EventUsersId { get; set; }
+        public int EventUserId { get; set; }
         public int EventId { get; set; }
         public int UserId { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
@@ -14,7 +14,7 @@ namespace TransAction.Data.Models
         public string DbLastUpdateUserid { get; set; }
         public long ConcurrencyControlNumber { get; set; }
 
-        public TraEvent Event { get; set; }
-        public TraUser User { get; set; }
+        public virtual TraEvent Event { get; set; }
+        public virtual TraUser User { get; set; }
     }
 }

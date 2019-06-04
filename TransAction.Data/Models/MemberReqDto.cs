@@ -11,7 +11,7 @@ namespace TransAction.Data.Models
         public int MemberReqId { get; set; }
         public int TeamId { get; set; }
         public int UserId { get; set; }
-        public Boolean IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }

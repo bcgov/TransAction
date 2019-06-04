@@ -4,6 +4,9 @@ import { Row, Col, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import EditUserForm from '../forms/EditUserForm';
+import ProfileImage from '../ui/ProfileImage';
+
+import * as Constants from '../../Constants';
 
 class UserProfileFragment extends React.Component {
   state = { showPointTip: false, showEditUserForm: false };
@@ -21,16 +24,21 @@ class UserProfileFragment extends React.Component {
   render() {
     const { regionName, canEdit, userToDisplay } = this.props;
 
+    const imageUrl =
+      userToDisplay.images.length > 0
+        ? `${Constants.API_URL}/images/${userToDisplay.images[0].guid}`
+        : '/images/profile-placeholder.png';
+
     return (
       <React.Fragment>
         <Row>
           <Col xs="12" md="auto">
-            <img
-              className="profile-frame"
-              src="/images/profile-placeholder.png"
-              width="200"
-              height="200"
+            <ProfileImage
+              src={imageUrl}
               alt="User Profile"
+              interactive={canEdit}
+              profileId={userToDisplay.id}
+              type={Constants.PROFILE_TYPE.USER}
             />
           </Col>
           <Col>
@@ -46,12 +54,13 @@ class UserProfileFragment extends React.Component {
             )}
           </Col>
         </Row>
-
-        <EditUserForm
-          initialValues={userToDisplay}
-          isOpen={this.state.showEditUserForm}
-          toggle={this.toggleEditUserForm}
-        />
+        {this.state.showEditUserForm && (
+          <EditUserForm
+            initialValues={userToDisplay}
+            isOpen={this.state.showEditUserForm}
+            toggle={this.toggleEditUserForm}
+          />
+        )}
       </React.Fragment>
     );
   }

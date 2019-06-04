@@ -14,5 +14,14 @@ namespace TransAction.Data.Models
         public DateTime DbCreateTimestamp { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
         public long ConcurrencyControlNumber { get; set; }
+        [JsonProperty("messages")]
+        public List<MessageDto> TraTopicMessage { get; set; }
+        public int PostCount { get; set; }
+        public string UserName { get; set; }
+
+        public TopicDto()
+        {
+            TraTopicMessage = new List<MessageDto>();
+        }
     }
 }

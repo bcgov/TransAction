@@ -18,12 +18,11 @@ class ProfileScoresPanel extends React.Component {
     this.setState({ loading: true });
 
     const { fetchAllUserScores, fetchAllTeamScores, fetchEvents, currentUser } = this.props;
-    const actionPromises = [
-      utils.buildActionWithParam(fetchAllUserScores, currentUser.id),
-      utils.buildActionWithParam(fetchEvents),
-    ];
+    const actionPromises = [];
 
     if (currentUser.teamId) {
+      actionPromises.push(utils.buildActionWithParam(fetchAllUserScores, currentUser.id));
+      actionPromises.push(utils.buildActionWithParam(fetchEvents));
       actionPromises.push(utils.buildActionWithParam(fetchAllTeamScores, currentUser.teamId));
     }
 
@@ -47,7 +46,7 @@ class ProfileScoresPanel extends React.Component {
   };
 
   renderUserScores() {
-    const { events, userIdToDisplay, teamIdToDisplay, scores } = this.props;
+    const { events, userIdToDisplay, teamIdToDisplay, scores, currentUser } = this.props;
 
     const combinedScores = [];
     const userScores = scores.user[userIdToDisplay];
@@ -87,7 +86,15 @@ class ProfileScoresPanel extends React.Component {
         ) : (
           <Col>
             <Alert color="warning">
-              You have not participated in any events yet. Get started <Link to={Constants.PATHS.START}>here</Link>.
+              {currentUser.teamId ? (
+                <React.Fragment>
+                  You have not participated in any events yet. Get started <Link to={Constants.PATHS.START}>here</Link>.
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  You are not currently on a team. Get started <Link to={Constants.PATHS.START}>here</Link>.
+                </React.Fragment>
+              )}
             </Alert>
           </Col>
         )}
@@ -114,11 +121,13 @@ class ProfileScoresPanel extends React.Component {
     ) : (
       <React.Fragment>
         {this.renderContent()}
-        <LogActivityForm
-          isOpen={this.state.showLogActivityForm}
-          toggle={this.toggleLogActivityForm}
-          eventId={this.state.logActivityEventId}
-        />
+        {this.state.showLogActivityForm && (
+          <LogActivityForm
+            isOpen={this.state.showLogActivityForm}
+            toggle={this.toggleLogActivityForm}
+            eventId={this.state.logActivityEventId}
+          />
+        )}
       </React.Fragment>
     );
   }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
-import { editTeam, createTeam } from '../../actions';
+import { editTeam, createTeam, fetchCurrentUser } from '../../actions';
 
 import FormModal from '../ui/FormModal';
 import FormInput from '../ui/FormInput';
@@ -25,7 +25,7 @@ class EditTeamForm extends React.Component {
 
     if (this.props.formType === Constants.FORM_TYPE.ADD) {
       this.props.createTeam(formValues).then(() => {
-        //this.toggleModal();
+        this.props.fetchCurrentUser();
       });
     } else {
       this.props.editTeam(formValues.id, formValues).then(() => {
@@ -109,6 +109,8 @@ EditTeamForm.defaultProps = { regions: {}, isOpen: false, pristine: false };
 const validate = formValues => {
   const errors = {};
 
+  const goal = parseInt(formValues.goal);
+
   if (!formValues.regionId || formValues.regionId <= 0) {
     errors.regionId = 'Region required';
   }
@@ -121,6 +123,14 @@ const validate = formValues => {
     errors.description = 'Description required';
   }
 
+  if (!formValues.goal || isNaN(formValues.goal)) {
+    errors.goal = 'Please enter a valid number';
+  }
+
+  if (goal >= 10000000) {
+    errors.goal = 'Please set a smaller goal :)';
+  }
+
   return errors;
 };
 
@@ -129,12 +139,13 @@ const form = reduxForm({ form: 'editTeamForm', enableReinitialize: true, validat
 const mapStateToProps = state => {
   return {
     regions: state.regions,
+    currentUser: state.users.current,
   };
 };
 
 const formConnect = connect(
   mapStateToProps,
-  { editTeam, createTeam }
+  { editTeam, createTeam, fetchCurrentUser }
 )(form);
 
 export default formConnect;

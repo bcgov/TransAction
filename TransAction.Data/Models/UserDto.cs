@@ -10,8 +10,6 @@ namespace TransAction.Data.Models
         [JsonProperty("id")]
         public int UserId { get; set; }
         public string Username { get; set; }
-        public string Directory { get; set; }
-        public string Guid { get; set; }
         public int RegionId { get; set; }
         public string Fname { get; set; }
         public string Lname { get; set; }
@@ -21,5 +19,7 @@ namespace TransAction.Data.Models
         public int? TeamId { get; set; }
         public Boolean IsFreeAgent { get; set; }
         public long ConcurrencyControlNumber { get; set; }
+        [JsonProperty("images")]
+        public HashSet<ImageDto> TraImage { get; set; }
     }
 }

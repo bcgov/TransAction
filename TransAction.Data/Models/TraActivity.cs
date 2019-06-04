@@ -20,6 +20,6 @@ namespace TransAction.Data.Models
         public string DbLastUpdateUserid { get; set; }
         public long ConcurrencyControlNumber { get; set; }
 
-        public ICollection<TraUserActivity> TraUserActivity { get; set; }
+        public virtual ICollection<TraUserActivity> TraUserActivity { get; set; }
     }
 }

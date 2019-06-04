@@ -23,7 +23,7 @@ class Header extends Component {
   render() {
     return (
       <header>
-        <Navbar className="navbar navbar-expand-lg navbar-dark">
+        <Navbar expand="lg" className="navbar-dark">
           <Container>
             <NavbarBrand tag={Link} onClick={this.hideNavbar} to="/">
               <img
@@ -66,12 +66,17 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/incentives">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.MESSAGES}>
+                    Messages
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.INCENTIVES}>
                     Incentives
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/faq">
+                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.FAQ}>
                     FAQ
                   </NavLink>
                 </NavItem>

@@ -25,6 +25,7 @@
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
     <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <GenerateCreateScript>False</GenerateCreateScript>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -62,6 +63,7 @@
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Views" />
+    <Folder Include="dbo\Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TRA_USER.sql" />
@@ -77,8 +79,13 @@
     <Build Include="dbo\Tables\TRA_TOPIC.sql" />
     <Build Include="dbo\Tables\TRA_REGION.sql" />
     <Build Include="dbo\Views\TRA_TEAM_VW.sql" />
+    <Build Include="dbo\Tables\TRA_IMAGE.sql" />
+    <Build Include="dbo\Views\TRA_USER_VW.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="TransAction.SQL.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="dbo\Scripts\Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>

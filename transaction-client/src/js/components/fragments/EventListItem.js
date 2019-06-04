@@ -32,7 +32,7 @@ class EventListItem extends React.Component {
         <Row>
           <Col>
             <div className="mb-2">
-              <Link to={`/event/${this.props.event.id}`} className="h4 no-underline">
+              <Link to={`/event/${this.props.event.id}`} className="h4 text-decoration-none">
                 {this.props.event.name}
               </Link>
               {this.props.isAdmin ? this.renderEditButton() : ''}

@@ -114,7 +114,7 @@ class Profile extends Component {
       <React.Fragment>
         <BreadcrumbFragment>
           <BreadcrumbItem>
-            <Link to="/profile">Profile</Link>
+            <Link to={Constants.PATHS.PROFILE}>Profile</Link>
           </BreadcrumbItem>
           <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
         </BreadcrumbFragment>

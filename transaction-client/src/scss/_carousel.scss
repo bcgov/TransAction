@@ -1,7 +1,8 @@
-// .carousel {
-//   width: 400px;
-//   height: 300px;
-// }
+@import './vendor/variables.scss';
+
+.carousel {
+  background-color: rgba(map-get($theme-colors, primary), 0.1);
+}
 
 .carousel-control-next,
 .carousel-control-prev {
@@ -13,27 +14,25 @@
 }
 
 .carousel-item > img {
-  width: 100%;
+  width: auto !important;
+  margin: 0 auto;
+  height: 100%;
 }
 
-@media (min-width: 300px) {
+@include media-breakpoint-down(xs) {
   .carousel-inner .carousel-item {
     height: 120px;
   }
 }
 
-@media (min-width: 576px) {
+@include media-breakpoint-up(sm) {
   .carousel-inner .carousel-item {
     height: 200px;
   }
 }
 
-@media (min-width: 992px) {
-  .carousel-item > img {
-    height: 100%;
-  }
-
+@include media-breakpoint-up(lg) {
   .carousel-inner .carousel-item {
-    height: 400px;
+    height: 300px;
   }
 }

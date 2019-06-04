@@ -1,0 +1,11 @@
+﻿CREATE VIEW [dbo].[TRA_USER_VW]
+	AS 
+
+	SELECT 
+		 U.* 
+		,I.[GUID] AS [PROFILE_IMAGE_GUID]
+	
+	FROM [dbo].[TRA_USER] U
+
+	LEFT JOIN [dbo].[TRA_IMAGE] I
+	ON U.[USER_ID] = I.[USER_ID]

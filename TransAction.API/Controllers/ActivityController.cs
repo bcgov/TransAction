@@ -16,19 +16,22 @@ namespace TransAction.API.Controllers
     [Route("api/activities")]
     public class ActivityController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        private IHttpContextAccessor _httpContextAccessor;
-        public ActivityController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
+
+        public ActivityController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         [HttpGet()]
         public IActionResult GetActivities()
         {
             var activities = _transActionRepo.GetActivities();
-            var getActivities = Mapper.Map<IEnumerable<ActivityDto>>(activities);
+            var getActivities = _mapper.Map<IEnumerable<ActivityDto>>(activities);
             return Ok(getActivities);
 
         }
@@ -46,7 +49,7 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getActivity = _transActionRepo.GetActivity(id);
-                var getActivityResult = Mapper.Map<ActivityDto>(getActivity);
+                var getActivityResult = _mapper.Map<ActivityDto>(getActivity);
                 return Ok(getActivityResult);
 
             }
@@ -86,7 +89,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            var newActivity = Mapper.Map<TraActivity>(createActivity);
+            var newActivity = _mapper.Map<TraActivity>(createActivity);
 
 
             _transActionRepo.CreateActivity(newActivity);
@@ -96,7 +99,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = Mapper.Map<ActivityDto>(newActivity);
+            var createdPointOfInterestToReturn = _mapper.Map<ActivityDto>(newActivity);
             return CreatedAtRoute("GetThatActivity", new { id = createdPointOfInterestToReturn.ActivityId }, createdPointOfInterestToReturn);
 
 
@@ -120,7 +123,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            Mapper.Map(updateActivity, activityEntity);
+            _mapper.Map(updateActivity, activityEntity);
 
 
             if (!_transActionRepo.Save())

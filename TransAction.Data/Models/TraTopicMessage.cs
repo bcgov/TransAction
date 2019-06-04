@@ -15,7 +15,7 @@ namespace TransAction.Data.Models
         public string DbLastUpdateUserid { get; set; }
         public long ConcurrencyControlNumber { get; set; }
 
-        public TraTopic Topic { get; set; }
-        public TraUser User { get; set; }
+        public virtual TraTopic Topic { get; set; }
+        public virtual TraUser User { get; set; }
     }
 }

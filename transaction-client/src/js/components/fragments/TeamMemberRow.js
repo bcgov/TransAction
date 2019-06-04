@@ -10,7 +10,7 @@ const TeamMemberRow = ({ user, regions, children, teamLead }) => {
   return (
     <Row className="mb-1">
       <Col xs="6" lg="4">
-        <Link to={`${Constants.PATHS.PROFILE}/${user.id}`} className="no-underline">
+        <Link to={`${Constants.PATHS.PROFILE}/${user.id}`} className="text-decoration-none">
           {`${user.fname} ${user.lname}`} {teamLead && <FontAwesomeIcon icon="star" />}{' '}
           <FontAwesomeIcon icon="external-link-alt" />
         </Link>

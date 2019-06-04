@@ -54,7 +54,7 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TraUser> GetUsers()
         {
-            return _context.TraUser.OrderBy(c => c.UserId).ToList();
+            return _context.TraUser.Include(x => x.TraImage).OrderBy(c => c.UserId).ToList();
         }
 
 
@@ -79,7 +79,7 @@ namespace TransAction.Data.Services
 
         public TraUser GetCurrentUser(string guid)
         {
-            return _context.TraUser.FirstOrDefault(c => c.Guid == guid);
+            return _context.TraUser.Include(x => x.TraImage).FirstOrDefault(c => c.Guid == guid);
         }
 
 
@@ -90,13 +90,13 @@ namespace TransAction.Data.Services
         /*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraTeam> GetTeams()
         {
-            return _context.TraTeam.OrderBy(c => c.TeamId).ToList();
+            return _context.TraTeam.Include(x => x.TraImage).OrderBy(c => c.TeamId).ToList();
 
         }
 
         public TraTeam GetTeam(int id)
         {
-            return _context.TraTeam.FirstOrDefault(c => c.TeamId == id);
+            return _context.TraTeam.Include(x => x.TraImage).FirstOrDefault(c => c.TeamId == id);
         }
 
         public void CreateTeam(TraTeam traTeam)
@@ -262,6 +262,7 @@ namespace TransAction.Data.Services
                         teamId = x.Key.TeamId
                     }).OrderByDescending(x => x.score)
                     .ToList().Take(number);
+
             return teams;
 
 
@@ -312,29 +313,39 @@ namespace TransAction.Data.Services
 
         public IEnumerable<RegionScoreDto> RegionalScore(int eventId)
         {
-            var teamAct = _context.TraUserActivity
-                .Where(p => p.EventId == eventId)
-                    .Include(x => x.Activity)
-                    .Include(x => x.Event)
-                    .Include(x => x.Team)
-                    .GroupBy(x => new { x.Team.RegionId, x.EventId })
-                    .Select(x => new RegionScoreDto
-                    {
-                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),//.Sum(y => y.score),      
-                        EventId = x.Key.EventId,
-                        RegionId = x.Select(c => c.Team.RegionId).FirstOrDefault()
-                    });
 
-            //var result = new RegionScoreDto
-            //{
-            //    EventId = eventId,
-            //    RegionId = z,
-            //    score = teamAct
-            //};
+            var regionScores = _context.TraUserActivity
+                .Include(userActivity => userActivity.User)
+                    .ThenInclude(user => user.Team)
+                .Include(userActivity => userActivity.Activity)
+                .Where(userActivity => userActivity.EventId == eventId && userActivity.User.Team != null)
+                .GroupBy(userActivity => userActivity.User.Team.RegionId)
+                .Select(g => new RegionScoreDto
+                {
+                    EventId = eventId,
+                    RegionId = g.Key,
+                    Score = g.Sum(x => x.Minutes * x.Activity.Intensity * 1000) / g.Select(x => x.UserId).Distinct().Count()
+                })
+                .ToList();
 
+            var regions = _context.TraRegion.OrderBy(x => x.RegionId).ToList();
+            var result = new List<RegionScoreDto>();
 
+            foreach(var region in regions)
+            {
+                var score = regionScores.Where(x => x.RegionId == region.RegionId).FirstOrDefault();
 
-            return teamAct;
+                if(score != null)
+                {
+                    result.Add(score);
+                } else
+                {
+                    result.Add(new RegionScoreDto { EventId = eventId, RegionId = region.RegionId, Score = 0 });
+                }
+            }            
+
+            return result;
+
         }
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
@@ -369,7 +380,7 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TraMemberReq> GetRequests()
         {
-            return _context.TraMemberReq.Where(x =>x.IsActive== true).OrderBy(c => c.MemberReqId).ToList();
+            return _context.TraMemberReq.Where(x => x.IsActive == true).OrderBy(c => c.MemberReqId).ToList();
         }
 
         public TraMemberReq GetRequest(int id)
@@ -393,7 +404,7 @@ namespace TransAction.Data.Services
                         TeamId = teamId,
                         UserId = x.UserId,
                         IsActive = x.IsActive,
-                        ConcurrencyControlNumber = x.ConcurrencyControlNumber          
+                        ConcurrencyControlNumber = x.ConcurrencyControlNumber
                     })
                     .ToList();
 
@@ -401,15 +412,17 @@ namespace TransAction.Data.Services
 
             return teamRequests;
         }
- /*...........................................................................................................*/   
+        /*...........................................................................................................*/
         public IEnumerable<TraTopic> GetTopics()
         {
-            return _context.TraTopic.OrderBy(c => c.TopicId).ToList(); 
+            return _context.TraTopic
+                .Include(x => x.TraTopicMessage)
+                    .ThenInclude(m => m.User);
         }
 
         public TraTopic GetTopic(int id)
         {
-            return _context.TraTopic.FirstOrDefault(c => c.TopicId == id);
+            return _context.TraTopic.Include(x => x.TraTopicMessage).FirstOrDefault(c => c.TopicId == id);
         }
 
         public void CreateTopic(TraTopic traTopic)
@@ -433,14 +446,13 @@ namespace TransAction.Data.Services
         public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
         {
             return _context.TraTopicMessage
-                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c=> c.TopicMessageId).ToList();
- 
+                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c => c.TopicMessageId).ToList();
+
         }
 
-        public TraTopicMessage GetTopicMessage(int topicId, int messageId)
+        public TraTopicMessage GetTopicMessage(int messageId)
         {
-            return _context.TraTopicMessage
-                .Include(x => x.Topic).Where(x => x.TopicId == topicId).FirstOrDefault(c => c.TopicMessageId == messageId);
+            return _context.TraTopicMessage.FirstOrDefault(c => c.TopicMessageId == messageId);
         }
 
         public void CreateTopicMessage(TraTopicMessage traTopicMessage)
@@ -448,10 +460,36 @@ namespace TransAction.Data.Services
             _context.TraTopicMessage.Add(traTopicMessage);
         }
 
-        public bool TopicMessageExist(string Name)
+        public void DeleteTopicMessage(TraTopicMessage traTopicMessage)
         {
-            throw new NotImplementedException();
+            _context.TraTopicMessage.Remove(traTopicMessage);
         }
+
+        public void DeleteTopic(TraTopic traTopic)
+        {
+            _context.TraTopic.Remove(traTopic);
+        }
+
+        public TraImage GetUserProfileImage(int userId)
+        {
+            return _context.TraImage.Where(x => x.UserId == userId).FirstOrDefault();
+        }
+
+        public TraImage GetTeamProfileImage(int teamId)
+        {
+            return _context.TraImage.Where(x => x.TeamId == teamId).FirstOrDefault();
+        }
+
+        public TraImage GetProfileImage(string guid)
+        {
+            return _context.TraImage.Where(x => x.Guid == guid).FirstOrDefault();
+        }
+
+        public void AddProfileImage(TraImage image)
+        {
+            _context.TraImage.Add(image);
+        }
+
     }
 }
 

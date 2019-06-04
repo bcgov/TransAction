@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Row, Col, Button, Table } from 'reactstrap';
+import { BreadcrumbItem, Row, Col, Table } from 'reactstrap';
 
 import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+import OneClickButton from './ui/OneClickButton';
 
 import * as Constants from '../Constants';
 
@@ -40,9 +41,8 @@ class TeamsList extends Component {
     var teams = Object.values(this.props.teams).map(team => {
       return (
         <tr key={team.id}>
-          <th scope="row" />
           <td>
-            <Link className="no-underline" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+            <Link className="text-decoration-none" to={`${Constants.PATHS.TEAM}/${team.id}`}>
               {team.name}
             </Link>
           </td>
@@ -54,9 +54,13 @@ class TeamsList extends Component {
           {!currentUser.teamId && (
             <td>
               {!userRequests.includes(team.id) && (
-                <Button size="sm" color="primary" onClick={() => this.sendJoinRequest(currentUser.id, team.id)}>
+                <OneClickButton
+                  size="sm"
+                  color="primary"
+                  handleOnClick={() => this.sendJoinRequest(currentUser.id, team.id)}
+                >
                   Request to Join
-                </Button>
+                </OneClickButton>
               )}
             </td>
           )}
@@ -70,10 +74,9 @@ class TeamsList extends Component {
     return (
       <React.Fragment>
         <h4>All TransAction Teams</h4>
-        <Table size="sm" hover borderless className="mt-3">
-          <thead>
+        <Table size="sm" hover bordered responsive className="mt-3">
+          <thead className="thead-dark">
             <tr>
-              <th scope="row" />
               <th>Team Name</th>
               <th>Team Leader</th>
               <th>Region</th>

@@ -22,17 +22,30 @@ namespace TransAction.Data.Models
         public virtual DbSet<TraEvent> TraEvent { get; set; }
         public virtual DbSet<TraEventTeam> TraEventTeam { get; set; }
         public virtual DbSet<TraEventUser> TraEventUser { get; set; }
+        public virtual DbSet<TraImage> TraImage { get; set; }
         public virtual DbSet<TraMemberReq> TraMemberReq { get; set; }
-        public virtual DbSet<TraRole> TraRole { get; set; }
         public virtual DbSet<TraRegion> TraRegion { get; set; }
+        public virtual DbSet<TraRole> TraRole { get; set; }
         public virtual DbSet<TraTeam> TraTeam { get; set; }
         public virtual DbSet<TraTopic> TraTopic { get; set; }
         public virtual DbSet<TraTopicMessage> TraTopicMessage { get; set; }
         public virtual DbSet<TraUser> TraUser { get; set; }
         public virtual DbSet<TraUserActivity> TraUserActivity { get; set; }
+        public DbQuery<TraUserView> TraUserView { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
+
+            var userView = modelBuilder.Query<TraUserView>().ToView("TRA_USER_VW");
+            userView.Property(e => e.UserId).HasColumnName("USER_ID");
+            userView.Property(e => e.RegionId).HasColumnName("REGION_ID");
+            userView.Property(e => e.RoleId).HasColumnName("ROLE_ID");
+            userView.Property(e => e.TeamId).HasColumnName("TEAM_ID");
+            userView.Property(e => e.IsFreeAgent).HasColumnName("IS_FREE_AGENT");
+            userView.Property(e => e.ConcurrencyControlNumber).HasColumnName("CONCURRENCY_CONTROL_NUMBER");
+            userView.Property(e => e.ProfileImageGuid).HasColumnName("PROFILE_IMAGE_GUID");
+
             modelBuilder.Entity<TraActivity>(entity =>
             {
                 entity.HasKey(e => e.ActivityId)
@@ -122,6 +135,11 @@ namespace TransAction.Data.Models
                     .HasColumnName("END_DATE")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasColumnName("IS_ACTIVE")
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("NAME")
@@ -131,17 +149,12 @@ namespace TransAction.Data.Models
                 entity.Property(e => e.StartDate)
                     .HasColumnName("START_DATE")
                     .HasColumnType("datetime");
-
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("IS_ACTIVE")
-                    .HasColumnType("boolean");
-
             });
 
             modelBuilder.Entity<TraEventTeam>(entity =>
             {
-                entity.HasKey(e => e.EventTeamsId)
-                     .HasName("PK_EVENT_TEAM");
+                entity.HasKey(e => e.EventTeamId)
+                    .HasName("PK_EVENT_TEAM");
 
                 entity.ToTable("TRA_EVENT_TEAM");
 
@@ -151,11 +164,11 @@ namespace TransAction.Data.Models
                 entity.HasIndex(e => e.TeamId)
                     .HasName("IX_FK_EVENT_TEAM_TEAM");
 
-                entity.Property(e => e.EventTeamsId).HasColumnName("EVENT_TEAM_ID");
+                entity.Property(e => e.EventTeamId).HasColumnName("EVENT_TEAM_ID");
 
                 entity.Property(e => e.ConcurrencyControlNumber)
-                   .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
-                   .HasDefaultValueSql("((1))");
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.DbCreateTimestamp)
                     .HasColumnName("DB_CREATE_TIMESTAMP")
@@ -196,7 +209,7 @@ namespace TransAction.Data.Models
 
             modelBuilder.Entity<TraEventUser>(entity =>
             {
-                entity.HasKey(e => e.EventUsersId)
+                entity.HasKey(e => e.EventUserId)
                     .HasName("PK_EVENT_USER");
 
                 entity.ToTable("TRA_EVENT_USER");
@@ -207,7 +220,7 @@ namespace TransAction.Data.Models
                 entity.HasIndex(e => e.UserId)
                     .HasName("IX_FK_EVENT_USER_USER");
 
-                entity.Property(e => e.EventUsersId).HasColumnName("EVENT_USER_ID");
+                entity.Property(e => e.EventUserId).HasColumnName("EVENT_USER_ID");
 
                 entity.Property(e => e.ConcurrencyControlNumber)
                     .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
@@ -250,6 +263,84 @@ namespace TransAction.Data.Models
                     .HasConstraintName("FK_EVENT_USER_USER");
             });
 
+            modelBuilder.Entity<TraImage>(entity =>
+            {
+                entity.HasKey(e => e.ImageId)
+                    .HasName("PK_IMAGE");
+
+                entity.ToTable("TRA_IMAGE");
+
+                entity.Property(e => e.ImageId).HasColumnName("IMAGE_ID");
+
+                entity.Property(e => e.Carousel).HasColumnName("CAROUSEL");
+
+                entity.Property(e => e.ConcurrencyControlNumber)
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.ContentType)
+                    .IsRequired()
+                    .HasColumnName("CONTENT_TYPE")
+                    .HasMaxLength(512)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Data)
+                    .IsRequired()
+                    .HasColumnName("DATA");
+
+                entity.Property(e => e.DbCreateTimestamp)
+                    .HasColumnName("DB_CREATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbCreateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_CREATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DbLastUpdateTimestamp)
+                    .HasColumnName("DB_LAST_UPDATE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DbLastUpdateUserid)
+                    .IsRequired()
+                    .HasColumnName("DB_LAST_UPDATE_USERID")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Filename)
+                    .IsRequired()
+                    .HasColumnName("FILENAME")
+                    .HasMaxLength(1024)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Filesize).HasColumnName("FILESIZE");
+
+                entity.Property(e => e.Guid)
+                    .IsRequired()
+                    .HasColumnName("GUID")
+                    .HasMaxLength(36)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Height).HasColumnName("HEIGHT");
+
+                entity.Property(e => e.TeamId).HasColumnName("TEAM_ID");
+
+                entity.Property(e => e.UserId).HasColumnName("USER_ID");
+
+                entity.Property(e => e.Width).HasColumnName("WIDTH");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.TraImage)
+                    .HasForeignKey(d => d.TeamId)
+                    .HasConstraintName("TRA_IMAGE_TEAM");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.TraImage)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("TRA_IMAGE_USER");
+            });
+
             modelBuilder.Entity<TraMemberReq>(entity =>
             {
                 entity.HasKey(e => e.MemberReqId)
@@ -289,6 +380,11 @@ namespace TransAction.Data.Models
                     .HasMaxLength(30)
                     .IsUnicode(false);
 
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasColumnName("IS_ACTIVE")
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.TeamId).HasColumnName("TEAM_ID");
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
@@ -304,10 +400,6 @@ namespace TransAction.Data.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MEMBER_REQ_USER");
-
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("IS_ACTIVE")
-                    .HasColumnType("boolean");
             });
 
             modelBuilder.Entity<TraRegion>(entity =>
@@ -394,14 +486,10 @@ namespace TransAction.Data.Models
                     .HasMaxLength(1024)
                     .IsUnicode(false);
 
-                entity.Property(e => e.DbLastUpdateTimestamp)
-                    .HasColumnName("DB_LAST_UPDATE_TIMESTAMP")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DbLastUpdateUserid)
+                entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasColumnName("DB_LAST_UPDATE_USERID")
-                    .HasMaxLength(30)
+                    .HasColumnName("NAME")
+                    .HasMaxLength(255)
                     .IsUnicode(false);
             });
 
@@ -584,6 +672,10 @@ namespace TransAction.Data.Models
 
                 entity.ToTable("TRA_USER");
 
+                entity.HasIndex(e => e.Guid)
+                    .HasName("UQ__TRA_USER__15B69B8FCA3954AF")
+                    .IsUnique();
+
                 entity.HasIndex(e => e.RoleId)
                     .HasName("IX_FK_USER_ROLE");
 
@@ -624,7 +716,7 @@ namespace TransAction.Data.Models
 
                 entity.Property(e => e.Directory)
                     .IsRequired()
-                    .HasColumnName("DIRECTORY ")
+                    .HasColumnName("DIRECTORY")
                     .HasMaxLength(8)
                     .IsUnicode(false);
 
@@ -645,6 +737,11 @@ namespace TransAction.Data.Models
                     .HasColumnName("GUID")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.Property(e => e.IsFreeAgent)
+                    .IsRequired()
+                    .HasColumnName("IS_FREE_AGENT")
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.Lname)
                     .IsRequired()
@@ -680,10 +777,6 @@ namespace TransAction.Data.Models
                     .WithMany(p => p.TraUser)
                     .HasForeignKey(d => d.TeamId)
                     .HasConstraintName("FK_USER_TEAM");
-
-                entity.Property(e => e.IsFreeAgent)
-                   .HasColumnName("IS_FREE_AGENT")
-                   .HasColumnType("boolean");
             });
 
             modelBuilder.Entity<TraUserActivity>(entity =>
@@ -703,13 +796,13 @@ namespace TransAction.Data.Models
 
                 entity.Property(e => e.ActivityId).HasColumnName("ACTIVITY_ID");
 
-                entity.Property(e => e.ConcurrencyControlNumber)
-                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
-                    .HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.ActivityTimestamp)
                     .HasColumnName("ACTIVITY_TIMESTAMP")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.ConcurrencyControlNumber)
+                    .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.DbCreateTimestamp)
                     .HasColumnName("DB_CREATE_TIMESTAMP")
@@ -736,21 +829,25 @@ namespace TransAction.Data.Models
                     .HasColumnName("DESCRIPTION")
                     .HasColumnType("text");
 
+                entity.Property(e => e.EventId).HasColumnName("EVENT_ID");
+
+                entity.Property(e => e.Minutes).HasColumnName("MINUTES");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("NAME")
                     .HasMaxLength(1024)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Minutes).HasColumnName("MINUTES");
+                entity.Property(e => e.TeamId).HasColumnName("TEAM_ID");
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
-                // ADDED FOR USERACTIVITY
-
-                entity.Property(e => e.TeamId).HasColumnName("TEAM_ID");
-
-                entity.Property(e => e.EventId).HasColumnName("EVENT_ID");
+                entity.HasOne(d => d.Activity)
+                    .WithMany(p => p.TraUserActivity)
+                    .HasForeignKey(d => d.ActivityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_USER_ACTIVITY_ACTIVITY");
 
                 entity.HasOne(d => d.Event)
                     .WithMany(p => p.TraUserActivity)
@@ -763,25 +860,15 @@ namespace TransAction.Data.Models
                     .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_USER_ACTIVITY_TEAM");
-                
-
-                entity.HasOne(d => d.Activity)
-                    .WithMany(p => p.TraUserActivity)
-                    .HasForeignKey(d => d.ActivityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_USER_ACTIVITY_ACTIVITY");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.TraUserActivity)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_USER_ACTIVITY_USER");
-
-                // Scaffold - DbContext "Server=NC057936\\SQLEXPRESS;Database=TransActionNew; Trusted_Connection = true;" Microsoft.EntityFrameworkCore.SqlServer - OutputDir Models -Project TransAction.API
-
             });
         }
-        
-      
+
+
     }
 }

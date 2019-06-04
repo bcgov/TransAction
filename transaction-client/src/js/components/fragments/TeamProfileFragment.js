@@ -6,6 +6,8 @@ import { Row, Col, Button, Popover, PopoverBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import EditTeamForm from '../forms/EditTeamForm';
+import ProfileImage from '../ui/ProfileImage';
+
 import * as Constants from '../../Constants';
 
 class TeamProfileFragment extends React.Component {
@@ -16,7 +18,6 @@ class TeamProfileFragment extends React.Component {
   };
 
   showEditTeamForm = () => {
-    console.log('here');
     this.setState({ showEditTeamForm: true });
   };
 
@@ -29,21 +30,26 @@ class TeamProfileFragment extends React.Component {
   render() {
     const { team, regionName, canEdit, linkToProfile, currentUser } = this.props;
 
+    const imageUrl =
+      team.images.length > 0
+        ? `${Constants.API_URL}/images/${team.images[0].guid}`
+        : '/images/team-profile-placeholder.png';
+
     return (
       <React.Fragment>
         <Row>
           <Col xs="12" md="auto">
-            <img
-              className="profile-frame"
-              src="/images/team-profile-placeholder.png"
-              width="200"
-              height="200"
+            <ProfileImage
+              src={imageUrl}
               alt="Team Profile"
+              interactive={canEdit}
+              profileId={team.id}
+              type={Constants.PROFILE_TYPE.TEAM}
             />
           </Col>
           <Col>
             {linkToProfile ? (
-              <Link className="display-4 no-underline" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+              <Link className="display-4 text-decoration-none" to={`${Constants.PATHS.TEAM}/${team.id}`}>
                 {team.name}
               </Link>
             ) : (
@@ -81,13 +87,14 @@ class TeamProfileFragment extends React.Component {
             )}
           </Col>
         </Row>
-
-        <EditTeamForm
-          initialValues={team}
-          isOpen={this.state.showEditTeamForm}
-          toggle={this.toggleEditTeamForm}
-          formType={Constants.FORM_TYPE.EDIT}
-        />
+        {this.state.showEditTeamForm && (
+          <EditTeamForm
+            initialValues={team}
+            isOpen={this.state.showEditTeamForm}
+            toggle={this.toggleEditTeamForm}
+            formType={Constants.FORM_TYPE.EDIT}
+          />
+        )}
       </React.Fragment>
     );
   }

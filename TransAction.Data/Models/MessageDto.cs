@@ -13,9 +13,8 @@ namespace TransAction.Data.Models
         public string Body { get; set; }
         public int TopicId { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
-        public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
-        public string DbLastUpdateUserid { get; set; }
         public long ConcurrencyControlNumber { get; set; }
+        public string UserName { get; set; }
     }
 }

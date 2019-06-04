@@ -336,4 +336,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="MINUTES" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="eada8a61-c824-4e37-9a73-053f6a3b6083" ChangeDateTime="05/28/2019 16:44:50">
+    <Property Name="ElementName" Value="[dbo].[TRA_IMAGE].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_IMAGE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IMAGE_ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cf5ab04f-2a55-4eaf-80e1-7e1df620aa91" ChangeDateTime="05/28/2019 19:40:39">
+    <Property Name="ElementName" Value="[dbo].[sasas]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_IMAGE]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[TRA_IMAGE_USER]" />
+  </Operation>
 </Operations>

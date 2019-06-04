@@ -24,8 +24,7 @@ namespace TransAction.Data.Models
             {
                 if (entry.State == EntityState.Added)
                 {
-                    //try
-                   // {
+
                         var createTimeStampProp = entry.Member("DbCreateTimestamp");
                         createTimeStampProp.CurrentValue = currentTime;
 
@@ -45,14 +44,7 @@ namespace TransAction.Data.Models
                         var lastUserId = entry.Member("DbLastUpdateUserid");
                         lastUserId.CurrentValue = "Test Value";
 
-                        
-                   // }
-                    //catch(Exception e)
-                    //{
-                    //    //if(e.Message == )
-                    //    continue;
-                    //}
-                                                         
+                                             
 
                 }
                 else if (entry.State == EntityState.Modified)
@@ -63,17 +55,19 @@ namespace TransAction.Data.Models
 
             }
 
-            int result;
+            int result = 0;
             try
             {
                 result = base.SaveChanges();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                if (!e.InnerException.Message.Contains(" Cannot insert duplicate key in object 'dbo.TRA_USER'."))
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }              
             }
-            base.SaveChanges();
 
             return result;
         }

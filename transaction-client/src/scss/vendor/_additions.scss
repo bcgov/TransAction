@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------------------
-// Additions are for extra things not found in bootstrap like a new font!
+// Additions are for extra classes not found in the normal Bootstrap
 // WARNING: Do not create alot of new things here, remember always try to tweak and variable
 // or override bootstrap css before trying to create something new.
 //---------------------------------------------------------------------------------------
@@ -25,8 +25,7 @@
     // Set on html element to keep footer at bottom of window short pages
     .fill-height#{$infix} {
       height: 100%;
-      body,
-      .fill-body {
+      body, .fill-body {
         display: flex;
         flex-flow: column nowrap;
         min-height: 100%;
@@ -35,14 +34,10 @@
       .fill-body {
         flex: auto;
       }
-      header,
-      .header,
-      footer,
-      .footer {
+      header, .header, footer, .footer {
         flex: none;
       }
-      main,
-      .main {
+      main, .main {
         flex: auto;
         overflow: auto;
       }
@@ -53,7 +48,7 @@
 $info-alert-border-level: -4;
 
 // Request a theme color level
-@function panel-border-level($color-name: 'primary') {
+@function panel-border-level($color-name: "primary") {
   @if ($color-name == 'info' or $color-name == 'warning') {
     @return $info-alert-border-level;
   }

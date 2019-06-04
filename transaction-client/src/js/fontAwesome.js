@@ -8,6 +8,8 @@ import {
   faSignOutAlt,
   faEdit,
   faMinusSquare,
+  faUpload,
+  faPlusSquare,
 } from '@fortawesome/free-solid-svg-icons';
 
 const initFontAwesome = () => {
@@ -19,6 +21,8 @@ const initFontAwesome = () => {
   library.add(faSignOutAlt);
   library.add(faEdit);
   library.add(faMinusSquare);
+  library.add(faUpload);
+  library.add(faPlusSquare);
 };
 
 export default initFontAwesome;

@@ -82,7 +82,7 @@ namespace TransAction.API.Authentication
                             newUser.Fname = firstName.Remove(firstName.LastIndexOf(" "));
                             //newUser.Fname = principal.FindFirstValue(ClaimTypes.GivenName);
                             //newUser.Lname = principal.FindFirstValue(ClaimTypes.Surname);
-                            newUser.Description = "Hi, this is a new User";
+                            newUser.Description = "Hello, I'm new to TransAction";
                             newUser.Guid = principal.FindFirstValue("idir_guid");
                             newUser.RegionId = db.GetRegion("HQ").RegionId;
 

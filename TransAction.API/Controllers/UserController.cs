@@ -16,14 +16,15 @@ namespace TransAction.API.Controllers
     [Route("api/users")]
     public class UserController : Controller
     {
-        private ITransActionRepo _transActionRepo;
-        private IHttpContextAccessor _httpContextAccessor;
-        
-        public UserController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
+        private readonly ITransActionRepo _transActionRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
+
+        public UserController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _transActionRepo = transActionRepo;
             _httpContextAccessor = httpContextAccessor;
-             
+            _mapper = mapper;
         }
 
         
@@ -31,7 +32,7 @@ namespace TransAction.API.Controllers
         public IActionResult GetUsers()
         {
             var user = _transActionRepo.GetUsers();
-            var getUsers = Mapper.Map<IEnumerable<UserDto>>(user);
+            var getUsers = _mapper.Map<IEnumerable<UserDto>>(user);
             return Ok(getUsers);
 
         }
@@ -48,9 +49,9 @@ namespace TransAction.API.Controllers
                     return NotFound();
                 }
                 var getUser = _transActionRepo.GetUser(id);
-                var getUserResult = Mapper.Map<UserDto>(getUser);
-                return Ok(getUserResult);
+                var getUserResult = _mapper.Map<UserDto>(getUser);
 
+                return Ok(getUserResult);
             }
 
             catch (Exception)
@@ -84,7 +85,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            var newUser = Mapper.Map<TraUser>(createUser);
+            var newUser = _mapper.Map<TraUser>(createUser);
                        
             _transActionRepo.CreateUser(newUser);
 
@@ -93,7 +94,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdUserToReturn = Mapper.Map<UserDto>(newUser);
+            var createdUserToReturn = _mapper.Map<UserDto>(newUser);
             return CreatedAtRoute("GetThatUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
         }
         
@@ -142,7 +143,7 @@ namespace TransAction.API.Controllers
             }          
 
 
-            Mapper.Map(updateUser, userEntity);
+            _mapper.Map(updateUser, userEntity);
 
             if (!_transActionRepo.Save())
             {
@@ -159,15 +160,15 @@ namespace TransAction.API.Controllers
             try
             {
                 
-                string userGuid = UserHelper.GetUserGuid(_httpContextAccessor); 
-                var getUsers = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+                string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+                var getUsers = _transActionRepo.GetCurrentUser(userGuid);
 
                 if (getUsers == null)
                 {
                     return NotFound();
                 }
               
-                var getUserResult = Mapper.Map<UserDto>(getUsers);
+                var getUserResult = _mapper.Map<UserDto>(getUsers);
                 return Ok(getUserResult);
 
             }

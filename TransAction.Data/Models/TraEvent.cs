@@ -9,6 +9,7 @@ namespace TransAction.Data.Models
         {
             TraEventTeam = new HashSet<TraEventTeam>();
             TraEventUser = new HashSet<TraEventUser>();
+            TraUserActivity = new HashSet<TraUserActivity>();
         }
 
         public int EventId { get; set; }
@@ -16,7 +17,7 @@ namespace TransAction.Data.Models
         public DateTime EndDate { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Boolean IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
         public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
@@ -25,7 +26,6 @@ namespace TransAction.Data.Models
 
         public virtual ICollection<TraEventTeam> TraEventTeam { get; set; }
         public virtual ICollection<TraEventUser> TraEventUser { get; set; }
-        //
         public virtual ICollection<TraUserActivity> TraUserActivity { get; set; }
     }
 }
