@@ -8,7 +8,7 @@ import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import MessagePostFragment from './fragments/MessagePostFragment';
-import CreateMessageForm from './forms/EditMessageForm';
+import EditMessageForm from './forms/EditMessageForm';
 
 import * as Constants from '../Constants';
 
@@ -45,7 +45,7 @@ class MessageBoardTopicDetail extends React.Component {
     return (
       <React.Fragment>
         <Row>
-          <Col>
+          <Col className="topic-title">
             <span className="h4">{topic.title}</span>
           </Col>
         </Row>
@@ -69,7 +69,7 @@ class MessageBoardTopicDetail extends React.Component {
           </Col>
         </Row>
         {this.state.showReplyForm && (
-          <CreateMessageForm
+          <EditMessageForm
             isOpen={this.state.showReplyForm}
             toggle={this.toggleReplyForm}
             initialValues={{ topicId: this.state.topicId, userId: this.props.currentUser.id }}
@@ -89,7 +89,7 @@ class MessageBoardTopicDetail extends React.Component {
           <BreadcrumbItem>
             <Link to={Constants.PATHS.MESSAGES}>Messages</Link>
           </BreadcrumbItem>
-          {topic && <BreadcrumbItem>{topic.title}</BreadcrumbItem>}
+          {topic && <BreadcrumbItem className="d-inline-block text-truncate">{topic.title}</BreadcrumbItem>}
         </BreadcrumbFragment>
 
         {this.state.loading ? <PageSpinner /> : <CardWrapper>{this.renderContent()}</CardWrapper>}

@@ -417,8 +417,7 @@ namespace TransAction.Data.Services
         {
             return _context.TraTopic
                 .Include(x => x.TraTopicMessage)
-                    .ThenInclude(m => m.User)
-                .OrderBy(c => c.TopicId).ToList();
+                    .ThenInclude(m => m.User);
         }
 
         public TraTopic GetTopic(int id)

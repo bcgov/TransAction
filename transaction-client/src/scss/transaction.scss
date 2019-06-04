@@ -9,10 +9,6 @@ body {
   background-color: #e2e1e0;
 }
 
-.no-underline {
-  text-decoration: none;
-}
-
 button.team-remove {
   width: 81px;
 }
@@ -37,6 +33,10 @@ button.team-remove {
   border-radius: 2px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   margin-bottom: 16px;
+}
+
+.topic-title {
+  padding: 0 39px;
 }
 
 .topic-post-block {

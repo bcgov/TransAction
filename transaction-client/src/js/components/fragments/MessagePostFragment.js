@@ -4,14 +4,13 @@ import { ListGroupItem, Row, Col, Button } from 'reactstrap';
 import Markdown from 'react-markdown';
 import moment from 'moment';
 
-import CreateMessageForm from '../forms/EditMessageForm';
+import EditMessageForm from '../forms/EditMessageForm';
+import EditTopicForm from '../forms/EditTopicForm';
 
 import * as Constants from '../../Constants';
 
-const dateFormat = 'YYYY-MM-DD hh:mmA';
-
 class MessagePostFragment extends React.Component {
-  state = { showEditForm: false };
+  state = { showEditForm: false, showEditTopicForm: false };
 
   showEditForm = () => {
     this.setState({ showEditForm: true });
@@ -23,11 +22,22 @@ class MessagePostFragment extends React.Component {
     }));
   };
 
+  showEditTopicForm = () => {
+    this.setState({ showEditTopicForm: true });
+  };
+
+  toggleEditTopicForm = () => {
+    this.setState(prevState => ({
+      showEditTopicForm: !prevState.showEditTopicForm,
+    }));
+  };
+
   render() {
     const { post, index, currentUser, topic } = this.props;
     const canEdit = post.userId === currentUser.id || currentUser.isAdmin;
     const title = topic ? topic.title : '';
     const originalPost = index === 0;
+    const buttonCallback = originalPost ? this.showEditTopicForm : this.showEditForm;
 
     return (
       <ListGroupItem className="topic-post-block">
@@ -35,36 +45,48 @@ class MessagePostFragment extends React.Component {
           <Col>
             <small>
               {originalPost ? 'Original Post' : `Reply #${index}`} - {post.userName} -{' '}
-              {moment(post.dbCreateTimestamp).format(dateFormat)}
+              {moment(post.dbCreateTimestamp).format(Constants.MESSAGE_DATE_FORMAT)}
             </small>
           </Col>
           <Col xs="auto">
             {canEdit && (
-              <Button color="primary" size="sm" onClick={this.showEditForm}>
+              <Button color="primary" size="sm" onClick={buttonCallback}>
                 Edit
               </Button>
             )}
           </Col>
         </Row>
-        <Markdown>{post.body}</Markdown>
+        <Markdown allowedTypes={Constants.MARKDOWN.ALLOWED}>{post.body}</Markdown>
         {post.concurrencyControlNumber > 1 && (
           <small>
             <em>
               Updated {post.concurrencyControlNumber} times. Last updated at{' '}
-              {moment(post.dbLastUpdateTimestamp).format(dateFormat)}
+              {moment(post.dbLastUpdateTimestamp).format(Constants.MESSAGE_DATE_FORMAT)}
             </em>
           </small>
         )}
         {this.state.showEditForm && (
-          <CreateMessageForm
+          <EditMessageForm
             isOpen={this.state.showEditForm}
             toggle={this.toggleEditForm}
+            initialValues={{
+              ...post,
+            }}
+            formType={Constants.FORM_TYPE.EDIT}
+            originalPost={originalPost}
+            topic={topic}
+          />
+        )}
+
+        {this.state.showEditTopicForm && (
+          <EditTopicForm
+            isOpen={this.state.showEditTopicForm}
+            toggle={this.toggleEditTopicForm}
             initialValues={{
               ...post,
               title: title,
             }}
             formType={Constants.FORM_TYPE.EDIT}
-            originalPost={originalPost}
             topic={topic}
           />
         )}

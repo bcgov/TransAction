@@ -49,7 +49,7 @@ class TeamProfileFragment extends React.Component {
           </Col>
           <Col>
             {linkToProfile ? (
-              <Link className="display-4 no-underline" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+              <Link className="display-4 text-decoration-none" to={`${Constants.PATHS.TEAM}/${team.id}`}>
                 {team.name}
               </Link>
             ) : (

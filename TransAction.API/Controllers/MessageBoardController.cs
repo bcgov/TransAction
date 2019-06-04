@@ -83,6 +83,18 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
+            var message = new TraTopicMessage();
+            message.UserId = newTopic.UserId;
+            message.TopicId = newTopic.TopicId;
+            message.Body = createTopic.Body;
+
+            _transActionRepo.CreateTopicMessage(message);
+
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
             var createdPointOfInterestToReturn = _mapper.Map<TopicDto>(newTopic);
             return CreatedAtRoute("GetThatTopic", new { id = createdPointOfInterestToReturn.TopicId }, createdPointOfInterestToReturn);
 
@@ -150,8 +162,15 @@ namespace TransAction.API.Controllers
 
             var newMessage = _mapper.Map<TraTopicMessage>(createTopic);
 
-
             _transActionRepo.CreateTopicMessage(newMessage);
+
+            if (!_transActionRepo.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            var topic = _transActionRepo.GetTopic(newMessage.TopicId);
+            topic.DbLastUpdateTimestamp = DateTime.Now;
 
             if (!_transActionRepo.Save())
             {
@@ -173,6 +192,8 @@ namespace TransAction.API.Controllers
             if(user.UserId == updateMessage.UserId)
             {
                 var messageEntity = _transActionRepo.GetTopicMessage(id);
+                var topic = _transActionRepo.GetTopic(messageEntity.TopicId);
+                topic.DbLastUpdateTimestamp = DateTime.Now;
                 if (messageEntity == null) return NotFound();
                 if (updateMessage == null) return NotFound();
 

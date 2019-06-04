@@ -41,9 +41,8 @@ class TeamsList extends Component {
     var teams = Object.values(this.props.teams).map(team => {
       return (
         <tr key={team.id}>
-          <th scope="row" />
           <td>
-            <Link className="no-underline" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+            <Link className="text-decoration-none" to={`${Constants.PATHS.TEAM}/${team.id}`}>
               {team.name}
             </Link>
           </td>
@@ -75,10 +74,9 @@ class TeamsList extends Component {
     return (
       <React.Fragment>
         <h4>All TransAction Teams</h4>
-        <Table size="sm" hover borderless responsive className="mt-3">
-          <thead>
+        <Table size="sm" hover bordered responsive className="mt-3">
+          <thead className="thead-dark">
             <tr>
-              <th scope="row" />
               <th>Team Name</th>
               <th>Team Leader</th>
               <th>Region</th>

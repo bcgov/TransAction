@@ -58,7 +58,7 @@ class UserScoreCard extends React.Component {
           <CardHeader>
             <Row>
               <Col>
-                <Link to={`${Constants.PATHS.EVENT}/${event.id}`} className="no-underline">
+                <Link to={`${Constants.PATHS.EVENT}/${event.id}`} className="text-decoration-none">
                   <strong>{event.name}</strong>
                 </Link>
               </Col>
