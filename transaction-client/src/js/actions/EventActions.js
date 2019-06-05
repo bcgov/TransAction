@@ -54,3 +54,17 @@ export const fetchEvent = id => async dispatch => {
     }
   });
 };
+
+export const archiveEvent = id => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get(`/events/${id}`);
+      dispatch({ type: FETCH_EVENT, payload: response.data });
+
+      resolve();
+    } catch (e) {
+      console.log('Error in fetchEvent');
+      reject(e);
+    }
+  });
+};
