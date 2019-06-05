@@ -26,10 +26,9 @@ class Profile extends Component {
     this.init(this.props.match.params.id);
   }
 
-  componentDidUpdate(prevProps) {
-    // Re-init if URL param has changed
-    const prevId = prevProps.match.params.id;
-    const currId = this.props.match.params.id;
+  componentWillReceiveProps(newProps) {
+    const currId = newProps.match.params.id;
+    const prevId = this.props.match.params.id;
     if (currId !== prevId && parseInt(prevId) !== this.props.currentUser.id) {
       this.init(currId);
     }
