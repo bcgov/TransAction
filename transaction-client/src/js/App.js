@@ -17,6 +17,7 @@ import GettingStarted from './components/GettingStarted';
 import Incentives from './components/Incentives';
 import MessageBoard from './components/MessageBoard';
 import MessageBoardTopicDetail from './components/MessageBoardTopicDetail';
+import Admin from './components/Admin';
 import FAQ from './components/FAQ';
 
 import * as Constants from './Constants';
@@ -46,6 +47,7 @@ class App extends Component {
                 <Route path={Constants.PATHS.FAQ} exact component={FAQ} />
                 <Route path={Constants.PATHS.MESSAGES} exact component={MessageBoard} />
                 <Route path={`${Constants.PATHS.MESSAGES}/:id`} exact component={MessageBoardTopicDetail} />
+                <Route path={Constants.PATHS.ADMIN} exact component={Admin} />
               </Switch>
             </Container>
             <Footer />
