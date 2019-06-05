@@ -13,13 +13,17 @@ class EventListItem extends React.Component {
     this.props.showEditForm(this.props.event);
   };
 
+  archiveEvent = () => {
+    this.props.handleArchiveEvent(this.props.event);
+  };
+
   renderEditButton() {
     return (
       <div className="float-right">
         <Button color="primary" size="sm" className="mr-1" onClick={this.showForm}>
           Edit
         </Button>
-        <Button color="primary" size="sm">
+        <Button color="primary" size="sm" onClick={this.archiveEvent} disabled={this.props.archiving}>
           Archive
         </Button>
       </div>

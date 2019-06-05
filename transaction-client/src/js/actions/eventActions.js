@@ -1,5 +1,5 @@
 import api from '../api/api';
-import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT } from './types';
+import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT } from './types';
 
 export const fetchEvents = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
@@ -55,15 +55,17 @@ export const fetchEvent = id => async dispatch => {
   });
 };
 
-export const archiveEvent = id => async dispatch => {
+export const archiveEvent = event => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get(`/events/${id}`);
-      dispatch({ type: FETCH_EVENT, payload: response.data });
+      event = { ...event, isActive: false };
+
+      const response = await api.put(`/events/${event.id}`, event);
+      dispatch({ type: ARCHIVE_EVENT, payload: response.data });
 
       resolve();
     } catch (e) {
-      console.log('Error in fetchEvent');
+      console.log('Error in archiveEvent');
       reject(e);
     }
   });

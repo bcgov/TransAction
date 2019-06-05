@@ -6,12 +6,18 @@ import _ from 'lodash';
 import EventListItem from './fragments/EventListItem';
 import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
-import { fetchEvents } from '../actions';
+import { fetchEvents, archiveEvent } from '../actions';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 import * as Constants from '../Constants';
 class EventList extends Component {
-  state = { loading: true, showEventForm: false, eventFormType: Constants.FORM_TYPE.ADD, eventFormInitialValues: null };
+  state = {
+    loading: true,
+    showEventForm: false,
+    eventFormType: Constants.FORM_TYPE.ADD,
+    eventFormInitialValues: null,
+    archiving: false,
+  };
 
   componentDidMount() {
     this.props
@@ -42,6 +48,15 @@ class EventList extends Component {
     }));
   };
 
+  archiveEvent = event => {
+    if (!this.state.archiving) {
+      this.setState({ archiving: true });
+      this.props.archiveEvent(event).then(() => {
+        this.setState({ archiving: false });
+      });
+    }
+  };
+
   renderEventList() {
     const events = this.props.events.map(event => (
       <EventListItem
@@ -49,6 +64,8 @@ class EventList extends Component {
         event={event}
         isAdmin={this.props.currentUser.isAdmin}
         showEditForm={this.showEditEventForm}
+        handleArchiveEvent={this.archiveEvent}
+        archiving={this.state.archiving}
       />
     ));
 
@@ -107,5 +124,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchEvents }
+  { fetchEvents, archiveEvent }
 )(EventList);
