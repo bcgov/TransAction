@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions } from '../actions';
+import { fetchRoles, fetchCurrentUser, fetchRegions } from '../actions';
 import DialogModal from './ui/DialogModal';
 import PageSpinner from './ui/PageSpinner';
 
@@ -10,8 +10,6 @@ class Main extends Component {
 
   componentDidMount() {
     Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchRegions()]).then(() => {
-      this.props.updateCurrentUserRole(this.props.roles[this.props.currentUser.roleId].name);
-
       this.setState({ loading: false });
     });
   }
@@ -37,5 +35,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions }
+  { fetchRoles, fetchCurrentUser, fetchRegions }
 )(Main);
