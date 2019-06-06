@@ -13,6 +13,7 @@ import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as utils from '../utils';
 import * as Constants from '../Constants';
 
 class Team extends Component {
@@ -70,7 +71,7 @@ class Team extends Component {
 
     if (!team) return false;
 
-    return currentUser.isAdmin || team.teamLeaderId === currentUser.id;
+    return utils.isCurrentUserAdmin() || team.teamLeaderId === currentUser.id;
   };
 
   userIsTeamlead = () => {

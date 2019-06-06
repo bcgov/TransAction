@@ -37,7 +37,7 @@ namespace TransAction.API.Controllers
 
         }
         
-        [HttpGet("{id}", Name = "GetThatUser")]
+        [HttpGet("{id}", Name = "GetUser")]
         public IActionResult GetUser(int id)
         {
             try
@@ -95,7 +95,7 @@ namespace TransAction.API.Controllers
             }
 
             var createdUserToReturn = _mapper.Map<UserDto>(newUser);
-            return CreatedAtRoute("GetThatUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
+            return CreatedAtRoute("GetUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
         }
         
         [HttpPut("{id}")]
@@ -120,14 +120,14 @@ namespace TransAction.API.Controllers
             {
                 updateUser.IsFreeAgent = false;
             }
-            var role = _transActionRepo.GetRoles();            
-            var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
-            var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
+            //var role = _transActionRepo.GetRoles();            
+            //var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
+            //var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
 
-            if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
-            {
-                updateUser.RoleId = roleId;               
-            }
+            //if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
+            //{
+            //    updateUser.RoleId = roleId;               
+            //}
 
             //checking for if team is full 
             //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
@@ -149,8 +149,8 @@ namespace TransAction.API.Controllers
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-            var user = GetUser(id);
-            return GetUser(id);
+
+            return Ok(_mapper.Map<UserDto>(userEntity));
 
         }
         [HttpGet("me")]

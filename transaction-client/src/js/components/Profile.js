@@ -13,6 +13,7 @@ import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import UserProfileTeamPanel from './fragments/UserProfileTeamPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as utils from '../utils';
 import * as Constants from '../Constants';
 
 class Profile extends Component {
@@ -59,7 +60,7 @@ class Profile extends Component {
   };
 
   userCanEditProfile = () => {
-    if (this.props.currentUser.isAdmin) return true;
+    if (utils.isCurrentUserAdmin()) return true;
 
     return this.selfProfile();
   };

@@ -9,6 +9,7 @@ import PageSpinner from './ui/PageSpinner';
 import { fetchEvents, archiveEvent } from '../actions';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
+import * as utils from '../utils';
 import * as Constants from '../Constants';
 class EventList extends Component {
   state = {
@@ -62,7 +63,7 @@ class EventList extends Component {
       <EventListItem
         key={event.id}
         event={event}
-        isAdmin={this.props.currentUser.isAdmin}
+        isAdmin={utils.isCurrentUserAdmin()}
         showEditForm={this.showEditEventForm}
         handleArchiveEvent={this.archiveEvent}
         archiving={this.state.archiving}
@@ -73,7 +74,7 @@ class EventList extends Component {
   }
 
   renderAddEventButton() {
-    if (this.props.currentUser.isAdmin) {
+    if (utils.isCurrentUserAdmin()) {
       return (
         <Row>
           <Col>

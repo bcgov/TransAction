@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import CardWrapper from '../ui/CardWrapper';
 
+import * as utils from '../../utils';
 import * as Constants from '../../Constants';
 
 class EventListItem extends React.Component {
@@ -39,7 +40,7 @@ class EventListItem extends React.Component {
               <Link to={`/event/${this.props.event.id}`} className="h4 text-decoration-none">
                 {this.props.event.name}
               </Link>
-              {this.props.isAdmin ? this.renderEditButton() : ''}
+              {utils.isCurrentUserAdmin() ? this.renderEditButton() : ''}
             </div>
             <p className="text-muted">
               {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}

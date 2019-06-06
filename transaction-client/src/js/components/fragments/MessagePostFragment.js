@@ -7,6 +7,7 @@ import moment from 'moment';
 import EditMessageForm from '../forms/EditMessageForm';
 import EditTopicForm from '../forms/EditTopicForm';
 
+import * as utils from '../../utils';
 import * as Constants from '../../Constants';
 
 class MessagePostFragment extends React.Component {
@@ -34,7 +35,7 @@ class MessagePostFragment extends React.Component {
 
   render() {
     const { post, index, currentUser, topic } = this.props;
-    const canEdit = post.userId === currentUser.id || currentUser.isAdmin;
+    const canEdit = post.userId === currentUser.id || utils.isCurrentUserAdmin();
     const title = topic ? topic.title : '';
     const originalPost = index === 0;
     const buttonCallback = originalPost ? this.showEditTopicForm : this.showEditForm;

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BreadcrumbItem } from 'reactstrap';
 
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
-class Incentives extends Component {
+class Incentives extends React.Component {
   render() {
     return (
       <React.Fragment>

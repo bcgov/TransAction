@@ -5,22 +5,17 @@ import 'core-js/es/array/includes';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import reduxThunk from 'redux-thunk';
 
 import Keycloak from 'keycloak-js';
 
 import App from './js/App';
+import store from './js/store';
 import Api from './js/api/api';
-import reducers from './js/reducers';
 import initFontAwesome from './js/fontAwesome';
 
 import { UPDATE_AUTH_USER } from './js/actions/types';
 
 initFontAwesome();
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk)));
 
 const keycloakConfig = {
   url: window.RUNTIME_REACT_APP_SSO_HOST ? window.RUNTIME_REACT_APP_SSO_HOST : process.env.REACT_APP_SSO_HOST,

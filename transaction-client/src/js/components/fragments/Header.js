@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink as RRNavLink, Link } from 'react-router-dom';
 import { Container, Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
+import * as utils from '../../utils';
 import * as Constants from '../../Constants';
 
 class Header extends Component {
@@ -80,7 +81,7 @@ class Header extends Component {
                     FAQ
                   </NavLink>
                 </NavItem>
-                {this.props.currentUser.isAdmin && (
+                {utils.isCurrentUserAdmin() && (
                   <NavItem>
                     <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.ADMIN}>
                       Admin
@@ -98,7 +99,7 @@ class Header extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    users: state.users.all,
   };
 };
 

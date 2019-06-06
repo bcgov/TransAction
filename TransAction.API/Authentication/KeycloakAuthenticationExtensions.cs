@@ -30,7 +30,9 @@ namespace TransAction.API.Authentication
 
                 o.TokenValidationParameters = new TokenValidationParameters()
                 {
+                    // Not sure why setting this to true isn't working.
                     ValidateAudience = false,
+                    ValidAudience = configOptions.Audience,
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = true,
                     ValidIssuer = configOptions.Authority,
@@ -108,11 +110,11 @@ namespace TransAction.API.Authentication
 
                             switch (dbUser.Role.Name.ToLower())
                             {
-                                case "team_lead":
-                                    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
-                                    break;
+                                //case "team_lead":
+                                //    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
+                                //    break;
                                 case "admin":
-                                    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
+                                    //claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
                                     claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.ADMIN_CLAIM));
                                     break;
                                 default:

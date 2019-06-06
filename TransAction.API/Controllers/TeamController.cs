@@ -115,15 +115,15 @@ namespace TransAction.API.Controllers
             var user = _transActionRepo.GetUser(newTeam.UserId);
             user.TeamId = createdTeamToReturn.TeamId;
 
-            var role = _transActionRepo.GetRoles();
-            var roleId = role.Where(x => x.Name == "Team_Lead").Select(c => c.RoleId).FirstOrDefault();
+            //var role = _transActionRepo.GetRoles();
+            //var roleId = role.Where(x => x.Name == "Team_Lead").Select(c => c.RoleId).FirstOrDefault();
             
-            var usersCurrentRole = role.Where(x => x.RoleId == user.RoleId).Select(c => c.Name).FirstOrDefault();
+            //var usersCurrentRole = role.Where(x => x.RoleId == user.RoleId).Select(c => c.Name).FirstOrDefault();
                       
-            if (!usersCurrentRole.Equals("Admin"))
-            {
-                user.RoleId = roleId;
-            }
+            //if (!usersCurrentRole.Equals("Admin"))
+            //{
+            //    user.RoleId = roleId;
+            //}
             user.IsFreeAgent = false;
 
             var userUpdate = _mapper.Map<UserUpdateDto>(user);
@@ -216,34 +216,34 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(400);
             }
-            var roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
-            if (user.RoleId == roleId)
-            {
-                team.UserId = randomMember.UserId;
-                randomMember.RoleId = roleId;
-                user.TeamId = null;
-                roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
-                user.RoleId = roleId;
-            }
+            //var roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
+            //if (user.RoleId == roleId)
+            //{
+            //    team.UserId = randomMember.UserId;
+            //    randomMember.RoleId = roleId;
+            //    user.TeamId = null;
+            //    roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
+            //    user.RoleId = roleId;
+            //}
 
-            roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
-            if(user.RoleId == roleId)
-            {
-                user.TeamId = null;
-                user.RoleId = roleId;
-            }
+            //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
+            //if(user.RoleId == roleId)
+            //{
+            //    user.TeamId = null;
+            //    user.RoleId = roleId;
+            //}
 
-            roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "admin").Select(x => x.RoleId).FirstOrDefault();
-            if(user.RoleId == roleId)
-            {
-                if(team.UserId == removeUser.UserId)
-                {
-                    roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
-                    randomMember.RoleId = roleId;
-                    team.UserId = randomMember.UserId;
-                }
-                user.TeamId = null;
-            }
+            //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "admin").Select(x => x.RoleId).FirstOrDefault();
+            //if(user.RoleId == roleId)
+            //{
+            //    if(team.UserId == removeUser.UserId)
+            //    {
+            //        roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
+            //        randomMember.RoleId = roleId;
+            //        team.UserId = randomMember.UserId;
+            //    }
+            //    user.TeamId = null;
+            //}
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
