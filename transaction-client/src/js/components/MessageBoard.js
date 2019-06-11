@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Table, Button } from 'reactstrap';
+import { Table, Button } from 'reactstrap';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -102,9 +102,7 @@ class MessageBoard extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem>Messages</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{[{ active: true, text: 'Messages' }]}</BreadcrumbFragment>
         {this.state.loading ? <PageSpinner /> : <CardWrapper>{this.renderContent()}</CardWrapper>}
       </React.Fragment>
     );

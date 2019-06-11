@@ -1,5 +1,4 @@
 import React from 'react';
-import { BreadcrumbItem } from 'reactstrap';
 
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
@@ -8,9 +7,7 @@ class Incentives extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem active>Incentives</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{[{ active: true, text: 'Incentives' }]}</BreadcrumbFragment>
 
         <CardWrapper>
           To keep us all encouraged as we follow our TransAction - Healthy Workplace Challenge, we have lots of

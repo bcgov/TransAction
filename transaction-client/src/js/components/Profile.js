@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
+import { Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
 
 import { fetchTeam, editUser, fetchUser } from '../actions';
@@ -110,14 +110,12 @@ class Profile extends Component {
   render() {
     const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
 
+    const breadCrumbItems = [{ active: false, text: 'Profile', link: Constants.PATHS.TEAM }];
+    if (userToDisplay) breadCrumbItems.push({ active: true, text: `${userToDisplay.fname} ${userToDisplay.lname}` });
+
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem>
-            <Link to={Constants.PATHS.PROFILE}>Profile</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
 
         <CardWrapper>
           {this.state.loading ? (

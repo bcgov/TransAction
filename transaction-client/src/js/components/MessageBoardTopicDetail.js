@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, BreadcrumbItem, ListGroup, Row, Col } from 'reactstrap';
+import { Button, ListGroup, Row, Col } from 'reactstrap';
 
 import { fetchTopicDetail } from '../actions';
 import PageSpinner from './ui/PageSpinner';
@@ -83,15 +82,12 @@ class MessageBoardTopicDetail extends React.Component {
   render() {
     const topic = this.props.messages[this.state.topicId];
 
+    const breadCrumbItems = [{ active: false, text: 'Messages', link: Constants.PATHS.MESSAGES }];
+    if (topic) breadCrumbItems.push({ active: true, text: topic.title });
+
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem>
-            <Link to={Constants.PATHS.MESSAGES}>Messages</Link>
-          </BreadcrumbItem>
-          {topic && <BreadcrumbItem className="d-inline-block text-truncate">{topic.title}</BreadcrumbItem>}
-        </BreadcrumbFragment>
-
+        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
         {this.state.loading ? <PageSpinner /> : <CardWrapper>{this.renderContent()}</CardWrapper>}
       </React.Fragment>
     );

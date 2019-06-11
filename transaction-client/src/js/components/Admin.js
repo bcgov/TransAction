@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { BreadcrumbItem, Input, Table } from 'reactstrap';
+import { Input, Table } from 'reactstrap';
 import _ from 'lodash';
 
 import CardWrapper from './ui/CardWrapper';
@@ -67,9 +67,8 @@ class Admin extends React.Component {
       <React.Fragment>
         {utils.isCurrentUserAdmin() ? (
           <React.Fragment>
-            <BreadcrumbFragment>
-              <BreadcrumbItem active>Admin</BreadcrumbItem>
-            </BreadcrumbFragment>
+            <BreadcrumbFragment>{[{ active: true, text: 'Admin' }]}</BreadcrumbFragment>
+
             {this.renderContent()}
           </React.Fragment>
         ) : (

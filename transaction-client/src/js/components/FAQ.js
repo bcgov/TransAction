@@ -1,5 +1,5 @@
 import React from 'react';
-import { BreadcrumbItem, Row, Col } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
@@ -111,9 +111,7 @@ class FAQ extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem active>FAQ</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{[{ active: true, text: 'FAQ' }]}</BreadcrumbFragment>
 
         <CardWrapper>{this.renderContent()}</CardWrapper>
       </React.Fragment>

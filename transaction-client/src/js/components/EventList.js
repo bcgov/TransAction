@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BreadcrumbItem, Button, Row, Col } from 'reactstrap';
+import { Button, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -99,9 +99,7 @@ class EventList extends Component {
   render() {
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem active>Events</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{[{ active: true, text: 'Events' }]}</BreadcrumbFragment>
         {this.renderContent()}
         {this.state.showEventForm && (
           <EditEventForm

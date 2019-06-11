@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Row, Col, Table } from 'reactstrap';
+import { Row, Col, Table } from 'reactstrap';
 
 import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 
@@ -138,9 +138,7 @@ class TeamsList extends Component {
   render() {
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem active>Teams</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{[{ active: true, text: 'Teams' }]}</BreadcrumbFragment>
         {this.state.loading ? <PageSpinner /> : this.renderContent()}
       </React.Fragment>
     );
