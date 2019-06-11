@@ -7,9 +7,10 @@ import TeamMemberRow from './TeamMemberRow';
 // import PageSpinner from '../ui/PageSpinner';
 import CardWrapper from '../ui/CardWrapper';
 import OneClickButton from '../ui/OneClickButton';
+import DialogModal from '../ui/DialogModal';
 
 class TeamJoinRequestPanel extends React.Component {
-  state = { loading: true };
+  state = { loading: true, showConfirmDialog: false, confirmDialogOptions: {} };
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -35,15 +36,58 @@ class TeamJoinRequestPanel extends React.Component {
       });
   }
 
-  acceptRequest = request => {
-    this.props.acceptJoinRequest(request).then(() => {
-      this.props.fetchUser(request.userId);
+  acceptRequest = (confirm, request) => {
+    if (confirm) {
+      this.props
+        .acceptJoinRequest(request)
+        .then(() => {
+          return this.props.fetchUser(request.userId);
+        })
+        .then(() => {
+          this.closeConfirmDialog();
+        });
+    }
+  };
+
+  rejectRequest = (confirm, request) => {
+    console.log(confirm);
+    console.log(request);
+    if (confirm) {
+      this.props.rejectJoinRequest(request).then(() => {
+        this.closeConfirmDialog();
+      });
+    } else {
+      this.closeConfirmDialog();
+    }
+  };
+
+  confirmAcceptRequest = request => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Accept Request?',
+        body: 'Do you want to accept this join request?',
+        secondary: true,
+        callback: confirm => this.acceptRequest(confirm, request),
+      },
     });
   };
 
-  rejectRequest = request => {
-    this.props.rejectJoinRequest(request).then(() => {});
+  confirmRejectRequest = request => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Reject Request?',
+        body: 'Do you want to reject this join request?',
+        secondary: true,
+        callback: confirm => this.rejectRequest(confirm, request),
+      },
+    });
   };
+
+  closeConfirmDialog() {
+    this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
+  }
 
   renderContent() {
     const { regions, team, users, joinRequests } = this.props;
@@ -58,7 +102,7 @@ class TeamJoinRequestPanel extends React.Component {
               color="success"
               size="sm"
               className="w75 mr-1"
-              handleOnClick={() => this.acceptRequest(joinRequest)}
+              handleOnClick={() => this.confirmAcceptRequest(joinRequest)}
             >
               Accept
             </OneClickButton>
@@ -66,7 +110,7 @@ class TeamJoinRequestPanel extends React.Component {
               color="danger"
               size="sm"
               className="w75"
-              handleOnClick={() => this.rejectRequest(joinRequest)}
+              handleOnClick={() => this.confirmRejectRequest(joinRequest)}
             >
               Reject
             </OneClickButton>
@@ -94,6 +138,7 @@ class TeamJoinRequestPanel extends React.Component {
             <Col xs="3" lg="4" />
           </Row>
           {teamMemberElements}
+          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
         </CardWrapper>
       )
     );

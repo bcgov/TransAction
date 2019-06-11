@@ -1,9 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
-
-import { hideGlobalModal } from '../../actions';
 
 class DialogModal extends React.Component {
   state = { clicked: false };
@@ -12,40 +9,36 @@ class DialogModal extends React.Component {
     this.setState({ clicked: false });
   };
 
-  handleOnClick = () => {
+  handleOnClick = confirm => {
     this.setState({ clicked: true });
-    const callback = this.props.callback;
-    console.log(callback);
-    if (callback) {
-      callback().then(() => {
-        this.closeDialog();
-      });
-    }
-  };
 
-  closeDialog = () => {
-    //this.props.hideGlobalModal();
+    this.props.options.callback(confirm);
   };
 
   render() {
-    const { isOpen, title, body, secondary } = this.props;
+    const { isOpen, options } = this.props;
     return (
       <div>
         <Modal isOpen={isOpen} toggle={this.closeDialog} onOpened={this.init}>
-          <ModalHeader toggle={this.closeDialog}>{title}</ModalHeader>
-          <ModalBody>{body}</ModalBody>
+          <ModalHeader toggle={this.closeDialog}>{options.title}</ModalHeader>
+          <ModalBody>{options.body}</ModalBody>
           <ModalFooter>
             <Button
               size="sm"
               color="primary"
               disabled={this.state.clicked}
-              onClick={this.handleOnClick}
+              onClick={() => this.handleOnClick(true)}
               style={{ minWidth: '50px' }}
             >
               {this.state.clicked && <Spinner size="sm" />} Yes
             </Button>
-            {secondary && (
-              <Button size="sm" color="secondary" onClick={this.closeDialog} disabled={this.state.clicked}>
+            {options.secondary && (
+              <Button
+                size="sm"
+                color="secondary"
+                onClick={() => this.handleOnClick(false)}
+                disabled={this.state.clicked}
+              >
                 Cancel
               </Button>
             )}
@@ -56,13 +49,4 @@ class DialogModal extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    dialogOptions: state.dialogModal,
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  { hideGlobalModal }
-)(DialogModal);
+export default DialogModal;

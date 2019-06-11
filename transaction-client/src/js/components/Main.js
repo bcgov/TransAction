@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchRoles, fetchCurrentUser, fetchRegions } from '../actions';
-import DialogModal from './ui/DialogModal';
 import PageSpinner from './ui/PageSpinner';
 
 class Main extends Component {
@@ -15,14 +14,7 @@ class Main extends Component {
   }
 
   render() {
-    return this.state.loading ? (
-      <PageSpinner />
-    ) : (
-      <React.Fragment>
-        {this.props.children}
-        <DialogModal />
-      </React.Fragment>
-    );
+    return this.state.loading ? <PageSpinner /> : <React.Fragment>{this.props.children}</React.Fragment>;
   }
 }
 

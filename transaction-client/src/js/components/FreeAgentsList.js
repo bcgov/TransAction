@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Container, Breadcrumb, BreadcrumbItem, Spinner, Button, Table } from 'reactstrap';
+import { Spinner, Button, Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
@@ -137,24 +137,11 @@ class FreeAgentsList extends Component {
 
   render() {
     return (
-      <Container>
-        <Row>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link to="/teamslist">Teams List</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <Link to="/team">Team</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Free Agents List</BreadcrumbItem>
-          </Breadcrumb>
-        </Row>
+      <React.Fragment>
+        <BreadcrumbFragment>{[{ active: true, text: 'Free Agents' }]}</BreadcrumbFragment>
         <h1>Free Agents</h1>
         {this.loading()}
-      </Container>
+      </React.Fragment>
     );
   }
 }
