@@ -68,7 +68,7 @@ class EventDetail extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     event: state.events[ownProps.match.params.id],
     scores: state.scores,
   };

@@ -20,7 +20,7 @@ class Main extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     roles: state.roles,
   };
 };

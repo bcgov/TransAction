@@ -152,7 +152,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     users: state.users.all,
     regions: state.regions,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     joinRequests: Object.values(state.joinRequests).filter(request => {
       return request.teamId === ownProps.team.id;
     }),

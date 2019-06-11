@@ -97,7 +97,7 @@ class MessageBoardTopicDetail extends React.Component {
 const mapStateToProps = state => {
   return {
     messages: state.messages,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

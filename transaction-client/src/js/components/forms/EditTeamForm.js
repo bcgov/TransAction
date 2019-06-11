@@ -139,7 +139,7 @@ const form = reduxForm({ form: 'editTeamForm', enableReinitialize: true, validat
 const mapStateToProps = state => {
   return {
     regions: state.regions,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

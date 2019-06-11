@@ -87,7 +87,7 @@ const form = reduxForm({ form: 'editMessageForm', enableReinitialize: true, vali
 
 const mapStateToProp = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

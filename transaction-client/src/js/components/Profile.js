@@ -156,7 +156,7 @@ class Profile extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     users: state.users,
     regions: state.regions,
     roles: state.roles,

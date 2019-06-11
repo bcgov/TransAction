@@ -99,7 +99,7 @@ class TeamsList extends Component {
               <th>Team Leader</th>
               <th>Region</th>
               <th>Members</th>
-              {!this.props.currentUser.teamId && <th>Request</th>}
+              {!this.props.currentUser.teamId && <th />}
             </tr>
           </thead>
           <tbody>{this.renderTeamRows()}</tbody>
@@ -170,7 +170,7 @@ const mapStateToProps = state => {
     teams: state.teams,
     users: state.users.all,
     regions: state.regions,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     joinRequests: Object.values(state.joinRequests),
   };
 };

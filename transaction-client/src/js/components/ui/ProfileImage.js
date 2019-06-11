@@ -89,7 +89,7 @@ ProfileImage.defaultProps = {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     users: state.users.all,
     teams: state.teams,
   };

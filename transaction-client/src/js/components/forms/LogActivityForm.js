@@ -177,7 +177,7 @@ const validate = formValues => {
 const form = reduxForm({ form: 'logActivityForm', enableReinitialize: true, validate })(LogActivityForm);
 
 const mapStateToProps = (state, ownProps) => {
-  const currentUser = state.users.current;
+  const currentUser = state.users.all[state.users.current.id];
   return {
     activities: Object.values(state.activities),
     initialValues: {

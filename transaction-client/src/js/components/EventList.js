@@ -136,7 +136,7 @@ class EventList extends Component {
 const mapStateToProps = state => {
   return {
     events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

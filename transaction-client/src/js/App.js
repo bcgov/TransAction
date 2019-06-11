@@ -13,7 +13,7 @@ import Profile from './components/Profile';
 import TeamDetail from './components/TeamDetail';
 import TeamsList from './components/TeamsList';
 import GettingStarted from './components/GettingStarted';
-// import FreeAgentsList from './components/FreeAgentsList';
+import FreeAgentsList from './components/FreeAgentsList';
 import Incentives from './components/Incentives';
 import MessageBoard from './components/MessageBoard';
 import MessageBoardTopicDetail from './components/MessageBoardTopicDetail';
@@ -42,7 +42,7 @@ class App extends Component {
                 <Route path={Constants.PATHS.TEAM} exact component={TeamsList} />
                 <Route path={`${Constants.PATHS.TEAM}/:id`} exact component={TeamDetail} />
                 <Route path={Constants.PATHS.START} exact component={GettingStarted} />
-                {/* <Route path="/free_agents" exact component={FreeAgentsList} /> */}
+                <Route path={Constants.PATHS.FREE_AGENTS} exact component={FreeAgentsList} />
                 <Route path={Constants.PATHS.INCENTIVES} exact component={Incentives} />
                 <Route path={Constants.PATHS.FAQ} exact component={FAQ} />
                 <Route path={Constants.PATHS.MESSAGES} exact component={MessageBoard} />

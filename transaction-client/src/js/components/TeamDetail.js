@@ -146,7 +146,7 @@ class Team extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     scores: state.scores,
     teams: state.teams,
     users: state.users.all,
