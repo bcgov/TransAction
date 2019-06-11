@@ -24,7 +24,7 @@ class EventListItem extends React.Component {
         <Button color="primary" size="sm" className="mr-1" onClick={this.showForm}>
           Edit
         </Button>
-        <Button color="primary" size="sm" onClick={this.archiveEvent} disabled={this.props.archiving}>
+        <Button color="primary" size="sm" onClick={this.archiveEvent}>
           Archive
         </Button>
       </div>

@@ -8,6 +8,7 @@ import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
 import { fetchEvents, archiveEvent } from '../actions';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+import DialogModal from './ui/DialogModal';
 
 import * as utils from '../utils';
 import * as Constants from '../Constants';
@@ -17,7 +18,8 @@ class EventList extends Component {
     showEventForm: false,
     eventFormType: Constants.FORM_TYPE.ADD,
     eventFormInitialValues: null,
-    archiving: false,
+    showConfirmDialog: false,
+    confirmDialogOptions: {},
   };
 
   componentDidMount() {
@@ -49,14 +51,29 @@ class EventList extends Component {
     }));
   };
 
-  archiveEvent = event => {
-    if (!this.state.archiving) {
-      this.setState({ archiving: true });
-      this.props.archiveEvent(event).then(() => {
-        this.setState({ archiving: false });
-      });
+  archiveEvent = (confirm, event) => {
+    if (confirm) {
+      this.props.archiveEvent(event).then(() => this.closeConfirmDialog());
+    } else {
+      this.closeConfirmDialog();
     }
   };
+
+  confirmArchive = event => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Archive Event?',
+        body: 'The event will be archived and hidden from view.',
+        secondary: true,
+        callback: confirm => this.archiveEvent(confirm, event),
+      },
+    });
+  };
+
+  closeConfirmDialog() {
+    this.setState({ showConfirmDialog: false, confirmDialogOptions: {}, clicked: false });
+  }
 
   renderEventList() {
     const events = this.props.events.map(event => (
@@ -65,8 +82,7 @@ class EventList extends Component {
         event={event}
         isAdmin={utils.isCurrentUserAdmin()}
         showEditForm={this.showEditEventForm}
-        handleArchiveEvent={this.archiveEvent}
-        archiving={this.state.archiving}
+        handleArchiveEvent={this.confirmArchive}
       />
     ));
 
@@ -108,6 +124,9 @@ class EventList extends Component {
             toggle={this.toggleEventForm}
             formType={this.state.eventFormType}
           />
+        )}
+        {this.state.showConfirmDialog && (
+          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
         )}
       </React.Fragment>
     );

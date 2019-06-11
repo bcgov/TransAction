@@ -203,9 +203,7 @@ namespace TransAction.API.Controllers
             var users = _transActionRepo.GetUsers();
             var members = users.Where(x => x.TeamId == removeUser.TeamId);
             var team = _transActionRepo.GetTeam(removeUser.TeamId);
-            Random rand = new Random();
-            int toSkip = rand.Next(0, members.Count()-1);
-            var randomMember = members.Skip(toSkip).Where(x => x.UserId != removeUser.UserId).Take(1).First();
+            
 
             if (user.TeamId == null)
             {
@@ -216,6 +214,18 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(400);
             }
+
+            if (team.UserId == removeUser.UserId)
+            {
+                Random rand = new Random();
+                int toSkip = rand.Next(0, members.Count() - 1);
+                var randomMember = members.Skip(toSkip).Where(x => x.UserId != removeUser.UserId).Take(1).First();
+
+                team.UserId = randomMember.UserId;
+            }
+
+            user.TeamId = null;
+
             //var roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
             //if (user.RoleId == roleId)
             //{
@@ -244,6 +254,7 @@ namespace TransAction.API.Controllers
             //    }
             //    user.TeamId = null;
             //}
+
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");

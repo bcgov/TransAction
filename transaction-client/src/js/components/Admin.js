@@ -6,20 +6,42 @@ import _ from 'lodash';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import { fetchUsers, editUserRole } from '../actions';
+import DialogModal from './ui/DialogModal';
 
 import * as utils from '../utils';
 // import * as Constants from '../Constants';
 
 class Admin extends React.Component {
-  state = { toggleActive: {} };
+  state = { toggleActive: {}, showConfirmDialog: false, confirmDialogOptions: {} };
 
   componentDidMount() {
     this.props.fetchUsers();
   }
 
-  handleRoleIdChanged = (roleId, userId) => {
-    this.props.editUserRole({ roleId, userId });
+  handleRoleIdChanged = (confirm, roleId, userId) => {
+    if (confirm) {
+      this.props.editUserRole({ roleId, userId }).then(() => this.closeConfirmDialog());
+    } else {
+      this.closeConfirmDialog();
+      window.location.reload();
+    }
   };
+
+  confirmRoleChange = (roleId, userId) => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Change User Role??',
+        body: "The use's role will be changed.",
+        secondary: true,
+        callback: confirm => this.handleRoleIdChanged(confirm, roleId, userId),
+      },
+    });
+  };
+
+  closeConfirmDialog() {
+    this.setState({ showConfirmDialog: false, confirmDialogOptions: {}, clicked: false });
+  }
 
   renderContent() {
     const roleOptions = Object.values(this.props.roles).map(role => (
@@ -37,7 +59,7 @@ class Admin extends React.Component {
               type="select"
               bsSize="sm"
               defaultValue={user.roleId}
-              onChange={e => this.handleRoleIdChanged(e.target.value, user.id)}
+              onChange={e => this.confirmRoleChange(e.target.value, user.id)}
             >
               {roleOptions}
             </Input>
@@ -58,6 +80,9 @@ class Admin extends React.Component {
           </thead>
           <tbody>{userList}</tbody>
         </Table>
+        {this.state.showConfirmDialog && (
+          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
+        )}
       </CardWrapper>
     );
   }

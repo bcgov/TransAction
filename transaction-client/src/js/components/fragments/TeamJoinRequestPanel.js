@@ -4,7 +4,6 @@ import { Row, Col } from 'reactstrap';
 
 import { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
-// import PageSpinner from '../ui/PageSpinner';
 import CardWrapper from '../ui/CardWrapper';
 import OneClickButton from '../ui/OneClickButton';
 import DialogModal from '../ui/DialogModal';
@@ -50,8 +49,6 @@ class TeamJoinRequestPanel extends React.Component {
   };
 
   rejectRequest = (confirm, request) => {
-    console.log(confirm);
-    console.log(request);
     if (confirm) {
       this.props.rejectJoinRequest(request).then(() => {
         this.closeConfirmDialog();
@@ -66,7 +63,7 @@ class TeamJoinRequestPanel extends React.Component {
       showConfirmDialog: true,
       confirmDialogOptions: {
         title: 'Accept Request?',
-        body: 'Do you want to accept this join request?',
+        body: 'The user will become part of your team.',
         secondary: true,
         callback: confirm => this.acceptRequest(confirm, request),
       },
@@ -78,7 +75,7 @@ class TeamJoinRequestPanel extends React.Component {
       showConfirmDialog: true,
       confirmDialogOptions: {
         title: 'Reject Request?',
-        body: 'Do you want to reject this join request?',
+        body: 'The user will not become part of your team.',
         secondary: true,
         callback: confirm => this.rejectRequest(confirm, request),
       },
@@ -138,7 +135,9 @@ class TeamJoinRequestPanel extends React.Component {
             <Col xs="3" lg="4" />
           </Row>
           {teamMemberElements}
-          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
+          {this.state.showConfirmDialog && (
+            <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
+          )}
         </CardWrapper>
       )
     );

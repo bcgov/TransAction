@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Row, Col, Table } from 'reactstrap';
+import { Row, Col, Table, Button } from 'reactstrap';
 
 import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
-import OneClickButton from './ui/OneClickButton';
+import DialogModal from './ui/DialogModal';
 
 import * as Constants from '../Constants';
 
 class TeamsList extends Component {
-  state = { loading: true };
+  state = { loading: true, showConfirmDialog: false, confirmDialogOptions: {} };
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -24,9 +24,31 @@ class TeamsList extends Component {
       .catch(() => {});
   }
 
-  sendJoinRequest = (userId, teamId) => {
-    this.props.createJoinRequest({ userId, teamId });
+  sendJoinRequest = (confirm, userId, teamId) => {
+    if (confirm) {
+      this.props.createJoinRequest({ userId, teamId }).then(() => {
+        this.closeConfirmDialog();
+      });
+    } else {
+      this.closeConfirmDialog();
+    }
   };
+
+  confirmJoin = (userId, teamId) => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Send Join Request?',
+        body: 'This team leader will receive your join request.',
+        secondary: true,
+        callback: confirm => this.sendJoinRequest(confirm, userId, teamId),
+      },
+    });
+  };
+
+  closeConfirmDialog() {
+    this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
+  }
 
   renderTeamRows() {
     const { currentUser, users, regions } = this.props;
@@ -54,13 +76,9 @@ class TeamsList extends Component {
           {!currentUser.teamId && (
             <td>
               {!userRequests.includes(team.id) && (
-                <OneClickButton
-                  size="sm"
-                  color="primary"
-                  handleOnClick={() => this.sendJoinRequest(currentUser.id, team.id)}
-                >
+                <Button size="sm" color="primary" onClick={() => this.confirmJoin(currentUser.id, team.id)}>
                   Request to Join
-                </OneClickButton>
+                </Button>
               )}
             </td>
           )}
@@ -86,6 +104,9 @@ class TeamsList extends Component {
           </thead>
           <tbody>{this.renderTeamRows()}</tbody>
         </Table>
+        {this.state.showConfirmDialog && (
+          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
+        )}
       </React.Fragment>
     );
   }
