@@ -88,6 +88,7 @@ namespace TransAction.API.Authentication
                             newUser.Guid = principal.FindFirstValue("idir_guid");
                             newUser.RegionId = db.GetRegion("HQ").RegionId;
 
+
                             db.CreateUser(newUser);
                             if (!db.Save())
                             {                                
