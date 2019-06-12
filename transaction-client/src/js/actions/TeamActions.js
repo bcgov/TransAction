@@ -144,7 +144,7 @@ export const editJoinRequest = (id, reqObj) => async dispatch => {
   });
 };
 
-export const acceptJoinRequest = reqObj => async dispatch => {
+export const addUserToTeam = reqObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/teams/join`, reqObj);

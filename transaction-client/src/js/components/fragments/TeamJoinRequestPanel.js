@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 
-import { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests } from '../../actions';
+import { rejectJoinRequest, addUserToTeam, fetchUser, fetchSpecificTeamRequests } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
 import CardWrapper from '../ui/CardWrapper';
 import OneClickButton from '../ui/OneClickButton';
@@ -38,7 +38,7 @@ class TeamJoinRequestPanel extends React.Component {
   acceptRequest = (confirm, request) => {
     if (confirm) {
       this.props
-        .acceptJoinRequest(request)
+        .addUserToTeam(request)
         .then(() => {
           return this.props.fetchUser(request.userId);
         })
@@ -161,5 +161,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { rejectJoinRequest, acceptJoinRequest, fetchUser, fetchSpecificTeamRequests }
+  { rejectJoinRequest, addUserToTeam, fetchUser, fetchSpecificTeamRequests }
 )(TeamJoinRequestPanel);

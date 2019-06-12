@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Table } from 'reactstrap';
 
-import { fetchUsers, fetchTeam } from '../actions';
+import { fetchUsers, fetchTeam, addUserToTeam } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
@@ -95,5 +95,5 @@ const mapStateToProps = state => {
 };
 export default connect(
   mapStateToProps,
-  { fetchUsers, fetchTeam }
+  { fetchUsers, fetchTeam, addUserToTeam }
 )(FreeAgentsList);

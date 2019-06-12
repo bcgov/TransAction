@@ -71,7 +71,7 @@ class TeamsList extends Component {
           <td>
             {users[team.teamLeaderId].fname} {users[team.teamLeaderId].lname}
           </td>
-          <td>{regions[users[team.teamLeaderId].regionId].name}</td>
+          <td>{regions[team.regionId].name}</td>
           <td>{team.numMembers}</td>
           {!currentUser.teamId && (
             <td>

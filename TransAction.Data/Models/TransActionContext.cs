@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata;
-using TransAction.Data.Services;
+﻿using Microsoft.EntityFrameworkCore;
+
 namespace TransAction.Data.Models
 {
     public partial class TransActionContext : DbContext
@@ -31,20 +26,10 @@ namespace TransAction.Data.Models
         public virtual DbSet<TraTopicMessage> TraTopicMessage { get; set; }
         public virtual DbSet<TraUser> TraUser { get; set; }
         public virtual DbSet<TraUserActivity> TraUserActivity { get; set; }
-        public DbQuery<TraUserView> TraUserView { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
-
-            var userView = modelBuilder.Query<TraUserView>().ToView("TRA_USER_VW");
-            userView.Property(e => e.UserId).HasColumnName("USER_ID");
-            userView.Property(e => e.RegionId).HasColumnName("REGION_ID");
-            userView.Property(e => e.RoleId).HasColumnName("ROLE_ID");
-            userView.Property(e => e.TeamId).HasColumnName("TEAM_ID");
-            userView.Property(e => e.IsFreeAgent).HasColumnName("IS_FREE_AGENT");
-            userView.Property(e => e.ConcurrencyControlNumber).HasColumnName("CONCURRENCY_CONTROL_NUMBER");
-            userView.Property(e => e.ProfileImageGuid).HasColumnName("PROFILE_IMAGE_GUID");
 
             modelBuilder.Entity<TraActivity>(entity =>
             {

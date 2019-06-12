@@ -138,9 +138,7 @@ namespace TransAction.API.Controllers
             
             return CreatedAtRoute("GetUser", new { id = createdTeamToReturn.UserId }, createdTeamToReturn);
         }
-
-
-        [ClaimRequirement(AuthorizationTypes.EDIT_TEAM_CLAIM)]          
+     
         [HttpPut("{id}")]
         public IActionResult TeamUpdate(int id, [FromBody] TeamUpdateDto teamUpdate)
         {

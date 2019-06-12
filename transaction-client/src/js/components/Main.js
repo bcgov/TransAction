@@ -11,6 +11,8 @@ class Main extends Component {
     Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchRegions()]).then(() => {
       this.setState({ loading: false });
     });
+
+    // this.props.fetchRoles();
   }
 
   render() {

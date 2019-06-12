@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TransAction.API.Authentication;
 using TransAction.API.Authorization;
-using TransAction.API.Mapping;
 using TransAction.Data.Models;
 using TransAction.Data.Services;
 
@@ -18,6 +17,7 @@ namespace TransAction.API
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
