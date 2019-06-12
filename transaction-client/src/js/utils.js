@@ -19,3 +19,17 @@ export const isCurrentUserAdmin = () => {
 
   return false;
 };
+
+export const isCurrentUserTeamlead = () => {
+  const state = store.getState();
+  try {
+    const user = state.users.all[state.users.current.id];
+    const team = state.teams[user.teamId];
+
+    return user.teamId && user.id === team.teamLeaderId;
+  } catch {
+    console.error('Unable to verify team leader status.');
+  }
+
+  return false;
+};

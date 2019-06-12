@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Table } from 'reactstrap';
 
-import { fetchUsers } from '../actions';
+import { fetchUsers, fetchTeam } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+
+import * as utils from '../utils';
 
 class FreeAgentsList extends Component {
   state = { loading: true, clickable: true };
@@ -17,8 +19,13 @@ class FreeAgentsList extends Component {
   };
 
   componentDidMount() {
-    this.props
-      .fetchUsers()
+    const { fetchUsers, fetchTeam, teams, currentUser } = this.props;
+
+    fetchUsers()
+      .then(() => {
+        if (currentUser.teamId && !teams[currentUser.teamId]) return fetchTeam(currentUser.teamId);
+        else return Promise.resolve();
+      })
       .then(() => {
         this.setState({ loading: false });
       })
@@ -36,11 +43,14 @@ class FreeAgentsList extends Component {
           <td>{user.fname}</td>
           <td>{user.lname}</td>
           <td>{regions[user.regionId].name}</td>
-          <td>
-            <Button color="primary" size="sm">
-              Recruit
-            </Button>
-          </td>
+
+          {utils.isCurrentUserTeamlead() && (
+            <td>
+              <Button color="primary" size="sm">
+                Recruit
+              </Button>
+            </td>
+          )}
         </tr>
       ));
 
@@ -51,7 +61,7 @@ class FreeAgentsList extends Component {
             <th>First Name</th>
             <th>Last Name</th>
             <th>Region</th>
-            <th />
+            {utils.isCurrentUserTeamlead() && <th />}
           </tr>
         </thead>
         <tbody>{userRows}</tbody>
@@ -78,10 +88,12 @@ class FreeAgentsList extends Component {
 const mapStateToProps = state => {
   return {
     users: state.users.all,
+    teams: state.teams,
+    currentUser: state.users.all[state.users.current.id],
     regions: state.regions,
   };
 };
 export default connect(
   mapStateToProps,
-  { fetchUsers }
+  { fetchUsers, fetchTeam }
 )(FreeAgentsList);

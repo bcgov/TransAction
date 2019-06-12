@@ -136,7 +136,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
             
-            return CreatedAtRoute("GetThatUser", new { id = createdTeamToReturn.UserId }, createdTeamToReturn);
+            return CreatedAtRoute("GetUser", new { id = createdTeamToReturn.UserId }, createdTeamToReturn);
         }
 
 

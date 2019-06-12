@@ -80,7 +80,7 @@ class EditTeamForm extends React.Component {
           component={FormInput}
           type="textarea"
           label="Description"
-          placeholderText="Enter a short description about yourself"
+          placeholderText="Enter a short description about your team"
         />
         <Field
           name="goal"
