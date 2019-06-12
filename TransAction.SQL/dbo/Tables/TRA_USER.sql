@@ -159,4 +159,4 @@ BEGIN
 	FROM inserted
 	WHERE TRA_USER.[USER_ID] = inserted.[USER_ID]
 
-END;
+END
