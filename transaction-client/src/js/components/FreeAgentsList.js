@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Table } from 'reactstrap';
+import { Alert, Button, Table } from 'reactstrap';
 
-import { fetchUsers, fetchTeam, addUserToTeam } from '../actions';
+import { fetchUsers, fetchTeam, addUserToTeam, fetchUser } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+import DialogModal from './ui/DialogModal';
 
 import * as utils from '../utils';
 
 class FreeAgentsList extends Component {
-  state = { loading: true, clickable: true };
+  state = { loading: true, showConfirmDialog: false, confirmDialogOptions: {} };
 
   toggleSpinner = () => {
     this.setState(prevState => ({
@@ -34,25 +35,60 @@ class FreeAgentsList extends Component {
       });
   }
 
+  handleRecruitUser = (confirm, userId) => {
+    if (confirm) {
+      const { teams, currentUser, addUserToTeam, fetchUser } = this.props;
+      const team = teams[currentUser.teamId];
+
+      addUserToTeam({ userId, teamId: team.id })
+        .then(() => Promise.all([fetchUser(userId), fetchTeam[team.id]]))
+        .then(() => this.closeConfirmDialog());
+    } else {
+      this.closeConfirmDialog();
+    }
+  };
+
+  confirmRecruitUser = (userId, userName) => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Recruit Member?',
+        body: `${userName} will be joining your team.`,
+        secondary: true,
+        callback: confirm => this.handleRecruitUser(confirm, userId),
+      },
+    });
+  };
+
+  closeConfirmDialog() {
+    this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
+  }
+
   renderContent() {
     const { regions, users } = this.props;
-    const userRows = Object.values(users)
-      .filter(user => user.isFreeAgent && !user.teamId)
-      .map(user => (
-        <tr key={user.id}>
-          <td>{user.fname}</td>
-          <td>{user.lname}</td>
-          <td>{regions[user.regionId].name}</td>
+    const freeagentUsers = Object.values(users).filter(user => user.isFreeAgent && !user.teamId);
 
-          {utils.isCurrentUserTeamlead() && (
-            <td>
-              <Button color="primary" size="sm">
-                Recruit
-              </Button>
-            </td>
-          )}
-        </tr>
-      ));
+    if (freeagentUsers.length === 0) return <Alert color="primary">There are no free agents at the moment.</Alert>;
+
+    const userRows = freeagentUsers.map(user => (
+      <tr key={user.id}>
+        <td>{user.fname}</td>
+        <td>{user.lname}</td>
+        <td>{regions[user.regionId].name}</td>
+
+        {utils.isCurrentUserTeamlead() && (
+          <td>
+            <Button
+              color="primary"
+              size="sm"
+              onClick={() => this.confirmRecruitUser(user.id, `${user.fname} ${user.lname}`)}
+            >
+              Recruit
+            </Button>
+          </td>
+        )}
+      </tr>
+    ));
 
     return (
       <Table size="sm" hover bordered responsive className="mt-3">
@@ -80,6 +116,9 @@ class FreeAgentsList extends Component {
           </p>
           {this.state.loading ? <PageSpinner /> : this.renderContent()}
         </CardWrapper>
+        {this.state.showConfirmDialog && (
+          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
+        )}
       </React.Fragment>
     );
   }
@@ -95,5 +134,5 @@ const mapStateToProps = state => {
 };
 export default connect(
   mapStateToProps,
-  { fetchUsers, fetchTeam, addUserToTeam }
+  { fetchUsers, fetchTeam, addUserToTeam, fetchUser }
 )(FreeAgentsList);

@@ -87,6 +87,7 @@ namespace TransAction.API.Authentication
                             newUser.Description = "Hello, I'm new to TransAction";
                             newUser.Guid = principal.FindFirstValue("idir_guid");
                             newUser.RegionId = db.GetRegion("HQ").RegionId;
+                            newUser.IsFreeAgent = false;
 
 
                             db.CreateUser(newUser);

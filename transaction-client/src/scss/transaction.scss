@@ -50,6 +50,12 @@ button.team-remove {
   padding: 8px 9px;
 }
 
+.table td.fit,
+.table th.fit {
+  white-space: nowrap;
+  width: 1%;
+}
+
 // Check stuff below
 
 textarea.form-control {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Table, Button } from 'reactstrap';
+import { Alert, Table, Button } from 'reactstrap';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -35,15 +35,11 @@ class MessageBoard extends React.Component {
   renderContent() {
     const { topics } = this.props;
 
+    if (topics.length === 0) return <Alert color="primary">There are no posts at the moment.</Alert>;
+
     return (
       <React.Fragment>
-        <h4>Message Board</h4>
-        <div className="text-right">
-          <Button size="sm" color="primary" onClick={this.showEditTopicForm}>
-            New Thread
-          </Button>
-        </div>
-        <Table size="sm" bordered responsive className="mt-3">
+        <Table size="sm" bordered responsive>
           <thead className="thead-dark">
             <tr>
               <th>Topics</th>
@@ -88,13 +84,6 @@ class MessageBoard extends React.Component {
             })}
           </tbody>
         </Table>
-        {this.state.showEditTopicForm && (
-          <EditTopicForm
-            isOpen={this.state.showEditTopicForm}
-            toggle={this.toggleEditTopicForm}
-            formType={Constants.FORM_TYPE.ADD}
-          />
-        )}
       </React.Fragment>
     );
   }
@@ -103,7 +92,26 @@ class MessageBoard extends React.Component {
     return (
       <React.Fragment>
         <BreadcrumbFragment>{[{ active: true, text: 'Messages' }]}</BreadcrumbFragment>
-        {this.state.loading ? <PageSpinner /> : <CardWrapper>{this.renderContent()}</CardWrapper>}
+        {this.state.loading ? (
+          <PageSpinner />
+        ) : (
+          <CardWrapper>
+            <h4>Message Board</h4>
+            <div className="text-right">
+              <Button size="sm" color="primary" className="mb-3" onClick={this.showEditTopicForm}>
+                New Thread
+              </Button>
+            </div>
+            {this.renderContent()}
+          </CardWrapper>
+        )}
+        {this.state.showEditTopicForm && (
+          <EditTopicForm
+            isOpen={this.state.showEditTopicForm}
+            toggle={this.toggleEditTopicForm}
+            formType={Constants.FORM_TYPE.ADD}
+          />
+        )}
       </React.Fragment>
     );
   }

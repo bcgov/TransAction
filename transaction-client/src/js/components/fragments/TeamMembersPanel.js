@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Row, Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Alert, Button, Row, Col } from 'reactstrap';
 import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { leaveTeam, fetchUser, fetchCurrentUser } from '../../actions';
 import TeamMemberRow from './TeamMemberRow';
 import DialogModal from '../ui/DialogModal';
+
+import * as Constants from '../../Constants';
 
 class TeamMembersPanel extends React.Component {
   state = { clicked: false, showConfirmDialog: false, confirmDialogOptions: {} };
@@ -54,7 +57,7 @@ class TeamMembersPanel extends React.Component {
     const { regions, currentUser, teamToDisplay } = this.props;
     const users = Object.values(_.pick(this.props.users, teamToDisplay.teamMemberIds));
 
-    const teamMemberElements = users.map(user => {
+    const teamMemberElements = _.orderBy(users, ['fname', 'lname']).map(user => {
       const teamLead = teamToDisplay.teamLeaderId === user.id;
 
       return (
@@ -91,6 +94,16 @@ class TeamMembersPanel extends React.Component {
 
     return (
       <React.Fragment>
+        {teamMemberElements.length < 5 && currentUser.teamId === teamToDisplay.id && (
+          <Row>
+            <Col>
+              <Alert color="info">
+                You can have up to 5 members on your team. You can recruit more members from the{' '}
+                <Link to={Constants.PATHS.FREE_AGENTS}>Free Agents</Link>.
+              </Alert>
+            </Col>
+          </Row>
+        )}
         <Row className="mb-2">
           <Col xs="6" lg="4">
             <strong>Name</strong>

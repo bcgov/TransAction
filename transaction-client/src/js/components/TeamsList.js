@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Row, Col, Table, Button } from 'reactstrap';
+import { Alert, Row, Col, Table, Button } from 'reactstrap';
 
-import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
+import { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
@@ -46,6 +46,30 @@ class TeamsList extends Component {
     });
   };
 
+  becomeFreeagent = confirm => {
+    if (confirm) {
+      const { currentUser, editUser } = this.props;
+      const userObj = { ...currentUser, isFreeAgent: true };
+
+      editUser(userObj.id, userObj).then(() => this.closeConfirmDialog());
+    } else {
+      this.closeConfirmDialog();
+    }
+  };
+
+  confirmBecomeFreeagent = () => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Become a Free Agent?',
+        body:
+          'Becoming a free agent will allow any team with extra room on its roster to recruit you as its new member.',
+        secondary: true,
+        callback: confirm => this.becomeFreeagent(confirm),
+      },
+    });
+  };
+
   closeConfirmDialog() {
     this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
   }
@@ -74,7 +98,7 @@ class TeamsList extends Component {
           <td>{regions[team.regionId].name}</td>
           <td>{team.numMembers}</td>
           {!currentUser.teamId && (
-            <td>
+            <td className="fit">
               {!userRequests.includes(team.id) && (
                 <Button size="sm" color="primary" onClick={() => this.confirmJoin(currentUser.id, team.id)}>
                   Request to Join
@@ -89,21 +113,36 @@ class TeamsList extends Component {
   }
 
   renderTeamList() {
+    const teamRows = this.renderTeamRows();
+
     return (
       <React.Fragment>
-        <h4>All TransAction Teams</h4>
-        <Table size="sm" hover bordered responsive className="mt-3">
-          <thead className="thead-dark">
-            <tr>
-              <th>Team Name</th>
-              <th>Team Leader</th>
-              <th>Region</th>
-              <th>Members</th>
-              {!this.props.currentUser.teamId && <th />}
-            </tr>
-          </thead>
-          <tbody>{this.renderTeamRows()}</tbody>
-        </Table>
+        <h4 className="mb-3">All TransAction Teams</h4>
+
+        {!this.props.currentUser.teamId && !this.props.currentUser.isFreeAgent && (
+          <div className="mb-3 text-right">
+            <Button size="sm" color="primary" onClick={this.confirmBecomeFreeagent}>
+              Become Free Agent
+            </Button>
+          </div>
+        )}
+        {teamRows.length > 0 ? (
+          <Table size="sm" hover bordered responsive>
+            <thead className="thead-dark">
+              <tr>
+                <th>Team Name</th>
+                <th>Team Leader</th>
+                <th>Region</th>
+                <th>Members</th>
+                {!this.props.currentUser.teamId && <th className="fit" />}
+              </tr>
+            </thead>
+            <tbody>{teamRows}</tbody>
+          </Table>
+        ) : (
+          <Alert color="primary">There are no teams at the moment.</Alert>
+        )}
+
         {this.state.showConfirmDialog && (
           <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
         )}
@@ -177,5 +216,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests }
+  { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests }
 )(TeamsList);

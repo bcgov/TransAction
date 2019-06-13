@@ -31,7 +31,7 @@ class Admin extends React.Component {
     this.setState({
       showConfirmDialog: true,
       confirmDialogOptions: {
-        title: 'Change User Role??',
+        title: 'Change User Role?',
         body: "The use's role will be changed.",
         secondary: true,
         callback: confirm => this.handleRoleIdChanged(confirm, roleId, userId),
