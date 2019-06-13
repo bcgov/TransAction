@@ -1,29 +1,23 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/events")]
-    public class EventController : Controller
+    public class EventController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IMapper _mapper;
-        public EventController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _mapper = mapper;
-        }
 
-        
+        public EventController(IHttpContextAccessor httpContextAccessor, ILogger<EventController> logger) :
+            base(httpContextAccessor, logger)
+        { }
+
+
         [HttpGet()]
         public IActionResult GetEvents()
         {

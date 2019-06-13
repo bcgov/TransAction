@@ -1,29 +1,20 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TransAction.API.Helpers;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/useractivity")]
-    public class UserActivityController : Controller
+    public class UserActivityController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IMapper _mapper;
 
-        public UserActivityController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
-        }
+        public UserActivityController(IHttpContextAccessor httpContextAccessor, ILogger<UserActivityController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
         [HttpGet()]
         public IActionResult GetUserActivity()

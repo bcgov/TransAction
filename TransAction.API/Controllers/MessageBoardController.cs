@@ -1,29 +1,21 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using TransAction.API.Authorization;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/messageboard")]
-    public class MessageBoardController : Controller
+    public class MessageBoardController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IMapper _mapper;
-        public MessageBoardController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
-        }
+
+        public MessageBoardController(IHttpContextAccessor httpContextAccessor, ILogger<MessageBoardController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
         [HttpGet()]
         public IActionResult GetTopics()

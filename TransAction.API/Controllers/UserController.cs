@@ -1,33 +1,23 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/users")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IMapper _mapper;
 
-        public UserController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
-        }
+        public UserController(IHttpContextAccessor httpContextAccessor, ILogger<UserController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
-        
+
         [HttpGet()]
         public IActionResult GetUsers()
         {
@@ -36,7 +26,7 @@ namespace TransAction.API.Controllers
             return Ok(getUsers);
 
         }
-        
+
         [HttpGet("{id}", Name = "GetUser")]
         public IActionResult GetUser(int id)
         {
@@ -57,14 +47,14 @@ namespace TransAction.API.Controllers
             catch (Exception)
             {
                 return StatusCode(500, "A problem happened while handeling your request");
-            }      
+            }
 
         }
-        
+
         [HttpPost()]
         public IActionResult CreateUser([FromBody] UserCreateDto createUser)
         {
-            if (createUser == null) 
+            if (createUser == null)
             {
                 return BadRequest();
             }
@@ -72,7 +62,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if(createUser.Fname == null || createUser.Lname == null || createUser.Description == null || createUser.Email == null)
+            if (createUser.Fname == null || createUser.Lname == null || createUser.Description == null || createUser.Email == null)
             {
                 return BadRequest();
             }
@@ -80,13 +70,13 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.UserExists(createUser.Username , createUser.Email))
+            if (_transActionRepo.UserExists(createUser.Username, createUser.Email))
             {
                 return BadRequest();
             }
 
             var newUser = _mapper.Map<TraUser>(createUser);
-                       
+
             _transActionRepo.CreateUser(newUser);
 
             if (!_transActionRepo.Save())
@@ -97,7 +87,7 @@ namespace TransAction.API.Controllers
             var createdUserToReturn = _mapper.Map<UserDto>(newUser);
             return CreatedAtRoute("GetUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
         }
-        
+
         [HttpPut("{id}")]
         public IActionResult UserUpdate(int id, [FromBody] UserUpdateDto updateUser)
         {
@@ -108,7 +98,7 @@ namespace TransAction.API.Controllers
             //    return BadRequest();
             //}
             var userEntity = _transActionRepo.GetUser(id);
-           if (userEntity == null) return NotFound();
+            if (userEntity == null) return NotFound();
             if (updateUser == null) return NotFound();
 
             if (!ModelState.IsValid)
@@ -131,16 +121,16 @@ namespace TransAction.API.Controllers
 
             //checking for if team is full 
             //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
-            
+
             var users = _transActionRepo.GetUsers();
-            if(updateUser.TeamId != null)
+            if (updateUser.TeamId != null)
             {
                 var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
                 if (members >= 5)
                 {
                     return BadRequest("Team Full");
                 }
-            }          
+            }
 
 
             _mapper.Map(updateUser, userEntity);
@@ -155,11 +145,9 @@ namespace TransAction.API.Controllers
         }
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
-        {                  
-
+        {
             try
             {
-                
                 string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
                 var getUsers = _transActionRepo.GetCurrentUser(userGuid);
 
@@ -167,7 +155,7 @@ namespace TransAction.API.Controllers
                 {
                     return NotFound();
                 }
-              
+
                 var getUserResult = _mapper.Map<UserDto>(getUsers);
                 return Ok(getUserResult);
 
@@ -178,6 +166,6 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handeling your request");
             }
         }
-        
+
     }
 }

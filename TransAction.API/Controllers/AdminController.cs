@@ -1,30 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/admin")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class AdminController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IMapper _mapper;
 
-        public AdminController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
-        }
+        public AdminController(IHttpContextAccessor httpContextAccessor, ILogger<AdminController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPost("user/role")]

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using TransAction.API.Authentication;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
@@ -17,10 +18,12 @@ namespace TransAction.API
 {
     public class Startup
     {
+        private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
+            _loggerFactory = loggerFactory;
         }
 
         public IConfiguration Configuration { get; }
@@ -59,7 +62,7 @@ namespace TransAction.API
 
             services.AddSingleton<IAuthorizationHandler, UserEditAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, TeamEditAuthorizationHandler>();
-            
+
 
             services.AddCors(options =>
             {
@@ -88,7 +91,7 @@ namespace TransAction.API
             else
             {
                 app.UseExceptionHandler("/error");
-            }            
+            }
 
             app.UseCors(CORS_ALLOW_ALL);
             app.UseAuthentication();

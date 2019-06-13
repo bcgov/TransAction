@@ -1,30 +1,21 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using TransAction.API.Authorization;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/teams")]
-    public class TeamController : Controller
+    public class TeamController : BaseController
     {
-        private ITransActionRepo _transActionRepo;
-        private IHttpContextAccessor _httpContextAccessor;
-        private IMapper _mapper;
 
-        public TeamController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
-        }
+        public TeamController(IHttpContextAccessor httpContextAccessor, ILogger<TeamController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
 
         [HttpGet()]

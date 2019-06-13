@@ -1,24 +1,20 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/teamrequests")]
-    public class TeamRequestController : Controller
+    public class TeamRequestController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IMapper _mapper;
-        public TeamRequestController(ITransActionRepo transActionRepo, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _mapper = mapper;
-        }
+
+        public TeamRequestController(IHttpContextAccessor httpContextAccessor, ILogger<TeamRequestController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
         [HttpGet()]
         public IActionResult GetRequests()

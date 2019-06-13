@@ -1,26 +1,21 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/Regions")]
-    public class RegionController : Controller
+    public class RegionController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IMapper _mapper;
-        
-        public RegionController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _mapper = mapper;
-        }
+
+        public RegionController(IHttpContextAccessor httpContextAccessor, ILogger<RegionController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
 
         [HttpGet()]
