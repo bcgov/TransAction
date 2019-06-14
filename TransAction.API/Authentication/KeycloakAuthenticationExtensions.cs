@@ -18,9 +18,9 @@ namespace TransAction.API.Authentication
 {
     public static class KeycloakAuthenticationExtensions
     {
-        
+
         public static AuthenticationBuilder AddKeycloakAuth(this AuthenticationBuilder builder, KeycloakAuthenticationOptions configOptions)
-        {            
+        {
             return builder.AddJwtBearer(o =>
             {
                 o.Authority = configOptions.Authority;
@@ -66,15 +66,16 @@ namespace TransAction.API.Authentication
                         {
                             // create user here
                             var newUser = new TraUser();
-                            newUser.Username = principal.FindFirstValue("preferred_username");                            
+                            newUser.Username = principal.FindFirstValue("preferred_username");
                             var dir = principal.FindFirstValue("preferred_username").Split("@");
-                            if(dir.Count() > 1)
+                            if (dir.Count() > 1)
                             {
                                 newUser.Directory = dir[1];
-                            }else
+                            }
+                            else
                             {
                                 newUser.Directory = "";
-                            }                                                       
+                            }
                             newUser.RoleId = db.GetRole("USER").RoleId;
 
                             newUser.Email = principal.FindFirstValue(ClaimTypes.Email);
@@ -82,8 +83,6 @@ namespace TransAction.API.Authentication
                             newUser.Lname = fullName[0];
                             var firstName = fullName[1].TrimStart();
                             newUser.Fname = firstName.Remove(firstName.LastIndexOf(" "));
-                            //newUser.Fname = principal.FindFirstValue(ClaimTypes.GivenName);
-                            //newUser.Lname = principal.FindFirstValue(ClaimTypes.Surname);
                             newUser.Description = "Hello, I'm new to TransAction";
                             newUser.Guid = principal.FindFirstValue("idir_guid");
                             newUser.RegionId = db.GetRegion("HQ").RegionId;
@@ -92,31 +91,24 @@ namespace TransAction.API.Authentication
 
                             db.CreateUser(newUser);
                             if (!db.Save())
-                            {                                
+                            {
                                 context.NoResult();
 
                                 context.Response.StatusCode = 500;
-                                context.Response.ContentType = "text/plain";                               
+                                context.Response.ContentType = "text/plain";
 
                                 return context.Response.WriteAsync("Unable to create new user in the database");
 
                             }
 
-                        } else
+                        }
+                        else
                         {
-                            // 
-                            // TODO handle user create exceptions
-                            //
-
                             List<Claim> claims = new List<Claim>();
 
                             switch (dbUser.Role.Name.ToLower())
                             {
-                                //case "team_lead":
-                                //    claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
-                                //    break;
                                 case "admin":
-                                    //claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.EDIT_TEAM_CLAIM));
                                     claims.Add(new Claim(AuthorizationTypes.TRA_CLAIM_TYPE, AuthorizationTypes.ADMIN_CLAIM));
                                     break;
                                 default:
@@ -133,7 +125,7 @@ namespace TransAction.API.Authentication
 
                             principal.AddIdentity(appIdentity);
                         }
-                        
+
                         return Task.CompletedTask;
                     }
                 };
