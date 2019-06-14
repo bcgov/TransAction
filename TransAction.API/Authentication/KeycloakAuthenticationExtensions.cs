@@ -116,11 +116,6 @@ namespace TransAction.API.Authentication
                                     break;
                             }
 
-                            if (dbUser.Team != null)
-                                claims.Add(new Claim(AuthorizationTypes.TEAM_ID_CLAIM, dbUser.Team.TeamId.ToString()));
-
-                            claims.Add(new Claim(AuthorizationTypes.USER_ID_CLAIM, dbUser.UserId.ToString()));
-
                             var appIdentity = new ClaimsIdentity(claims);
 
                             principal.AddIdentity(appIdentity);

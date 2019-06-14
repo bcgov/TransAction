@@ -9,11 +9,6 @@ namespace TransAction.Data.Services
 {
     public interface ITransActionRepo
     {
-        IEnumerable<TraEvent> GetEvents();
-        TraEvent GetEvent(int id);
-        void CreateEvent(TraEvent traEvent);
-        bool EventExists(string Name);
-
         IEnumerable<TraUser> GetUsers();
         TraUser GetUser(int id);
         bool UserExists(string Name, string Email);

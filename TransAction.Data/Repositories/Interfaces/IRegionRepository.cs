@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TransAction.Data.Models;
 
-namespace TransAction.Data.Repositories
+namespace TransAction.Data.Repositories.Interfaces
 {
     public interface IRegionRepository
     {

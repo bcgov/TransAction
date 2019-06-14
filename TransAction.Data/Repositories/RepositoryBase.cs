@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
 
 namespace TransAction.Data.Repositories
 {
@@ -16,6 +17,10 @@ namespace TransAction.Data.Repositories
         }
 
         public IQueryable<T> FindAll()
+        {
+            return _context.Set<T>().AsNoTracking();
+        }
+        public IQueryable<T> Find()
         {
             return _context.Set<T>().AsNoTracking();
         }
