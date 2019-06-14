@@ -110,16 +110,16 @@ namespace TransAction.API.Controllers
             {
                 updateUser.IsFreeAgent = false;
             }
-            //var role = _transActionRepo.GetRoles();            
+            //var role = _transActionRepo.GetRoles();
             //var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
             //var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
 
             //if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
             //{
-            //    updateUser.RoleId = roleId;               
+            //    updateUser.RoleId = roleId;
             //}
 
-            //checking for if team is full 
+            //checking for if team is full
             //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
 
             var users = _transActionRepo.GetUsers();
