@@ -19,7 +19,7 @@ namespace TransAction.API.Controllers
         [HttpPost("user/role")]
         public IActionResult UpdateUserRole([FromBody] UserRoleUpdateDto userRoleUpdate)
         {
-            var user = _transActionRepo.GetUser(userRoleUpdate.UserId);
+            var user = _unitOfWork.User.GetById(userRoleUpdate.UserId);
             if (user == null)
                 return NotFound("User not found");
 
@@ -29,7 +29,7 @@ namespace TransAction.API.Controllers
 
             user.RoleId = role.RoleId;
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
                 return StatusCode(500, "Error occurred while updating user role");
 
             return CreatedAtRoute("GetUser", new { controller = "user", id = user.UserId }, _mapper.Map<UserDto>(user));

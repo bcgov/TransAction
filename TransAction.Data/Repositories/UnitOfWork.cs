@@ -24,6 +24,20 @@ namespace TransAction.Data.Repositories
             }
         }
 
+        public IUserRepository _user;
+        public IUserRepository User
+        {
+            get
+            {
+                if (_user == null)
+                {
+                    _user = new UserRepository(_context);
+                }
+
+                return _user;
+            }
+        }
+
         public UnitOfWork(TransActionContext context)
         {
             _context = context;

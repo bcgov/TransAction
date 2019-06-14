@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
 
@@ -21,34 +20,24 @@ namespace TransAction.API.Controllers
         [HttpGet()]
         public IActionResult GetUsers()
         {
-            var user = _transActionRepo.GetUsers();
+            var user = _unitOfWork.User.GetAll();
             var getUsers = _mapper.Map<IEnumerable<UserDto>>(user);
             return Ok(getUsers);
-
         }
 
         [HttpGet("{id}", Name = "GetUser")]
         public IActionResult GetUser(int id)
         {
-            try
+            var getUser = _unitOfWork.User.GetById(id);
+
+            if (getUser == null)
             {
-                var getUsers = _transActionRepo.GetUsers().FirstOrDefault(c => c.UserId == id);
-
-                if (getUsers == null)
-                {
-                    return NotFound();
-                }
-                var getUser = _transActionRepo.GetUser(id);
-                var getUserResult = _mapper.Map<UserDto>(getUser);
-
-                return Ok(getUserResult);
+                return NotFound();
             }
 
-            catch (Exception)
-            {
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
+            var getUserResult = _mapper.Map<UserDto>(getUser);
 
+            return Ok(getUserResult);
         }
 
         [HttpPost()]
@@ -70,16 +59,19 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.UserExists(createUser.Username, createUser.Email))
+
+            var user = _unitOfWork.User.GetByGuid(createUser.Guid);
+
+            if (user != null)
             {
                 return BadRequest();
             }
 
             var newUser = _mapper.Map<TraUser>(createUser);
 
-            _transActionRepo.CreateUser(newUser);
+            _unitOfWork.User.Create(newUser);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -97,7 +89,7 @@ namespace TransAction.API.Controllers
             //{
             //    return BadRequest();
             //}
-            var userEntity = _transActionRepo.GetUser(id);
+            var userEntity = _unitOfWork.User.GetById(id);
             if (userEntity == null) return NotFound();
             if (updateUser == null) return NotFound();
 
@@ -122,20 +114,19 @@ namespace TransAction.API.Controllers
             //checking for if team is full
             //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
 
-            var users = _transActionRepo.GetUsers();
-            if (updateUser.TeamId != null)
-            {
-                var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
-                if (members >= 5)
-                {
-                    return BadRequest("Team Full");
-                }
-            }
-
+            //var users = _transActionRepo.GetUsers();
+            //if (updateUser.TeamId != null)
+            //{
+            //    var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
+            //    if (members >= 5)
+            //    {
+            //        return BadRequest("Team Full");
+            //    }
+            //}
 
             _mapper.Map(updateUser, userEntity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -149,7 +140,7 @@ namespace TransAction.API.Controllers
             try
             {
                 string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-                var getUsers = _transActionRepo.GetCurrentUser(userGuid);
+                var getUsers = _unitOfWork.User.GetByGuid(userGuid);
 
                 if (getUsers == null)
                 {

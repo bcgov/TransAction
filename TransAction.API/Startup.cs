@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TransAction.API.Authentication;
-using TransAction.API.Authorization;
 using TransAction.API.Extensions;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories;
@@ -21,14 +20,9 @@ namespace TransAction.API
 {
     public class Startup
     {
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger _logger;
-
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _loggerFactory = loggerFactory;
-            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }

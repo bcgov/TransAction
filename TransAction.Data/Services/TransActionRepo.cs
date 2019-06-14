@@ -24,7 +24,7 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TraUser> GetUsers()
         {
-            return _context.TraUser.Include(x => x.TraImage).OrderBy(c => c.UserId).ToList();
+            return _context.TraUser.OrderBy(c => c.UserId).Include(x => x.TraImage).ToList();
         }
 
 

@@ -104,9 +104,6 @@ namespace TransAction.API.Controllers
             }
             _mapper.Map(updateEvent, eventEntity);
 
-            _unitOfWork.Event.Update(eventEntity);
-
-
             if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
