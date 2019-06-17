@@ -1,70 +1,49 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/users")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IMapper _mapper;
 
-        public UserController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor, IMapper mapper)
-        {
-            _transActionRepo = transActionRepo;
-            _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
-        }
+        public UserController(IHttpContextAccessor httpContextAccessor, ILogger<UserController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
-        
+
         [HttpGet()]
         public IActionResult GetUsers()
         {
-            var user = _transActionRepo.GetUsers();
+            var user = _unitOfWork.User.GetAll();
             var getUsers = _mapper.Map<IEnumerable<UserDto>>(user);
             return Ok(getUsers);
-
         }
-        
-        [HttpGet("{id}", Name = "GetThatUser")]
+
+        [HttpGet("{id}", Name = "GetUser")]
         public IActionResult GetUser(int id)
         {
-            try
+            var getUser = _unitOfWork.User.GetById(id);
+
+            if (getUser == null)
             {
-                var getUsers = _transActionRepo.GetUsers().FirstOrDefault(c => c.UserId == id);
-
-                if (getUsers == null)
-                {
-                    return NotFound();
-                }
-                var getUser = _transActionRepo.GetUser(id);
-                var getUserResult = _mapper.Map<UserDto>(getUser);
-
-                return Ok(getUserResult);
+                return NotFound();
             }
 
-            catch (Exception)
-            {
-                return StatusCode(500, "A problem happened while handeling your request");
-            }      
+            var getUserResult = _mapper.Map<UserDto>(getUser);
 
+            return Ok(getUserResult);
         }
-        
+
         [HttpPost()]
         public IActionResult CreateUser([FromBody] UserCreateDto createUser)
         {
-            if (createUser == null) 
+            if (createUser == null)
             {
                 return BadRequest();
             }
@@ -72,7 +51,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if(createUser.Fname == null || createUser.Lname == null || createUser.Description == null || createUser.Email == null)
+            if (createUser.Fname == null || createUser.Lname == null || createUser.Description == null || createUser.Email == null)
             {
                 return BadRequest();
             }
@@ -80,24 +59,27 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.UserExists(createUser.Username , createUser.Email))
+
+            var user = _unitOfWork.User.GetByGuid(createUser.Guid);
+
+            if (user != null)
             {
                 return BadRequest();
             }
 
             var newUser = _mapper.Map<TraUser>(createUser);
-                       
-            _transActionRepo.CreateUser(newUser);
 
-            if (!_transActionRepo.Save())
+            _unitOfWork.User.Create(newUser);
+
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
             var createdUserToReturn = _mapper.Map<UserDto>(newUser);
-            return CreatedAtRoute("GetThatUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
+            return CreatedAtRoute("GetUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
         }
-        
+
         [HttpPut("{id}")]
         public IActionResult UserUpdate(int id, [FromBody] UserUpdateDto updateUser)
         {
@@ -107,8 +89,8 @@ namespace TransAction.API.Controllers
             //{
             //    return BadRequest();
             //}
-            var userEntity = _transActionRepo.GetUser(id);
-           if (userEntity == null) return NotFound();
+            var userEntity = _unitOfWork.User.GetById(id);
+            if (userEntity == null) return NotFound();
             if (updateUser == null) return NotFound();
 
             if (!ModelState.IsValid)
@@ -120,54 +102,51 @@ namespace TransAction.API.Controllers
             {
                 updateUser.IsFreeAgent = false;
             }
-            var role = _transActionRepo.GetRoles();            
-            var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
-            var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
+            //var role = _transActionRepo.GetRoles();
+            //var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
+            //var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
 
-            if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
-            {
-                updateUser.RoleId = roleId;               
-            }
+            //if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
+            //{
+            //    updateUser.RoleId = roleId;
+            //}
 
-            //checking for if team is full 
+            //checking for if team is full
             //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
-            
-            var users = _transActionRepo.GetUsers();
-            if(updateUser.TeamId != null)
-            {
-                var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
-                if (members >= 5)
-                {
-                    return BadRequest("Team Full");
-                }
-            }          
 
+            //var users = _transActionRepo.GetUsers();
+            //if (updateUser.TeamId != null)
+            //{
+            //    var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
+            //    if (members >= 5)
+            //    {
+            //        return BadRequest("Team Full");
+            //    }
+            //}
 
             _mapper.Map(updateUser, userEntity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-            var user = GetUser(id);
-            return GetUser(id);
+
+            return Ok(_mapper.Map<UserDto>(userEntity));
 
         }
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
-        {                  
-
+        {
             try
             {
-                
                 string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-                var getUsers = _transActionRepo.GetCurrentUser(userGuid);
+                var getUsers = _unitOfWork.User.GetByGuid(userGuid);
 
                 if (getUsers == null)
                 {
                     return NotFound();
                 }
-              
+
                 var getUserResult = _mapper.Map<UserDto>(getUsers);
                 return Ok(getUserResult);
 
@@ -178,6 +157,6 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handeling your request");
             }
         }
-        
+
     }
 }

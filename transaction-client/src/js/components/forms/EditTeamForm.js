@@ -80,7 +80,7 @@ class EditTeamForm extends React.Component {
           component={FormInput}
           type="textarea"
           label="Description"
-          placeholderText="Enter a short description about yourself"
+          placeholderText="Enter a short description about your team"
         />
         <Field
           name="goal"
@@ -139,7 +139,7 @@ const form = reduxForm({ form: 'editTeamForm', enableReinitialize: true, validat
 const mapStateToProps = state => {
   return {
     regions: state.regions,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

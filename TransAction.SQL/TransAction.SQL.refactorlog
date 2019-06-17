@@ -350,4 +350,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[TRA_IMAGE_USER]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="3cb7c2e5-7de5-4613-9453-9cfc66f74129" ChangeDateTime="06/12/2019 20:52:41">
+    <Property Name="ElementName" Value="[dbo].[Trigger_TRA_USER]" />
+    <Property Name="ElementType" Value="SqlDmlTrigger" />
+    <Property Name="ParentElementName" Value="[dbo].[TRA_USER]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[TRA_USER_AS_I_TR]" />
+  </Operation>
 </Operations>

@@ -46,7 +46,6 @@ export const fetchUser = id => async dispatch => {
   });
 };
 
-//TODO Combine these two
 export const editUser = (id, userObj) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -61,15 +60,15 @@ export const editUser = (id, userObj) => async dispatch => {
   });
 };
 
-export const recruitUser = (userObj, id) => async dispatch => {
+export const editUserRole = userObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.put(`/users/${id}`, userObj);
+      const response = await api.post(`/admin/user/role`, userObj);
 
       dispatch({ type: FETCH_USER, payload: response.data });
       resolve();
     } catch (e) {
-      console.log('ERROR in edituser');
+      console.log('ERROR in editUserRole');
       reject(e);
     }
   });

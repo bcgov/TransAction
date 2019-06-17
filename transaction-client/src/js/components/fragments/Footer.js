@@ -1,11 +1,11 @@
 import React from 'react';
-import { NavLink as RRNavLink } from 'react-router-dom';
-import { Container, Navbar, Nav, NavItem, NavLink } from 'reactstrap';
+// import { NavLink as RRNavLink } from 'react-router-dom';
+// import { Container, Navbar, Nav, NavItem, NavLink } from 'reactstrap';
 
 const Footer = () => {
   return (
     <footer className="footer">
-      <Navbar className="navbar navbar-expand-lg navbar-dark">
+      {/* <Navbar className="navbar navbar-expand-lg navbar-dark">
         <Container>
           <Nav className="navbar-nav">
             <NavItem>
@@ -35,7 +35,7 @@ const Footer = () => {
             </NavItem>
           </Nav>
         </Container>
-      </Navbar>
+      </Navbar> */}
     </footer>
   );
 };

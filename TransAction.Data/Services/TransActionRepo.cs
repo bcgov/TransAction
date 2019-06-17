@@ -17,36 +17,6 @@ namespace TransAction.Data.Services
             _context = context;
         }
 
-        public void CreateEvent(TraEvent traEvent)
-        {
-            _context.TraEvent.Add(traEvent);
-        }
-
-        public bool EventExists(string name)
-        {
-            var checkEvent = _context.TraEvent.FirstOrDefault(c => c.Name == name);
-            if (checkEvent != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public TraEvent GetEvent(int id)
-        {
-            return _context.TraEvent.FirstOrDefault(c => c.EventId == id);
-        }
-
-        public IEnumerable<TraEvent> GetEvents()
-        {
-            return _context.TraEvent.OrderBy(c => c.EventId).ToList();
-        }
-
-        /*-----------------------------------------------------------------------------------------------------------------------------*/
-
         public TraUser GetUser(int id)
         {
             return _context.TraUser.FirstOrDefault(c => c.UserId == id);
@@ -54,7 +24,7 @@ namespace TransAction.Data.Services
 
         public IEnumerable<TraUser> GetUsers()
         {
-            return _context.TraUser.Include(x => x.TraImage).OrderBy(c => c.UserId).ToList();
+            return _context.TraUser.OrderBy(c => c.UserId).Include(x => x.TraImage).ToList();
         }
 
 
@@ -331,18 +301,19 @@ namespace TransAction.Data.Services
             var regions = _context.TraRegion.OrderBy(x => x.RegionId).ToList();
             var result = new List<RegionScoreDto>();
 
-            foreach(var region in regions)
+            foreach (var region in regions)
             {
                 var score = regionScores.Where(x => x.RegionId == region.RegionId).FirstOrDefault();
 
-                if(score != null)
+                if (score != null)
                 {
                     result.Add(score);
-                } else
+                }
+                else
                 {
                     result.Add(new RegionScoreDto { EventId = eventId, RegionId = region.RegionId, Score = 0 });
                 }
-            }            
+            }
 
             return result;
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Row, Col } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 
 import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
@@ -13,6 +12,7 @@ import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as utils from '../utils';
 import * as Constants from '../Constants';
 
 class Team extends Component {
@@ -70,7 +70,7 @@ class Team extends Component {
 
     if (!team) return false;
 
-    return currentUser.isAdmin || team.teamLeaderId === currentUser.id;
+    return utils.isCurrentUserAdmin() || team.teamLeaderId === currentUser.id;
   };
 
   userIsTeamlead = () => {
@@ -90,14 +90,12 @@ class Team extends Component {
   render() {
     const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
 
+    const breadCrumbItems = [{ active: false, text: 'Teams', link: Constants.PATHS.TEAM }];
+    if (teamToDisplay) breadCrumbItems.push({ active: true, text: teamToDisplay.name });
+
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem>
-            <Link to={Constants.PATHS.TEAM}>Teams</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>{teamToDisplay && teamToDisplay.name}</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
 
         <CardWrapper>
           {this.state.loading ? (
@@ -148,7 +146,7 @@ class Team extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     scores: state.scores,
     teams: state.teams,
     users: state.users.all,

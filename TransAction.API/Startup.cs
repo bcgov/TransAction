@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using TransAction.API.Authentication;
-using TransAction.API.Authorization;
-using TransAction.API.Mapping;
+using TransAction.API.Extensions;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories;
+using TransAction.Data.Repositories.Interfaces;
 using TransAction.Data.Services;
 
 namespace TransAction.API
@@ -37,6 +39,7 @@ namespace TransAction.API
 
             services.AddScoped<ITransActionRepo, TransActionRepo>();
             services.AddScoped<IAuthorizationRepo, AuthorizationRepo>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var ConnectionString = Configuration["CONNECTION_STRING"];
             services.AddDbContext<TransActionContext>(opt =>
@@ -48,18 +51,6 @@ namespace TransAction.API
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddKeycloakAuth(new KeycloakAuthenticationOptions() { Authority = Configuration["JWT_AUTHORITY"], Audience = Configuration["JWT_AUDIENCE"] });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(AuthorizationTypes.EDIT_USER_POLICY, policy =>
-                    policy.Requirements.Add(new UserEditRequirement()));
-                options.AddPolicy(AuthorizationTypes.EDIT_TEAM_POLICY, policy =>
-                    policy.Requirements.Add(new TeamEditRequirement()));
-            });
-
-            services.AddSingleton<IAuthorizationHandler, UserEditAuthorizationHandler>();
-            services.AddSingleton<IAuthorizationHandler, TeamEditAuthorizationHandler>();
-            
 
             services.AddCors(options =>
             {
@@ -87,8 +78,10 @@ namespace TransAction.API
             }
             else
             {
-                app.UseExceptionHandler("/error");
-            }            
+
+            }
+
+            app.ConfigureExceptionHandler(env);
 
             app.UseCors(CORS_ALLOW_ALL);
             app.UseAuthentication();

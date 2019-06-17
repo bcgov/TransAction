@@ -75,7 +75,7 @@ const mapStateToProps = state => {
     teams: state.teams,
     users: state.users,
     regions: state.regions,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

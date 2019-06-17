@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions } from '../actions';
-import DialogModal from './ui/DialogModal';
+import { fetchRoles, fetchCurrentUser, fetchRegions } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 
 class Main extends Component {
@@ -10,32 +9,25 @@ class Main extends Component {
 
   componentDidMount() {
     Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchRegions()]).then(() => {
-      this.props.updateCurrentUserRole(this.props.roles[this.props.currentUser.roleId].name);
-
       this.setState({ loading: false });
     });
+
+    // this.props.fetchRoles();
   }
 
   render() {
-    return this.state.loading ? (
-      <PageSpinner />
-    ) : (
-      <React.Fragment>
-        {this.props.children}
-        <DialogModal />
-      </React.Fragment>
-    );
+    return this.state.loading ? <PageSpinner /> : <React.Fragment>{this.props.children}</React.Fragment>;
   }
 }
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     roles: state.roles,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchRoles, fetchCurrentUser, updateCurrentUserRole, fetchRegions }
+  { fetchRoles, fetchCurrentUser, fetchRegions }
 )(Main);

@@ -1,22 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  Alert,
-  Breadcrumb,
-  BreadcrumbItem,
-  Col,
-  Row,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardFooter,
-  CardDeck,
-} from 'reactstrap';
+import { Alert, Col, Row, Button, Card, CardBody, CardHeader, CardFooter, CardDeck } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 import EditTeamForm from './forms/EditTeamForm';
 import CardWrapper from './ui/CardWrapper';
+import BreadcrumbFragment from './fragments/BreadcrumbFragment';
+
 import * as Constants from '../Constants';
 
 class GettingStarted extends React.Component {
@@ -115,12 +105,7 @@ class GettingStarted extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to="/">Home</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>Getting Started</BreadcrumbItem>
-        </Breadcrumb>
+        <BreadcrumbFragment>{[{ active: true, text: 'Getting Started' }]}</BreadcrumbFragment>
         {this.renderText()}
         {this.state.showCreateTeamForm && (
           <EditTeamForm
@@ -137,7 +122,7 @@ class GettingStarted extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

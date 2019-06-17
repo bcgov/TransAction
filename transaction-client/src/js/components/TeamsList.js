@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { BreadcrumbItem, Row, Col, Table } from 'reactstrap';
+import { Alert, Row, Col, Table, Button } from 'reactstrap';
 
-import { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests } from '../actions';
+import { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
-import OneClickButton from './ui/OneClickButton';
+import DialogModal from './ui/DialogModal';
 
 import * as Constants from '../Constants';
 
 class TeamsList extends Component {
-  state = { loading: true };
+  state = { loading: true, showConfirmDialog: false, confirmDialogOptions: {} };
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -24,9 +24,55 @@ class TeamsList extends Component {
       .catch(() => {});
   }
 
-  sendJoinRequest = (userId, teamId) => {
-    this.props.createJoinRequest({ userId, teamId });
+  sendJoinRequest = (confirm, userId, teamId) => {
+    if (confirm) {
+      this.props.createJoinRequest({ userId, teamId }).then(() => {
+        this.closeConfirmDialog();
+      });
+    } else {
+      this.closeConfirmDialog();
+    }
   };
+
+  confirmJoin = (userId, teamId) => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Send Join Request?',
+        body: 'This team leader will receive your join request.',
+        secondary: true,
+        callback: confirm => this.sendJoinRequest(confirm, userId, teamId),
+      },
+    });
+  };
+
+  becomeFreeagent = confirm => {
+    if (confirm) {
+      const { currentUser, editUser } = this.props;
+      const userObj = { ...currentUser, isFreeAgent: true };
+
+      editUser(userObj.id, userObj).then(() => this.closeConfirmDialog());
+    } else {
+      this.closeConfirmDialog();
+    }
+  };
+
+  confirmBecomeFreeagent = () => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Become a Free Agent?',
+        body:
+          'Becoming a free agent will allow any team with extra room on its roster to recruit you as its new member.',
+        secondary: true,
+        callback: confirm => this.becomeFreeagent(confirm),
+      },
+    });
+  };
+
+  closeConfirmDialog() {
+    this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
+  }
 
   renderTeamRows() {
     const { currentUser, users, regions } = this.props;
@@ -49,18 +95,14 @@ class TeamsList extends Component {
           <td>
             {users[team.teamLeaderId].fname} {users[team.teamLeaderId].lname}
           </td>
-          <td>{regions[users[team.teamLeaderId].regionId].name}</td>
+          <td>{regions[team.regionId].name}</td>
           <td>{team.numMembers}</td>
           {!currentUser.teamId && (
-            <td>
+            <td className="fit">
               {!userRequests.includes(team.id) && (
-                <OneClickButton
-                  size="sm"
-                  color="primary"
-                  handleOnClick={() => this.sendJoinRequest(currentUser.id, team.id)}
-                >
+                <Button size="sm" color="primary" onClick={() => this.confirmJoin(currentUser.id, team.id)}>
                   Request to Join
-                </OneClickButton>
+                </Button>
               )}
             </td>
           )}
@@ -71,21 +113,39 @@ class TeamsList extends Component {
   }
 
   renderTeamList() {
+    const teamRows = this.renderTeamRows();
+
     return (
       <React.Fragment>
-        <h4>All TransAction Teams</h4>
-        <Table size="sm" hover bordered responsive className="mt-3">
-          <thead className="thead-dark">
-            <tr>
-              <th>Team Name</th>
-              <th>Team Leader</th>
-              <th>Region</th>
-              <th>Members</th>
-              {!this.props.currentUser.teamId && <th>Request</th>}
-            </tr>
-          </thead>
-          <tbody>{this.renderTeamRows()}</tbody>
-        </Table>
+        <h4 className="mb-3">All TransAction Teams</h4>
+
+        {!this.props.currentUser.teamId && !this.props.currentUser.isFreeAgent && (
+          <div className="mb-3 text-right">
+            <Button size="sm" color="primary" onClick={this.confirmBecomeFreeagent}>
+              Become Free Agent
+            </Button>
+          </div>
+        )}
+        {teamRows.length > 0 ? (
+          <Table size="sm" hover bordered responsive>
+            <thead className="thead-dark">
+              <tr>
+                <th>Team Name</th>
+                <th>Team Leader</th>
+                <th>Region</th>
+                <th>Members</th>
+                {!this.props.currentUser.teamId && <th className="fit" />}
+              </tr>
+            </thead>
+            <tbody>{teamRows}</tbody>
+          </Table>
+        ) : (
+          <Alert color="primary">There are no teams at the moment.</Alert>
+        )}
+
+        {this.state.showConfirmDialog && (
+          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
+        )}
       </React.Fragment>
     );
   }
@@ -138,9 +198,7 @@ class TeamsList extends Component {
   render() {
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem active>Teams</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{[{ active: true, text: 'Teams' }]}</BreadcrumbFragment>
         {this.state.loading ? <PageSpinner /> : this.renderContent()}
       </React.Fragment>
     );
@@ -151,12 +209,12 @@ const mapStateToProps = state => {
     teams: state.teams,
     users: state.users.all,
     regions: state.regions,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     joinRequests: Object.values(state.joinRequests),
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, createJoinRequest, fetchJoinRequests }
+  { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests }
 )(TeamsList);

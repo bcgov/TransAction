@@ -14,6 +14,9 @@ objects:
             listen       [::]:8080 default_server;
             server_name  _;
 
+            add_header Last-Modified $date_gmt;
+            add_header Cache-Control "private, no-store, no-cache, must-revalidate";
+
             location / {
                 root   /usr/share/nginx/html;
                 index  index.html index.htm;

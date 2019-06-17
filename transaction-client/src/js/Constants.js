@@ -9,6 +9,7 @@ export const PATHS = {
   INCENTIVES: '/incentives',
   MESSAGES: '/messages',
   ADMIN: '/admin',
+  FREE_AGENTS: '/freeagents',
 };
 
 export const FORM_TYPE = { ADD: 'add', EDIT: 'edit' };

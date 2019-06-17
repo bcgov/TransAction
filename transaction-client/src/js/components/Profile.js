@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { BreadcrumbItem, Row, Col, Alert } from 'reactstrap';
+import { Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
 
 import { fetchTeam, editUser, fetchUser } from '../actions';
@@ -13,6 +13,7 @@ import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import UserProfileTeamPanel from './fragments/UserProfileTeamPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as utils from '../utils';
 import * as Constants from '../Constants';
 
 class Profile extends Component {
@@ -26,10 +27,9 @@ class Profile extends Component {
     this.init(this.props.match.params.id);
   }
 
-  componentDidUpdate(prevProps) {
-    // Re-init if URL param has changed
-    const prevId = prevProps.match.params.id;
-    const currId = this.props.match.params.id;
+  componentWillReceiveProps(newProps) {
+    const currId = newProps.match.params.id;
+    const prevId = this.props.match.params.id;
     if (currId !== prevId && parseInt(prevId) !== this.props.currentUser.id) {
       this.init(currId);
     }
@@ -60,7 +60,7 @@ class Profile extends Component {
   };
 
   userCanEditProfile = () => {
-    if (this.props.currentUser.isAdmin) return true;
+    if (utils.isCurrentUserAdmin()) return true;
 
     return this.selfProfile();
   };
@@ -110,14 +110,12 @@ class Profile extends Component {
   render() {
     const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
 
+    const breadCrumbItems = [{ active: false, text: 'Profile', link: Constants.PATHS.TEAM }];
+    if (userToDisplay) breadCrumbItems.push({ active: true, text: `${userToDisplay.fname} ${userToDisplay.lname}` });
+
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem>
-            <Link to={Constants.PATHS.PROFILE}>Profile</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>{userToDisplay && `${userToDisplay.fname} ${userToDisplay.lname}`}</BreadcrumbItem>
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
 
         <CardWrapper>
           {this.state.loading ? (
@@ -158,7 +156,7 @@ class Profile extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     users: state.users,
     regions: state.regions,
     roles: state.roles,

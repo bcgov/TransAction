@@ -89,7 +89,7 @@ class EventScoresPanel extends React.Component {
 const mapStateToProps = state => {
   return {
     scores: state.scores,
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
   };
 };
 

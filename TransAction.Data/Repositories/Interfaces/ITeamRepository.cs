@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TransAction.Data.Repositories
+namespace TransAction.Data.Repositories.Interfaces
 {
-    interface IEventRepository 
+    interface ITeamRepository
     {
     }
 }

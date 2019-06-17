@@ -1,35 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System;
+using System.IO;
 using TransAction.Data.Models;
-using TransAction.Data.Services;
 
 namespace TransAction.API.Controllers
 {
     [Route("api/images")]
     [ApiController]
-    public class ImageController : ControllerBase
+    public class ImageController : BaseController
     {
-        private readonly ITransActionRepo _transActionRepo;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
         private static readonly string JPEG = "image/jpeg";
         private static readonly string PNG = "image/png";
         private static readonly double MAX_SIZE = 512.0;
 
-        public ImageController(ITransActionRepo transActionRepo, IHttpContextAccessor httpContextAccessor)
-        {
-            _transActionRepo = transActionRepo;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        public ImageController(IHttpContextAccessor httpContextAccessor, ILogger<ImageController> logger) :
+            base(httpContextAccessor, logger)
+        { }
 
         [AllowAnonymous]
         [HttpGet("{guid}", Name = "GetImageByGuid")]

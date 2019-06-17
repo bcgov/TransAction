@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { BreadcrumbItem } from 'reactstrap';
 import Markdown from 'react-markdown';
 import moment from 'moment';
 
@@ -56,14 +54,12 @@ class EventDetail extends React.Component {
   }
 
   render() {
+    const breadCrumbItems = [{ active: false, text: 'Events', link: Constants.PATHS.EVENT }];
+    if (this.props.event) breadCrumbItems.push({ active: true, text: this.props.event.name });
+
     return (
       <React.Fragment>
-        <BreadcrumbFragment>
-          <BreadcrumbItem>
-            <Link to={Constants.PATHS.EVENT}>Events</Link>
-          </BreadcrumbItem>
-          {!this.state.loading && this.props.event && <BreadcrumbItem active>{this.props.event.name}</BreadcrumbItem>}
-        </BreadcrumbFragment>
+        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
         {this.state.loading ? <PageSpinner /> : this.renderContent()}
       </React.Fragment>
     );
@@ -72,7 +68,7 @@ class EventDetail extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    currentUser: state.users.current,
+    currentUser: state.users.all[state.users.current.id],
     event: state.events[ownProps.match.params.id],
     scores: state.scores,
   };
