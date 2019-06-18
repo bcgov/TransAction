@@ -21,4 +21,4 @@ services:
       - JWT_AUDIENCE=<client-id>
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "8080:50790"
+      - "8080:8080"

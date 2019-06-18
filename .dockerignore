@@ -16,3 +16,4 @@ Properties
 */Properties
 *.user
 */*.user
+*/appsettings.Development.json
