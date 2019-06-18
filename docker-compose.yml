@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+
+  transaction-client:
+    build:
+      context: ./transaction-client
+    environment:
+      - REACT_APP_SSO_HOST=https://sso-dev.pathfinder.gov.bc.ca/auth
+      - REACT_APP_SSO_REALM=<realm-id>
+      - REACT_APP_SSO_CLIENT=<client-id>
+      - REACT_APP_API_HOST=localhost:8080
+    ports:
+      - "3000:8080"
+
+  transaction-api:
+    build:
+      context: .
+    environment:
+      - CONNECTION_STRING=Server=<server>;User Id=<user>;Password=<password>;Database=<database>;
+      - JWT_AUTHORITY=https://sso-dev.pathfinder.gov.bc.ca/auth/realms/<realm-id>
+      - JWT_AUDIENCE=<client-id>
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8080:8080"
