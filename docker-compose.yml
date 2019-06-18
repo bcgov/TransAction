@@ -1,6 +1,5 @@
 version: "3.7"
 services:
-
   transaction-client:
     build:
       context: ./transaction-client
