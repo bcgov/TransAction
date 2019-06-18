@@ -2,3 +2,5 @@
 ./.vs
 db.json
 .s2iignore
+/build
+
