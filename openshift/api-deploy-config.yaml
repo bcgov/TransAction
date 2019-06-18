@@ -57,7 +57,7 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: api-connections
-                      key: sqltst.th.gov.bc.ca
+                      key: transaction.db
                 - name: JWT_AUTHORITY
                   valueFrom:
                     secretKeyRef:
