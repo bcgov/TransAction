@@ -65,8 +65,12 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
+
             var newTopic = _mapper.Map<TraTopic>(createTopic);
 
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            newTopic.UserId = getUser.UserId;
 
             _transActionRepo.CreateTopic(newTopic);
 
@@ -103,6 +107,10 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            topicEntity.UserId = getUser.UserId;
             _mapper.Map(updateTopic, topicEntity);
 
 
@@ -114,7 +122,7 @@ namespace TransAction.API.Controllers
             return GetTopic(id);
         }
 
-        [HttpGet("{topicId}/message")]
+        [HttpGet("{topicId}/message", Name = "GetThatMessage")]
         public IActionResult GetMessages(int topicId)
         {
             try
@@ -154,6 +162,12 @@ namespace TransAction.API.Controllers
 
             var newMessage = _mapper.Map<TraTopicMessage>(createTopic);
 
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            newMessage.UserId = getUser.UserId;
+
+
+
             _transActionRepo.CreateTopicMessage(newMessage);
 
             if (!_transActionRepo.Save())
@@ -180,8 +194,10 @@ namespace TransAction.API.Controllers
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
 
+            var message = _transActionRepo.GetTopicMessage(id);
+
             var user = _transActionRepo.GetCurrentUser(getUser.Guid);
-            if(user.UserId == updateMessage.UserId)
+            if( user.Role.Name.ToLower() == "admin" ||user.UserId == message.UserId )
             {
                 var messageEntity = _transActionRepo.GetTopicMessage(id);
                 var topic = _transActionRepo.GetTopic(messageEntity.TopicId);

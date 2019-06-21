@@ -14,7 +14,7 @@ namespace TransAction.Data.Repositories
 
         public IEnumerable<TraEvent> GetAll()
         {
-            return FindAll().ToList();
+            return FindAll().Where(x => x.IsActive == true).ToList();
         }
 
         public TraEvent GetById(int id)

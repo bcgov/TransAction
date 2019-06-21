@@ -51,10 +51,20 @@ namespace TransAction.API.Controllers
         [HttpPost()]
         public IActionResult CreateRequest([FromBody] MemberReqCreateDto createRequest)
         {
+
             if (createRequest == null)
             {
                 return BadRequest();
             }
+
+            //takes care of the fact the if the user is on team then he cant create a request.
+            var user = createRequest.UserId;
+            var getUser = _transActionRepo.GetUser(user);
+            if (getUser.TeamId != null)
+            {
+                return BadRequest();
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

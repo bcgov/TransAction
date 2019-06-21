@@ -28,7 +28,7 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet("{id}", Name = "GetThatActivity")]
-        public IActionResult GetActivity(int id)
+        public IActionResult GetActivityById(int id)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult ActivityUpdate(int id, [FromBody] ActivityUpdateDto updateActivity)
+        public IActionResult UpdateActivity(int id, [FromBody] ActivityUpdateDto updateActivity)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
