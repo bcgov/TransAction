@@ -28,7 +28,7 @@ namespace TransAction.API.Controllers
         }
 
 
-        [HttpGet("{id}", Name = "GetThatRegion")]
+        [HttpGet("{id}", Name = "GetRegion")]
         public IActionResult GetRegionById(int id)
         {
             try
@@ -82,8 +82,8 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<RegionDto>(newRegion);
-            return CreatedAtRoute("GetThatRegion", new { id = createdPointOfInterestToReturn.RegionId }, createdPointOfInterestToReturn);
+            var createRegionResult = _mapper.Map<RegionDto>(newRegion);
+            return CreatedAtRoute("GetRegion", new { id = createRegionResult.RegionId }, createRegionResult);
             
         }
 

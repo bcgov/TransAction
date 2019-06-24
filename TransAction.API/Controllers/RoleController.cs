@@ -26,7 +26,7 @@ namespace TransAction.API.Controllers
 
         }
 
-        [HttpGet("{id}", Name = "GetThatRole")]
+        [HttpGet("{id}", Name = "GetRole")]
         public IActionResult GetRoleById(int id)
         {
             try
@@ -81,8 +81,8 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<RoleDto>(newRole);
-            return CreatedAtRoute("GetThatRole", new { id = createdPointOfInterestToReturn.RoleId }, createdPointOfInterestToReturn);
+            var createRoleResult = _mapper.Map<RoleDto>(newRole);
+            return CreatedAtRoute("GetRole", new { id = createRoleResult.RoleId }, createRoleResult);
 
 
         }

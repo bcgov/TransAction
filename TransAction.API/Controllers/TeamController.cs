@@ -36,7 +36,7 @@ namespace TransAction.API.Controllers
             return Ok(resultTeams);
         }
 
-        [HttpGet("{id}", Name = "GetThatTeam")]
+        [HttpGet("{id}")]
         public IActionResult GetTeamById(int id)
         {
             try

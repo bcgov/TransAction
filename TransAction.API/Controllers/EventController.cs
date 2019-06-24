@@ -27,7 +27,7 @@ namespace TransAction.API.Controllers
         }
 
 
-        [HttpGet("{id}", Name = "GetThatEvent")]
+        [HttpGet("{id}", Name = "GetEvent")]
         public IActionResult GetEventById(int id)
         {
             try
@@ -86,8 +86,8 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<EventDto>(newEvent);
-            return CreatedAtRoute("GetThatEvent", new { id = createdPointOfInterestToReturn.EventId }, createdPointOfInterestToReturn);
+            var createEventResult = _mapper.Map<EventDto>(newEvent);
+            return CreatedAtRoute("GetEvent", new { id = createEventResult.EventId }, createEventResult);
         }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]

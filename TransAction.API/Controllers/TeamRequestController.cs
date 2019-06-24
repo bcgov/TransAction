@@ -24,7 +24,7 @@ namespace TransAction.API.Controllers
             return Ok(getRequest);
         }
 
-        [HttpGet("{id}", Name = "GetThatMemberReq")]
+        [HttpGet("{id}", Name = "GetMemberReq")]
         public IActionResult GetUserActivityById(int id)
         {
             try
@@ -80,8 +80,8 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<MemberReqDto>(newRequest);
-            return CreatedAtRoute("GetThatEvent", new { id = createdPointOfInterestToReturn.MemberReqId }, createdPointOfInterestToReturn);
+            var createMemberReqResult = _mapper.Map<MemberReqDto>(newRequest);
+            return CreatedAtRoute("GetMemberReq", new { id = createMemberReqResult.MemberReqId }, createMemberReqResult);
 
 
         }
