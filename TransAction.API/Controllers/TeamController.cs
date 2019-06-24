@@ -37,7 +37,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetThatTeam")]
-        public IActionResult GetTeam(int id)
+        public IActionResult GetTeamById(int id)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult TeamUpdate(int id, [FromBody] TeamUpdateDto teamUpdate)
+        public IActionResult UpdateTeam(int id, [FromBody] TeamUpdateDto teamUpdate)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
@@ -153,7 +153,7 @@ namespace TransAction.API.Controllers
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
 
-                return GetTeam(id);
+                return GetTeamById(id);
             }
             else
             {
@@ -195,7 +195,7 @@ namespace TransAction.API.Controllers
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
-                return GetTeam(addUserToTeam.TeamId);
+                return GetTeamById(addUserToTeam.TeamId);
             }
             else
             {
@@ -272,7 +272,7 @@ namespace TransAction.API.Controllers
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
 
-                return GetTeam(removeUser.TeamId);
+                return GetTeamById(removeUser.TeamId);
             }
             else
             {

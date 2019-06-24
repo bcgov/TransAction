@@ -27,7 +27,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetThatRole")]
-        public IActionResult GetRole(int id)
+        public IActionResult GetRoleById(int id)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace TransAction.API.Controllers
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
-        public IActionResult RoleUpdate(int id, [FromBody] RoleUpdateDto updateRole)
+        public IActionResult UpdateRole(int id, [FromBody] RoleUpdateDto updateRole)
         {
             var roleEntity = _transActionRepo.GetRole(id);
             if (roleEntity == null) return NotFound();

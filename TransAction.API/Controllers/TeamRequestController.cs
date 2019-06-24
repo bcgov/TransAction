@@ -25,7 +25,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetThatMemberReq")]
-        public IActionResult GetUserActivity(int id)
+        public IActionResult GetUserActivityById(int id)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult RequestUpdate(int id, [FromBody] MemberReqUpdateDto updateRequest)
+        public IActionResult UpdateRequest(int id, [FromBody] MemberReqUpdateDto updateRequest)
         {
             var requestEntity = _transActionRepo.GetRequest(id);
             if (requestEntity == null) return NotFound();

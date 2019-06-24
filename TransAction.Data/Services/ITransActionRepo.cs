@@ -64,6 +64,7 @@ namespace TransAction.Data.Services
         TraTopicMessage GetTopicMessage(int messageId);
         void CreateTopicMessage(TraTopicMessage traTopicMessage);
         void DeleteTopicMessage(TraTopicMessage traTopicMessage);
+        IEnumerable<TraTopicMessage> GetMessages();
 
         TraImage GetProfileImage(string guid);
         TraImage GetUserProfileImage(int userId);

@@ -29,7 +29,7 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet("{id}", Name = "GetThatRegion")]
-        public IActionResult GetRegion(int id)
+        public IActionResult GetRegionById(int id)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace TransAction.API.Controllers
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
-        public IActionResult RegionUpdate(int id, [FromBody] RegionUpdateDto updateRegion)
+        public IActionResult UpdateRegion(int id, [FromBody] RegionUpdateDto updateRegion)
         {
             var regionEntity = _transActionRepo.GetRegion(id);
             if (regionEntity == null) return NotFound();

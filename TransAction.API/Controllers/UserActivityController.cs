@@ -26,7 +26,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetThatUserActivity")]
-        public IActionResult GetUserActivity(int id)
+        public IActionResult GetUserActivityById(int id)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UserActivityUpdate(int id, [FromBody] UserActivityUpdateDto updateUserActivity)
+        public IActionResult UpdateUserActivity(int id, [FromBody] UserActivityUpdateDto updateUserActivity)
         {
             var userActivityEntity = _transActionRepo.GetUserActivity(id);
             if (userActivityEntity == null) return NotFound();
@@ -106,7 +106,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return GetUserActivity(id);
+            return GetUserActivityById(id);
         }
 
         //total score for that specific team for that specific event
