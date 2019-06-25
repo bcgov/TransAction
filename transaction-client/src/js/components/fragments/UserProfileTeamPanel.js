@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Row, Col, Alert } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Row, Col, Alert } from 'reactstrap';
 
 import TeamProfileFragment from './TeamProfileFragment';
 
@@ -43,21 +42,11 @@ class UserProfileTeamPanel extends React.Component {
   }
 
   renderContent() {
-    const { selfProfile } = this.props;
-    const teamToDisplay = this.props.teams[this.props.teamIdToDisplay];
-
     return (
       <React.Fragment>
         <Row className="mb-3">
-          <Col xs="2">
+          <Col>
             <h4>Team Status</h4>
-          </Col>
-          <Col className="text-right">
-            {selfProfile && teamToDisplay && teamToDisplay.numMembers > 1 && (
-              <Button color="danger" size="sm">
-                <FontAwesomeIcon icon="sign-out-alt" /> Leave
-              </Button>
-            )}
           </Col>
         </Row>
         {this.renderUserTeam()}

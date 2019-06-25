@@ -1,6 +1,8 @@
 import 'react-app-polyfill/ie9';
+import 'core-js/es/array';
 import 'core-js/es/object';
-import 'core-js/es/array/includes';
+import 'core-js/es/map';
+import 'core-js/es/set';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -14,6 +16,20 @@ import Api from './js/api/api';
 import initFontAwesome from './js/fontAwesome';
 
 import { UPDATE_AUTH_USER } from './js/actions/types';
+
+// CustomEvent Polyfill for IE11, used by Reactstrap Carousel
+(function() {
+  if (typeof window.CustomEvent === 'function') return false;
+
+  function CustomEvent(event, params) {
+    params = params || { bubbles: false, cancelable: false, detail: null };
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+    return evt;
+  }
+
+  window.CustomEvent = CustomEvent;
+})();
 
 initFontAwesome();
 
