@@ -25,8 +25,8 @@ namespace TransAction.API.Controllers
             return Ok(getTopics);
         }
 
-        [HttpGet("{id}", Name = "GetThatTopic")]
-        public IActionResult GetTopic(int id)
+        [HttpGet("{id}", Name = "GetTopic")]
+        public IActionResult GetTopicById(int id)
         {
 
             try
@@ -65,8 +65,12 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
+
             var newTopic = _mapper.Map<TraTopic>(createTopic);
 
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            newTopic.UserId = getUser.UserId;
 
             _transActionRepo.CreateTopic(newTopic);
 
@@ -87,13 +91,13 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<TopicDto>(newTopic);
-            return CreatedAtRoute("GetThatTopic", new { id = createdPointOfInterestToReturn.TopicId }, createdPointOfInterestToReturn);
+            var createTopicResult = _mapper.Map<TopicDto>(newTopic);
+            return CreatedAtRoute("GetTopic", new { id = createTopicResult.TopicId }, createTopicResult);
 
         }
 
         [HttpPut("{id}")]
-        public IActionResult TopicUpdate(int id, [FromBody] TopicUpdateDto updateTopic)
+        public IActionResult UpdateTopic(int id, [FromBody] TopicUpdateDto updateTopic)
         {
             var topicEntity = _transActionRepo.GetTopic(id);
             if (topicEntity == null) return NotFound();
@@ -103,6 +107,10 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            topicEntity.UserId = getUser.UserId;
             _mapper.Map(updateTopic, topicEntity);
 
 
@@ -111,7 +119,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return GetTopic(id);
+            return GetTopicById(id);
         }
 
         [HttpGet("{topicId}/message")]
@@ -134,16 +142,40 @@ namespace TransAction.API.Controllers
             }
         }
 
-       
+        [HttpGet("message/{messageId}", Name = "GetMessage")]
+        public IActionResult GetMessageById(int messageId)
+        {
+
+            try
+            {
+                var getMessages = _transActionRepo.GetMessages();
+
+                if (getMessages == null)
+                {
+                    return NotFound();
+                }
+                var getMessage = _transActionRepo.GetTopicMessage(messageId);
+                var getMessageResult = _mapper.Map<MessageDto>(getMessage);
+                return Ok(getMessageResult);
+
+            }
+
+            catch (Exception)
+            {
+                return StatusCode(500, "A problem happened while handeling your request");
+            }
+        }
+
+
 
         [HttpPost("message")]
-        public IActionResult CreateMessage([FromBody] MessageUpdateDto createTopic)
+        public IActionResult CreateMessage([FromBody] MessageCreateDto createMessage)
         {
-            if (createTopic == null)
+            if (createMessage == null)
             {
                 return BadRequest();
             }
-            if (createTopic.Body == null)
+            if (createMessage.Body == null)
             {
                 return BadRequest();
             }
@@ -152,7 +184,13 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newMessage = _mapper.Map<TraTopicMessage>(createTopic);
+            var newMessage = _mapper.Map<TraTopicMessage>(createMessage);
+
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            newMessage.UserId = getUser.UserId;
+
+
 
             _transActionRepo.CreateTopicMessage(newMessage);
 
@@ -169,19 +207,21 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<MessageDto>(newMessage);
-            return CreatedAtRoute("GetThatTopic", new { id = createdPointOfInterestToReturn.TopicId }, createdPointOfInterestToReturn);
+            var createMessageResult = _mapper.Map<MessageDto>(newMessage);
+            return CreatedAtRoute("GetMessage", new { messageId = createMessageResult.TopicMessageId }, createMessageResult);
 
         }
 
         [HttpPut("message/{id}")]
-        public IActionResult MessageUpdate(int id, [FromBody] MessageUpdateDto updateMessage)
+        public IActionResult UpdateMessage(int id, [FromBody] MessageUpdateDto updateMessage)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
 
+            var message = _transActionRepo.GetTopicMessage(id);
+
             var user = _transActionRepo.GetCurrentUser(getUser.Guid);
-            if(user.UserId == updateMessage.UserId)
+            if( user.Role.Name.ToLower() == "admin" ||user.UserId == message.UserId )
             {
                 var messageEntity = _transActionRepo.GetTopicMessage(id);
                 var topic = _transActionRepo.GetTopic(messageEntity.TopicId);

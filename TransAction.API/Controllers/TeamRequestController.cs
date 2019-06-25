@@ -24,8 +24,8 @@ namespace TransAction.API.Controllers
             return Ok(getRequest);
         }
 
-        [HttpGet("{id}", Name = "GetThatMemberReq")]
-        public IActionResult GetUserActivity(int id)
+        [HttpGet("{id}", Name = "GetMemberReq")]
+        public IActionResult GetUserActivityById(int id)
         {
             try
             {
@@ -51,10 +51,20 @@ namespace TransAction.API.Controllers
         [HttpPost()]
         public IActionResult CreateRequest([FromBody] MemberReqCreateDto createRequest)
         {
+
             if (createRequest == null)
             {
                 return BadRequest();
             }
+
+            //takes care of the fact the if the user is on team then he cant create a request.
+            var user = createRequest.UserId;
+            var getUser = _transActionRepo.GetUser(user);
+            if (getUser.TeamId != null)
+            {
+                return BadRequest();
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -70,14 +80,14 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<MemberReqDto>(newRequest);
-            return CreatedAtRoute("GetThatEvent", new { id = createdPointOfInterestToReturn.MemberReqId }, createdPointOfInterestToReturn);
+            var createMemberReqResult = _mapper.Map<MemberReqDto>(newRequest);
+            return CreatedAtRoute("GetMemberReq", new { id = createMemberReqResult.MemberReqId }, createMemberReqResult);
 
 
         }
 
         [HttpPut("{id}")]
-        public IActionResult RequestUpdate(int id, [FromBody] MemberReqUpdateDto updateRequest)
+        public IActionResult UpdateRequest(int id, [FromBody] MemberReqUpdateDto updateRequest)
         {
             var requestEntity = _transActionRepo.GetRequest(id);
             if (requestEntity == null) return NotFound();

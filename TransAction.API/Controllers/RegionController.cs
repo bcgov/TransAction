@@ -28,8 +28,8 @@ namespace TransAction.API.Controllers
         }
 
 
-        [HttpGet("{id}", Name = "GetThatRegion")]
-        public IActionResult GetRegion(int id)
+        [HttpGet("{id}", Name = "GetRegion")]
+        public IActionResult GetRegionById(int id)
         {
             try
             {
@@ -82,14 +82,14 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<RegionDto>(newRegion);
-            return CreatedAtRoute("GetThatRegion", new { id = createdPointOfInterestToReturn.RegionId }, createdPointOfInterestToReturn);
+            var createRegionResult = _mapper.Map<RegionDto>(newRegion);
+            return CreatedAtRoute("GetRegion", new { id = createRegionResult.RegionId }, createRegionResult);
             
         }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
-        public IActionResult RegionUpdate(int id, [FromBody] RegionUpdateDto updateRegion)
+        public IActionResult UpdateRegion(int id, [FromBody] RegionUpdateDto updateRegion)
         {
             var regionEntity = _transActionRepo.GetRegion(id);
             if (regionEntity == null) return NotFound();

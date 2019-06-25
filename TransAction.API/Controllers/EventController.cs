@@ -27,8 +27,8 @@ namespace TransAction.API.Controllers
         }
 
 
-        [HttpGet("{id}", Name = "GetThatEvent")]
-        public IActionResult GetEvent(int id)
+        [HttpGet("{id}", Name = "GetEvent")]
+        public IActionResult GetEventById(int id)
         {
             try
             {
@@ -86,13 +86,13 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<EventDto>(newEvent);
-            return CreatedAtRoute("GetThatEvent", new { id = createdPointOfInterestToReturn.EventId }, createdPointOfInterestToReturn);
+            var createEventResult = _mapper.Map<EventDto>(newEvent);
+            return CreatedAtRoute("GetEvent", new { id = createEventResult.EventId }, createEventResult);
         }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
-        public IActionResult EventUpdate(int id, [FromBody] EventUpdateDto updateEvent)
+        public IActionResult UpdateEvent(int id, [FromBody] EventUpdateDto updateEvent)
         {
             var eventEntity = _unitOfWork.Event.GetById(id);
             if (eventEntity == null) return NotFound();
@@ -109,7 +109,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return GetEvent(id);
+            return GetEventById(id);
         }
     }
 }

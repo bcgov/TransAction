@@ -420,7 +420,10 @@ namespace TransAction.Data.Services
                 .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c => c.TopicMessageId).ToList();
 
         }
-
+        public IEnumerable<TraTopicMessage> GetMessages()
+        {
+            return _context.TraTopicMessage.OrderBy(c => c.TopicMessageId).ToList();
+        }
         public TraTopicMessage GetTopicMessage(int messageId)
         {
             return _context.TraTopicMessage.FirstOrDefault(c => c.TopicMessageId == messageId);
@@ -461,6 +464,7 @@ namespace TransAction.Data.Services
             _context.TraImage.Add(image);
         }
 
+      
     }
 }
 

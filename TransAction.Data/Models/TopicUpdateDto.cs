@@ -7,7 +7,6 @@ namespace TransAction.Data.Models
     public class TopicUpdateDto
     {
         public string Title { get; set; }
-        public int UserId { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }

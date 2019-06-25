@@ -26,7 +26,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetUser")]
-        public IActionResult GetUser(int id)
+        public IActionResult GetUserById(int id)
         {
             var getUser = _unitOfWork.User.GetById(id);
 
@@ -81,7 +81,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UserUpdate(int id, [FromBody] UserUpdateDto updateUser)
+        public IActionResult UpdateUser(int id, [FromBody] UserUpdateDto updateUser)
         {
             //string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             //var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);

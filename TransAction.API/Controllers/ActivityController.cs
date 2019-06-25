@@ -27,8 +27,8 @@ namespace TransAction.API.Controllers
         }
 
 
-        [HttpGet("{id}", Name = "GetThatActivity")]
-        public IActionResult GetActivity(int id)
+        [HttpGet("{id}", Name = "GetActivity")]
+        public IActionResult GetActivityById(int id)
         {
             try
             {
@@ -89,14 +89,14 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            var createdPointOfInterestToReturn = _mapper.Map<ActivityDto>(newActivity);
-            return CreatedAtRoute("GetThatActivity", new { id = createdPointOfInterestToReturn.ActivityId }, createdPointOfInterestToReturn);
+            var createActivityResult = _mapper.Map<ActivityDto>(newActivity);
+            return CreatedAtRoute("GetActivity", new { id = createActivityResult.ActivityId }, createActivityResult);
 
 
         }
 
         [HttpPut("{id}")]
-        public IActionResult ActivityUpdate(int id, [FromBody] ActivityUpdateDto updateActivity)
+        public IActionResult UpdateActivity(int id, [FromBody] ActivityUpdateDto updateActivity)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);

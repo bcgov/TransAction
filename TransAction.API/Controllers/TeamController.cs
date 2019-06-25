@@ -36,8 +36,8 @@ namespace TransAction.API.Controllers
             return Ok(resultTeams);
         }
 
-        [HttpGet("{id}", Name = "GetThatTeam")]
-        public IActionResult GetTeam(int id)
+        [HttpGet("{id}")]
+        public IActionResult GetTeamById(int id)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace TransAction.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult TeamUpdate(int id, [FromBody] TeamUpdateDto teamUpdate)
+        public IActionResult UpdateTeam(int id, [FromBody] TeamUpdateDto teamUpdate)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
@@ -153,7 +153,7 @@ namespace TransAction.API.Controllers
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
 
-                return GetTeam(id);
+                return GetTeamById(id);
             }
             else
             {
@@ -169,20 +169,40 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
+            //var users = _transActionRepo.GetUsers();
+            //var numMembers = users.Where(y => y.TeamId == getUser.TeamId).Count();
+            //if(numMembers > 5)
+            //{
+            //    return BadRequest();
+            //}
             //have to update the teamId and then find and update the member request and set then false on active
-            getUser.TeamId = addUserToTeam.TeamId;
-            getUser.IsFreeAgent = false;
-            var requests = _transActionRepo.GetRequests();
-            requests = requests.Where(x => x.UserId == addUserToTeam.UserId && x.IsActive == true);
-            foreach (var request in requests)
+
+
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getCurrentUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getTeam = _transActionRepo.GetTeam(addUserToTeam.TeamId);
+            if(getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
             {
-                request.IsActive = false;
+                getUser.TeamId = addUserToTeam.TeamId;
+                getUser.IsFreeAgent = false;
+                var requests = _transActionRepo.GetRequests();
+                requests = requests.Where(x => x.UserId == addUserToTeam.UserId && x.IsActive == true);
+                foreach (var request in requests)
+                {
+                    request.IsActive = false;
+                }
+                if (!_transActionRepo.Save())
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+                return GetTeamById(addUserToTeam.TeamId);
             }
-            if (!_transActionRepo.Save())
+            else
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return BadRequest();
             }
-            return GetTeam(addUserToTeam.TeamId);
+
+
         }
 
         [HttpPost("remove")]
@@ -203,53 +223,62 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(400);
             }
-
-            if (team.UserId == removeUser.UserId)
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getCurrentUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getTeam = _transActionRepo.GetTeam(removeUser.TeamId);
+            if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
             {
-                Random rand = new Random();
-                int toSkip = rand.Next(0, members.Count() - 1);
-                var randomMember = members.Skip(toSkip).Where(x => x.UserId != removeUser.UserId).Take(1).First();
+                if (team.UserId == removeUser.UserId)
+                {
+                    Random rand = new Random();
+                    int toSkip = rand.Next(0, members.Count() - 1);
+                    var randomMember = members.Skip(toSkip).Where(x => x.UserId != removeUser.UserId).Take(1).First();
 
-                team.UserId = randomMember.UserId;
+                    team.UserId = randomMember.UserId;
+                }
+
+                user.TeamId = null;
+                //var roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
+                //if (user.RoleId == roleId)
+                //{
+                //    team.UserId = randomMember.UserId;
+                //    randomMember.RoleId = roleId;
+                //    user.TeamId = null;
+                //    roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
+                //    user.RoleId = roleId;
+                //}
+
+                //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
+                //if(user.RoleId == roleId)
+                //{
+                //    user.TeamId = null;
+                //    user.RoleId = roleId;
+                //}
+
+                //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "admin").Select(x => x.RoleId).FirstOrDefault();
+                //if(user.RoleId == roleId)
+                //{
+                //    if(team.UserId == removeUser.UserId)
+                //    {
+                //        roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
+                //        randomMember.RoleId = roleId;
+                //        team.UserId = randomMember.UserId;
+                //    }
+                //    user.TeamId = null;
+                //}
+
+                if (!_transActionRepo.Save())
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+
+                return GetTeamById(removeUser.TeamId);
+            }
+            else
+            {
+                return BadRequest();
             }
 
-            user.TeamId = null;
-
-            //var roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
-            //if (user.RoleId == roleId)
-            //{
-            //    team.UserId = randomMember.UserId;
-            //    randomMember.RoleId = roleId;
-            //    user.TeamId = null;
-            //    roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
-            //    user.RoleId = roleId;
-            //}
-
-            //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
-            //if(user.RoleId == roleId)
-            //{
-            //    user.TeamId = null;
-            //    user.RoleId = roleId;
-            //}
-
-            //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "admin").Select(x => x.RoleId).FirstOrDefault();
-            //if(user.RoleId == roleId)
-            //{
-            //    if(team.UserId == removeUser.UserId)
-            //    {
-            //        roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
-            //        randomMember.RoleId = roleId;
-            //        team.UserId = randomMember.UserId;
-            //    }
-            //    user.TeamId = null;
-            //}
-
-            if (!_transActionRepo.Save())
-            {
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
-
-            return GetTeam(removeUser.TeamId);
         }
 
     }
