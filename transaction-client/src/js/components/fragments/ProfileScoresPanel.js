@@ -88,7 +88,7 @@ class ProfileScoresPanel extends React.Component {
             <Alert color="warning">
               {currentUser.teamId ? (
                 <React.Fragment>
-                  You have not participated in any events yet. Get started <Link to={Constants.PATHS.START}>here</Link>.
+                  You have not participated in any events yet. Get started <Link to={Constants.PATHS.EVENT}>here</Link>.
                 </React.Fragment>
               ) : (
                 <React.Fragment>
