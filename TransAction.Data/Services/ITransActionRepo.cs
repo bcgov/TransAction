@@ -61,7 +61,7 @@ namespace TransAction.Data.Services
         void DeleteTopic(TraTopic traTopic);
 
         IEnumerable<TraTopicMessage> GetTopicMessages(int topicId);
-        TraTopicMessage GetTopicMessage(int messageId);
+        TraTopicMessage GetTopicMessage(int id);
         void CreateTopicMessage(TraTopicMessage traTopicMessage);
         void DeleteTopicMessage(TraTopicMessage traTopicMessage);
         IEnumerable<TraTopicMessage> GetMessages();
