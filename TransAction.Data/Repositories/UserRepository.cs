@@ -26,5 +26,10 @@ namespace TransAction.Data.Repositories
         {
             return Find(e => e.Guid == guid).Include(x => x.TraImage).FirstOrDefault();
         }
+
+        public IEnumerable<TraUser> GetUserInTeam(int teamId)
+        {
+            return Find(e => e.TeamId == teamId).ToList();
+        }
     }
 }

@@ -4,6 +4,7 @@
     {
         IEventRepository Event { get; }
         IUserRepository User { get; }
+        ITeamRepository Team { get; }
         bool Save();
     }
 }
