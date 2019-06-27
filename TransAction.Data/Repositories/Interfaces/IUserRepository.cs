@@ -9,6 +9,7 @@ namespace TransAction.Data.Repositories.Interfaces
         TraUser GetById(int id);
         TraUser GetByGuid(string guid);
         IEnumerable<TraUser> GetUserInTeam(int teamId);
-        void Create(TraUser newEvent);
+        void Create(TraUser newUser);
+        void Update(TraUser updateUser);
     }
 }

@@ -126,6 +126,8 @@ namespace TransAction.API.Controllers
 
             _mapper.Map(updateUser, userEntity);
 
+            _unitOfWork.User.Update(userEntity);
+
             if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
