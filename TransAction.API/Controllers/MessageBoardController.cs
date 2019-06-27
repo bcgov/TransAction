@@ -142,8 +142,8 @@ namespace TransAction.API.Controllers
             }
         }
 
-        [HttpGet("message/{messageId}", Name = "GetMessage")]
-        public IActionResult GetMessageById(int messageId)
+        [HttpGet("message/{id}", Name = "GetMessage")]
+        public IActionResult GetMessageById(int id)
         {
 
             try
@@ -154,7 +154,7 @@ namespace TransAction.API.Controllers
                 {
                     return NotFound();
                 }
-                var getMessage = _transActionRepo.GetTopicMessage(messageId);
+                var getMessage = _transActionRepo.GetTopicMessage(id);
                 var getMessageResult = _mapper.Map<MessageDto>(getMessage);
                 return Ok(getMessageResult);
 
@@ -208,7 +208,7 @@ namespace TransAction.API.Controllers
             }
 
             var createMessageResult = _mapper.Map<MessageDto>(newMessage);
-            return CreatedAtRoute("GetMessage", new { messageId = createMessageResult.TopicMessageId }, createMessageResult);
+            return CreatedAtRoute("GetMessage", new { id = createMessageResult.TopicMessageId }, createMessageResult);
 
         }
 
@@ -221,7 +221,7 @@ namespace TransAction.API.Controllers
             var message = _transActionRepo.GetTopicMessage(id);
 
             var user = _transActionRepo.GetCurrentUser(getUser.Guid);
-            if( user.Role.Name.ToLower() == "admin" ||user.UserId == message.UserId )
+            if (user.Role.Name.ToLower() == "admin" || user.UserId == message.UserId)
             {
                 var messageEntity = _transActionRepo.GetTopicMessage(id);
                 var topic = _transActionRepo.GetTopic(messageEntity.TopicId);
@@ -250,7 +250,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            
+
         }
 
         [HttpDelete("topic/{topicId}")]
@@ -262,7 +262,7 @@ namespace TransAction.API.Controllers
                 return NotFound();
             }
             var messages = _transActionRepo.GetTopicMessages(topicId);
-            foreach(var message in messages)
+            foreach (var message in messages)
             {
                 _transActionRepo.DeleteTopicMessage(message);
             }

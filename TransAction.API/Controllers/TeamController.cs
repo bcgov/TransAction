@@ -22,7 +22,6 @@ namespace TransAction.API.Controllers
         public IActionResult GetTeams()
         {
             var teams = _transActionRepo.GetTeams();
-
             var getTeams = _mapper.Map<IEnumerable<TeamDto>>(teams);
             var users = _transActionRepo.GetUsers();
             foreach (var team in getTeams)
@@ -169,9 +168,14 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
+            var user = _unitOfWork.User.GetUserInTeam(addUserToTeam.TeamId).Count();
+            if (user >= 5)
+            {
+                return BadRequest();
+            }
             //var users = _transActionRepo.GetUsers();
             //var numMembers = users.Where(y => y.TeamId == getUser.TeamId).Count();
-            //if(numMembers > 5)
+            //if(numMembers >= 5)
             //{
             //    return BadRequest();
             //}
@@ -181,7 +185,7 @@ namespace TransAction.API.Controllers
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getCurrentUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
             var getTeam = _transActionRepo.GetTeam(addUserToTeam.TeamId);
-            if(getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
+            if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
             {
                 getUser.TeamId = addUserToTeam.TeamId;
                 getUser.IsFreeAgent = false;

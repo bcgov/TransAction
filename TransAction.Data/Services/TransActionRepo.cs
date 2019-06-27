@@ -424,9 +424,9 @@ namespace TransAction.Data.Services
         {
             return _context.TraTopicMessage.OrderBy(c => c.TopicMessageId).ToList();
         }
-        public TraTopicMessage GetTopicMessage(int messageId)
+        public TraTopicMessage GetTopicMessage(int id)
         {
-            return _context.TraTopicMessage.FirstOrDefault(c => c.TopicMessageId == messageId);
+            return _context.TraTopicMessage.FirstOrDefault(c => c.TopicMessageId == id);
         }
 
         public void CreateTopicMessage(TraTopicMessage traTopicMessage)
@@ -464,7 +464,7 @@ namespace TransAction.Data.Services
             _context.TraImage.Add(image);
         }
 
-      
+
     }
 }
 

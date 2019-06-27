@@ -38,6 +38,20 @@ namespace TransAction.Data.Repositories
             }
         }
 
+        public ITeamRepository _team;
+        public ITeamRepository Team
+        {
+            get
+            {
+                if(_team == null)
+                {
+                    _team = new TeamRepository(_context);
+                }
+
+                return _team;
+            }
+        }
+
         public UnitOfWork(TransActionContext context)
         {
             _context = context;
