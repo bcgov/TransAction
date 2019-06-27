@@ -8,5 +8,6 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TraEvent> GetAll();
         TraEvent GetById(int id);
         void Create(TraEvent newEvent);
+        void Update(TraEvent updateEvent);
     }
 }
