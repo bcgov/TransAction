@@ -15,19 +15,19 @@ namespace TransAction.Data.Repositories
 
         public IEnumerable<TraUser> GetAll()
         {
-            return FindAll().Include(x => x.TraImage).ToList();
+            return FindAll().Include(x => x.Role).Include(x => x.TraImage).ToList();
         }
 
         public TraUser GetById(int id)
         {
-            return Find(e => e.UserId == id).Include(x => x.TraImage).FirstOrDefault();
+            return Find(e => e.UserId == id).Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault();
         }
         public TraUser GetByGuid(string guid)
         {
-            return Find(e => e.Guid == guid).Include(x => x.TraImage).FirstOrDefault();
+            return Find(e => e.Guid == guid).Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault();
         }
 
-        public IEnumerable<TraUser> GetUserInTeam(int teamId)
+        public IEnumerable<TraUser> GetByTeamId(int teamId)
         {
             return Find(e => e.TeamId == teamId).ToList();
         }
