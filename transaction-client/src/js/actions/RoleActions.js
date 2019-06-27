@@ -1,5 +1,5 @@
 import api from '../api/api';
-
+import { getApiReponseData } from '../utils';
 import { FETCH_ROLES, FETCH_CURRENT_ROLE } from './types';
 
 export const fetchRoles = () => async (dispatch, getState) => {
@@ -7,7 +7,9 @@ export const fetchRoles = () => async (dispatch, getState) => {
     try {
       if (Object.keys(getState().roles).length === 0) {
         const response = await api.get(`/roles`);
-        const resultToLower = response.data.map(role => {
+        const data = getApiReponseData(response);
+
+        const resultToLower = data.map(role => {
           return { ...role, name: role.name.toLowerCase() };
         });
 
@@ -25,8 +27,9 @@ export const fetchRole = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/roles/${id}`);
+      const data = getApiReponseData(response);
+      dispatch({ type: FETCH_CURRENT_ROLE, payload: data });
 
-      dispatch({ type: FETCH_CURRENT_ROLE, payload: response.data });
       resolve();
     } catch (e) {
       reject(e);
