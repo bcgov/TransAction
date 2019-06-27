@@ -19,23 +19,26 @@ namespace TransAction.Data.Repositories
         public IQueryable<T> FindAll()
         {
             // AsNoTracking() disables EF oject change tracking.  Slight faster
-            return _context.Set<T>();
+            return _context.Set<T>().AsNoTracking();
         }
         public IQueryable<T> Find()
         {
-            return _context.Set<T>();
+            return _context.Set<T>().AsNoTracking();
         }
 
         public IQueryable<T> Find(Expression<Func<T, bool>> expression)
         {
-            return _context.Set<T>().Where(expression);
+            return _context.Set<T>().Where(expression).AsNoTracking();
         }
 
         public void Create(T entity)
         {
             _context.Set<T>().Add(entity);
         }
-
+        public void Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
+        }
         public void Delete(T entity)
         {
             _context.Set<T>().Remove(entity);

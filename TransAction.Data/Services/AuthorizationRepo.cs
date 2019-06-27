@@ -17,6 +17,7 @@ namespace TransAction.Data.Services
             return _context.TraUser
                 .Include(x => x.Role)
                 .Include(x => x.Team)
+                .AsNoTracking()
                 .FirstOrDefault(x => x.Guid == guid);
         }
 
@@ -30,12 +31,12 @@ namespace TransAction.Data.Services
 
         public TraRole GetRole(string role)
         {
-            return _context.TraRole.FirstOrDefault(x => x.Name == role);
+            return _context.TraRole.AsNoTracking().FirstOrDefault(x => x.Name == role);
         }
 
         public TraRegion GetRegion(string region)
         {
-            return _context.TraRegion.FirstOrDefault(x => x.Name == region);
+            return _context.TraRegion.AsNoTracking().FirstOrDefault(x => x.Name == region);
         }
         public bool Save()
         {
