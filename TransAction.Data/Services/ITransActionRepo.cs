@@ -15,6 +15,7 @@ namespace TransAction.Data.Services
         void CreateUser(TraUser traUser);
         TraUser GetCurrentUser(string guid);
 
+        IEnumerable<TraTeam> GetTeamsBySize(int page, int pageSize);
         IEnumerable<TraTeam> GetTeams();
         TraTeam GetTeam(int id);
         bool TeamExists(string Name);

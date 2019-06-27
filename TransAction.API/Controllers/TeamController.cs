@@ -19,9 +19,9 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetTeams()
+        public IActionResult GetTeams(int page, int pageSize)
         {
-            var teams = _transActionRepo.GetTeams();
+            var teams = _transActionRepo.GetTeamsBySize(page, pageSize);
             var getTeams = _mapper.Map<IEnumerable<TeamDto>>(teams);
             var users = _transActionRepo.GetUsers();
             foreach (var team in getTeams)
