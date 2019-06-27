@@ -33,3 +33,7 @@ export const isCurrentUserTeamlead = () => {
 
   return false;
 };
+
+export const getApiReponseData = response => {
+  return response.data.data ? response.data.data : response.data;
+};

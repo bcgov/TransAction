@@ -1,4 +1,5 @@
 import api from '../api/api';
+import { getApiReponseData } from '../utils';
 import * as Constants from '../Constants';
 
 import { FETCH_USER, FETCH_USERS, FETCH_CURRENT_USER, UPDATE_AUTH_USER, SET_CURRENT_USER_ROLE } from './types';
@@ -8,9 +9,10 @@ export const fetchCurrentUser = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/users/me`);
+      const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER, payload: response.data });
-      dispatch({ type: FETCH_CURRENT_USER, payload: response.data });
+      dispatch({ type: FETCH_USER, payload: data });
+      dispatch({ type: FETCH_CURRENT_USER, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -22,8 +24,9 @@ export const fetchUsers = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get('/users');
+      const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USERS, payload: response.data });
+      dispatch({ type: FETCH_USERS, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -35,8 +38,9 @@ export const fetchUser = id => async dispatch => {
     try {
       if (id) {
         const response = await api.get(`/users/${id}`);
+        const data = getApiReponseData(response);
 
-        dispatch({ type: FETCH_USER, payload: response.data });
+        dispatch({ type: FETCH_USER, payload: data });
       }
 
       resolve();
@@ -50,8 +54,9 @@ export const editUser = (id, userObj) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.put(`/users/${id}`, userObj);
+      const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER, payload: response.data });
+      dispatch({ type: FETCH_USER, payload: data });
       resolve();
     } catch (e) {
       console.log('ERROR in edituser');
@@ -64,8 +69,9 @@ export const editUserRole = userObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/admin/user/role`, userObj);
+      const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER, payload: response.data });
+      dispatch({ type: FETCH_USER, payload: data });
       resolve();
     } catch (e) {
       console.log('ERROR in editUserRole');

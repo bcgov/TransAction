@@ -1,5 +1,5 @@
 import api from '../api/api';
-
+import { getApiReponseData } from '../utils';
 import {
   FETCH_TEAM,
   CREATE_TEAM,
@@ -20,9 +20,10 @@ export const fetchCurrentTeam = () => async (dispatch, getStore) => {
       const teamId = getStore().users.current.teamId;
       if (teamId) {
         const response = await api.get(`/teams/${teamId}`);
+        const data = getApiReponseData(response);
 
-        dispatch({ type: FETCH_TEAM, payload: response.data });
-        dispatch({ type: FETCH_CURRENT_TEAM, payload: response.data });
+        dispatch({ type: FETCH_TEAM, payload: data });
+        dispatch({ type: FETCH_CURRENT_TEAM, payload: data });
       }
 
       resolve();
@@ -36,8 +37,9 @@ export const fetchTeam = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/teams/${id}`);
+      const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_TEAM, payload: response.data });
+      dispatch({ type: FETCH_TEAM, payload: data });
 
       resolve();
     } catch (e) {
@@ -53,8 +55,9 @@ export const editTeam = (id, teamObj) => async dispatch => {
       teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
 
       const response = await api.put(`/teams/${id}`, teamObj);
+      const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_TEAM, payload: response.data });
+      dispatch({ type: FETCH_TEAM, payload: data });
       resolve();
     } catch (e) {
       console.log('ERROR in editeam');
@@ -69,8 +72,9 @@ export const createTeam = teamObj => async dispatch => {
       teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
 
       const response = await api.post('/teams', teamObj);
+      const data = getApiReponseData(response);
 
-      dispatch({ type: CREATE_TEAM, payload: response.data });
+      dispatch({ type: CREATE_TEAM, payload: data });
 
       history.push(`${Constants.PATHS.TEAM}/${response.data.id}`);
       resolve();
@@ -85,7 +89,8 @@ export const fetchTeams = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get('/teams');
-      dispatch({ type: FETCH_TEAMS, payload: response.data });
+      const data = getApiReponseData(response);
+      dispatch({ type: FETCH_TEAMS, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -100,7 +105,8 @@ export const fetchJoinRequests = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/teamrequests`);
-      dispatch({ type: FETCH_JOIN_REQUESTS, payload: response.data });
+      const data = getApiReponseData(response);
+      dispatch({ type: FETCH_JOIN_REQUESTS, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -112,7 +118,8 @@ export const fetchSpecificTeamRequests = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/teamrequests/team/${id}`);
-      dispatch({ type: FETCH_SPECIFIC_TEAM_REQUESTS, payload: response.data });
+      const data = getApiReponseData(response);
+      dispatch({ type: FETCH_SPECIFIC_TEAM_REQUESTS, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -124,7 +131,8 @@ export const createJoinRequest = reqObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/teamrequests`, reqObj);
-      dispatch({ type: POST_REQUEST, payload: response.data });
+      const data = getApiReponseData(response);
+      dispatch({ type: POST_REQUEST, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -136,7 +144,8 @@ export const editJoinRequest = (id, reqObj) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.put(`/teamrequests/${id}`, reqObj);
-      dispatch({ type: EDIT_JOIN_REQUEST, payload: response.data });
+      const data = getApiReponseData(response);
+      dispatch({ type: EDIT_JOIN_REQUEST, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -148,8 +157,9 @@ export const addUserToTeam = reqObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/teams/join`, reqObj);
+      const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_TEAM, payload: response.data });
+      dispatch({ type: FETCH_TEAM, payload: data });
       dispatch({ type: DELETE_JOIN_REQUEST, payload: reqObj.id });
       resolve();
     } catch (e) {
@@ -177,7 +187,8 @@ export const joinTeam = joinObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/teams/join`, joinObj);
-      dispatch({ type: FETCH_TEAM, payload: response.data });
+      const data = getApiReponseData(response);
+      dispatch({ type: FETCH_TEAM, payload: data });
       resolve();
     } catch (e) {
       reject(e);
@@ -189,7 +200,8 @@ export const leaveTeam = (teamId, userId) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.post(`/teams/remove`, { teamId, userId });
-      dispatch({ type: FETCH_TEAM, payload: response.data });
+      const data = getApiReponseData(response);
+      dispatch({ type: FETCH_TEAM, payload: data });
       resolve();
     } catch (e) {
       reject(e);
