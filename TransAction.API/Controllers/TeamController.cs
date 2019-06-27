@@ -19,9 +19,9 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetTeams(int page, int pageSize)
+        public IActionResult GetTeams(int page = 1, int pageSize = 25)
         {
-            var teams = _transActionRepo.GetTeamsBySize(page, pageSize);
+            var teams = _transActionRepo.GetTeams(page, pageSize);
             var getTeams = _mapper.Map<IEnumerable<TeamDto>>(teams);
             var users = _transActionRepo.GetUsers();
             foreach (var team in getTeams)
@@ -40,7 +40,7 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getTeams = _transActionRepo.GetTeams().FirstOrDefault(c => c.TeamId == id);
+                var getTeams = _unitOfWork.Team.GetById(id);
 
                 if (getTeams == null)
                 {

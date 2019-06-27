@@ -58,7 +58,7 @@ namespace TransAction.Data.Services
             return (_context.SaveChanges() >= 0);
         }
         /*-----------------------------------------------------------------------------------------------------------------------------*/
-        public IEnumerable<TraTeam> GetTeamsBySize(int page, int pageSize)
+        public IEnumerable<TraTeam> GetTeams(int page, int pageSize)
         {
             if (page == 0 || page == 1)
             {
@@ -70,11 +70,11 @@ namespace TransAction.Data.Services
             }
 
         }
-        public IEnumerable<TraTeam> GetTeams()
-        {
-            return _context.TraTeam.Include(x => x.TraImage).OrderBy(c => c.TeamId).ToList();
+        //public IEnumerable<TraTeam> GetTeams()
+        //{
+        //    return _context.TraTeam.Include(x => x.TraImage).OrderBy(c => c.TeamId).ToList();
 
-        }
+        //}
         public TraTeam GetTeam(int id)
         {
             return _context.TraTeam.Include(x => x.TraImage).FirstOrDefault(c => c.TeamId == id);
