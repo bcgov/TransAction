@@ -67,7 +67,7 @@ namespace TransAction.API.Controllers
         public IActionResult CreateTeam([FromBody] TeamCreateDto createTeam)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
             //this should take care of user not being able to create team when already in a team
             if (getUser.TeamId != null)
             {
@@ -117,7 +117,7 @@ namespace TransAction.API.Controllers
             user.IsFreeAgent = false;
 
             var userUpdate = _mapper.Map<UserUpdateDto>(user);
-            _mapper.Map<TraUser>(userUpdate);
+            _unitOfWork.User.Update(user);
 
             createdTeamToReturn.NumMembers = 1; // intially team will have only one member when created
 
