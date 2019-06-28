@@ -60,14 +60,9 @@ namespace TransAction.Data.Services
         /*-----------------------------------------------------------------------------------------------------------------------------*/
         public IEnumerable<TraTeam> GetTeams(int page, int pageSize)
         {
-            if (page == 0 || page == 1)
-            {
-                return _context.TraTeam.Take(pageSize).Include(x => x.TraImage).OrderBy(c => c.TeamId).ToList();
-            }
-            else
-            {
-                return _context.TraTeam.Skip(page * pageSize).Take(pageSize).Include(x => x.TraImage).OrderBy(c => c.TeamId).ToList();
-            }
+
+            if (--page < 0) page = 0;
+            return _context.TraTeam.Skip(page * pageSize).Take(pageSize).Include(x => x.TraImage).OrderBy(c => c.Name).ToList();
 
         }
         //public IEnumerable<TraTeam> GetTeams()

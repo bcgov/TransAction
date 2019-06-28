@@ -12,9 +12,10 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TraEvent> GetAll()
+        public IEnumerable<TraEvent> GetAll(int page, int pageSize)
         {
-            return FindAll().Where(x => x.IsActive == true).ToList();
+            if (--page < 0) page = 0;
+            return FindAll().Where(x => x.IsActive == true).Skip(page * pageSize).Take(pageSize).ToList();
         }
 
         public TraEvent GetById(int id)

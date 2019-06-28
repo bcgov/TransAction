@@ -5,7 +5,7 @@ namespace TransAction.Data.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        IEnumerable<TraUser> GetAll();
+        IEnumerable<TraUser> GetAll(int page, int pageSize);
         TraUser GetById(int id);
         TraUser GetByGuid(string guid);
         IEnumerable<TraUser> GetByTeamId(int teamId);

@@ -13,9 +13,12 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TraUser> GetAll()
+        public IEnumerable<TraUser> GetAll(int page, int pageSize)
         {
-            return FindAll().Include(x => x.Role).Include(x => x.TraImage).ToList();
+
+            if (--page < 0) page = 0;
+            return FindAll().Include(x => x.TraImage).Skip(page * pageSize).Take(pageSize).ToList();
+
         }
 
         public TraUser GetById(int id)

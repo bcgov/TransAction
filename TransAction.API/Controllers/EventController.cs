@@ -18,9 +18,9 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetEvents()
+        public IActionResult GetEvents(int page = 1, int pageSize = 25)
         {
-            var events = _unitOfWork.Event.GetAll();
+            var events = _unitOfWork.Event.GetAll(page, pageSize);
             var getEvents = _mapper.Map<IEnumerable<EventDto>>(events);
             return Ok(getEvents);
 

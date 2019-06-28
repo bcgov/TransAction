@@ -43,7 +43,7 @@ namespace TransAction.Data.Repositories
         {
             get
             {
-                if(_team == null)
+                if (_team == null)
                 {
                     _team = new TeamRepository(_context);
                 }
@@ -52,6 +52,32 @@ namespace TransAction.Data.Repositories
             }
         }
 
+        public IMessageRepository _message;
+        public IMessageRepository Message
+        {
+            get
+            {
+                if (_message == null)
+                {
+                    _message = new MessageRepository(_context);
+                }
+
+                return _message;
+            }
+        }
+        public ITopicRepRository _topic;
+        public ITopicRepRository Topic
+        {
+            get
+            {
+                if (_topic == null)
+                {
+                    _topic = new TopicRepository(_context);
+                }
+
+                return _topic;
+            }
+        }
         public UnitOfWork(TransActionContext context)
         {
             _context = context;

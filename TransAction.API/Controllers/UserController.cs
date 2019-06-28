@@ -18,9 +18,9 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetUsers()
+        public IActionResult GetUsers(int page = 1, int pageSize = 25)
         {
-            var user = _unitOfWork.User.GetAll();
+            var user = _unitOfWork.User.GetAll(page, pageSize);
             var getUsers = _mapper.Map<IEnumerable<UserDto>>(user);
             return Ok(getUsers);
         }

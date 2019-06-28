@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TransAction.Data.Models;
 
 namespace TransAction.Data.Repositories.Interfaces
 {
-    interface ITopicRepository
+    public interface ITopicRepRository
     {
+        IEnumerable<TraTopic> GetAllTopics(int page, int pageSize);
+        TraTopic GetTopicById(int id);
+        void Create(TraTopic newTopic);
+
+
     }
 }

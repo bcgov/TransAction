@@ -18,9 +18,9 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetTopics()
+        public IActionResult GetTopics(int page = 1, int pageSize = 25)
         {
-            var topics = _transActionRepo.GetTopics();
+            var topics = _unitOfWork.Topic.GetAllTopics(page, pageSize);
             var getTopics = _mapper.Map<IEnumerable<TopicDto>>(topics);
             return Ok(getTopics);
         }
@@ -123,11 +123,11 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("{topicId}/message")]
-        public IActionResult GetMessages(int topicId)
+        public IActionResult GetMessages(int topicId, int page = 1, int pageSize = 25)
         {
             try
             {
-                var getMessage = _transActionRepo.GetTopicMessages(topicId);
+                var getMessage = _unitOfWork.Message.GetAllMessages(page, pageSize, topicId);
                 if (getMessage == null)
                 {
                     return NotFound();
