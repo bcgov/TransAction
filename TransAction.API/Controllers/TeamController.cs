@@ -232,7 +232,7 @@ namespace TransAction.API.Controllers
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
             var getTeam = _transActionRepo.GetTeam(removeUser.TeamId);
-            if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
+            if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId || getCurrentUser.UserId == removeUser.UserId)
             {
                 if (team.UserId == removeUser.UserId)
                 {
