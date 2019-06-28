@@ -67,7 +67,7 @@ namespace TransAction.API.Controllers
         public IActionResult CreateTeam([FromBody] TeamCreateDto createTeam)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
             //this should take care of user not being able to create team when already in a team
             if (getUser.TeamId != null)
             {
@@ -117,7 +117,7 @@ namespace TransAction.API.Controllers
             user.IsFreeAgent = false;
 
             var userUpdate = _mapper.Map<UserUpdateDto>(user);
-            _mapper.Map<TraUser>(userUpdate);
+            _unitOfWork.User.Update(user);
 
             createdTeamToReturn.NumMembers = 1; // intially team will have only one member when created
 
@@ -168,7 +168,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            var user = _unitOfWork.User.GetUserInTeam(addUserToTeam.TeamId).Count();
+            var user = _unitOfWork.User.GetByTeamId(addUserToTeam.TeamId).Count();
             if (user >= 5)
             {
                 return BadRequest();
@@ -183,7 +183,7 @@ namespace TransAction.API.Controllers
 
 
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getCurrentUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
             var getTeam = _transActionRepo.GetTeam(addUserToTeam.TeamId);
             if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
             {
@@ -195,7 +195,10 @@ namespace TransAction.API.Controllers
                 {
                     request.IsActive = false;
                 }
-                if (!_transActionRepo.Save())
+
+                _unitOfWork.User.Update(getUser);
+
+                if (!_unitOfWork.Save())
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
@@ -213,8 +216,7 @@ namespace TransAction.API.Controllers
         public IActionResult RemoveUserFromTeam([FromBody] AddUserToTeamDto removeUser)
         {
             var user = _unitOfWork.User.GetById(removeUser.UserId);
-            var users = _transActionRepo.GetUsers();
-            var members = users.Where(x => x.TeamId == removeUser.TeamId);
+            var members = _unitOfWork.User.GetByTeamId(removeUser.TeamId);
             var team = _transActionRepo.GetTeam(removeUser.TeamId);
 
 
@@ -228,9 +230,9 @@ namespace TransAction.API.Controllers
                 return BadRequest(400);
             }
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getCurrentUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
             var getTeam = _transActionRepo.GetTeam(removeUser.TeamId);
-            if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
+            if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId || getCurrentUser.UserId == removeUser.UserId)
             {
                 if (team.UserId == removeUser.UserId)
                 {
@@ -242,36 +244,10 @@ namespace TransAction.API.Controllers
                 }
 
                 user.TeamId = null;
-                //var roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
-                //if (user.RoleId == roleId)
-                //{
-                //    team.UserId = randomMember.UserId;
-                //    randomMember.RoleId = roleId;
-                //    user.TeamId = null;
-                //    roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
-                //    user.RoleId = roleId;
-                //}
 
-                //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "user").Select(x => x.RoleId).FirstOrDefault();
-                //if(user.RoleId == roleId)
-                //{
-                //    user.TeamId = null;
-                //    user.RoleId = roleId;
-                //}
+                _unitOfWork.User.Update(user);
 
-                //roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "admin").Select(x => x.RoleId).FirstOrDefault();
-                //if(user.RoleId == roleId)
-                //{
-                //    if(team.UserId == removeUser.UserId)
-                //    {
-                //        roleId = _transActionRepo.GetRoles().Where(x => x.Name.ToLower() == "team_lead").Select(x => x.RoleId).FirstOrDefault();
-                //        randomMember.RoleId = roleId;
-                //        team.UserId = randomMember.UserId;
-                //    }
-                //    user.TeamId = null;
-                //}
-
-                if (!_transActionRepo.Save())
+                if (!_unitOfWork.Save())
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
