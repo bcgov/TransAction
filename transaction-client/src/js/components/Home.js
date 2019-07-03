@@ -15,7 +15,7 @@ class Home extends React.Component {
     this.setState({
       slides: carouselIds.map(item => {
         return {
-          src: `/images/carousel${item}.jpg`,
+          src: `${process.env.PUBLIC_URL}/images/carousel${item}.jpg`,
           caption: '',
           altText: '',
           header: '',
@@ -65,7 +65,11 @@ class Home extends React.Component {
         <CardWrapper>
           <Row>
             <Col>
-              <img className="w-100" src="/images/eaf-banner.jpg" alt="Employee Advisory Forum" />
+              <img
+                className="w-100"
+                src={`${process.env.PUBLIC_URL}/images/eaf-banner.jpg`}
+                alt="Employee Advisory Forum"
+              />
             </Col>
           </Row>
         </CardWrapper>

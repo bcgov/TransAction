@@ -58,6 +58,9 @@ objects:
           from:
             kind: ImageStreamTag
             name: nodejs-8-rhel7:1
+          env:
+            - name: DEPLOY_SUBDIRECTORY
+              value: ${DEPLOY_SUBDIRECTORY}
         type: Source
       triggers:
         - type: ConfigChange
@@ -153,3 +156,8 @@ parameters:
     name: SOURCE_REPOSITORY_REF
     required: false
     value: "master"
+  - description: DEPLOY_SUBDIRECTORY
+    displayName: DEPLOY_SUBDIRECTORY
+    name: DEPLOY_SUBDIRECTORY
+    required: true
+    value: "/"

@@ -33,7 +33,7 @@ class TeamProfileFragment extends React.Component {
     const imageUrl =
       team.images.length > 0
         ? `${Constants.API_URL}/images/${team.images[0].guid}`
-        : '/images/team-profile-placeholder.png';
+        : `${process.env.PUBLIC_URL}/images/team-profile-placeholder.png`;
 
     return (
       <React.Fragment>

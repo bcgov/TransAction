@@ -27,7 +27,7 @@ class UserProfileFragment extends React.Component {
     const imageUrl =
       userToDisplay.images.length > 0
         ? `${Constants.API_URL}/images/${userToDisplay.images[0].guid}`
-        : '/images/profile-placeholder.png';
+        : `${process.env.PUBLIC_URL}/images/profile-placeholder.png`;
 
     return (
       <React.Fragment>
