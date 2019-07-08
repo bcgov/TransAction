@@ -57,7 +57,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
             //making sure the user enters atleast 15 mins
-            if(createUserActivity.Minutes < 15)
+            if (createUserActivity.Minutes < 15)
             {
                 return BadRequest();
             }
@@ -73,7 +73,7 @@ namespace TransAction.API.Controllers
             //{
             //    return BadRequest();
             //}
-                                   
+
             var newUserActivity = _mapper.Map<TraUserActivity>(createUserActivity);
 
             _transActionRepo.CreateUserActivity(newUserActivity);
@@ -111,7 +111,7 @@ namespace TransAction.API.Controllers
 
         //total score for that specific team for that specific event
 
-       [HttpGet("event/{eventId}")]
+        [HttpGet("event/{eventId}")]
         public IActionResult EventSpecificScore(int eventId)
         {
             var score = _transActionRepo.EventSpecificScore(eventId);
@@ -154,7 +154,7 @@ namespace TransAction.API.Controllers
         [HttpGet("team/{teamId}")]
         public IActionResult TeamSpecificScore(int teamId)
         {
-            var score = _transActionRepo.TeamSpecificScore(teamId);            
+            var score = _transActionRepo.TeamSpecificScore(teamId);
             return Ok(score);
         }
 
@@ -176,8 +176,9 @@ namespace TransAction.API.Controllers
         }
 
         [HttpGet("event/{eventId}/region")]
-        public IActionResult RegionScore(int eventId){
-          
+        public IActionResult RegionScore(int eventId)
+        {
+
             var result = _transActionRepo.RegionalScore(eventId);
 
             return Ok(result);

@@ -58,8 +58,8 @@ namespace TransAction.API.Controllers
             }
 
             //takes care of the fact the if the user is on team then he cant create a request.
-            var user = createRequest.UserId;
-            var getUser = _transActionRepo.GetUser(user);
+            //var user = createRequest.UserId;
+            var getUser = _unitOfWork.User.GetById(createRequest.UserId);
             if (getUser.TeamId != null)
             {
                 return BadRequest();

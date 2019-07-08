@@ -8,9 +8,9 @@ namespace TransAction.Data.Repositories.Interfaces
 {
     public interface IRegionRepository
     {
-        Task<IEnumerable<TraRegion>> GetRegions();
-        TraRegion GetRegion(int id);
+        IEnumerable<TraRegion> GetAllRegions(int page, int pageSize);
+        TraRegion GetRegionById(int id);
         bool RegionExists(string Name);
-        void CreateRegion(TraRegion traRegion);
+        void Create(TraRegion traRegion);
     }
 }

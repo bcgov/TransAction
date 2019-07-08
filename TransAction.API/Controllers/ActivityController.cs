@@ -55,8 +55,9 @@ namespace TransAction.API.Controllers
         public IActionResult CreateActivity([FromBody] ActivityCreateDto createActivity)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
-            if(getUser.TeamId == null)
+            // var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+            if (getUser.TeamId == null)
             {
                 return BadRequest();
             }
@@ -99,7 +100,7 @@ namespace TransAction.API.Controllers
         public IActionResult UpdateActivity(int id, [FromBody] ActivityUpdateDto updateActivity)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
             if (getUser.TeamId == null)
             {
                 return BadRequest();

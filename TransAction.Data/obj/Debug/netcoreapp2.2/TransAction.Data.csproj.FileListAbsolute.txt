@@ -1,0 +1,11 @@
+C:\FINAL\TransAction\TransAction.Data\bin\Debug\netcoreapp2.2\TransAction.Data.deps.json
+C:\FINAL\TransAction\TransAction.Data\bin\Debug\netcoreapp2.2\TransAction.Data.runtimeconfig.json
+C:\FINAL\TransAction\TransAction.Data\bin\Debug\netcoreapp2.2\TransAction.Data.runtimeconfig.dev.json
+C:\FINAL\TransAction\TransAction.Data\bin\Debug\netcoreapp2.2\TransAction.Data.dll
+C:\FINAL\TransAction\TransAction.Data\bin\Debug\netcoreapp2.2\TransAction.Data.pdb
+C:\FINAL\TransAction\TransAction.Data\obj\Debug\netcoreapp2.2\TransAction.Data.csproj.CoreCompileInputs.cache
+C:\FINAL\TransAction\TransAction.Data\obj\Debug\netcoreapp2.2\TransAction.Data.AssemblyInfoInputs.cache
+C:\FINAL\TransAction\TransAction.Data\obj\Debug\netcoreapp2.2\TransAction.Data.AssemblyInfo.cs
+C:\FINAL\TransAction\TransAction.Data\obj\Debug\netcoreapp2.2\TransAction.Data.dll
+C:\FINAL\TransAction\TransAction.Data\obj\Debug\netcoreapp2.2\TransAction.Data.pdb
+C:\FINAL\TransAction\TransAction.Data\obj\Debug\netcoreapp2.2\TransAction.Data.csprojAssemblyReference.cache

@@ -34,5 +34,6 @@ namespace TransAction.Data.Repositories
         {
             return Find(e => e.TeamId == teamId).ToList();
         }
+
     }
 }

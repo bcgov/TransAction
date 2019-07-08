@@ -21,12 +21,11 @@ namespace TransAction.API.Controllers
         [HttpGet()]
         public IActionResult GetTeams(int page = 1, int pageSize = 25)
         {
-            var teams = _transActionRepo.GetTeams(page, pageSize);
+            var teams = _unitOfWork.Team.GetAll(page, pageSize);
             var getTeams = _mapper.Map<IEnumerable<TeamDto>>(teams);
-            var users = _transActionRepo.GetUsers();
             foreach (var team in getTeams)
             {
-                var members = users.Where(y => y.TeamId == team.TeamId);
+                var members = _unitOfWork.User.GetByTeamId(team.TeamId);
                 team.NumMembers = members.Count();
                 team.TeamMemberIds = members.Select(x => x.UserId).ToArray();
 
@@ -46,9 +45,9 @@ namespace TransAction.API.Controllers
                 {
                     return NotFound();
                 }
-                var getTeam = _transActionRepo.GetTeam(id);
-                var users = _transActionRepo.GetUsers();
-                var members = users.Where(x => x.TeamId == id);
+                var getTeam = _unitOfWork.Team.GetById(id);
+                // var users = _transActionRepo.GetUsers();
+                var members = _unitOfWork.User.GetByTeamId(id);
                 var getTeamResult = _mapper.Map<TeamDto>(getTeam);
                 getTeamResult.NumMembers = members.Count();
                 getTeamResult.TeamMemberIds = members.Select(x => x.UserId).ToArray();
@@ -86,14 +85,14 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (_transActionRepo.TeamExists(createTeam.Name))
+            if (_unitOfWork.Team.GetTeamByName(createTeam.Name))
             {
                 return BadRequest();
             }
 
             var newTeam = _mapper.Map<TraTeam>(createTeam);
             newTeam.UserId = getUser.UserId; // SETS THE USER TO BE THE TEAM LEADER
-            _transActionRepo.CreateTeam(newTeam);
+            _unitOfWork.Team.Create(newTeam);
 
             if (!_transActionRepo.Save())
             {
@@ -133,12 +132,12 @@ namespace TransAction.API.Controllers
         public IActionResult UpdateTeam(int id, [FromBody] TeamUpdateDto teamUpdate)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
 
             var user = _transActionRepo.GetCurrentUser(getUser.Guid);
             if (user.UserId == teamUpdate.UserId || user.Role.Name.ToLower() == "admin")
             {
-                var teamEntity = _transActionRepo.GetTeam(id);
+                var teamEntity = _unitOfWork.Team.GetById(id);
                 if (teamEntity == null) return NotFound();
                 if (teamUpdate == null) return NotFound();
 
@@ -184,7 +183,7 @@ namespace TransAction.API.Controllers
 
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
-            var getTeam = _transActionRepo.GetTeam(addUserToTeam.TeamId);
+            var getTeam = _unitOfWork.Team.GetById(addUserToTeam.TeamId);
             if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId)
             {
                 getUser.TeamId = addUserToTeam.TeamId;
@@ -217,7 +216,7 @@ namespace TransAction.API.Controllers
         {
             var user = _unitOfWork.User.GetById(removeUser.UserId);
             var members = _unitOfWork.User.GetByTeamId(removeUser.TeamId);
-            var team = _transActionRepo.GetTeam(removeUser.TeamId);
+            var team = _unitOfWork.Team.GetById(removeUser.TeamId);
 
 
             if (user.TeamId == null)
@@ -231,7 +230,7 @@ namespace TransAction.API.Controllers
             }
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
-            var getTeam = _transActionRepo.GetTeam(removeUser.TeamId);
+            var getTeam = _unitOfWork.Team.GetById(removeUser.TeamId);
             if (getCurrentUser.Role.Name.ToLower() == "admin" || getCurrentUser.UserId == getTeam.UserId || getCurrentUser.UserId == removeUser.UserId)
             {
                 if (team.UserId == removeUser.UserId)

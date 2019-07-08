@@ -16,7 +16,7 @@ namespace TransAction.Data.Repositories
         public IEnumerable<TraTopic> GetAllTopics(int page, int pageSize)
         {
             if (--page < 0) page = 0;
-            return FindAll().Include(x => x.TraTopicMessage).Skip(page * pageSize).Take(pageSize).ToList();
+            return FindAll().Include(x => x.TraTopicMessage).ThenInclude(m => m.User).Skip(page * pageSize).Take(pageSize).ToList();
         }
 
         public TraTopic GetTopicById(int id)

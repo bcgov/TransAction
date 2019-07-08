@@ -19,9 +19,9 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetRegions()
+        public IActionResult GetRegions(int page = 1, int pageSize = 25)
         {
-            var regions = _transActionRepo.GetRegions();
+            var regions = _unitOfWork.Region.GetAllRegions(page, pageSize);
             var getRegions = _mapper.Map<IEnumerable<RegionDto>>(regions);
             return Ok(getRegions);
 
@@ -33,14 +33,13 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getRegions = _transActionRepo.GetRegions().FirstOrDefault(c => c.RegionId == id);
+                var getRegions = _unitOfWork.Region.GetRegionById(id);
 
                 if (getRegions == null)
                 {
                     return NotFound();
                 }
-                var getRegion = _transActionRepo.GetRegion(id);
-                var getRegionResult = _mapper.Map<RegionDto>(getRegion);
+                var getRegionResult = _mapper.Map<RegionDto>(getRegions);
                 return Ok(getRegionResult);
 
             }
@@ -67,14 +66,13 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.RegionExists(createRegion.Name))
+            if (_unitOfWork.Region.RegionExists(createRegion.Name))
             {
                 return BadRequest();
             }
 
             var newRegion = _mapper.Map<TraRegion>(createRegion);
-
-            _transActionRepo.CreateRegion(newRegion);
+            _unitOfWork.Region.Create(newRegion);
 
 
             if (!_transActionRepo.Save())
@@ -84,14 +82,14 @@ namespace TransAction.API.Controllers
 
             var createRegionResult = _mapper.Map<RegionDto>(newRegion);
             return CreatedAtRoute("GetRegion", new { id = createRegionResult.RegionId }, createRegionResult);
-            
+
         }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
         public IActionResult UpdateRegion(int id, [FromBody] RegionUpdateDto updateRegion)
         {
-            var regionEntity = _transActionRepo.GetRegion(id);
+            var regionEntity = _unitOfWork.Region.GetRegionById(id);
             if (regionEntity == null) return NotFound();
             if (updateRegion == null) return NotFound();
 

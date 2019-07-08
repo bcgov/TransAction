@@ -7,6 +7,8 @@
         ITeamRepository Team { get; }
         ITopicRepRository Topic { get; }
         IMessageRepository Message { get; }
+        IRegionRepository Region { get; }
+        IActivityRepository Activity { get; }
         bool Save();
     }
 }

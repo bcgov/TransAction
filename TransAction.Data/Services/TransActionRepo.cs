@@ -17,35 +17,35 @@ namespace TransAction.Data.Services
             _context = context;
         }
 
-        public TraUser GetUser(int id)
-        {
-            return _context.TraUser.FirstOrDefault(c => c.UserId == id);
-        }
+        //public TraUser GetUser(int id)
+        //{
+        //    return _context.TraUser.FirstOrDefault(c => c.UserId == id);
+        //}
 
-        public IEnumerable<TraUser> GetUsers()
-        {
-            return _context.TraUser.OrderBy(c => c.UserId).Include(x => x.TraImage).ToList();
-        }
+        //public IEnumerable<TraUser> GetUsers()
+        //{
+        //    return _context.TraUser.OrderBy(c => c.UserId).Include(x => x.TraImage).ToList();
+        //}
 
 
 
-        public void CreateUser(TraUser traUser)
-        {
-            _context.TraUser.Add(traUser);
-        }
+        //public void CreateUser(TraUser traUser)
+        //{
+        //    _context.TraUser.Add(traUser);
+        //}
 
-        public bool UserExists(string Name, string Email)
-        {
-            var checkUser = _context.TraUser.FirstOrDefault(c => c.Username == Name || c.Email == Email);
-            if (checkUser != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public bool UserExists(string Name, string Email)
+        //{
+        //    var checkUser = _context.TraUser.FirstOrDefault(c => c.Username == Name || c.Email == Email);
+        //    if (checkUser != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
         public TraUser GetCurrentUser(string guid)
         {
@@ -58,67 +58,68 @@ namespace TransAction.Data.Services
             return (_context.SaveChanges() >= 0);
         }
         /*-----------------------------------------------------------------------------------------------------------------------------*/
-        public IEnumerable<TraTeam> GetTeams(int page, int pageSize)
-        {
 
-            if (--page < 0) page = 0;
-            return _context.TraTeam.Skip(page * pageSize).Take(pageSize).Include(x => x.TraImage).OrderBy(c => c.Name).ToList();
+        //public IEnumerable<TraTeam> GetTeams(int page, int pageSize)
+        //{
 
-        }
+        //    if (--page < 0) page = 0;
+        //    return _context.TraTeam.Skip(page * pageSize).Take(pageSize).Include(x => x.TraImage).OrderBy(c => c.Name).ToList();
+
+        //}
         //public IEnumerable<TraTeam> GetTeams()
         //{
         //    return _context.TraTeam.Include(x => x.TraImage).OrderBy(c => c.TeamId).ToList();
 
         //}
-        public TraTeam GetTeam(int id)
-        {
-            return _context.TraTeam.Include(x => x.TraImage).FirstOrDefault(c => c.TeamId == id);
-        }
+        //public TraTeam GetTeam(int id)
+        //{
+        //    return _context.TraTeam.Include(x => x.TraImage).FirstOrDefault(c => c.TeamId == id);
+        //}
 
-        public void CreateTeam(TraTeam traTeam)
-        {
-            _context.TraTeam.Add(traTeam);
-        }
+        //public void CreateTeam(TraTeam traTeam)
+        //{
+        //    _context.TraTeam.Add(traTeam);
+        //}
 
-        public bool TeamExists(string Name)
-        {
-            var checkTeam = _context.TraTeam.FirstOrDefault(c => c.Name == Name);
-            if (checkTeam != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public bool TeamExists(string Name)
+        //{
+        //    var checkTeam = _context.TraTeam.FirstOrDefault(c => c.Name == Name);
+        //    if (checkTeam != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
         /*-----------------------------------------------------------------------------------------------------------------------------*/
-        public IEnumerable<TraRegion> GetRegions()
-        {
-            return _context.TraRegion.OrderBy(c => c.RegionId).ToList();
-        }
+        //public IEnumerable<TraRegion> GetRegions()
+        //{
+        //    return _context.TraRegion.OrderBy(c => c.RegionId).ToList();
+        //}
 
-        public TraRegion GetRegion(int id)
-        {
-            return _context.TraRegion.FirstOrDefault(c => c.RegionId == id);
-        }
+        //public TraRegion GetRegion(int id)
+        //{
+        //    return _context.TraRegion.FirstOrDefault(c => c.RegionId == id);
+        //}
 
-        public bool RegionExists(string Name)
-        {
-            var checkRegion = _context.TraRegion.FirstOrDefault(c => c.Name == Name);
-            if (checkRegion != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public void CreateRegion(TraRegion traRegion)
-        {
-            _context.TraRegion.Add(traRegion);
-        }
+        //public bool RegionExists(string Name)
+        //{
+        //    var checkRegion = _context.TraRegion.FirstOrDefault(c => c.Name == Name);
+        //    if (checkRegion != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+        //public void CreateRegion(TraRegion traRegion)
+        //{
+        //    _context.TraRegion.Add(traRegion);
+        //}
 
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 

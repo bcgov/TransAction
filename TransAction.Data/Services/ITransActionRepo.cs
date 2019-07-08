@@ -9,22 +9,22 @@ namespace TransAction.Data.Services
 {
     public interface ITransActionRepo
     {
-        IEnumerable<TraUser> GetUsers();
-        TraUser GetUser(int id);
-        bool UserExists(string Name, string Email);
-        void CreateUser(TraUser traUser);
+        //IEnumerable<TraUser> GetUsers();
+        //TraUser GetUser(int id);
+        //bool UserExists(string Name, string Email);
+        //void CreateUser(TraUser traUser);
         TraUser GetCurrentUser(string guid);
 
         //IEnumerable<TraTeam> GetTeamsBySize(int page, int pageSize);
-        IEnumerable<TraTeam> GetTeams(int page, int pageSize);
-        TraTeam GetTeam(int id);
-        bool TeamExists(string Name);
-        void CreateTeam(TraTeam traTeam);
+        //IEnumerable<TraTeam> GetTeams(int page, int pageSize);
+        //TraTeam GetTeam(int id);
+        //bool TeamExists(string Name);
+        //void CreateTeam(TraTeam traTeam);
 
-        IEnumerable<TraRegion> GetRegions();
-        TraRegion GetRegion(int id);
-        bool RegionExists(string Name);
-        void CreateRegion(TraRegion traRegion);
+        //IEnumerable<TraRegion> GetRegions();
+        //TraRegion GetRegion(int id);
+        //bool RegionExists(string Name);
+        //void CreateRegion(TraRegion traRegion);
 
         IEnumerable<TraActivity> GetActivities();
         TraActivity GetActivity(int id);

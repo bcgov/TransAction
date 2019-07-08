@@ -95,16 +95,16 @@ class MessageBoard extends React.Component {
         {this.state.loading ? (
           <PageSpinner />
         ) : (
-          <CardWrapper>
-            <h4>Message Board</h4>
-            <div className="text-right">
-              <Button size="sm" color="primary" className="mb-3" onClick={this.showEditTopicForm}>
-                New Thread
+            <CardWrapper>
+              <h4>Message Board</h4>
+              <div className="text-right">
+                <Button size="sm" color="primary" className="mb-3" onClick={this.showEditTopicForm}>
+                  New Thread
               </Button>
-            </div>
-            {this.renderContent()}
-          </CardWrapper>
-        )}
+              </div>
+              {this.renderContent()}
+            </CardWrapper>
+          )}
         {this.state.showEditTopicForm && (
           <EditTopicForm
             isOpen={this.state.showEditTopicForm}

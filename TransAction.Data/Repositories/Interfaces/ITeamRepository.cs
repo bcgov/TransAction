@@ -7,8 +7,9 @@ namespace TransAction.Data.Repositories.Interfaces
 {
     public interface ITeamRepository
     {
-        IEnumerable<TraTeam> GetAll();
+        IEnumerable<TraTeam> GetAll(int page, int pageSize);
         TraTeam GetById(int id);
         void Create(TraTeam newTeam);
+        bool GetTeamByName(string Name);
     }
 }

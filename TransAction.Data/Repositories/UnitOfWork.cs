@@ -38,6 +38,20 @@ namespace TransAction.Data.Repositories
             }
         }
 
+        public IRegionRepository _region;
+        public IRegionRepository Region
+        {
+            get
+            {
+                if (_region == null)
+                {
+                    _region = new RegionRepository(_context);
+                }
+
+                return _region;
+            }
+        }
+
         public ITeamRepository _team;
         public ITeamRepository Team
         {
@@ -76,6 +90,20 @@ namespace TransAction.Data.Repositories
                 }
 
                 return _topic;
+            }
+        }
+
+        public IActivityRepository _activty;
+        public IActivityRepository Activity
+        {
+            get
+            {
+                if (_activty == null)
+                {
+                    _activty = new ActivityRepository(_context);
+                }
+
+                return _activty;
             }
         }
         public UnitOfWork(TransActionContext context)
