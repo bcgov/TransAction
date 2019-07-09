@@ -25,7 +25,7 @@ class GettingStarted extends React.Component {
   renderText() {
     return (
       <CardWrapper>
-        <Row className="mb-5">
+        <Row>
           <Col>
             <h4>How does TransAction work?</h4>
             <p>
@@ -48,8 +48,8 @@ class GettingStarted extends React.Component {
             </p>
           </Col>
         </Row>
-        {!this.props.currentUser.teamId && (
-          <Row>
+        {!this.props.currentUser.teamId ? (
+          <Row className="mt-5">
             <Col>
               <CardDeck>
                 <Card>
@@ -97,6 +97,11 @@ class GettingStarted extends React.Component {
               </Alert>
             </Col>
           </Row>
+        ) : (
+          <Alert color="warning">
+            You are already on a team. Please head to the <Link to={Constants.PATHS.EVENT}>Events</Link> page to
+            participate in an event.
+          </Alert>
         )}
       </CardWrapper>
     );
