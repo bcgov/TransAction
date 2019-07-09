@@ -11,6 +11,7 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TraRegion> GetAllRegions(int page, int pageSize);
         TraRegion GetRegionById(int id);
         bool RegionExists(string Name);
-        void Create(TraRegion traRegion);
+        void Create(TraRegion newRegion);
+        void Update(TraRegion updateRegion);
     }
 }

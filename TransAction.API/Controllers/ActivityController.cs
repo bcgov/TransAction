@@ -18,9 +18,9 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetActivities()
+        public IActionResult GetActivities(int page = 1, int pageSize = 25)
         {
-            var activities = _transActionRepo.GetActivities();
+            var activities = _unitOfWork.Activity.GetAll(page, pageSize);
             var getActivities = _mapper.Map<IEnumerable<ActivityDto>>(activities);
             return Ok(getActivities);
 
@@ -32,13 +32,13 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getActivities = _transActionRepo.GetActivities().FirstOrDefault(c => c.ActivityId == id);
+                var getActivity = _unitOfWork.Activity.GetById(id);
 
-                if (getActivities == null)
+                if (getActivity == null)
                 {
                     return NotFound();
                 }
-                var getActivity = _transActionRepo.GetActivity(id);
+                //var getActivity = _transActionRepo.GetActivity(id);
                 var getActivityResult = _mapper.Map<ActivityDto>(getActivity);
                 return Ok(getActivityResult);
 
@@ -106,7 +106,7 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            var activityEntity = _transActionRepo.GetActivity(id);
+            var activityEntity = _unitOfWork.Activity.GetById(id);
             if (activityEntity == null) return NotFound();
             if (updateActivity == null) return NotFound();
 

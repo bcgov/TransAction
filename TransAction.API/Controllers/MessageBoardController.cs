@@ -18,10 +18,10 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetTopics(/*int page = 1, int pageSize = 25*/)
+        public IActionResult GetTopics(int page = 1, int pageSize = 25)
         {
             // var topics = _unitOfWork.Topic.GetAllTopics(page, pageSize);
-            var topics = _transActionRepo.GetTopics();
+            var topics = _unitOfWork.Topic.GetAllTopics(page, pageSize);
             var getTopics = _mapper.Map<IEnumerable<TopicDto>>(topics);
             return Ok(getTopics);
         }
@@ -32,13 +32,12 @@ namespace TransAction.API.Controllers
 
             try
             {
-                // var getTopic = _unitOfWork.Topic.GetTopicById(id);
-                var getTopics = _transActionRepo.GetTopics().FirstOrDefault(c => c.TopicId == id);
-                if (getTopics == null)
+                var getTopic = _unitOfWork.Topic.GetTopicById(id);
+                //var getTopics = _transActionRepo.GetTopics().FirstOrDefault(c => c.TopicId == id);
+                if (getTopic == null)
                 {
                     return NotFound();
                 }
-                var getTopic = _transActionRepo.GetTopic(id);
                 var getTopicResult = _mapper.Map<TopicDto>(getTopic);
                 return Ok(getTopicResult);
 
@@ -73,8 +72,8 @@ namespace TransAction.API.Controllers
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
             newTopic.UserId = getUser.UserId;
 
-            //_unitOfWork.Topic.Create(newTopic); // have not changed it yet
-            _transActionRepo.CreateTopic(newTopic);
+            _unitOfWork.Topic.Create(newTopic); // have not changed it yet
+            //_transActionRepo.CreateTopic(newTopic);
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
@@ -85,8 +84,8 @@ namespace TransAction.API.Controllers
             message.TopicId = newTopic.TopicId;
             message.Body = createTopic.Body;
 
-            _transActionRepo.CreateTopicMessage(message);
-            //_unitOfWork.Message.Create(message);
+            //_transActionRepo.CreateTopicMessage(message);
+            _unitOfWork.Message.Create(message);
 
             if (!_transActionRepo.Save())
             {
@@ -114,7 +113,7 @@ namespace TransAction.API.Controllers
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
             topicEntity.UserId = getUser.UserId;
             _mapper.Map(updateTopic, topicEntity);
-
+            _unitOfWork.Topic.Update(topicEntity);
 
             if (!_transActionRepo.Save())
             {
@@ -130,7 +129,7 @@ namespace TransAction.API.Controllers
             try
             {
                 // var getMessage = _unitOfWork.Message.GetAllMessages(page, pageSize, topicId);
-                var getMessage = _transActionRepo.GetTopicMessages(topicId);
+                var getMessage = _unitOfWork.Message.GetAllTopicMessages(page, pageSize, topicId);
                 if (getMessage == null)
                 {
                     return NotFound();
@@ -151,8 +150,8 @@ namespace TransAction.API.Controllers
 
             try
             {
-                // var getMessages = _unitOfWork.Message.GetAllMessages(page, pageSize, id);
-                var getMessages = _transActionRepo.GetMessages();
+                var getMessages = _unitOfWork.Message.GetAllMessages(page, pageSize);
+                //var getMessages = _transActionRepo.GetMessages();
                 if (getMessages == null)
                 {
                     return NotFound();
@@ -195,8 +194,8 @@ namespace TransAction.API.Controllers
 
 
 
-            //_unitOfWork.Message.Create(newMessage);
-            _transActionRepo.CreateTopicMessage(newMessage);
+            _unitOfWork.Message.Create(newMessage);
+            //_transActionRepo.CreateTopicMessage(newMessage);
 
             if (!_transActionRepo.Save())
             {
@@ -222,12 +221,13 @@ namespace TransAction.API.Controllers
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
 
-            var message = _transActionRepo.GetTopicMessage(id);
+            var message = _unitOfWork.Message.GetMessageById(id);
 
-            var user = _transActionRepo.GetCurrentUser(getUser.Guid);
+            var user = _unitOfWork.User.GetCurrentUser(getUser.Guid);
+
             if (user.Role.Name.ToLower() == "admin" || user.UserId == message.UserId)
             {
-                var messageEntity = _transActionRepo.GetTopicMessage(id);
+                var messageEntity = _unitOfWork.Message.GetMessageById(id);
                 var topic = _unitOfWork.Topic.GetTopicById(messageEntity.TopicId);
                 topic.DbLastUpdateTimestamp = DateTime.Now;
                 if (messageEntity == null) return NotFound();
@@ -239,13 +239,13 @@ namespace TransAction.API.Controllers
                 }
                 _mapper.Map(updateMessage, messageEntity);
 
-
+                _unitOfWork.Message.Update(messageEntity);
                 if (!_transActionRepo.Save())
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
 
-                var getMessage = _transActionRepo.GetTopicMessage(id);
+                var getMessage = _unitOfWork.Message.GetMessageById(id);
                 var getTopicResult = _mapper.Map<MessageDto>(getMessage);
                 return Ok(getTopicResult);
 
@@ -256,23 +256,26 @@ namespace TransAction.API.Controllers
             }
 
         }
-
+        //Fix it later
         [HttpDelete("topic/{topicId}")]
-        public IActionResult DeleteTopic(int topicId)
+        public IActionResult DeleteTopic(int topicId, int page = 1, int pageSize = 25)
         {
             var topic = _unitOfWork.Topic.GetTopicById(topicId);
-            if (!_transActionRepo.TopicExists(topic.Title))
+
+            //var checkTopic = _unitOfWork.Topic.GetTopicByTitle(topic.Title);
+            if (topic == null)
             {
                 return NotFound();
             }
-            var messages = _transActionRepo.GetTopicMessages(topicId);
+            var messages = _unitOfWork.Message.GetAllTopicMessages(page, pageSize, topicId);
             foreach (var message in messages)
             {
-                _transActionRepo.DeleteTopicMessage(message);
+                _unitOfWork.Message.Delete(message);
+                //_transActionRepo.DeleteTopicMessage(message);
             }
-            _transActionRepo.DeleteTopic(topic);
+            _unitOfWork.Topic.Delete(topic);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -282,13 +285,13 @@ namespace TransAction.API.Controllers
         [HttpDelete("message/{messageId}")]
         public IActionResult DeleteMessage(int messageId)
         {
-            var message = _transActionRepo.GetTopicMessage(messageId);
+            var message = _unitOfWork.Message.GetMessageById(messageId);
             if (message == null)
             {
                 return NotFound();
             }
-            var deleteMessage = _transActionRepo.GetTopicMessage(messageId);
-            _transActionRepo.DeleteTopicMessage(deleteMessage);
+            var deleteMessage = _unitOfWork.Message.GetMessageById(messageId);
+            _unitOfWork.Message.Delete(deleteMessage);
             if (!_transActionRepo.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");

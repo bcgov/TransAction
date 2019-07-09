@@ -10,6 +10,7 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TraTeam> GetAll(int page, int pageSize);
         TraTeam GetById(int id);
         void Create(TraTeam newTeam);
+        void Update(TraTeam updateTeam);
         bool GetTeamByName(string Name);
     }
 }

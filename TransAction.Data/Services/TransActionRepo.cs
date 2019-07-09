@@ -47,10 +47,10 @@ namespace TransAction.Data.Services
         //    }
         //}
 
-        public TraUser GetCurrentUser(string guid)
-        {
-            return _context.TraUser.Include(x => x.TraImage).FirstOrDefault(c => c.Guid == guid);
-        }
+        //public TraUser GetCurrentUser(string guid)
+        //{
+        //    return _context.TraUser.Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault(c => c.Guid == guid);
+        //}
 
 
         public bool Save()
@@ -123,15 +123,15 @@ namespace TransAction.Data.Services
 
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
-        public IEnumerable<TraActivity> GetActivities()
-        {
-            return _context.TraActivity.OrderBy(c => c.ActivityId).ToList();
-        }
+        //public IEnumerable<TraActivity> GetActivities()
+        //{
+        //    return _context.TraActivity.OrderBy(c => c.ActivityId).ToList();
+        //}
 
-        public TraActivity GetActivity(int id)
-        {
-            return _context.TraActivity.FirstOrDefault(c => c.ActivityId == id);
-        }
+        //public TraActivity GetActivity(int id)
+        //{
+        //    return _context.TraActivity.FirstOrDefault(c => c.ActivityId == id);
+        //}
 
         public bool ActivityExists(string Name)
         {
@@ -391,65 +391,67 @@ namespace TransAction.Data.Services
             return teamRequests;
         }
         /*...........................................................................................................*/
-        public IEnumerable<TraTopic> GetTopics()
-        {
-            return _context.TraTopic
-                .Include(x => x.TraTopicMessage)
-                    .ThenInclude(m => m.User);
-        }
+        //public IEnumerable<TraTopic> GetTopics()
+        //{
+        //    return _context.TraTopic
+        //        .Include(x => x.TraTopicMessage)
+        //            .ThenInclude(m => m.User);
+        //}
 
-        public TraTopic GetTopic(int id)
-        {
-            return _context.TraTopic.Include(x => x.TraTopicMessage).FirstOrDefault(c => c.TopicId == id);
-        }
+        //public TraTopic GetTopic(int id)
+        //{
+        //    return _context.TraTopic.Include(x => x.TraTopicMessage).FirstOrDefault(c => c.TopicId == id);
+        //}
 
-        public void CreateTopic(TraTopic traTopic)
-        {
-            _context.TraTopic.Add(traTopic);
-        }
+        //public void CreateTopic(TraTopic traTopic)
+        //{
+        //    _context.TraTopic.Add(traTopic);
+        //}
 
-        public bool TopicExists(string Title)
-        {
-            var checkTopic = _context.TraTopic.FirstOrDefault(c => c.Title == Title);
-            if (checkTopic != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public bool TopicExists(string Title)
+        //{
+        //    var checkTopic = _context.TraTopic.FirstOrDefault(c => c.Title == Title);
+        //    if (checkTopic != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
-        {
-            return _context.TraTopicMessage
-                .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c => c.TopicMessageId).ToList();
+        //public IEnumerable<TraTopicMessage> GetTopicMessages(int topicId)
+        //{
+        //    return _context.TraTopicMessage
+        //        .Include(x => x.Topic).Where(x => x.TopicId == topicId).OrderBy(c => c.TopicMessageId).ToList();
 
-        }
-        public IEnumerable<TraTopicMessage> GetMessages()
-        {
-            return _context.TraTopicMessage.OrderBy(c => c.TopicMessageId).ToList();
-        }
-        public TraTopicMessage GetTopicMessage(int id)
-        {
-            return _context.TraTopicMessage.FirstOrDefault(c => c.TopicMessageId == id);
-        }
+        //}
 
-        public void CreateTopicMessage(TraTopicMessage traTopicMessage)
-        {
-            _context.TraTopicMessage.Add(traTopicMessage);
-        }
 
-        public void DeleteTopicMessage(TraTopicMessage traTopicMessage)
-        {
-            _context.TraTopicMessage.Remove(traTopicMessage);
-        }
+        //public IEnumerable<TraTopicMessage> GetMessages()
+        //{
+        //    return _context.TraTopicMessage.OrderBy(c => c.TopicMessageId).ToList();
+        //}
+        //public TraTopicMessage GetTopicMessage(int id)
+        //{
+        //    return _context.TraTopicMessage.FirstOrDefault(c => c.TopicMessageId == id);
+        //}
 
-        public void DeleteTopic(TraTopic traTopic)
-        {
-            _context.TraTopic.Remove(traTopic);
-        }
+        //public void CreateTopicMessage(TraTopicMessage traTopicMessage)
+        //{
+        //    _context.TraTopicMessage.Add(traTopicMessage);
+        //}
+
+        //public void DeleteTopicMessage(TraTopicMessage traTopicMessage)
+        //{
+        //    _context.TraTopicMessage.Remove(traTopicMessage);
+        //}
+
+        //public void DeleteTopic(TraTopic traTopic)
+        //{
+        //    _context.TraTopic.Remove(traTopic);
+        //}
 
         public TraImage GetUserProfileImage(int userId)
         {

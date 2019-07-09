@@ -98,7 +98,7 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
             _mapper.Map(updateRegion, regionEntity);
-
+            _unitOfWork.Region.Update(regionEntity);
 
             if (!_transActionRepo.Save())
             {

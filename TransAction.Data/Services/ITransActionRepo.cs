@@ -13,7 +13,7 @@ namespace TransAction.Data.Services
         //TraUser GetUser(int id);
         //bool UserExists(string Name, string Email);
         //void CreateUser(TraUser traUser);
-        TraUser GetCurrentUser(string guid);
+        //TraUser GetCurrentUser(string guid);
 
         //IEnumerable<TraTeam> GetTeamsBySize(int page, int pageSize);
         //IEnumerable<TraTeam> GetTeams(int page, int pageSize);
@@ -26,8 +26,8 @@ namespace TransAction.Data.Services
         //bool RegionExists(string Name);
         //void CreateRegion(TraRegion traRegion);
 
-        IEnumerable<TraActivity> GetActivities();
-        TraActivity GetActivity(int id);
+        //IEnumerable<TraActivity> GetActivities();
+        //TraActivity GetActivity(int id);
         bool ActivityExists(string Name);
         void CreateActivity(TraActivity traActivity);
 
@@ -55,17 +55,17 @@ namespace TransAction.Data.Services
         IEnumerable<MemberReqDto> CurrentTeamReq(int teamId);
 
 
-        IEnumerable<TraTopic> GetTopics();
-        TraTopic GetTopic(int id);
-        void CreateTopic(TraTopic traTopic);
-        bool TopicExists(string Title);
-        void DeleteTopic(TraTopic traTopic);
+        //IEnumerable<TraTopic> GetTopics();
+        //TraTopic GetTopic(int id);
+        //void CreateTopic(TraTopic traTopic);
+        //bool TopicExists(string Title);
+        //void DeleteTopic(TraTopic traTopic);
 
-        IEnumerable<TraTopicMessage> GetTopicMessages(int topicId);
-        TraTopicMessage GetTopicMessage(int id);
-        void CreateTopicMessage(TraTopicMessage traTopicMessage);
-        void DeleteTopicMessage(TraTopicMessage traTopicMessage);
-        IEnumerable<TraTopicMessage> GetMessages();
+        // IEnumerable<TraTopicMessage> GetTopicMessages(int topicId);
+        //TraTopicMessage GetTopicMessage(int id);
+        //void CreateTopicMessage(TraTopicMessage traTopicMessage);
+        //void DeleteTopicMessage(TraTopicMessage traTopicMessage);
+        //IEnumerable<TraTopicMessage> GetMessages();
 
         TraImage GetProfileImage(string guid);
         TraImage GetUserProfileImage(int userId);

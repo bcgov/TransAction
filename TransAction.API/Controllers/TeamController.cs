@@ -134,7 +134,7 @@ namespace TransAction.API.Controllers
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
 
-            var user = _transActionRepo.GetCurrentUser(getUser.Guid);
+            var user = _unitOfWork.User.GetCurrentUser(getUser.Guid);
             if (user.UserId == teamUpdate.UserId || user.Role.Name.ToLower() == "admin")
             {
                 var teamEntity = _unitOfWork.Team.GetById(id);
@@ -146,6 +146,7 @@ namespace TransAction.API.Controllers
                     return BadRequest(ModelState);
                 }
                 _mapper.Map(teamUpdate, teamEntity);
+                _unitOfWork.Team.Update(teamEntity);
                 if (!_transActionRepo.Save())
                 {
                     return StatusCode(500, "A problem happened while handling your request.");

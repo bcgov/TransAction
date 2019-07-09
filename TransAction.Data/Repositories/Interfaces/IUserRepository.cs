@@ -11,5 +11,6 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TraUser> GetByTeamId(int teamId);
         void Create(TraUser newUser);
         void Update(TraUser updateUser);
+        TraUser GetCurrentUser(string guid);
     }
 }

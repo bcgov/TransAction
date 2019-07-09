@@ -11,5 +11,7 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TraTopicMessage> GetAllMessages(int page, int pageSize);
         TraTopicMessage GetMessageById(int id);
         void Create(TraTopicMessage newMessages);
+        void Update(TraTopicMessage updateMessage);
+        void Delete(TraTopicMessage deleteMessage);
     }
 }

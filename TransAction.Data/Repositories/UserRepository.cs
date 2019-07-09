@@ -35,5 +35,9 @@ namespace TransAction.Data.Repositories
             return Find(e => e.TeamId == teamId).ToList();
         }
 
+        public TraUser GetCurrentUser(string guid)
+        {
+            return Find().Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault(c => c.Guid == guid);
+        }
     }
 }
