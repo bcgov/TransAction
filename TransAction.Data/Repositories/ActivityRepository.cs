@@ -5,12 +5,25 @@ using System.Linq;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 
-namespace TransAction.Data.Repositories.Interfaces
+namespace TransAction.Data.Repositories
 {
     public class ActivityRepository : RepositoryBase<TraActivity>, IActivityRepository
     {
         public ActivityRepository(TransActionContext repositoryContext) : base(repositoryContext)
         {
+        }
+
+        public bool ActivityExists(string Name)
+        {
+            var checkActivity = FindAll().FirstOrDefault(c => c.Name == Name);
+            if (checkActivity != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public IEnumerable<TraActivity> GetAll(int page, int pageSize)

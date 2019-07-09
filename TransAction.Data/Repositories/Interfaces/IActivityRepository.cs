@@ -10,5 +10,6 @@ namespace TransAction.Data.Repositories.Interfaces
         TraActivity GetById(int id);
         void Create(TraActivity newActivity);
         void Update(TraActivity updateActivity);
+        bool ActivityExists(string Name);
     }
 }

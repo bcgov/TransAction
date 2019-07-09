@@ -9,6 +9,9 @@
         IMessageRepository Message { get; }
         IRegionRepository Region { get; }
         IActivityRepository Activity { get; }
+        IRoleRepository Role { get; }
+        IRequestRepository Request { get; }
+        IImageRepository Image { get; }
         bool Save();
     }
 }

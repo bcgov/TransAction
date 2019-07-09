@@ -75,7 +75,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.ActivityExists(createActivity.Name))
+            if (_unitOfWork.Activity.ActivityExists(createActivity.Name))
             {
                 return BadRequest();
             }
@@ -83,7 +83,7 @@ namespace TransAction.API.Controllers
             var newActivity = _mapper.Map<TraActivity>(createActivity);
 
 
-            _transActionRepo.CreateActivity(newActivity);
+            _unitOfWork.Activity.Create(newActivity);
 
             if (!_transActionRepo.Save())
             {

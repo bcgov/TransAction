@@ -106,6 +106,50 @@ namespace TransAction.Data.Repositories
                 return _activty;
             }
         }
+
+        public IRoleRepository _role;
+        public IRoleRepository Role
+        {
+            get
+            {
+                if (_role == null)
+                {
+                    _role = new RoleRepository(_context);
+                }
+
+                return _role;
+            }
+        }
+
+        public IRequestRepository _request;
+        public IRequestRepository Request
+        {
+            get
+            {
+                if (_request == null)
+                {
+                    _request = new RequestRepository(_context);
+                }
+
+                return _request;
+            }
+        }
+
+        public IImageRepository _image;
+        public IImageRepository Image
+        {
+            get
+            {
+                if (_image == null)
+                {
+                    _image = new ImageRepository(_context);
+                }
+
+                return _image;
+            }
+        }
+
+
         public UnitOfWork(TransActionContext context)
         {
             _context = context;

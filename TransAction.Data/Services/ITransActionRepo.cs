@@ -28,8 +28,8 @@ namespace TransAction.Data.Services
 
         //IEnumerable<TraActivity> GetActivities();
         //TraActivity GetActivity(int id);
-        bool ActivityExists(string Name);
-        void CreateActivity(TraActivity traActivity);
+        //bool ActivityExists(string Name);
+        //void CreateActivity(TraActivity traActivity);
 
         IEnumerable<TraUserActivity> GetUserActivities();
         int EventSpecificScore(int eventId);
@@ -44,15 +44,15 @@ namespace TransAction.Data.Services
         IEnumerable<RegionScoreDto> RegionalScore(int eventId);
 
 
-        IEnumerable<TraRole> GetRoles();
-        TraRole GetRole(int id);
-        void CreateRole(TraRole traRole);
-        bool RoleExists(string Name);
+        //IEnumerable<TraRole> GetRoles();
+        //TraRole GetRole(int id);
+        //void CreateRole(TraRole traRole);
+        //bool RoleExists(string Name);
 
-        IEnumerable<TraMemberReq> GetRequests();
-        TraMemberReq GetRequest(int id);
-        void CreateRequest(TraMemberReq traMember);
-        IEnumerable<MemberReqDto> CurrentTeamReq(int teamId);
+        //IEnumerable<TraMemberReq> GetRequests();
+        //TraMemberReq GetRequest(int id);
+        //void CreateRequest(TraMemberReq traMember);
+        //IEnumerable<MemberReqDto> CurrentTeamReq(int teamId);
 
 
         //IEnumerable<TraTopic> GetTopics();
@@ -67,10 +67,10 @@ namespace TransAction.Data.Services
         //void DeleteTopicMessage(TraTopicMessage traTopicMessage);
         //IEnumerable<TraTopicMessage> GetMessages();
 
-        TraImage GetProfileImage(string guid);
-        TraImage GetUserProfileImage(int userId);
-        TraImage GetTeamProfileImage(int teamId);
-        void AddProfileImage(TraImage image);
+        //TraImage GetProfileImage(string guid);
+        //TraImage GetUserProfileImage(int userId);
+        //TraImage GetTeamProfileImage(int teamId);
+        //void AddProfileImage(TraImage image);
 
 
         bool Save();

@@ -7,10 +7,10 @@ namespace TransAction.Data.Repositories.Interfaces
 {
     public interface IRoleRepository
     {
-        IEnumerable<TraRole> GetAll(int page, int pageSize);
-        TraRole GetById(int id);
-        IEnumerable<TraRole> GetByTeamId(int teamId);
-        void Create(TraRole newUser);
-        void Update(TraRole updateUser);
+        IEnumerable<TraRole> GetAllRoles(int page, int pageSize);
+        TraRole GetRoleById(int id);
+        void Create(TraRole newRole);
+        void Update(TraRole updateRole);
+        bool RoleExists(string Name);
     }
 }

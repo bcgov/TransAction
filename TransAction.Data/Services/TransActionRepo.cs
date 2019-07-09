@@ -133,23 +133,23 @@ namespace TransAction.Data.Services
         //    return _context.TraActivity.FirstOrDefault(c => c.ActivityId == id);
         //}
 
-        public bool ActivityExists(string Name)
-        {
-            var checkActivity = _context.TraActivity.FirstOrDefault(c => c.Name == Name);
-            if (checkActivity != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public bool ActivityExists(string Name)
+        //{
+        //    var checkActivity = _context.TraActivity.FirstOrDefault(c => c.Name == Name);
+        //    if (checkActivity != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        public void CreateActivity(TraActivity traActivity)
-        {
-            _context.TraActivity.Add(traActivity);
-        }
+        //public void CreateActivity(TraActivity traActivity)
+        //{
+        //    _context.TraActivity.Add(traActivity);
+        //}
 
         public IEnumerable<TraUserActivity> GetUserActivities()
         {
@@ -327,69 +327,69 @@ namespace TransAction.Data.Services
         }
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
-        public IEnumerable<TraRole> GetRoles()
-        {
-            return _context.TraRole.OrderBy(c => c.RoleId).ToList();
-        }
+        //public IEnumerable<TraRole> GetRoles()
+        //{
+        //    return _context.TraRole.OrderBy(c => c.RoleId).ToList();
+        //}
 
-        public TraRole GetRole(int id)
-        {
-            return _context.TraRole.FirstOrDefault(c => c.RoleId == id);
-        }
+        //public TraRole GetRole(int id)
+        //{
+        //    return _context.TraRole.FirstOrDefault(c => c.RoleId == id);
+        //}
 
-        public void CreateRole(TraRole traRole)
-        {
-            _context.TraRole.Add(traRole);
-        }
+        //public void CreateRole(TraRole traRole)
+        //{
+        //    _context.TraRole.Add(traRole);
+        //}
 
-        public bool RoleExists(string Name)
-        {
-            var checkRole = _context.TraRole.FirstOrDefault(c => c.Name == Name);
-            if (checkRole != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public bool RoleExists(string Name)
+        //{
+        //    var checkRole = _context.TraRole.FirstOrDefault(c => c.Name == Name);
+        //    if (checkRole != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
-        public IEnumerable<TraMemberReq> GetRequests()
-        {
-            return _context.TraMemberReq.Where(x => x.IsActive == true).OrderBy(c => c.MemberReqId).ToList();
-        }
+        //public IEnumerable<TraMemberReq> GetRequests()
+        //{
+        //    return _context.TraMemberReq.Where(x => x.IsActive == true).OrderBy(c => c.MemberReqId).ToList();
+        //}
 
-        public TraMemberReq GetRequest(int id)
-        {
-            return _context.TraMemberReq.FirstOrDefault(c => c.MemberReqId == id);
-        }
+        //public TraMemberReq GetRequest(int id)
+        //{
+        //    return _context.TraMemberReq.FirstOrDefault(c => c.MemberReqId == id);
+        //}
 
-        public void CreateRequest(TraMemberReq traMember)
-        {
-            _context.TraMemberReq.Add(traMember);
-        }
+        //public void CreateRequest(TraMemberReq traMember)
+        //{
+        //    _context.TraMemberReq.Add(traMember);
+        //}
 
-        public IEnumerable<MemberReqDto> CurrentTeamReq(int teamId)
-        {
-            var teamRequests = _context.TraMemberReq
-                .Where(p => p.TeamId == teamId)
-                .Where(p => p.IsActive == true)
-                    .Select(x => new MemberReqDto()
-                    {
-                        MemberReqId = x.MemberReqId,
-                        TeamId = teamId,
-                        UserId = x.UserId,
-                        IsActive = x.IsActive,
-                        ConcurrencyControlNumber = x.ConcurrencyControlNumber
-                    })
-                    .ToList();
+        //public IEnumerable<MemberReqDto> CurrentTeamReq(int teamId)
+        //{
+        //    var teamRequests = _context.TraMemberReq
+        //        .Where(p => p.TeamId == teamId)
+        //        .Where(p => p.IsActive == true)
+        //            .Select(x => new MemberReqDto()
+        //            {
+        //                MemberReqId = x.MemberReqId,
+        //                TeamId = teamId,
+        //                UserId = x.UserId,
+        //                IsActive = x.IsActive,
+        //                ConcurrencyControlNumber = x.ConcurrencyControlNumber
+        //            })
+        //            .ToList();
 
 
 
-            return teamRequests;
-        }
+        //    return teamRequests;
+        //}
         /*...........................................................................................................*/
         //public IEnumerable<TraTopic> GetTopics()
         //{
@@ -453,25 +453,25 @@ namespace TransAction.Data.Services
         //    _context.TraTopic.Remove(traTopic);
         //}
 
-        public TraImage GetUserProfileImage(int userId)
-        {
-            return _context.TraImage.Where(x => x.UserId == userId).FirstOrDefault();
-        }
+        //public TraImage GetUserProfileImage(int userId)
+        //{
+        //    return _context.TraImage.Where(x => x.UserId == userId).FirstOrDefault();
+        //}
 
-        public TraImage GetTeamProfileImage(int teamId)
-        {
-            return _context.TraImage.Where(x => x.TeamId == teamId).FirstOrDefault();
-        }
+        //public TraImage GetTeamProfileImage(int teamId)
+        //{
+        //    return _context.TraImage.Where(x => x.TeamId == teamId).FirstOrDefault();
+        //}
 
-        public TraImage GetProfileImage(string guid)
-        {
-            return _context.TraImage.Where(x => x.Guid == guid).FirstOrDefault();
-        }
+        //public TraImage GetProfileImage(string guid)
+        //{
+        //    return _context.TraImage.Where(x => x.Guid == guid).FirstOrDefault();
+        //}
 
-        public void AddProfileImage(TraImage image)
-        {
-            _context.TraImage.Add(image);
-        }
+        //public void AddProfileImage(TraImage image)
+        //{
+        //    _context.TraImage.Add(image);
+        //}
 
 
     }

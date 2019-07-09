@@ -23,7 +23,7 @@ namespace TransAction.API.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            var role = _transActionRepo.GetRole(userRoleUpdate.RoleId);
+            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId); ;
             if (role == null)
                 return NotFound("Role not found");
 

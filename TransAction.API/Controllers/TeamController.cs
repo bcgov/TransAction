@@ -161,7 +161,7 @@ namespace TransAction.API.Controllers
 
         }
         [HttpPost("join")]
-        public IActionResult AddUserToTeam([FromBody] AddUserToTeamDto addUserToTeam)
+        public IActionResult AddUserToTeam([FromBody] AddUserToTeamDto addUserToTeam, int page = 1, int pageSize = 25)
         {
             var getUser = _unitOfWork.User.GetById(addUserToTeam.UserId);
             if (getUser.TeamId != null)
@@ -189,7 +189,7 @@ namespace TransAction.API.Controllers
             {
                 getUser.TeamId = addUserToTeam.TeamId;
                 getUser.IsFreeAgent = false;
-                var requests = _transActionRepo.GetRequests();
+                var requests = _unitOfWork.Request.GetAllReq(page, pageSize);
                 requests = requests.Where(x => x.UserId == addUserToTeam.UserId && x.IsActive == true);
                 foreach (var request in requests)
                 {

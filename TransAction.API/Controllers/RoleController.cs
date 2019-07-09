@@ -18,9 +18,9 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetRoles()
+        public IActionResult GetRoles(int page = 1, int pageSize = 25)
         {
-            var roles = _transActionRepo.GetRoles();
+            var roles = _unitOfWork.Role.GetAllRoles(page, pageSize);
             var getRoles = _mapper.Map<IEnumerable<RoleDto>>(roles);
             return Ok(getRoles);
 
@@ -31,13 +31,13 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getRoles = _transActionRepo.GetRoles().FirstOrDefault(c => c.RoleId == id);
+                var getRole = _unitOfWork.Role.GetRoleById(id);
 
-                if (getRoles == null)
+                if (getRole == null)
                 {
                     return NotFound();
                 }
-                var getRole = _transActionRepo.GetRole(id);
+                //var getRole = _transActionRepo.GetRole(id);
                 var getRoleResult = _mapper.Map<RoleDto>(getRole);
                 return Ok(getRoleResult);
 
@@ -66,7 +66,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.RoleExists(createRole.Name))
+            if (_unitOfWork.Role.RoleExists(createRole.Name))
             {
                 return BadRequest();
             }
@@ -74,7 +74,7 @@ namespace TransAction.API.Controllers
             var newRole = _mapper.Map<TraRole>(createRole);
 
 
-            _transActionRepo.CreateRole(newRole);
+            _unitOfWork.Role.Create(newRole);
 
             if (!_transActionRepo.Save())
             {
@@ -91,7 +91,7 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateRole(int id, [FromBody] RoleUpdateDto updateRole)
         {
-            var roleEntity = _transActionRepo.GetRole(id);
+            var roleEntity = _unitOfWork.Role.GetRoleById(id);
             if (roleEntity == null) return NotFound();
             if (updateRole == null) return NotFound();
 
@@ -100,6 +100,7 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
             _mapper.Map(updateRole, roleEntity);
+            _unitOfWork.Role.Update(roleEntity);
 
 
             if (!_transActionRepo.Save())

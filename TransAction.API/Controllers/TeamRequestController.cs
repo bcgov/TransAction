@@ -17,9 +17,9 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetRequests()
+        public IActionResult GetRequests(int page = 1, int pageSize = 25)
         {
-            var request = _transActionRepo.GetRequests();
+            var request = _unitOfWork.Request.GetAllReq(page, pageSize);
             var getRequest = _mapper.Map<IEnumerable<MemberReqDto>>(request);
             return Ok(getRequest);
         }
@@ -29,13 +29,13 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getMemberRequest = _transActionRepo.GetRequests().FirstOrDefault(c => c.MemberReqId == id);
+                var getMemberRequest = _unitOfWork.Request.GetReqById(id);
 
                 if (getMemberRequest == null)
                 {
                     return NotFound();
                 }
-                var getRequest = _transActionRepo.GetRequest(id);
+                var getRequest = _unitOfWork.Request.GetReqById(id);
                 var getUserResult = _mapper.Map<MemberReqDto>(getRequest);
                 return Ok(getUserResult);
 
@@ -73,7 +73,7 @@ namespace TransAction.API.Controllers
             var newRequest = _mapper.Map<TraMemberReq>(createRequest);
             newRequest.IsActive = true;
 
-            _transActionRepo.CreateRequest(newRequest);
+            _unitOfWork.Request.Create(newRequest);
 
             if (!_transActionRepo.Save())
             {
@@ -89,7 +89,7 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateRequest(int id, [FromBody] MemberReqUpdateDto updateRequest)
         {
-            var requestEntity = _transActionRepo.GetRequest(id);
+            var requestEntity = _unitOfWork.Request.GetReqById(id);
             if (requestEntity == null) return NotFound();
             if (updateRequest == null) return NotFound();
 
@@ -111,7 +111,7 @@ namespace TransAction.API.Controllers
         [HttpGet("team/{teamId}")]
         public IActionResult CurrentTeamRequests(int teamId)
         {
-            var result = _transActionRepo.CurrentTeamReq(teamId);
+            var result = _unitOfWork.Request.CurrentTeamReq(teamId);
             return Ok(result);
         }
     }
