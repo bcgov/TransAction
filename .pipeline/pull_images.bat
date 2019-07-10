@@ -1,0 +1,2 @@
+oc import-image --reference-policy='local' nodejs-8-rhel7:1 --from=registry.access.redhat.com/rhscl/nodejs-8-rhel7:1-48 --confirm
+oc import-image --reference-policy='local' dotnet-22-rhel7:2.2 --from=registry.access.redhat.com/dotnet/dotnet-22-rhel7:2.2-6 --confirm

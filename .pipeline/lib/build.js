@@ -1,27 +1,70 @@
-'use strict';
+"use strict";
+const { OpenShiftClientX } = require("pipeline-cli");
+const path = require("path");
 
-const { OpenShiftClientX } = require('pipeline-cli');
-const path = require('path');
+module.exports = settings => {
+  const phases = settings.phases;
+  const options = settings.options;
+  const oc = new OpenShiftClientX(
+    Object.assign({ namespace: phases.build.namespace }, options)
+  );
+  const phase = "build";
+  let objects = [];
+  const templatesLocalBaseUrl = oc.toFileUrl(
+    path.resolve(__dirname, "../../openshift")
+  );
 
-module.exports = () => {
-  const oc = new OpenShiftClientX({ namespace: 'devhub-tools' });
-  const templateFile = path.resolve(__dirname, '../../openshift/bc.yaml');
+  objects.push(
+    ...oc.processDeploymentTemplate(
+      `${templatesLocalBaseUrl}/nginx-build-config.yaml`,
+      {
+        param: {
+          NAME: `${settings.phases[phase].name}-nginx`,
+          SUFFIX: settings.phases[phase].suffix,
+          VERSION: settings.phases[phase].tag,
+          SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
+          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`
+        }
+      }
+    )
+  );
 
-  const appName = 'transaction';
+  objects.push(
+    ...oc.processDeploymentTemplate(
+      `${templatesLocalBaseUrl}/client-build-config.yaml`,
+      {
+        param: {
+          NAME: `${settings.phases[phase].name}-client`,
+          SUFFIX: settings.phases[phase].suffix,
+          VERSION: settings.phases[phase].tag,
+          SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
+          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`
+        }
+      }
+    )
+  );
 
-  const objects = oc.process(oc.toFileUrl(templateFile), {
-    param: {
-      NAME: appName,
-      SUFFIX: `-dev`,
-      VERSION: `build-v1.0`,
-      SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
-      SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`,
-    },
-  });
+  objects = objects.concat(
+    oc.processDeploymentTemplate(
+      `${templatesLocalBaseUrl}/api-build-config.yaml`,
+      {
+        param: {
+          NAME: `${settings.phases[phase].name}-api`,
+          SUFFIX: settings.phases[phase].suffix,
+          VERSION: settings.phases[phase].tag,
+          SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
+          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`
+        }
+      }
+    )
+  );
 
-  oc.applyBestPractices(objects);
-  oc.applyRecommendedLabels(objects, appName, 'build', oc.options.pr);
-  oc.fetchSecretsAndConfigMaps(objects);
-  const applyResult = oc.apply(objects);
-  applyResult.narrow('bc').startBuild();
+  oc.applyRecommendedLabels(
+    objects,
+    phases[phase].name,
+    phase,
+    phases[phase].changeId,
+    phases[phase].instance
+  );
+  oc.applyAndBuild(objects);
 };

@@ -1,0 +1,54 @@
+{
+  "generator-bcdk": {
+    "promptValues": {
+      "modules": {
+        "jenkins": {
+          "path": ".jenkins",
+          "namespace": "vlpweg-tools",
+          "name": "jenkins",
+          "version": "1.0.0",
+          "environments": {
+            "build": {
+              "namespace": "vlpweg-tools"
+            },
+            "dev": {
+              "namespace": "vlpweg-tools"
+            },
+            "prod": {
+              "namespace": "vlpweg-tools"
+            }
+          },
+          "jenkinsJobName": "_jenkins",
+          "github_owner": "bcgov",
+          "github_repo": "TransAction",
+          "jenkinsFilePath": ".jenkins/Jenkinsfile",
+          "uuid": "3b305278-a27a-4cbb-a29c-508b8294839f"
+        },
+        "main": {
+          "name": "main",
+          "version": "1.0.0",
+          "path": ".",
+          "environments": {
+            "build": {
+              "namespace": "vlpweg-tools"
+            },
+            "dev": {
+              "namespace": "vlpweg-dev"
+            },
+            "test": {
+              "namespace": "vlpweg-test"
+            },
+            "prod": {
+              "namespace": "vlpweg-prod"
+            }
+          },
+          "jenkinsJobName": "TransAction",
+          "github_owner": "bcgov",
+          "github_repo": "TransAction",
+          "jenkinsFilePath": "Jenkinsfile",
+          "uuid": "1a1f7df5-40d5-4647-bdbc-7c017210e12d"
+        }
+      }
+    }
+  }
+}

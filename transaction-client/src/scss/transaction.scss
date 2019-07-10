@@ -1,3 +1,63 @@
 @import './vendor/bootstrap-theme.scss';
 
 @import 'vendor-overrides.scss';
+@import 'carousel.scss';
+@import 'profile-image.scss';
+@import 'drop-zone.scss';
+
+body {
+  background-color: #e2e1e0;
+}
+
+button.team-remove {
+  width: 81px;
+}
+
+.hover-pointer {
+  cursor: pointer;
+}
+
+.event-description {
+  white-space: pre-wrap;
+}
+
+.large-welcome-text {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.card-wrapper {
+  padding: 16px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  margin-bottom: 16px;
+}
+
+.topic-title {
+  padding: 0 39px;
+}
+
+.topic-post-block {
+  padding: 16px 24px;
+  margin-bottom: 0.25rem !important;
+}
+
+.topic-post-header {
+  background: #e2e1e0;
+  margin: -16px -24px 16px;
+  padding: 8px 9px;
+}
+
+.table td.fit,
+.table th.fit {
+  white-space: nowrap;
+  width: 1%;
+}
+
+// Check stuff below
+
+textarea.form-control {
+  height: 250px;
+}

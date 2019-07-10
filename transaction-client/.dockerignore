@@ -1,0 +1,6 @@
+/node_modules
+./.vs
+db.json
+.s2iignore
+/build
+
