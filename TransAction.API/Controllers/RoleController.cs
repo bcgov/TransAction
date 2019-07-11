@@ -76,7 +76,7 @@ namespace TransAction.API.Controllers
 
             _unitOfWork.Role.Create(newRole);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -103,7 +103,7 @@ namespace TransAction.API.Controllers
             _unitOfWork.Role.Update(roleEntity);
 
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }

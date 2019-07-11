@@ -31,17 +31,17 @@ namespace TransAction.Data.Services
         //bool ActivityExists(string Name);
         //void CreateActivity(TraActivity traActivity);
 
-        IEnumerable<TraUserActivity> GetUserActivities();
-        int EventSpecificScore(int eventId);
-        int UserSpecificScore(int userId, int eventId);
-        IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId);
-        int TeamEventSpecificScore(int teamId, int eventId);
-        IEnumerable<UserScoreDto> CurrentUserScore(int id);
-        TraUserActivity GetUserActivity(int id);
-        bool UserActivityExists(string Name);
-        void CreateUserActivity(TraUserActivity traUserActivity);
-        IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId);
-        IEnumerable<RegionScoreDto> RegionalScore(int eventId);
+        //IEnumerable<TraUserActivity> GetUserActivities();
+        //int EventSpecificScore(int eventId);
+        //int UserSpecificScore(int userId, int eventId);
+        //IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId);
+        //int TeamEventSpecificScore(int teamId, int eventId);
+        //IEnumerable<UserScoreDto> CurrentUserScore(int id);
+        //TraUserActivity GetUserActivity(int id);
+        //bool UserActivityExists(string Name);
+        //void CreateUserActivity(TraUserActivity traUserActivity);
+        //IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId);
+        //IEnumerable<RegionScoreDto> RegionalScore(int eventId);
 
 
         //IEnumerable<TraRole> GetRoles();
@@ -73,6 +73,6 @@ namespace TransAction.Data.Services
         //void AddProfileImage(TraImage image);
 
 
-        bool Save();
+        //bool Save();
     }
 }

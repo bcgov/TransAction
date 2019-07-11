@@ -17,9 +17,9 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetUserActivity()
+        public IActionResult GetUserActivity(int page = 1, int pageSize = 25)
         {
-            var userActivity = _transActionRepo.GetUserActivities();
+            var userActivity = _unitOfWork.UserAct.GetAllUserActivities(page, pageSize);
             var getUserActivities = _mapper.Map<IEnumerable<UserActivityDto>>(userActivity);
             return Ok(getUserActivities);
 
@@ -30,13 +30,12 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getUsersActivity = _transActionRepo.GetUserActivities().FirstOrDefault(c => c.UserActivityId == id);
+                var getUserActivity = _unitOfWork.UserAct.GetUserActivity(id);
 
-                if (getUsersActivity == null)
+                if (getUserActivity == null)
                 {
                     return NotFound();
                 }
-                var getUserActivity = _transActionRepo.GetUserActivity(id);
                 var getUserResult = _mapper.Map<UserActivityDto>(getUserActivity);
                 return Ok(getUserResult);
 
@@ -69,16 +68,12 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            //if (_transActionRepo.UserActivityExists(createUserActivity.Name))
-            //{
-            //    return BadRequest();
-            //}
 
             var newUserActivity = _mapper.Map<TraUserActivity>(createUserActivity);
 
-            _transActionRepo.CreateUserActivity(newUserActivity);
+            _unitOfWork.UserAct.Create(newUserActivity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -90,7 +85,7 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateUserActivity(int id, [FromBody] UserActivityUpdateDto updateUserActivity)
         {
-            var userActivityEntity = _transActionRepo.GetUserActivity(id);
+            var userActivityEntity = _unitOfWork.UserAct.GetUserActivity(id);
             if (userActivityEntity == null) return NotFound();
             if (updateUserActivity == null) return NotFound();
 
@@ -101,7 +96,7 @@ namespace TransAction.API.Controllers
 
             _mapper.Map(updateUserActivity, userActivityEntity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -114,7 +109,7 @@ namespace TransAction.API.Controllers
         [HttpGet("event/{eventId}")]
         public IActionResult EventSpecificScore(int eventId)
         {
-            var score = _transActionRepo.EventSpecificScore(eventId);
+            var score = _unitOfWork.UserAct.EventSpecificScore(eventId);
 
             var result = new EventSpecificScoreDto
             {
@@ -128,7 +123,7 @@ namespace TransAction.API.Controllers
         [HttpGet("user/{userId}/event/{eventId}")]
         public IActionResult UserSpecificScore(int userId, int eventId)
         {
-            var score = _transActionRepo.UserSpecificScore(userId, eventId);
+            var score = _unitOfWork.UserAct.UserSpecificScore(userId, eventId);
             var result = new UserScoreDto
             {
                 EventId = eventId,
@@ -141,7 +136,7 @@ namespace TransAction.API.Controllers
         [HttpGet("team/{teamId}/event/{eventId}")]
         public IActionResult TeamEventSpecificScore(int teamId, int eventId)
         {
-            var score = _transActionRepo.TeamEventSpecificScore(teamId, eventId);
+            var score = _unitOfWork.UserAct.TeamEventSpecificScore(teamId, eventId);
             var result = new TeamSpecificScoreDto
             {
                 eventId = eventId,
@@ -154,7 +149,7 @@ namespace TransAction.API.Controllers
         [HttpGet("team/{teamId}")]
         public IActionResult TeamSpecificScore(int teamId)
         {
-            var score = _transActionRepo.TeamSpecificScore(teamId);
+            var score = _unitOfWork.UserAct.TeamSpecificScore(teamId);
             return Ok(score);
         }
 
@@ -163,14 +158,14 @@ namespace TransAction.API.Controllers
         [HttpGet("user/{userId}")]
         public IActionResult CurrentUserScore(int userId)
         {
-            var result = _transActionRepo.CurrentUserScore(userId);
+            var result = _unitOfWork.UserAct.CurrentUserScore(userId);
             return Ok(result);
         }
 
         [HttpGet("event/{eventId}/top/{number}")]
         public IActionResult TopTeams(int number, int eventId)
         {
-            var result = _transActionRepo.TopTeams(number, eventId);
+            var result = _unitOfWork.UserAct.TopTeams(number, eventId);
 
             return Ok(result);
         }
@@ -179,7 +174,7 @@ namespace TransAction.API.Controllers
         public IActionResult RegionScore(int eventId)
         {
 
-            var result = _transActionRepo.RegionalScore(eventId);
+            var result = _unitOfWork.UserAct.RegionalScore(eventId);
 
             return Ok(result);
         }

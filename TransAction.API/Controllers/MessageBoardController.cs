@@ -74,7 +74,7 @@ namespace TransAction.API.Controllers
 
             _unitOfWork.Topic.Create(newTopic); // have not changed it yet
             //_transActionRepo.CreateTopic(newTopic);
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -87,7 +87,7 @@ namespace TransAction.API.Controllers
             //_transActionRepo.CreateTopicMessage(message);
             _unitOfWork.Message.Create(message);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -115,7 +115,7 @@ namespace TransAction.API.Controllers
             _mapper.Map(updateTopic, topicEntity);
             _unitOfWork.Topic.Update(topicEntity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -150,13 +150,12 @@ namespace TransAction.API.Controllers
 
             try
             {
-                var getMessages = _unitOfWork.Message.GetAllMessages(page, pageSize);
+                var getMessage = _unitOfWork.Message.GetMessageById(id);
                 //var getMessages = _transActionRepo.GetMessages();
-                if (getMessages == null)
+                if (getMessage == null)
                 {
                     return NotFound();
                 }
-                var getMessage = _unitOfWork.Message.GetMessageById(id);
                 var getMessageResult = _mapper.Map<MessageDto>(getMessage);
                 return Ok(getMessageResult);
 
@@ -197,7 +196,7 @@ namespace TransAction.API.Controllers
             _unitOfWork.Message.Create(newMessage);
             //_transActionRepo.CreateTopicMessage(newMessage);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -205,7 +204,7 @@ namespace TransAction.API.Controllers
             var topic = _unitOfWork.Topic.GetTopicById(newMessage.TopicId);
             topic.DbLastUpdateTimestamp = DateTime.Now;
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -240,7 +239,7 @@ namespace TransAction.API.Controllers
                 _mapper.Map(updateMessage, messageEntity);
 
                 _unitOfWork.Message.Update(messageEntity);
-                if (!_transActionRepo.Save())
+                if (!_unitOfWork.Save())
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
                 }
@@ -292,7 +291,7 @@ namespace TransAction.API.Controllers
             }
             var deleteMessage = _unitOfWork.Message.GetMessageById(messageId);
             _unitOfWork.Message.Delete(deleteMessage);
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }

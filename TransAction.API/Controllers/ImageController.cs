@@ -179,7 +179,7 @@ namespace TransAction.API.Controllers
             if (newRecord)
                 _unitOfWork.Image.Create(traImage);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "Unable to save image to database.");
             }

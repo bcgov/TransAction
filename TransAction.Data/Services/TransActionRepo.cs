@@ -11,11 +11,11 @@ namespace TransAction.Data.Services
 {
     public class TransActionRepo : ITransActionRepo
     {
-        private TransActionContext _context;
-        public TransActionRepo(TransActionContext context)
-        {
-            _context = context;
-        }
+        //private TransActionContext _context;
+        //public TransActionRepo(TransActionContext context)
+        //{
+        //    _context = context;
+        //}
 
         //public TraUser GetUser(int id)
         //{
@@ -53,10 +53,10 @@ namespace TransAction.Data.Services
         //}
 
 
-        public bool Save()
-        {
-            return (_context.SaveChanges() >= 0);
-        }
+        //public bool Save()
+        //{
+        //    return (_context.SaveChanges() >= 0);
+        //}
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
         //public IEnumerable<TraTeam> GetTeams(int page, int pageSize)
@@ -151,180 +151,180 @@ namespace TransAction.Data.Services
         //    _context.TraActivity.Add(traActivity);
         //}
 
-        public IEnumerable<TraUserActivity> GetUserActivities()
-        {
-            return _context.TraUserActivity.OrderBy(c => c.UserActivityId).ToList();
-        }
+        //public IEnumerable<TraUserActivity> GetUserActivities()
+        //{
+        //    return _context.TraUserActivity.OrderBy(c => c.UserActivityId).ToList();
+        //}
 
-        public TraUserActivity GetUserActivity(int id)
-        {
-            return _context.TraUserActivity.FirstOrDefault(c => c.UserActivityId == id);
-        }
+        //public TraUserActivity GetUserActivity(int id)
+        //{
+        //    return _context.TraUserActivity.FirstOrDefault(c => c.UserActivityId == id);
+        //}
 
-        public bool UserActivityExists(string Name)
-        {
-            var checkUserActivity = _context.TraUserActivity.FirstOrDefault(c => c.Name == Name);
-            if (checkUserActivity != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public bool UserActivityExists(string Name)
+        //{
+        //    var checkUserActivity = _context.TraUserActivity.FirstOrDefault(c => c.Name == Name);
+        //    if (checkUserActivity != null)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        public void CreateUserActivity(TraUserActivity traUserActivity)
-        {
-            _context.TraUserActivity.Add(traUserActivity);
-        }
+        //public void CreateUserActivity(TraUserActivity traUserActivity)
+        //{
+        //    _context.TraUserActivity.Add(traUserActivity);
+        //}
         /*-----------------------------------------------------------------------------------------------------------------------------*/
-        public int EventSpecificScore(int eventId)
-        {
+        //public int EventSpecificScore(int eventId)
+        //{
 
-            var userAct = _context.TraUserActivity
-                .Where(p => p.EventId == eventId)
-                    .Include(x => x.Activity)
-                    .GroupBy(x => new { x.EventId })
-                    .Select(x => new
-                    {
-                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
-                    }).Select(c => c.Score).Sum();
+        //    var userAct = _context.TraUserActivity
+        //        .Where(p => p.EventId == eventId)
+        //            .Include(x => x.Activity)
+        //            .GroupBy(x => new { x.EventId })
+        //            .Select(x => new
+        //            {
+        //                Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+        //            }).Select(c => c.Score).Sum();
 
-            return userAct;
+        //    return userAct;
 
-        }
+        //}
 
-        public int UserSpecificScore(int userId, int eventId)
-        {
-            var userAct = _context.TraUserActivity
-                .Where(p => p.EventId == eventId && p.UserId == userId)
-                    .Include(x => x.Activity)
-                    .Include(x => x.Event)
-                    .GroupBy(x => new { x.UserId, x.EventId })
-                    .Select(x => new
-                    {
-                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
-                    }).Select(c => c.Score).Sum();
+        //public int UserSpecificScore(int userId, int eventId)
+        //{
+        //    var userAct = _context.TraUserActivity
+        //        .Where(p => p.EventId == eventId && p.UserId == userId)
+        //            .Include(x => x.Activity)
+        //            .Include(x => x.Event)
+        //            .GroupBy(x => new { x.UserId, x.EventId })
+        //            .Select(x => new
+        //            {
+        //                Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+        //            }).Select(c => c.Score).Sum();
 
-            return userAct;
+        //    return userAct;
 
-        }
+        //}
 
-        public int TeamEventSpecificScore(int teamId, int eventId)
-        {
-            var userAct = _context.TraUserActivity
-                .Where(p => p.EventId == eventId && p.TeamId == teamId)
-                    .Include(x => x.Activity)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
-                    .Select(x => new
-                    {
-                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
-                    }).Select(c => c.Score).Sum();
+        //public int TeamEventSpecificScore(int teamId, int eventId)
+        //{
+        //    var userAct = _context.TraUserActivity
+        //        .Where(p => p.EventId == eventId && p.TeamId == teamId)
+        //            .Include(x => x.Activity)
+        //            .GroupBy(x => new { x.TeamId, x.EventId })
+        //            .Select(x => new
+        //            {
+        //                Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+        //            }).Select(c => c.Score).Sum();
 
-            return userAct;
-        }
+        //    return userAct;
+        //}
 
-        public IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId)
-        {
-            var teams = _context.TraUserActivity
-                .Where(p => p.EventId == eventId)
-                    .Include(x => x.Activity)
-                    .Include(x => x.Event)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
-                    .Select(x => new TeamSpecificScoreDto()
-                    {
-                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),
-                        eventId = x.Key.EventId,
-                        teamId = x.Key.TeamId
-                    }).OrderByDescending(x => x.score)
-                    .ToList().Take(number);
+        //public IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId)
+        //{
+        //    var teams = _context.TraUserActivity
+        //        .Where(p => p.EventId == eventId)
+        //            .Include(x => x.Activity)
+        //            .Include(x => x.Event)
+        //            .GroupBy(x => new { x.TeamId, x.EventId })
+        //            .Select(x => new TeamSpecificScoreDto()
+        //            {
+        //                score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+        //                eventId = x.Key.EventId,
+        //                teamId = x.Key.TeamId
+        //            }).OrderByDescending(x => x.score)
+        //            .ToList().Take(number);
 
-            return teams;
-
-
-        }
-
-        public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId)
-        {
-            var memberId = _context.TraUser.Where(x => x.TeamId == teamId).Select(x => x.UserId);
-            var teamAct = _context.TraUserActivity
-                .Where(p => memberId.Contains(p.UserId))
-                    .Include(x => x.Activity)
-                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
-                    //.Where(x => x.Event.IsActive == true)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
-                    .Select(x => new TeamSpecificScoreDto()
-                    {
-                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),
-                        eventId = x.Key.EventId,
-                        teamId = teamId
-                    })
-                    .ToList();
+        //    return teams;
 
 
+        //}
 
-            return teamAct;
-        }
-
-        public IEnumerable<UserScoreDto> CurrentUserScore(int id)
-        {
-            var userAct = _context.TraUserActivity
-                .Where(p => p.UserId == id)
-                    .Include(x => x.Activity)//.Where(x => x.Event.IsActive == true)
-                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
-                    .Select(x => new UserScoreDto()
-                    {
-                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
-                        EventId = x.Key.EventId,
-                        UserId = id,
-
-                    })
-                    .ToList();
+        //public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId)
+        //{
+        //    var memberId = _context.TraUser.Where(x => x.TeamId == teamId).Select(x => x.UserId);
+        //    var teamAct = _context.TraUserActivity
+        //        .Where(p => memberId.Contains(p.UserId))
+        //            .Include(x => x.Activity)
+        //            .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+        //            //.Where(x => x.Event.IsActive == true)
+        //            .GroupBy(x => new { x.TeamId, x.EventId })
+        //            .Select(x => new TeamSpecificScoreDto()
+        //            {
+        //                score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+        //                eventId = x.Key.EventId,
+        //                teamId = teamId
+        //            })
+        //            .ToList();
 
 
 
-            return userAct;
-        }
+        //    return teamAct;
+        //}
 
-        public IEnumerable<RegionScoreDto> RegionalScore(int eventId)
-        {
+        //public IEnumerable<UserScoreDto> CurrentUserScore(int id)
+        //{
+        //    var userAct = _context.TraUserActivity
+        //        .Where(p => p.UserId == id)
+        //            .Include(x => x.Activity)//.Where(x => x.Event.IsActive == true)
+        //            .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+        //            .GroupBy(x => new { x.TeamId, x.EventId })
+        //            .Select(x => new UserScoreDto()
+        //            {
+        //                Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+        //                EventId = x.Key.EventId,
+        //                UserId = id,
 
-            var regionScores = _context.TraUserActivity
-                .Include(userActivity => userActivity.User)
-                    .ThenInclude(user => user.Team)
-                .Include(userActivity => userActivity.Activity)
-                .Where(userActivity => userActivity.EventId == eventId && userActivity.User.Team != null)
-                .GroupBy(userActivity => userActivity.User.Team.RegionId)
-                .Select(g => new RegionScoreDto
-                {
-                    EventId = eventId,
-                    RegionId = g.Key,
-                    Score = g.Sum(x => x.Minutes * x.Activity.Intensity * 1000) / g.Select(x => x.UserId).Distinct().Count()
-                })
-                .ToList();
+        //            })
+        //            .ToList();
 
-            var regions = _context.TraRegion.OrderBy(x => x.RegionId).ToList();
-            var result = new List<RegionScoreDto>();
 
-            foreach (var region in regions)
-            {
-                var score = regionScores.Where(x => x.RegionId == region.RegionId).FirstOrDefault();
 
-                if (score != null)
-                {
-                    result.Add(score);
-                }
-                else
-                {
-                    result.Add(new RegionScoreDto { EventId = eventId, RegionId = region.RegionId, Score = 0 });
-                }
-            }
+        //    return userAct;
+        //}
 
-            return result;
+        //public IEnumerable<RegionScoreDto> RegionalScore(int eventId)
+        //{
 
-        }
+        //    var regionScores = _context.TraUserActivity
+        //        .Include(userActivity => userActivity.User)
+        //            .ThenInclude(user => user.Team)
+        //        .Include(userActivity => userActivity.Activity)
+        //        .Where(userActivity => userActivity.EventId == eventId && userActivity.User.Team != null)
+        //        .GroupBy(userActivity => userActivity.User.Team.RegionId)
+        //        .Select(g => new RegionScoreDto
+        //        {
+        //            EventId = eventId,
+        //            RegionId = g.Key,
+        //            Score = g.Sum(x => x.Minutes * x.Activity.Intensity * 1000) / g.Select(x => x.UserId).Distinct().Count()
+        //        })
+        //        .ToList();
+
+        //    var regions = _context.TraRegion.OrderBy(x => x.RegionId).ToList();
+        //    var result = new List<RegionScoreDto>();
+
+        //    foreach (var region in regions)
+        //    {
+        //        var score = regionScores.Where(x => x.RegionId == region.RegionId).FirstOrDefault();
+
+        //        if (score != null)
+        //        {
+        //            result.Add(score);
+        //        }
+        //        else
+        //        {
+        //            result.Add(new RegionScoreDto { EventId = eventId, RegionId = region.RegionId, Score = 0 });
+        //        }
+        //    }
+
+        //    return result;
+
+        //}
         /*-----------------------------------------------------------------------------------------------------------------------------*/
 
         //public IEnumerable<TraRole> GetRoles()

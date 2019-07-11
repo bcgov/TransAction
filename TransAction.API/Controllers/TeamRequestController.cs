@@ -75,7 +75,7 @@ namespace TransAction.API.Controllers
 
             _unitOfWork.Request.Create(newRequest);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -98,9 +98,9 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
             _mapper.Map(updateRequest, requestEntity);
+            _unitOfWork.Request.Update(requestEntity);
 
-
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }

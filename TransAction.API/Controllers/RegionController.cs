@@ -75,7 +75,7 @@ namespace TransAction.API.Controllers
             _unitOfWork.Region.Create(newRegion);
 
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -100,7 +100,7 @@ namespace TransAction.API.Controllers
             _mapper.Map(updateRegion, regionEntity);
             _unitOfWork.Region.Update(regionEntity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }

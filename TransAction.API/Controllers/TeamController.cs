@@ -94,7 +94,7 @@ namespace TransAction.API.Controllers
             newTeam.UserId = getUser.UserId; // SETS THE USER TO BE THE TEAM LEADER
             _unitOfWork.Team.Create(newTeam);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -120,7 +120,7 @@ namespace TransAction.API.Controllers
 
             createdTeamToReturn.NumMembers = 1; // intially team will have only one member when created
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -147,7 +147,7 @@ namespace TransAction.API.Controllers
                 }
                 _mapper.Map(teamUpdate, teamEntity);
                 _unitOfWork.Team.Update(teamEntity);
-                if (!_transActionRepo.Save())
+                if (!_unitOfWork.Save())
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
                 }

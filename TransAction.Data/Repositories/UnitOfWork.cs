@@ -149,6 +149,19 @@ namespace TransAction.Data.Repositories
             }
         }
 
+        public IUserActivityRepository _userAct;
+        public IUserActivityRepository UserAct
+        {
+            get
+            {
+                if (_userAct == null)
+                {
+                    _userAct = new UserActivityRepository(_context);
+                }
+
+                return _userAct;
+            }
+        }
 
         public UnitOfWork(TransActionContext context)
         {
