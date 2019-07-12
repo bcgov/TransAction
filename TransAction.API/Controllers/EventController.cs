@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -12,8 +14,8 @@ namespace TransAction.API.Controllers
     public class EventController : BaseController
     {
 
-        public EventController(IHttpContextAccessor httpContextAccessor, ILogger<EventController> logger) :
-            base(httpContextAccessor, logger)
+        public EventController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
 

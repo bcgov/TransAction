@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -13,8 +15,8 @@ namespace TransAction.API.Controllers
     public class RegionController : BaseController
     {
 
-        public RegionController(IHttpContextAccessor httpContextAccessor, ILogger<RegionController> logger) :
-            base(httpContextAccessor, logger)
+        public RegionController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
 

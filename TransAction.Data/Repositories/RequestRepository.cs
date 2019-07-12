@@ -41,7 +41,7 @@ namespace TransAction.Data.Repositories
 
         public TraMemberReq GetReqById(int id)
         {
-            return Find().FirstOrDefault(c => c.MemberReqId == id);
+            return Find(c => c.MemberReqId == id).FirstOrDefault();
         }
     }
 }

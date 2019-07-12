@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -12,8 +14,8 @@ namespace TransAction.API.Controllers
     public class UserController : BaseController
     {
 
-        public UserController(IHttpContextAccessor httpContextAccessor, ILogger<UserController> logger) :
-            base(httpContextAccessor, logger)
+        public UserController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
 

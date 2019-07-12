@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -12,8 +14,8 @@ namespace TransAction.API.Controllers
     public class TeamRequestController : BaseController
     {
 
-        public TeamRequestController(IHttpContextAccessor httpContextAccessor, ILogger<TeamRequestController> logger) :
-            base(httpContextAccessor, logger)
+        public TeamRequestController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
         [HttpGet()]

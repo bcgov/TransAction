@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
 
 namespace TransAction.API.Controllers
 {
@@ -11,8 +13,8 @@ namespace TransAction.API.Controllers
     public class AdminController : BaseController
     {
 
-        public AdminController(IHttpContextAccessor httpContextAccessor, ILogger<AdminController> logger) :
-            base(httpContextAccessor, logger)
+        public AdminController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
@@ -23,7 +25,7 @@ namespace TransAction.API.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId); 
+            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId);
             if (role == null)
                 return NotFound("Role not found");
 

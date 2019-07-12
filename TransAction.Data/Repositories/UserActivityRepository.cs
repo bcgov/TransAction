@@ -145,8 +145,8 @@ namespace TransAction.Data.Repositories
                          Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
                          EventId = x.Key.EventId,
                          TeamId = x.Key.TeamId
-                     }).OrderByDescending(x => x.Score)
-                     .ToList().Take(number);
+                     }).OrderByDescending(x => x.Score).Take(number)
+                     .ToList();
 
             return teams;
         }

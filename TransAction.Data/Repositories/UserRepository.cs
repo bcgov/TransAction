@@ -37,7 +37,7 @@ namespace TransAction.Data.Repositories
 
         public TraUser GetCurrentUser(string guid)
         {
-            return Find().Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault(c => c.Guid == guid);
+            return Find(c => c.Guid == guid).Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault();
         }
     }
 }
