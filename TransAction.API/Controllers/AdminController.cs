@@ -20,10 +20,12 @@ namespace TransAction.API.Controllers
         public IActionResult UpdateUserRole([FromBody] UserRoleUpdateDto userRoleUpdate)
         {
             var user = _unitOfWork.User.GetById(userRoleUpdate.UserId);
+            user.TraImage = null;
+            user.Role = null;
             if (user == null)
                 return NotFound("User not found");
 
-            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId); 
+            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId);
             if (role == null)
                 return NotFound("Role not found");
 
