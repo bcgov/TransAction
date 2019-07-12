@@ -8,7 +8,7 @@ namespace TransAction.Data.Models
 {
     public class UserUpdateDto
     {
-        
+
         public string Username { get; set; }
         public int RegionId { get; set; }
         public string Fname { get; set; }

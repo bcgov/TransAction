@@ -38,7 +38,6 @@ namespace TransAction.API.Controllers
                 {
                     return NotFound();
                 }
-                //var getActivity = _transActionRepo.GetActivity(id);
                 var getActivityResult = _mapper.Map<ActivityDto>(getActivity);
                 return Ok(getActivityResult);
 
@@ -55,7 +54,6 @@ namespace TransAction.API.Controllers
         public IActionResult CreateActivity([FromBody] ActivityCreateDto createActivity)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            // var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
             if (getUser.TeamId == null)
             {

@@ -39,14 +39,12 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getTeams = _unitOfWork.Team.GetById(id);
+                var getTeam = _unitOfWork.Team.GetById(id);
 
-                if (getTeams == null)
+                if (getTeam == null)
                 {
                     return NotFound();
                 }
-                var getTeam = _unitOfWork.Team.GetById(id);
-                // var users = _transActionRepo.GetUsers();
                 var members = _unitOfWork.User.GetByTeamId(id);
                 var getTeamResult = _mapper.Map<TeamDto>(getTeam);
                 getTeamResult.NumMembers = members.Count();
@@ -67,8 +65,8 @@ namespace TransAction.API.Controllers
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
-            //this should take care of user not being able to create team when already in a team
-            if (getUser.TeamId != null)
+
+            if (getUser.TeamId != null) //User not being able to create team when already in a team
             {
                 return BadRequest();
             }
@@ -91,7 +89,8 @@ namespace TransAction.API.Controllers
             }
 
             var newTeam = _mapper.Map<TraTeam>(createTeam);
-            newTeam.UserId = getUser.UserId; // SETS THE USER TO BE THE TEAM LEADER
+
+            newTeam.UserId = getUser.UserId;// Sets the user to be the team leader
             _unitOfWork.Team.Create(newTeam);
 
             if (!_unitOfWork.Save())
@@ -104,15 +103,6 @@ namespace TransAction.API.Controllers
             var user = _unitOfWork.User.GetById(newTeam.UserId);
             user.TeamId = createdTeamToReturn.TeamId;
 
-            //var role = _transActionRepo.GetRoles();
-            //var roleId = role.Where(x => x.Name == "Team_Lead").Select(c => c.RoleId).FirstOrDefault();
-
-            //var usersCurrentRole = role.Where(x => x.RoleId == user.RoleId).Select(c => c.Name).FirstOrDefault();
-
-            //if (!usersCurrentRole.Equals("Admin"))
-            //{
-            //    user.RoleId = roleId;
-            //}
             user.IsFreeAgent = false;
 
             var userUpdate = _mapper.Map<UserUpdateDto>(user);
@@ -135,7 +125,7 @@ namespace TransAction.API.Controllers
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
 
             var user = _unitOfWork.User.GetCurrentUser(getUser.Guid);
-            if (user.UserId == teamUpdate.UserId || user.Role.Name.ToLower() == "admin")
+            if (user.UserId == teamUpdate.UserId || user.Role.Name.ToLower() == "admin") // checking if the user is the team Leader or an admin.
             {
                 var teamEntity = _unitOfWork.Team.GetById(id);
                 if (teamEntity == null) return NotFound();
@@ -168,20 +158,11 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            var user = _unitOfWork.User.GetByTeamId(addUserToTeam.TeamId).Count();
-            if (user >= 5)
+            var numMembers = _unitOfWork.User.GetByTeamId(addUserToTeam.TeamId).Count();
+            if (numMembers >= 5)
             {
                 return BadRequest();
             }
-            //var users = _transActionRepo.GetUsers();
-            //var numMembers = users.Where(y => y.TeamId == getUser.TeamId).Count();
-            //if(numMembers >= 5)
-            //{
-            //    return BadRequest();
-            //}
-            //have to update the teamId and then find and update the member request and set then false on active
-
-
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
             var getTeam = _unitOfWork.Team.GetById(addUserToTeam.TeamId);

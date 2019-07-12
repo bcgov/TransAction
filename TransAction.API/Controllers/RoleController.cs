@@ -37,7 +37,6 @@ namespace TransAction.API.Controllers
                 {
                     return NotFound();
                 }
-                //var getRole = _transActionRepo.GetRole(id);
                 var getRoleResult = _mapper.Map<RoleDto>(getRole);
                 return Ok(getRoleResult);
 

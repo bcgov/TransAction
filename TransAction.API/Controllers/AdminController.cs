@@ -23,12 +23,13 @@ namespace TransAction.API.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId); ;
+            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId); 
             if (role == null)
                 return NotFound("Role not found");
 
             user.RoleId = role.RoleId;
 
+            _unitOfWork.User.Update(user);
             if (!_unitOfWork.Save())
                 return StatusCode(500, "Error occurred while updating user role");
 

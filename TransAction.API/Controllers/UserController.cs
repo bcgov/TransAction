@@ -36,7 +36,6 @@ namespace TransAction.API.Controllers
             }
 
             var getUserResult = _mapper.Map<UserDto>(getUser);
-
             return Ok(getUserResult);
         }
 
@@ -83,12 +82,12 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromBody] UserUpdateDto updateUser)
         {
-            //string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            //var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
-            //if(getUser.UserId != id)
-            //{
-            //    return BadRequest();
-            //}
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+            if (getUser.Role.Name.ToLower() != "admin" || getUser.UserId != id)
+            {
+                return BadRequest();
+            }
             var userEntity = _unitOfWork.User.GetById(id);
             if (userEntity == null) return NotFound();
             if (updateUser == null) return NotFound();
@@ -102,27 +101,6 @@ namespace TransAction.API.Controllers
             {
                 updateUser.IsFreeAgent = false;
             }
-            //var role = _transActionRepo.GetRoles();
-            //var roleId = role.Where(x => x.Name == "User").Select(c => c.RoleId).FirstOrDefault(); //gets the role id corresponding to the user
-            //var usersCurrentRole = role.Where(x => x.RoleId == updateUser.RoleId).Select(c => c.Name).FirstOrDefault();
-
-            //if (userEntity.TeamId != null && updateUser.TeamId == null && usersCurrentRole.Equals("Team_Lead"))
-            //{
-            //    updateUser.RoleId = roleId;
-            //}
-
-            //checking for if team is full
-            //if user wants to join a team, a put request would update the teamId, so use that to find no of members in the team
-
-            //var users = _transActionRepo.GetUsers();
-            //if (updateUser.TeamId != null)
-            //{
-            //    var members = users.Where(x => x.TeamId == updateUser.TeamId).Count();
-            //    if (members >= 5)
-            //    {
-            //        return BadRequest("Team Full");
-            //    }
-            //}
 
             _mapper.Map(updateUser, userEntity);
 

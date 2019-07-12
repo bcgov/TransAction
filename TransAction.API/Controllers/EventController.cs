@@ -60,12 +60,6 @@ namespace TransAction.API.Controllers
                 return BadRequest();
             }
 
-            // Use data annonation instead of doing this, see EventCreateDto
-            //if (createEvent.Description == null || createEvent.EndDate == null || createEvent.StartDate == null)
-            //{
-            //    return BadRequest();
-            //}
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

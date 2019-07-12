@@ -9,6 +9,5 @@ namespace TransAction.Data.Models
     {
         public int UserId { get; set; }
         public int TeamId { get; set; }
-       // public long ConcurrencyControlNumber { get; set; }
     }
 }

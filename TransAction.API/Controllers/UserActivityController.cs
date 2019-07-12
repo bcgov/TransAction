@@ -104,7 +104,6 @@ namespace TransAction.API.Controllers
             return GetUserActivityById(id);
         }
 
-        //total score for that specific team for that specific event
 
         [HttpGet("event/{eventId}")]
         public IActionResult EventSpecificScore(int eventId)

@@ -43,5 +43,6 @@ namespace TransAction.Data.Repositories
         {
             _context.Set<T>().Remove(entity);
         }
+
     }
 }
