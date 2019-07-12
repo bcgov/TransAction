@@ -10,7 +10,7 @@ namespace TransAction.Data.Repositories
     {
         private readonly TransActionContext _context;
 
-        public IEventRepository _event;
+        private IEventRepository _event;
         public IEventRepository Event
         {
             get
@@ -24,7 +24,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IUserRepository _user;
+        private IUserRepository _user;
         public IUserRepository User
         {
             get
@@ -38,7 +38,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IRegionRepository _region;
+        private IRegionRepository _region;
         public IRegionRepository Region
         {
             get
@@ -52,7 +52,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public ITeamRepository _team;
+        private ITeamRepository _team;
         public ITeamRepository Team
         {
             get
@@ -66,7 +66,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IMessageRepository _message;
+        private IMessageRepository _message;
         public IMessageRepository Message
         {
             get
@@ -79,7 +79,7 @@ namespace TransAction.Data.Repositories
                 return _message;
             }
         }
-        public ITopicRepRository _topic;
+        private ITopicRepRository _topic;
         public ITopicRepRository Topic
         {
             get
@@ -93,7 +93,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IActivityRepository _activty;
+        private IActivityRepository _activty;
         public IActivityRepository Activity
         {
             get
@@ -107,7 +107,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IRoleRepository _role;
+        private IRoleRepository _role;
         public IRoleRepository Role
         {
             get
@@ -121,7 +121,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IRequestRepository _request;
+        private IRequestRepository _request;
         public IRequestRepository Request
         {
             get
@@ -135,7 +135,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IImageRepository _image;
+        private IImageRepository _image;
         public IImageRepository Image
         {
             get
@@ -149,7 +149,7 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        public IUserActivityRepository _userAct;
+        private IUserActivityRepository _userAct;
         public IUserActivityRepository UserAct
         {
             get
