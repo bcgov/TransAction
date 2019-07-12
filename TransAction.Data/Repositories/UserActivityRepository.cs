@@ -122,9 +122,9 @@ namespace TransAction.Data.Repositories
                     .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new TeamSpecificScoreDto()
                     {
-                        score = x.Sum(y => y.Minutes * y.Activity.Intensity),
-                        eventId = x.Key.EventId,
-                        teamId = teamId
+                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                        EventId = x.Key.EventId,
+                        TeamId = teamId
                     })
                     .ToList();
 
@@ -142,10 +142,10 @@ namespace TransAction.Data.Repositories
                      .GroupBy(x => new { x.TeamId, x.EventId })
                      .Select(x => new TeamSpecificScoreDto()
                      {
-                         score = x.Sum(y => y.Minutes * y.Activity.Intensity),
-                         eventId = x.Key.EventId,
-                         teamId = x.Key.TeamId
-                     }).OrderByDescending(x => x.score)
+                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                         EventId = x.Key.EventId,
+                         TeamId = x.Key.TeamId
+                     }).OrderByDescending(x => x.Score)
                      .ToList().Take(number);
 
             return teams;

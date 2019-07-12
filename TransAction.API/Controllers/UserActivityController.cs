@@ -138,9 +138,9 @@ namespace TransAction.API.Controllers
             var score = _unitOfWork.UserAct.TeamEventSpecificScore(teamId, eventId);
             var result = new TeamSpecificScoreDto
             {
-                eventId = eventId,
-                teamId = teamId,
-                score = score
+                EventId = eventId,
+                TeamId = teamId,
+                Score = score
             };
             return Ok(result);
         }
