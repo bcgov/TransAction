@@ -97,11 +97,6 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (userEntity.TeamId == null && updateUser.TeamId != null)
-            {
-                updateUser.IsFreeAgent = false;
-            }
-
             _mapper.Map(updateUser, userEntity);
 
             _unitOfWork.User.Update(userEntity);
