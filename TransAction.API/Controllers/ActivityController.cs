@@ -8,6 +8,7 @@ using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -59,7 +60,7 @@ namespace TransAction.API.Controllers
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
             if (getUser.TeamId == null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("User is not in a team."));
             }
 
 
