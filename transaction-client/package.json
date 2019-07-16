@@ -29,7 +29,8 @@
     "reactstrap": "^7.1.0",
     "redux": "^4.0.1",
     "redux-form": "^8.1.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "snyk": "^1.193.2"
   },
   "devDependencies": {
     "typescript": "^3.5.1"
@@ -39,7 +40,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": ""
+    "serve": "",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -49,5 +52,6 @@
     "not dead",
     "not ie <= 8",
     "not op_mini all"
-  ]
+  ],
+  "snyk": true
 }
