@@ -36,5 +36,11 @@ namespace TransAction.Data.Repositories
         {
             return Find(e => e.ActivityId == id).FirstOrDefault();
         }
+
+        public int GetCount()
+        {
+            var count = FindAll().OrderBy(c => c.ActivityId).Count();
+            return count;
+        }
     }
 }

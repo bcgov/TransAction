@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TransAction.API.Responses
 {
-    public sealed class TransActionResponse
+    public class TransActionResponse
     {
         public TransActionResponse(object ResponseData)
         {
@@ -26,5 +26,6 @@ namespace TransAction.API.Responses
         public string Message { get; }
 
     }
+
 
 }
