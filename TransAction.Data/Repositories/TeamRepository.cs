@@ -13,15 +13,29 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TraTeam> GetAll()
+        public IEnumerable<TraTeam> GetAll(int page, int pageSize)
         {
-            return FindAll().ToList();
+            if (--page < 0) page = 0;
+            return FindAll().Skip(page * pageSize).Take(pageSize).ToList();
         }
 
         public TraTeam GetById(int id)
         {
             return Find(e => e.TeamId == id).FirstOrDefault();
         }
- 
+
+        public bool GetTeamByName(string Name)
+        {
+            var checkTeam = Find(c => c.Name == Name).FirstOrDefault();
+            if (checkTeam != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }

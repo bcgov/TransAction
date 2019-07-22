@@ -14,6 +14,5 @@ namespace TransAction.Data.Models
         [Required]
         public string Description { get; set; }
         public Boolean IsActive { get; set; }
-        public long ConcurrencyControlNumber { get; set; }
     }
 }

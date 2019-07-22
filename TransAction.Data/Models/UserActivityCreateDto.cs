@@ -14,6 +14,5 @@ namespace TransAction.Data.Models
         public int ActivityId { get; set; }
         public int EventId { get; set; }
         public int TeamId { get; set; }
-        public long ConcurrencyControlNumber { get; set; }
     }
 }

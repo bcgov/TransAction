@@ -13,9 +13,12 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TraUser> GetAll()
+        public IEnumerable<TraUser> GetAll(int page, int pageSize)
         {
-            return FindAll().Include(x => x.Role).Include(x => x.TraImage).ToList();
+
+            if (--page < 0) page = 0;
+            return FindAll().Include(x => x.TraImage).Skip(page * pageSize).Take(pageSize).ToList();
+
         }
 
         public TraUser GetById(int id)
@@ -30,6 +33,11 @@ namespace TransAction.Data.Repositories
         public IEnumerable<TraUser> GetByTeamId(int teamId)
         {
             return Find(e => e.TeamId == teamId).ToList();
+        }
+
+        public TraUser GetCurrentUser(string guid)
+        {
+            return Find(c => c.Guid == guid).Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault();
         }
     }
 }

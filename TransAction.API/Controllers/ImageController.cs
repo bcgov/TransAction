@@ -8,6 +8,8 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.IO;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -19,8 +21,8 @@ namespace TransAction.API.Controllers
         private static readonly string PNG = "image/png";
         private static readonly double MAX_SIZE = 512.0;
 
-        public ImageController(IHttpContextAccessor httpContextAccessor, ILogger<ImageController> logger) :
-            base(httpContextAccessor, logger)
+        public ImageController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
         [AllowAnonymous]
@@ -31,7 +33,7 @@ namespace TransAction.API.Controllers
 
             try
             {
-                image = _transActionRepo.GetProfileImage(guid);
+                image = _unitOfWork.Image.GetProfileImage(guid);
 
                 if (image == null)
                     return NotFound();
@@ -52,7 +54,7 @@ namespace TransAction.API.Controllers
 
             try
             {
-                image = _transActionRepo.GetUserProfileImage(id);
+                image = _unitOfWork.Image.GetUserProfileImage(id);
 
                 if (image == null)
                     return NotFound();
@@ -72,7 +74,7 @@ namespace TransAction.API.Controllers
 
             try
             {
-                image = _transActionRepo.GetTeamProfileImage(id);
+                image = _unitOfWork.Image.GetTeamProfileImage(id);
 
                 if (image == null)
                     return NotFound();
@@ -114,7 +116,7 @@ namespace TransAction.API.Controllers
 
             if (model.UserId != null)
             {
-                var image = _transActionRepo.GetUserProfileImage(model.UserId.Value);
+                var image = _unitOfWork.Image.GetUserProfileImage(model.UserId.Value);
 
                 if (image != null)
                 {
@@ -125,7 +127,7 @@ namespace TransAction.API.Controllers
 
             if (model.TeamId != null)
             {
-                var image = _transActionRepo.GetTeamProfileImage(model.TeamId.Value);
+                var image = _unitOfWork.Image.GetTeamProfileImage(model.TeamId.Value);
 
                 if (image != null)
                 {
@@ -177,9 +179,9 @@ namespace TransAction.API.Controllers
             traImage.ContentType = model.Data.ContentType;
 
             if (newRecord)
-                _transActionRepo.AddProfileImage(traImage);
+                _unitOfWork.Image.Create(traImage);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "Unable to save image to database.");
             }

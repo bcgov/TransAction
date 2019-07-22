@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -12,15 +14,15 @@ namespace TransAction.API.Controllers
     public class EventController : BaseController
     {
 
-        public EventController(IHttpContextAccessor httpContextAccessor, ILogger<EventController> logger) :
-            base(httpContextAccessor, logger)
+        public EventController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
 
         [HttpGet()]
-        public IActionResult GetEvents()
+        public IActionResult GetEvents(int page = 1, int pageSize = 25)
         {
-            var events = _unitOfWork.Event.GetAll();
+            var events = _unitOfWork.Event.GetAll(page, pageSize);
             var getEvents = _mapper.Map<IEnumerable<EventDto>>(events);
             return Ok(getEvents);
 
@@ -59,12 +61,6 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-
-            // Use data annonation instead of doing this, see EventCreateDto
-            //if (createEvent.Description == null || createEvent.EndDate == null || createEvent.StartDate == null)
-            //{
-            //    return BadRequest();
-            //}
 
             if (!ModelState.IsValid)
             {

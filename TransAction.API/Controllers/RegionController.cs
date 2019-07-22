@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TransAction.API.Authorization;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -13,15 +15,15 @@ namespace TransAction.API.Controllers
     public class RegionController : BaseController
     {
 
-        public RegionController(IHttpContextAccessor httpContextAccessor, ILogger<RegionController> logger) :
-            base(httpContextAccessor, logger)
+        public RegionController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
 
         [HttpGet()]
-        public IActionResult GetRegions()
+        public IActionResult GetRegions(int page = 1, int pageSize = 25)
         {
-            var regions = _transActionRepo.GetRegions();
+            var regions = _unitOfWork.Region.GetAllRegions(page, pageSize);
             var getRegions = _mapper.Map<IEnumerable<RegionDto>>(regions);
             return Ok(getRegions);
 
@@ -33,14 +35,13 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getRegions = _transActionRepo.GetRegions().FirstOrDefault(c => c.RegionId == id);
+                var getRegions = _unitOfWork.Region.GetRegionById(id);
 
                 if (getRegions == null)
                 {
                     return NotFound();
                 }
-                var getRegion = _transActionRepo.GetRegion(id);
-                var getRegionResult = _mapper.Map<RegionDto>(getRegion);
+                var getRegionResult = _mapper.Map<RegionDto>(getRegions);
                 return Ok(getRegionResult);
 
             }
@@ -67,31 +68,30 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.RegionExists(createRegion.Name))
+            if (_unitOfWork.Region.RegionExists(createRegion.Name))
             {
                 return BadRequest();
             }
 
             var newRegion = _mapper.Map<TraRegion>(createRegion);
+            _unitOfWork.Region.Create(newRegion);
 
-            _transActionRepo.CreateRegion(newRegion);
 
-
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
             var createRegionResult = _mapper.Map<RegionDto>(newRegion);
             return CreatedAtRoute("GetRegion", new { id = createRegionResult.RegionId }, createRegionResult);
-            
+
         }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
         public IActionResult UpdateRegion(int id, [FromBody] RegionUpdateDto updateRegion)
         {
-            var regionEntity = _transActionRepo.GetRegion(id);
+            var regionEntity = _unitOfWork.Region.GetRegionById(id);
             if (regionEntity == null) return NotFound();
             if (updateRegion == null) return NotFound();
 
@@ -100,9 +100,9 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
             _mapper.Map(updateRegion, regionEntity);
+            _unitOfWork.Region.Update(regionEntity);
 
-
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }

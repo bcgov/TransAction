@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
 
 namespace TransAction.API.Controllers
 {
@@ -13,14 +15,14 @@ namespace TransAction.API.Controllers
     public class ActivityController : BaseController
     {
 
-        public ActivityController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger) :
-            base(httpContextAccessor, logger)
+        public ActivityController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
         [HttpGet()]
-        public IActionResult GetActivities()
+        public IActionResult GetActivities(int page = 1, int pageSize = 25)
         {
-            var activities = _transActionRepo.GetActivities();
+            var activities = _unitOfWork.Activity.GetAll(page, pageSize);
             var getActivities = _mapper.Map<IEnumerable<ActivityDto>>(activities);
             return Ok(getActivities);
 
@@ -32,13 +34,12 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getActivities = _transActionRepo.GetActivities().FirstOrDefault(c => c.ActivityId == id);
+                var getActivity = _unitOfWork.Activity.GetById(id);
 
-                if (getActivities == null)
+                if (getActivity == null)
                 {
                     return NotFound();
                 }
-                var getActivity = _transActionRepo.GetActivity(id);
                 var getActivityResult = _mapper.Map<ActivityDto>(getActivity);
                 return Ok(getActivityResult);
 
@@ -55,8 +56,8 @@ namespace TransAction.API.Controllers
         public IActionResult CreateActivity([FromBody] ActivityCreateDto createActivity)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
-            if(getUser.TeamId == null)
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+            if (getUser.TeamId == null)
             {
                 return BadRequest();
             }
@@ -74,7 +75,7 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (_transActionRepo.ActivityExists(createActivity.Name))
+            if (_unitOfWork.Activity.ActivityExists(createActivity.Name))
             {
                 return BadRequest();
             }
@@ -82,9 +83,9 @@ namespace TransAction.API.Controllers
             var newActivity = _mapper.Map<TraActivity>(createActivity);
 
 
-            _transActionRepo.CreateActivity(newActivity);
+            _unitOfWork.Activity.Create(newActivity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -99,13 +100,13 @@ namespace TransAction.API.Controllers
         public IActionResult UpdateActivity(int id, [FromBody] ActivityUpdateDto updateActivity)
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
             if (getUser.TeamId == null)
             {
                 return BadRequest();
             }
 
-            var activityEntity = _transActionRepo.GetActivity(id);
+            var activityEntity = _unitOfWork.Activity.GetById(id);
             if (activityEntity == null) return NotFound();
             if (updateActivity == null) return NotFound();
 
@@ -114,9 +115,9 @@ namespace TransAction.API.Controllers
                 return BadRequest(ModelState);
             }
             _mapper.Map(updateActivity, activityEntity);
+            _unitOfWork.Activity.Update(activityEntity);
 
-
-            if (!_transActionRepo.Save())
+            if (!!_unitOfWork.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
