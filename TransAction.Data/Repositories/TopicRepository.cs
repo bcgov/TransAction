@@ -26,7 +26,7 @@ namespace TransAction.Data.Repositories
 
         public TraTopic GetTopicById(int id)
         {
-            return Find(e => e.TopicId == id).Include(x => x.TraTopicMessage).FirstOrDefault();
+            return Find(e => e.TopicId == id).Include(x => x.TraTopicMessage).ThenInclude(m => m.User).FirstOrDefault();
         }
 
         public TraTopic GetTopicByTitle(string title)

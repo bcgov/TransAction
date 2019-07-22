@@ -29,14 +29,14 @@ class Header extends Component {
             <NavbarBrand tag={Link} onClick={this.hideNavbar} to="/">
               <img
                 className="img-fluid d-none d-md-block"
-                src="/images/bcid-logo-rev-en.svg"
+                src={`${process.env.PUBLIC_URL}/images/bcid-logo-rev-en.svg`}
                 width="181"
                 height="44"
                 alt="B.C. Government Logo"
               />
               <img
                 className="img-fluid d-md-none"
-                src="/images/bcid-symbol-rev.svg"
+                src={`${process.env.PUBLIC_URL}/images/bcid-symbol-rev.svg`}
                 width="64"
                 height="44"
                 alt="B.C. Government Logo"
