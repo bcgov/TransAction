@@ -12,5 +12,6 @@ namespace TransAction.Data.Repositories.Interfaces
         void Create(TraUser newUser);
         void Update(TraUser updateUser);
         TraUser GetCurrentUser(string guid);
+        int Count();
     }
 }

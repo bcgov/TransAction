@@ -12,5 +12,6 @@ namespace TransAction.Data.Repositories.Interfaces
         void Create(TraRole newRole);
         void Update(TraRole updateRole);
         bool RoleExists(string Name);
+        int Count();
     }
 }

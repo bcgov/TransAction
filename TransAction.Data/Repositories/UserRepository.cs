@@ -39,5 +39,10 @@ namespace TransAction.Data.Repositories
         {
             return Find(c => c.Guid == guid).Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault();
         }
+
+        public int Count()
+        {
+            return FindAll().Include(x => x.TraImage).Count();
+        }
     }
 }

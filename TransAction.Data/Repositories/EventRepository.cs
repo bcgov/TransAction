@@ -22,5 +22,10 @@ namespace TransAction.Data.Repositories
         {
             return Find(e => e.EventId == id).FirstOrDefault();
         }
+
+        public int GetCount()
+        {
+            return FindAll().Where(x => x.IsActive == true).Count();
+        }
     }
 }

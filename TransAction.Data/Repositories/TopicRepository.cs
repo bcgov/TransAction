@@ -13,6 +13,11 @@ namespace TransAction.Data.Repositories
         {
         }
 
+        public int Count()
+        {
+            return FindAll().Include(x => x.TraTopicMessage).Count();
+        }
+
         public IEnumerable<TraTopic> GetAllTopics(int page, int pageSize)
         {
             if (--page < 0) page = 0;

@@ -13,6 +13,11 @@ namespace TransAction.Data.Repositories
 
         }
 
+        public int Count()
+        {
+            return FindAll().Count();
+        }
+
         public IEnumerable<TraTeam> GetAll(int page, int pageSize)
         {
             if (--page < 0) page = 0;

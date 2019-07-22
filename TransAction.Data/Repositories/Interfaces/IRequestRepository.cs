@@ -12,5 +12,6 @@ namespace TransAction.Data.Repositories.Interfaces
         void Create(TraMemberReq newRequest);
         void Update(TraMemberReq updateRequest);
         IEnumerable<MemberReqDto> CurrentTeamReq(int teamId);
+        int Count();
     }
 }

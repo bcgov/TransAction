@@ -8,6 +8,7 @@ using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -33,7 +34,7 @@ namespace TransAction.API.Controllers
 
             }
             var resultTeams = getTeams.Where(x => x.NumMembers > 0);
-            return Ok(resultTeams);
+            return StatusCode(200, new TransActionPagedResponse(resultTeams, page, pageSize, _unitOfWork.Team.Count()));
         }
 
         [HttpGet("{id}")]
@@ -45,19 +46,19 @@ namespace TransAction.API.Controllers
 
                 if (getTeam == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Team Not found"));
                 }
                 var members = _unitOfWork.User.GetByTeamId(id);
                 var getTeamResult = _mapper.Map<TeamDto>(getTeam);
                 getTeamResult.NumMembers = members.Count();
                 getTeamResult.TeamMemberIds = members.Select(x => x.UserId).ToArray();
-                return Ok(getTeamResult);
+                return StatusCode(200, new TransActionResponse(getTeamResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
 
         }
@@ -70,24 +71,20 @@ namespace TransAction.API.Controllers
 
             if (getUser.TeamId != null) //User not being able to create team when already in a team
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("User is already in the team"));
             }
             if (createTeam == null)
             {
-                return BadRequest();
-            }
-            if (createTeam.Description == null)
-            {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("No Team Entered"));
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
 
             if (_unitOfWork.Team.GetTeamByName(createTeam.Name))
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("Team Already Exists"));
             }
 
             var newTeam = _mapper.Map<TraTeam>(createTeam);
@@ -97,7 +94,7 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var createdTeamToReturn = _mapper.Map<TeamDto>(newTeam);
@@ -114,10 +111,10 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
-            return CreatedAtRoute("GetUser", new { id = createdTeamToReturn.UserId }, createdTeamToReturn);
+            return CreatedAtRoute("GetUser", new { id = createdTeamToReturn.UserId }, new TransActionResponse(createdTeamToReturn));
         }
 
         [HttpPut("{id}")]
@@ -135,20 +132,20 @@ namespace TransAction.API.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    return BadRequest(new TransActionResponse(ModelState.ToString()));
                 }
                 _mapper.Map(teamUpdate, teamEntity);
                 _unitOfWork.Team.Update(teamEntity);
                 if (!_unitOfWork.Save())
                 {
-                    return StatusCode(500, "A problem happened while handling your request.");
+                    return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
                 }
 
                 return GetTeamById(id);
             }
             else
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("The user does not have access to edit the team"));
             }
 
         }
@@ -158,12 +155,12 @@ namespace TransAction.API.Controllers
             var getUser = _unitOfWork.User.GetById(addUserToTeam.UserId);
             if (getUser.TeamId != null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("The user is already in a team"));
             }
             var numMembers = _unitOfWork.User.GetByTeamId(addUserToTeam.TeamId).Count();
             if (numMembers >= 5)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("The team is full"));
             }
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
@@ -183,13 +180,13 @@ namespace TransAction.API.Controllers
 
                 if (!_unitOfWork.Save())
                 {
-                    return StatusCode(500, "A problem happened while handling your request.");
+                    return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
                 }
                 return GetTeamById(addUserToTeam.TeamId);
             }
             else
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("The user does not have access the team"));
             }
 
 
@@ -205,7 +202,7 @@ namespace TransAction.API.Controllers
 
             if (user.TeamId == null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("The user in not in a team"));
             }
 
             if (members.Count() == 1)
@@ -232,14 +229,14 @@ namespace TransAction.API.Controllers
 
                 if (!_unitOfWork.Save())
                 {
-                    return StatusCode(500, "A problem happened while handling your request.");
+                    return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
                 }
 
                 return GetTeamById(removeUser.TeamId);
             }
             else
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("The user does not have access the team"));
             }
 
         }

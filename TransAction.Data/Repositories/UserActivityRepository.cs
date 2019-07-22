@@ -14,6 +14,7 @@ namespace TransAction.Data.Repositories
         {
         }
 
+
         public IEnumerable<UserScoreDto> CurrentUserScore(int id)
         {
             var userAct = Find()
@@ -47,6 +48,11 @@ namespace TransAction.Data.Repositories
                     }).Select(c => c.Score).Sum();
 
             return userAct;
+        }
+
+        public int Count()
+        {
+            return FindAll().OrderBy(c => c.UserActivityId).Count();
         }
 
         public IEnumerable<TraUserActivity> GetAllUserActivities(int page, int pageSize)

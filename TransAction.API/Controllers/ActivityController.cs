@@ -40,7 +40,7 @@ namespace TransAction.API.Controllers
 
                 if (getActivity == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Activity does not exist."));
                 }
                 var getActivityResult = _mapper.Map<ActivityDto>(getActivity);
                 return StatusCode(200, new TransActionResponse(getActivityResult));
@@ -49,7 +49,7 @@ namespace TransAction.API.Controllers
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
         }
@@ -103,14 +103,14 @@ namespace TransAction.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState));
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
             _mapper.Map(updateActivity, activityEntity);
             _unitOfWork.Activity.Update(activityEntity);
 
             if (!!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             return NoContent();

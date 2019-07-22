@@ -12,5 +12,6 @@ namespace TransAction.Data.Repositories.Interfaces
         void Create(TraTeam newTeam);
         void Update(TraTeam updateTeam);
         bool GetTeamByName(string Name);
+        int Count();
     }
 }

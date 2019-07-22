@@ -7,6 +7,7 @@ using System.Linq;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -23,7 +24,7 @@ namespace TransAction.API.Controllers
         {
             var request = _unitOfWork.Request.GetAllReq(page, pageSize);
             var getRequest = _mapper.Map<IEnumerable<MemberReqDto>>(request);
-            return Ok(getRequest);
+            return StatusCode(200, new TransActionPagedResponse(getRequest, page, pageSize, _unitOfWork.Request.Count()));
         }
 
         [HttpGet("{id}", Name = "GetMemberReq")]
@@ -35,17 +36,17 @@ namespace TransAction.API.Controllers
 
                 if (getMemberRequest == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("The request does not exist"));
                 }
                 var getRequest = _unitOfWork.Request.GetReqById(id);
                 var getUserResult = _mapper.Map<MemberReqDto>(getRequest);
-                return Ok(getUserResult);
+                return StatusCode(200, new TransActionResponse(getUserResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
 
         }
@@ -56,18 +57,18 @@ namespace TransAction.API.Controllers
 
             if (createRequest == null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("No Request created"));
             }
 
             var getUser = _unitOfWork.User.GetById(createRequest.UserId);//if the user is on team then he cant create a request.
             if (getUser.TeamId != null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("The user is already on the team"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
 
             var newRequest = _mapper.Map<TraMemberReq>(createRequest);
@@ -77,11 +78,11 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var createMemberReqResult = _mapper.Map<MemberReqDto>(newRequest);
-            return CreatedAtRoute("GetMemberReq", new { id = createMemberReqResult.MemberReqId }, createMemberReqResult);
+            return CreatedAtRoute("GetMemberReq", new { id = createMemberReqResult.MemberReqId }, new TransActionResponse(createMemberReqResult));
 
 
         }
@@ -95,14 +96,14 @@ namespace TransAction.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
             _mapper.Map(updateRequest, requestEntity);
             _unitOfWork.Request.Update(requestEntity);
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             return NoContent();
@@ -112,7 +113,7 @@ namespace TransAction.API.Controllers
         public IActionResult CurrentTeamRequests(int teamId)
         {
             var result = _unitOfWork.Request.CurrentTeamReq(teamId);
-            return Ok(result);
+            return StatusCode(200, new TransActionResponse(result));
         }
     }
 }

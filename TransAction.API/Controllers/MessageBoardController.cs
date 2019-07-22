@@ -8,6 +8,7 @@ using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -24,7 +25,8 @@ namespace TransAction.API.Controllers
         {
             var topics = _unitOfWork.Topic.GetAllTopics(page, pageSize);
             var getTopics = _mapper.Map<IEnumerable<TopicDto>>(topics);
-            return Ok(getTopics);
+            var count = _unitOfWork.Topic.Count();
+            return StatusCode(200, new TransActionPagedResponse(getTopics, page, pageSize, count));
         }
 
         [HttpGet("{id}", Name = "GetTopic")]
@@ -36,16 +38,16 @@ namespace TransAction.API.Controllers
                 var getTopic = _unitOfWork.Topic.GetTopicById(id);
                 if (getTopic == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Topic not found"));
                 }
                 var getTopicResult = _mapper.Map<TopicDto>(getTopic);
-                return Ok(getTopicResult);
+                return StatusCode(200, new TransActionResponse(getTopicResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
         }
 
@@ -56,13 +58,9 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createTopic.Title == null)
-            {
-                return BadRequest();
-            }
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
 
@@ -75,7 +73,7 @@ namespace TransAction.API.Controllers
             _unitOfWork.Topic.Create(newTopic);
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var message = new TraTopicMessage();
@@ -87,11 +85,11 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var createTopicResult = _mapper.Map<TopicDto>(newTopic);
-            return CreatedAtRoute("GetTopic", new { id = createTopicResult.TopicId }, createTopicResult);
+            return CreatedAtRoute("GetTopic", new { id = createTopicResult.TopicId }, new TransActionResponse(createTopicResult));
 
         }
 
@@ -104,7 +102,7 @@ namespace TransAction.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
 
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
@@ -119,7 +117,7 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             return GetTopicById(id);
@@ -133,7 +131,7 @@ namespace TransAction.API.Controllers
                 var getMessage = _unitOfWork.Message.GetAllTopicMessages(page, pageSize, topicId);
                 if (getMessage == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Message Not found"));
                 }
                 var getMessages = _mapper.Map<IEnumerable<MessageDto>>(getMessage);
                 return Ok(getMessages);
@@ -141,7 +139,7 @@ namespace TransAction.API.Controllers
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
         }
 
@@ -154,16 +152,17 @@ namespace TransAction.API.Controllers
                 var getMessage = _unitOfWork.Message.GetMessageById(id);
                 if (getMessage == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Message Not found"));
                 }
                 var getMessageResult = _mapper.Map<MessageDto>(getMessage);
-                return Ok(getMessageResult);
+                int count = _unitOfWork.Message.Count();
+                return StatusCode(200, new TransActionPagedResponse(getMessageResult, page, pageSize, count));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
         }
 
@@ -176,13 +175,9 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest();
             }
-            if (createMessage.Body == null)
-            {
-                return BadRequest();
-            }
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
 
             var newMessage = _mapper.Map<TraTopicMessage>(createMessage);
@@ -195,7 +190,7 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
 
             var topic = _unitOfWork.Topic.GetTopicById(newMessage.TopicId);
@@ -203,11 +198,11 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
 
             var createMessageResult = _mapper.Map<MessageDto>(newMessage);
-            return CreatedAtRoute("GetMessage", new { id = createMessageResult.TopicMessageId }, createMessageResult);
+            return CreatedAtRoute("GetMessage", new { id = createMessageResult.TopicMessageId }, new TransActionResponse(createMessageResult));
 
         }
 
@@ -231,19 +226,19 @@ namespace TransAction.API.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    return BadRequest(new TransActionResponse(ModelState.ToString()));
                 }
                 _mapper.Map(updateMessage, messageEntity);
 
                 _unitOfWork.Message.Update(messageEntity);
                 if (!_unitOfWork.Save())
                 {
-                    return StatusCode(500, "A problem happened while handling your request.");
+                    return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
                 }
 
                 var getMessage = _unitOfWork.Message.GetMessageById(id);
                 var getTopicResult = _mapper.Map<MessageDto>(getMessage);
-                return Ok(getTopicResult);
+                return StatusCode(200, new TransActionResponse(getTopicResult));
 
             }
             else
@@ -272,7 +267,7 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
             return NoContent();
         }
@@ -283,13 +278,13 @@ namespace TransAction.API.Controllers
             var message = _unitOfWork.Message.GetMessageById(messageId);
             if (message == null)
             {
-                return NotFound();
+                return StatusCode(404, new TransActionResponse("Message Does not exist"));
             }
             var deleteMessage = _unitOfWork.Message.GetMessageById(messageId);
             _unitOfWork.Message.Delete(deleteMessage);
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
             return NoContent();
 

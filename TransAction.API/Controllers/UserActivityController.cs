@@ -7,6 +7,7 @@ using System.Linq;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -23,7 +24,7 @@ namespace TransAction.API.Controllers
         {
             var userActivity = _unitOfWork.UserAct.GetAllUserActivities(page, pageSize);
             var getUserActivities = _mapper.Map<IEnumerable<UserActivityDto>>(userActivity);
-            return Ok(getUserActivities);
+            return StatusCode(200, new TransActionPagedResponse(getUserActivities, page, pageSize, _unitOfWork.UserAct.Count()));
 
         }
 
@@ -36,16 +37,16 @@ namespace TransAction.API.Controllers
 
                 if (getUserActivity == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("User Activity not found"));
                 }
                 var getUserResult = _mapper.Map<UserActivityDto>(getUserActivity);
-                return Ok(getUserResult);
+                return StatusCode(200, new TransActionResponse(getUserActivity));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
             }
 
         }
@@ -55,20 +56,16 @@ namespace TransAction.API.Controllers
         {
             if (createUserActivity == null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("User Activity not entered"));
             }
             //making sure the user enters atleast 15 mins
             if (createUserActivity.Minutes < 15)
             {
-                return BadRequest();
-            }
-            if (createUserActivity.Name == null || createUserActivity.Description == null)
-            {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("Minutes should be more then 15"));
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
 
             var newUserActivity = _mapper.Map<TraUserActivity>(createUserActivity);
@@ -77,11 +74,11 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var createdUserToReturn = _mapper.Map<UserActivityDto>(newUserActivity);
-            return CreatedAtRoute("GetThatUserActivity", new { id = createdUserToReturn.UserId }, createdUserToReturn);
+            return CreatedAtRoute("GetThatUserActivity", new { id = createdUserToReturn.UserId }, new TransActionResponse(createdUserToReturn));
         }
 
         [HttpPut("{id}")]
@@ -93,14 +90,14 @@ namespace TransAction.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState.ToString()));
             }
 
             _mapper.Map(updateUserActivity, userActivityEntity);
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             return GetUserActivityById(id);
@@ -117,7 +114,7 @@ namespace TransAction.API.Controllers
                 EventId = eventId,
                 Score = score
             };
-            return Ok(result);
+            return StatusCode(200, new TransActionResponse(result));
 
         }
 
@@ -131,7 +128,7 @@ namespace TransAction.API.Controllers
                 UserId = userId,
                 Score = score
             };
-            return Ok(result);
+            return StatusCode(200, new TransActionResponse(result));
         }
 
         [HttpGet("team/{teamId}/event/{eventId}")]
@@ -144,14 +141,14 @@ namespace TransAction.API.Controllers
                 TeamId = teamId,
                 Score = score
             };
-            return Ok(result);
+            return StatusCode(200, new TransActionResponse(result));
         }
 
         [HttpGet("team/{teamId}")]
         public IActionResult TeamSpecificScore(int teamId)
         {
             var score = _unitOfWork.UserAct.TeamSpecificScore(teamId);
-            return Ok(score);
+            return StatusCode(200, new TransActionResponse(score));
         }
 
 
@@ -160,7 +157,7 @@ namespace TransAction.API.Controllers
         public IActionResult CurrentUserScore(int userId)
         {
             var result = _unitOfWork.UserAct.CurrentUserScore(userId);
-            return Ok(result);
+            return StatusCode(200, new TransActionResponse(result));
         }
 
         [HttpGet("event/{eventId}/top/{number}")]
@@ -168,7 +165,7 @@ namespace TransAction.API.Controllers
         {
             var result = _unitOfWork.UserAct.TopTeams(number, eventId);
 
-            return Ok(result);
+            return StatusCode(200, new TransActionResponse(result));
         }
 
         [HttpGet("event/{eventId}/region")]
@@ -177,7 +174,7 @@ namespace TransAction.API.Controllers
 
             var result = _unitOfWork.UserAct.RegionalScore(eventId);
 
-            return Ok(result);
+            return StatusCode(200, new TransActionResponse(result));
         }
     }
 }

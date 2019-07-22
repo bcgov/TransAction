@@ -9,6 +9,7 @@ namespace TransAction.Data.Repositories.Interfaces
     {
         IEnumerable<TraTopic> GetAllTopics(int page, int pageSize);
         TraTopic GetTopicById(int id);
+        int Count();
         void Create(TraTopic newTopic);
         void Update(TraTopic updateTopic);
         void Delete(TraTopic deleteTopic);
