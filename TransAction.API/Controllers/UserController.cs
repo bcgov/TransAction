@@ -21,11 +21,11 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetUsers(int page = 1, int pageSize = 25)
+        public IActionResult GetUsers(string Name, int page = 1, int pageSize = 25)
         {
-            var user = _unitOfWork.User.GetAll(page, pageSize);
+            var user = _unitOfWork.User.GetAll(Name, page, pageSize);
             var getUsers = _mapper.Map<IEnumerable<UserDto>>(user);
-            return StatusCode(200, new TransActionPagedResponse(getUsers, page, pageSize, _unitOfWork.User.Count()));
+            return StatusCode(200, new TransActionPagedResponse(getUsers, page, pageSize, _unitOfWork.User.Count(Name)));
         }
 
         [HttpGet("{id}", Name = "GetUser")]
@@ -52,7 +52,7 @@ namespace TransAction.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             var user = _unitOfWork.User.GetByGuid(createUser.Guid);
@@ -84,14 +84,12 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(new TransActionResponse("Unauthorized user"));
             }
-            var userEntity = _unitOfWork.User.GetById(id);
-            if (userEntity == null) return NotFound();
-            if (updateUser == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
+            var userEntity = _unitOfWork.User.GetById(id);
+            if (userEntity == null) return StatusCode(404, new TransActionResponse("User Entity Not Found"));
 
             _mapper.Map(updateUser, userEntity);
 
@@ -111,21 +109,21 @@ namespace TransAction.API.Controllers
             try
             {
                 string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-                var getUsers = _unitOfWork.User.GetByGuid(userGuid);
+                var getUser = _unitOfWork.User.GetByGuid(userGuid);
 
-                if (getUsers == null)
+                if (getUser == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("User Not Found"));
                 }
 
-                var getUserResult = _mapper.Map<UserDto>(getUsers);
+                var getUserResult = _mapper.Map<UserDto>(getUser);
                 return StatusCode(200, new TransActionResponse(getUserResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request"));
             }
         }
 

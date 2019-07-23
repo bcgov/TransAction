@@ -63,7 +63,7 @@ namespace TransAction.API.Controllers
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
             if (_unitOfWork.Activity.ActivityExists(createActivity.Name))
             {
@@ -90,6 +90,10 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateActivity(int id, [FromBody] ActivityUpdateDto updateActivity)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new TransActionResponse(ModelState));
+            }
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
             if (getUser.TeamId == null)
@@ -98,13 +102,8 @@ namespace TransAction.API.Controllers
             }
 
             var activityEntity = _unitOfWork.Activity.GetById(id);
-            if (activityEntity == null) return NotFound();
-            if (updateActivity == null) return NotFound();
+            if (activityEntity == null) return StatusCode(404, new TransActionResponse("Activity does not exist"));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
-            }
             _mapper.Map(updateActivity, activityEntity);
             _unitOfWork.Activity.Update(activityEntity);
 
@@ -113,7 +112,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
-            return NoContent();
+            return StatusCode(StatusCodes.Status204NoContent, new TransActionResponse());
         }
 
     }

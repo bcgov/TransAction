@@ -47,7 +47,7 @@ namespace TransAction.API.Controllers
 
             catch (Exception)
             {
-                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request"));
             }
 
         }
@@ -62,7 +62,7 @@ namespace TransAction.API.Controllers
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
             if (_unitOfWork.Role.RoleExists(createRole.Name))
             {
@@ -89,14 +89,13 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateRole(int id, [FromBody] RoleUpdateDto updateRole)
         {
-            var roleEntity = _unitOfWork.Role.GetRoleById(id);
-            if (roleEntity == null) return NotFound();
-            if (updateRole == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
+            var roleEntity = _unitOfWork.Role.GetRoleById(id);
+            if (roleEntity == null) return StatusCode(404, new TransActionResponse("Role Not Found"));
+
             _mapper.Map(updateRole, roleEntity);
             _unitOfWork.Role.Update(roleEntity);
 
@@ -106,7 +105,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
-            return NoContent();
+            return StatusCode(StatusCodes.Status204NoContent, new TransActionResponse());
         }
     }
 }

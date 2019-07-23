@@ -46,7 +46,7 @@ namespace TransAction.API.Controllers
 
             catch (Exception)
             {
-                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request"));
             }
 
         }
@@ -68,7 +68,7 @@ namespace TransAction.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             var newRequest = _mapper.Map<TraMemberReq>(createRequest);
@@ -90,14 +90,13 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateRequest(int id, [FromBody] MemberReqUpdateDto updateRequest)
         {
-            var requestEntity = _unitOfWork.Request.GetReqById(id);
-            if (requestEntity == null) return NotFound();
-            if (updateRequest == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
+            var requestEntity = _unitOfWork.Request.GetReqById(id);
+            if (requestEntity == null) return StatusCode(404, new TransActionResponse("Request Not Found"));
+
             _mapper.Map(updateRequest, requestEntity);
             _unitOfWork.Request.Update(requestEntity);
 
@@ -106,7 +105,7 @@ namespace TransAction.API.Controllers
                 return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
-            return NoContent();
+            return StatusCode(StatusCodes.Status204NoContent, new TransActionResponse());
         }
 
         [HttpGet("team/{teamId}")]

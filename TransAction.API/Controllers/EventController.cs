@@ -21,11 +21,11 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetEvents(int page = 1, int pageSize = 25)
+        public IActionResult GetEvents(string Name, int page = 1, int pageSize = 25)
         {
-            var events = _unitOfWork.Event.GetAll(page, pageSize);
+            var events = _unitOfWork.Event.GetAll(page, pageSize, Name);
             var getEvents = _mapper.Map<IEnumerable<EventDto>>(events);
-            int count = _unitOfWork.Event.GetCount();
+            int count = _unitOfWork.Event.GetCount(Name);
             return StatusCode(200, new TransActionPagedResponse(getEvents, page, pageSize, count));
 
         }
@@ -55,6 +55,7 @@ namespace TransAction.API.Controllers
 
         }
 
+
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPost()]
         public IActionResult CreateEvent([FromBody] EventCreateDto createEvent)
@@ -71,7 +72,7 @@ namespace TransAction.API.Controllers
 
             if (createEvent.StartDate > createEvent.EndDate)
             {
-                return BadRequest(new TransActionResponse("Start date cannot be bigger then the end date"));
+                return BadRequest(new TransActionResponse("Start date cannot be greater than the end date"));
             }
 
             var newEvent = _mapper.Map<TraEvent>(createEvent);
@@ -92,14 +93,13 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateEvent(int id, [FromBody] EventUpdateDto updateEvent)
         {
-            var eventEntity = _unitOfWork.Event.GetById(id);
-            if (eventEntity == null) return NotFound();
-            if (updateEvent == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState.ToString());
+                return BadRequest(new TransActionResponse(ModelState));
             }
+            var eventEntity = _unitOfWork.Event.GetById(id);
+            if (eventEntity == null) return StatusCode(404, new TransActionResponse("Event Not found"));
+
             _mapper.Map(updateEvent, eventEntity);
             _unitOfWork.Event.Update(eventEntity);
             if (!_unitOfWork.Save())

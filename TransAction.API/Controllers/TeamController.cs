@@ -22,9 +22,9 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetTeams(int page = 1, int pageSize = 25)
+        public IActionResult GetTeams(string Name, int page = 1, int pageSize = 25)
         {
-            var teams = _unitOfWork.Team.GetAll(page, pageSize);
+            var teams = _unitOfWork.Team.GetAll(Name, page, pageSize);
             var getTeams = _mapper.Map<IEnumerable<TeamDto>>(teams);
             foreach (var team in getTeams)
             {
@@ -34,7 +34,7 @@ namespace TransAction.API.Controllers
 
             }
             var resultTeams = getTeams.Where(x => x.NumMembers > 0);
-            return StatusCode(200, new TransActionPagedResponse(resultTeams, page, pageSize, _unitOfWork.Team.Count()));
+            return StatusCode(200, new TransActionPagedResponse(resultTeams, page, pageSize, _unitOfWork.Team.Count(Name)));
         }
 
         [HttpGet("{id}")]
@@ -58,7 +58,7 @@ namespace TransAction.API.Controllers
 
             catch (Exception)
             {
-                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request"));
             }
 
         }
@@ -79,7 +79,7 @@ namespace TransAction.API.Controllers
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             if (_unitOfWork.Team.GetTeamByName(createTeam.Name))
@@ -126,14 +126,13 @@ namespace TransAction.API.Controllers
             var user = _unitOfWork.User.GetCurrentUser(getUser.Guid);
             if (user.UserId == teamUpdate.UserId || user.Role.Name.ToLower() == "admin") // checking if the user is the team Leader or an admin.
             {
-                var teamEntity = _unitOfWork.Team.GetById(id);
-                if (teamEntity == null) return NotFound();
-                if (teamUpdate == null) return NotFound();
-
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new TransActionResponse(ModelState.ToString()));
+                    return BadRequest(new TransActionResponse(ModelState));
                 }
+                var teamEntity = _unitOfWork.Team.GetById(id);
+                if (teamEntity == null) return StatusCode(StatusCodes.Status404NotFound, new TransActionResponse("Team Not Found"));
+
                 _mapper.Map(teamUpdate, teamEntity);
                 _unitOfWork.Team.Update(teamEntity);
                 if (!_unitOfWork.Save())
@@ -145,7 +144,7 @@ namespace TransAction.API.Controllers
             }
             else
             {
-                return BadRequest(new TransActionResponse("The user does not have access to edit the team"));
+                return StatusCode(401, new TransActionResponse("Unauthorized Access"));
             }
 
         }
@@ -186,7 +185,7 @@ namespace TransAction.API.Controllers
             }
             else
             {
-                return BadRequest(new TransActionResponse("The user does not have access the team"));
+                return StatusCode(401, new TransActionResponse("Unauthorized Access"));
             }
 
 
@@ -207,7 +206,7 @@ namespace TransAction.API.Controllers
 
             if (members.Count() == 1)
             {
-                return BadRequest(400);
+                return StatusCode(400, new TransActionResponse("User can not leave the team"));
             }
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getCurrentUser = _unitOfWork.User.GetByGuid(userGuid);
@@ -236,7 +235,7 @@ namespace TransAction.API.Controllers
             }
             else
             {
-                return BadRequest(new TransActionResponse("The user does not have access the team"));
+                return StatusCode(401, new TransActionResponse("Unauthorized Access"));
             }
 
         }

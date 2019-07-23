@@ -46,7 +46,7 @@ namespace TransAction.API.Controllers
 
             catch (Exception)
             {
-                return StatusCode(500, new TransActionResponse("A problem happened while handeling your request"));
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request"));
             }
 
         }
@@ -65,7 +65,7 @@ namespace TransAction.API.Controllers
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             var newUserActivity = _mapper.Map<TraUserActivity>(createUserActivity);
@@ -84,14 +84,13 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateUserActivity(int id, [FromBody] UserActivityUpdateDto updateUserActivity)
         {
-            var userActivityEntity = _unitOfWork.UserAct.GetUserActivity(id);
-            if (userActivityEntity == null) return NotFound();
-            if (updateUserActivity == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
+
+            var userActivityEntity = _unitOfWork.UserAct.GetUserActivity(id);
+            if (userActivityEntity == null) return StatusCode(404, new TransActionResponse("User Activity Not Found"));
 
             _mapper.Map(updateUserActivity, userActivityEntity);
 

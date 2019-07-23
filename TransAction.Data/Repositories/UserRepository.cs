@@ -13,12 +13,16 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TraUser> GetAll(int page, int pageSize)
+        public IEnumerable<TraUser> GetAll(string Name, int page, int pageSize)
         {
 
             if (--page < 0) page = 0;
-            return FindAll().Include(x => x.TraImage).Skip(page * pageSize).Take(pageSize).ToList();
-
+            var users = FindAll();
+            if (!string.IsNullOrEmpty(Name))
+            {
+                users = users.Where(x => (x.Fname + " " + x.Lname).Contains(Name));
+            }
+            return users.Include(x => x.TraImage).OrderBy(x => x.Fname).ThenBy(x => x.Lname).Skip(page * pageSize).Take(pageSize).ToList();
         }
 
         public TraUser GetById(int id)
@@ -40,9 +44,16 @@ namespace TransAction.Data.Repositories
             return Find(c => c.Guid == guid).Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault();
         }
 
-        public int Count()
+        public int Count(string Name)
         {
-            return FindAll().Include(x => x.TraImage).Count();
+            var userCount = FindAll().Include(x => x.TraImage);
+            if (!string.IsNullOrEmpty(Name))
+            {
+                return userCount.Where(x => (x.Fname + " " + x.Lname).Contains(Name)).Count();
+            }
+            return userCount.Count();
         }
+
+
     }
 }

@@ -37,7 +37,7 @@ namespace TransAction.API.Controllers
                 image = _unitOfWork.Image.GetProfileImage(guid);
 
                 if (image == null)
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Image Not Found"));
             }
             catch (Exception e)
             {
@@ -58,7 +58,7 @@ namespace TransAction.API.Controllers
                 image = _unitOfWork.Image.GetUserProfileImage(id);
 
                 if (image == null)
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Image Not Found"));
             }
             catch (Exception e)
             {
@@ -78,7 +78,7 @@ namespace TransAction.API.Controllers
                 image = _unitOfWork.Image.GetTeamProfileImage(id);
 
                 if (image == null)
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Image Not Found"));
             }
             catch (Exception e)
             {
@@ -110,7 +110,7 @@ namespace TransAction.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(new TransActionResponse(ModelState.ToString()));
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             TraImage traImage = new TraImage();
