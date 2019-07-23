@@ -133,7 +133,8 @@ namespace TransAction.API.Controllers
         [HttpGet("team/{teamId}/event/{eventId}")]
         public IActionResult TeamEventSpecificScore(int teamId, int eventId)
         {
-            var score = _unitOfWork.UserAct.TeamEventSpecificScore(teamId, eventId);
+            var users = _unitOfWork.User.GetByTeamId(teamId);
+            var score = _unitOfWork.UserAct.TeamEventSpecificScore(users, teamId, eventId);
             var result = new TeamSpecificScoreDto
             {
                 EventId = eventId,
@@ -146,7 +147,8 @@ namespace TransAction.API.Controllers
         [HttpGet("team/{teamId}")]
         public IActionResult TeamSpecificScore(int teamId)
         {
-            var score = _unitOfWork.UserAct.TeamSpecificScore(teamId);
+            var users = _unitOfWork.User.GetByTeamId(teamId);
+            var score = _unitOfWork.UserAct.TeamSpecificScore(users, teamId);
             return StatusCode(200, new TransActionResponse(score));
         }
 
