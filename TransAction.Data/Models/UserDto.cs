@@ -17,7 +17,7 @@ namespace TransAction.Data.Models
         public string Email { get; set; }
         public int RoleId { get; set; }
         public int? TeamId { get; set; }
-        public Boolean IsFreeAgent { get; set; }
+        public bool IsFreeAgent { get; set; }
         public long ConcurrencyControlNumber { get; set; }
         [JsonProperty("images")]
         public HashSet<ImageDto> TraImage { get; set; }
