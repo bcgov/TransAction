@@ -93,7 +93,8 @@ class GettingStarted extends React.Component {
                 </Card>
               </CardDeck>
               <Alert color="primary" className="mt-5">
-                <strong>TODO:</strong> Some privacy disclaimer here. Need actual wording.
+                Privacy Notice: Your name and email will be collected and stored as a way to identify you and keep track
+                of your progress on this site.
               </Alert>
             </Col>
           </Row>

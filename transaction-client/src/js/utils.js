@@ -34,6 +34,8 @@ export const isCurrentUserTeamlead = () => {
   return false;
 };
 
+// This function is for compatibility purposes.  API response used to contain only the data.
+// This was changed midway to include other data with the API response data
 export const getApiReponseData = response => {
   return response.data.data ? response.data.data : response.data;
 };

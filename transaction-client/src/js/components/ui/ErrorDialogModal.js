@@ -2,7 +2,7 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 
-class DialogModal extends React.Component {
+class ErrorDialogModal extends React.Component {
   state = { clicked: false };
 
   init = () => {
@@ -49,4 +49,4 @@ class DialogModal extends React.Component {
   }
 }
 
-export default DialogModal;
+export default ErrorDialogModal;
