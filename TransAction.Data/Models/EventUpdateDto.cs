@@ -15,7 +15,7 @@ namespace TransAction.Data.Models
         public DateTime EndDate { get; set; }
         [Required(ErrorMessage = "Event Description Required")]
         public string Description { get; set; }
-        public Boolean IsActive { get; set; }
+        public bool IsActive { get; set; }
         public long ConcurrencyControlNumber { get; set; }
     }
 }
