@@ -14,6 +14,11 @@ namespace TransAction.Data.Repositories
         {
         }
 
+        public int Count()
+        {
+            return FindAll().OrderBy(c => c.TopicMessageId).Count();
+        }
+
         public IEnumerable<TraTopicMessage> GetAllMessages(int page, int pageSize)
         {
             if (--page < 0) page = 0;

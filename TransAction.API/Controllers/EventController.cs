@@ -7,6 +7,7 @@ using TransAction.API.Authorization;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -20,11 +21,12 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetEvents(int page = 1, int pageSize = 25)
+        public IActionResult GetEvents(string Name, int page = 1, int pageSize = 25)
         {
-            var events = _unitOfWork.Event.GetAll(page, pageSize);
+            var events = _unitOfWork.Event.GetAll(page, pageSize, Name);
             var getEvents = _mapper.Map<IEnumerable<EventDto>>(events);
-            return Ok(getEvents);
+            int count = _unitOfWork.Event.GetCount(Name);
+            return StatusCode(200, new TransActionPagedResponse(getEvents, page, pageSize, count));
 
         }
 
@@ -38,20 +40,21 @@ namespace TransAction.API.Controllers
 
                 if (getEvent == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("No Event Found"));
                 }
 
                 var getEventResult = _mapper.Map<EventDto>(getEvent);
-                return Ok(getEventResult);
+                return StatusCode(200, new TransActionResponse(getEventResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
         }
+
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPost()]
@@ -59,17 +62,17 @@ namespace TransAction.API.Controllers
         {
             if (createEvent == null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("No event entered"));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             if (createEvent.StartDate > createEvent.EndDate)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("Start date cannot be greater than the end date"));
             }
 
             var newEvent = _mapper.Map<TraEvent>(createEvent);
@@ -79,30 +82,29 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var createEventResult = _mapper.Map<EventDto>(newEvent);
-            return CreatedAtRoute("GetEvent", new { id = createEventResult.EventId }, createEventResult);
+            return CreatedAtRoute("GetEvent", new { id = createEventResult.EventId }, new TransActionResponse(createEventResult));
         }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpPut("{id}")]
         public IActionResult UpdateEvent(int id, [FromBody] EventUpdateDto updateEvent)
         {
-            var eventEntity = _unitOfWork.Event.GetById(id);
-            if (eventEntity == null) return NotFound();
-            if (updateEvent == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
+            var eventEntity = _unitOfWork.Event.GetById(id);
+            if (eventEntity == null) return StatusCode(404, new TransActionResponse("Event Not found"));
+
             _mapper.Map(updateEvent, eventEntity);
             _unitOfWork.Event.Update(eventEntity);
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             return GetEventById(id);

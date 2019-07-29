@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 namespace TransAction.Data.Models
-{    public partial class TraRole
+{
+    public partial class TraRole
     {
         public TraRole()
         {

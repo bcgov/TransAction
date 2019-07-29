@@ -7,6 +7,7 @@ using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -20,11 +21,11 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetUsers(int page = 1, int pageSize = 25)
+        public IActionResult GetUsers(string Name, int page = 1, int pageSize = 25)
         {
-            var user = _unitOfWork.User.GetAll(page, pageSize);
+            var user = _unitOfWork.User.GetAll(Name, page, pageSize);
             var getUsers = _mapper.Map<IEnumerable<UserDto>>(user);
-            return Ok(getUsers);
+            return StatusCode(200, new TransActionPagedResponse(getUsers, page, pageSize, _unitOfWork.User.Count(Name)));
         }
 
         [HttpGet("{id}", Name = "GetUser")]
@@ -34,11 +35,11 @@ namespace TransAction.API.Controllers
 
             if (getUser == null)
             {
-                return NotFound();
+                return StatusCode(404, new TransActionResponse("User does not exist"));
             }
 
             var getUserResult = _mapper.Map<UserDto>(getUser);
-            return Ok(getUserResult);
+            return StatusCode(200, new TransActionResponse(getUserResult));
         }
 
         [HttpPost()]
@@ -46,26 +47,19 @@ namespace TransAction.API.Controllers
         {
             if (createUser == null)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("User not entered"));
             }
-            if (createUser.Guid == null || createUser.Username == null || createUser.Directory == null)
-            {
-                return BadRequest();
-            }
-            if (createUser.Fname == null || createUser.Lname == null || createUser.Description == null || createUser.Email == null)
-            {
-                return BadRequest();
-            }
+
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             var user = _unitOfWork.User.GetByGuid(createUser.Guid);
 
             if (user != null)
             {
-                return BadRequest();
+                return BadRequest(); // check for the message for response class;
             }
 
             var newUser = _mapper.Map<TraUser>(createUser);
@@ -74,11 +68,11 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var createdUserToReturn = _mapper.Map<UserDto>(newUser);
-            return CreatedAtRoute("GetUser", new { id = createdUserToReturn.UserId }, createdUserToReturn);
+            return CreatedAtRoute("GetUser", new { id = createdUserToReturn.UserId }, new TransActionResponse(createdUserToReturn));
         }
 
         [HttpPut("{id}")]
@@ -88,16 +82,14 @@ namespace TransAction.API.Controllers
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
             if (getUser.Role.Name.ToLower() != "admin" || getUser.UserId != id)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("Unauthorized user"));
             }
-            var userEntity = _unitOfWork.User.GetById(id);
-            if (userEntity == null) return NotFound();
-            if (updateUser == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
+            var userEntity = _unitOfWork.User.GetById(id);
+            if (userEntity == null) return StatusCode(404, new TransActionResponse("User Entity Not Found"));
 
             _mapper.Map(updateUser, userEntity);
 
@@ -105,7 +97,7 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             return Ok(_mapper.Map<UserDto>(userEntity));
@@ -117,21 +109,21 @@ namespace TransAction.API.Controllers
             try
             {
                 string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-                var getUsers = _unitOfWork.User.GetByGuid(userGuid);
+                var getUser = _unitOfWork.User.GetByGuid(userGuid);
 
-                if (getUsers == null)
+                if (getUser == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("User Not Found"));
                 }
 
-                var getUserResult = _mapper.Map<UserDto>(getUsers);
-                return Ok(getUserResult);
+                var getUserResult = _mapper.Map<UserDto>(getUser);
+                return StatusCode(200, new TransActionResponse(getUserResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request"));
             }
         }
 

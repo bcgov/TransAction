@@ -14,6 +14,7 @@ namespace TransAction.Data.Repositories
         {
         }
 
+
         public IEnumerable<UserScoreDto> CurrentUserScore(int id)
         {
             var userAct = Find()
@@ -47,6 +48,11 @@ namespace TransAction.Data.Repositories
                     }).Select(c => c.Score).Sum();
 
             return userAct;
+        }
+
+        public int Count()
+        {
+            return FindAll().OrderBy(c => c.UserActivityId).Count();
         }
 
         public IEnumerable<TraUserActivity> GetAllUserActivities(int page, int pageSize)
@@ -96,10 +102,11 @@ namespace TransAction.Data.Repositories
             return result;
         }
 
-        public int TeamEventSpecificScore(int teamId, int eventId)
+        public int TeamEventSpecificScore(IEnumerable<TraUser> users, int teamId, int eventId)
         {
+            var userList = users.Select(x => x.UserId).ToList();
             var userAct = Find()
-                .Where(p => p.EventId == eventId && p.TeamId == teamId)
+                .Where(p => p.EventId == eventId && userList.Contains(p.UserId))
                     .Include(x => x.Activity)
                     .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new
@@ -111,14 +118,13 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId)
+        public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(IEnumerable<TraUser> users, int teamId)
         {
-            var memberId = Find().Where(x => x.TeamId == teamId).Select(x => x.UserId);
-            var teamAct = _context.TraUserActivity
-                .Where(p => memberId.Contains(p.UserId))
+            var userList = users.Select(x => x.UserId).ToList();
+            var teamAct = Find()
+                .Where(p => userList.Contains(p.UserId))
                     .Include(x => x.Activity)
                     .Include(x => x.Event).Where(x => x.Event.IsActive == true)
-                    //.Where(x => x.Event.IsActive == true)
                     .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new TeamSpecificScoreDto()
                     {

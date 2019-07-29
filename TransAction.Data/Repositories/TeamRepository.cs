@@ -13,10 +13,26 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TraTeam> GetAll(int page, int pageSize)
+        public int Count(string Name)
+        {
+            var teamCount = FindAll();
+            if (!string.IsNullOrEmpty(Name))
+            {
+                return teamCount.Where(x => x.Name.Contains(Name)).Count();
+            }
+            return teamCount.Count();
+        }
+
+        public IEnumerable<TraTeam> GetAll(string Name, int page, int pageSize)
         {
             if (--page < 0) page = 0;
-            return FindAll().Skip(page * pageSize).Take(pageSize).ToList();
+            var teams = FindAll();
+            if (!string.IsNullOrEmpty(Name))
+            {
+                teams = teams.Where(x => x.Name.Contains(Name));
+            }
+            return teams.OrderBy(x => x.Name).Skip(page * pageSize).Take(pageSize).ToList();
+
         }
 
         public TraTeam GetById(int id)

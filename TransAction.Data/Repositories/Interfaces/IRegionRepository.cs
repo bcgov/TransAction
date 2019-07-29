@@ -13,5 +13,6 @@ namespace TransAction.Data.Repositories.Interfaces
         bool RegionExists(string Name);
         void Create(TraRegion newRegion);
         void Update(TraRegion updateRegion);
+        int Count();
     }
 }

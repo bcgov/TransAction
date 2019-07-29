@@ -28,17 +28,6 @@ namespace TransAction.API.Authentication
                 o.RequireHttpsMetadata = false;
                 o.IncludeErrorDetails = true;
 
-                o.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    // Not sure why setting this to true isn't working.
-                    ValidateAudience = false,
-                    ValidAudience = configOptions.Audience,
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidIssuer = configOptions.Authority,
-                    ValidateLifetime = true
-                };
-
                 o.Events = new JwtBearerEvents()
                 {
                     OnAuthenticationFailed = context =>

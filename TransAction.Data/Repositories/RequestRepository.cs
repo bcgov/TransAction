@@ -13,6 +13,11 @@ namespace TransAction.Data.Repositories
         {
         }
 
+        public int Count()
+        {
+            return FindAll().Where(x => x.IsActive == true).OrderBy(c => c.MemberReqId).Count();
+        }
+
         public IEnumerable<MemberReqDto> CurrentTeamReq(int teamId)
         {
             var teamRequests = Find()

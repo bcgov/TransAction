@@ -10,6 +10,7 @@ using System.IO;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -36,7 +37,7 @@ namespace TransAction.API.Controllers
                 image = _unitOfWork.Image.GetProfileImage(guid);
 
                 if (image == null)
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Image Not Found"));
             }
             catch (Exception e)
             {
@@ -57,7 +58,7 @@ namespace TransAction.API.Controllers
                 image = _unitOfWork.Image.GetUserProfileImage(id);
 
                 if (image == null)
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Image Not Found"));
             }
             catch (Exception e)
             {
@@ -77,7 +78,7 @@ namespace TransAction.API.Controllers
                 image = _unitOfWork.Image.GetTeamProfileImage(id);
 
                 if (image == null)
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Image Not Found"));
             }
             catch (Exception e)
             {
@@ -94,22 +95,22 @@ namespace TransAction.API.Controllers
 
             if (model.TeamId == null && model.UserId == null)
             {
-                return BadRequest("Need to specify either User Id or Team Id.");
+                return BadRequest(new TransActionResponse("Need to specify either User Id or Team Id."));
             }
 
             if (model.TeamId != null && model.UserId != null)
             {
-                return BadRequest("Do not specify both User Id and Team Id.");
+                return BadRequest(new TransActionResponse("Do not specify both User Id and Team Id."));
             }
 
             if (model.Data.ContentType != JPEG && model.Data.ContentType != PNG)
             {
-                return BadRequest("Unsupported file format.  Only jpeg or png are supported.");
+                return BadRequest(new TransActionResponse("Unsupported file format.  Only jpeg or png are supported."));
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse(ModelState));
             }
 
             TraImage traImage = new TraImage();
@@ -183,7 +184,7 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "Unable to save image to database.");
+                return StatusCode(500, new TransActionResponse("Unable to save image to database."));
             }
 
             return Ok();

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Extensions
 {
@@ -22,7 +23,7 @@ namespace TransAction.API.Extensions
 
     public static class ExceptionMiddlewareExtensions
     {
-        public static void ConfigureExceptionHandler(this IApplicationBuilder app, IHostingEnvironment env)
+        public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILogger _logger)
         {
             app.UseExceptionHandler(appError =>
             {
@@ -34,16 +35,9 @@ namespace TransAction.API.Extensions
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if (contextFeature != null)
                     {
-                        var error = new ErrorDetails()
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = "Internal Server Error."
-                        };
+                        _logger.LogError(contextFeature.Error, "ExceptionMiddleware");
 
-                        if (env.IsDevelopment())
-                        {
-                            error.Message = contextFeature.Error.ToString();
-                        }
+                        var error = new TransActionResponse("A problem occurred while handling your request.");
 
                         await context.Response.WriteAsync(error.ToString());
                     }
