@@ -8,6 +8,7 @@ using TransAction.API.Authorization;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace TransAction.API.Controllers
         {
             var roles = _unitOfWork.Role.GetAllRoles(page, pageSize);
             var getRoles = _mapper.Map<IEnumerable<RoleDto>>(roles);
-            return Ok(getRoles);
+            return StatusCode(200, new TransActionPagedResponse(getRoles, page, pageSize, _unitOfWork.Role.Count()));
 
         }
 
@@ -37,16 +38,16 @@ namespace TransAction.API.Controllers
 
                 if (getRole == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Role Not Found"));
                 }
                 var getRoleResult = _mapper.Map<RoleDto>(getRole);
-                return Ok(getRoleResult);
+                return StatusCode(200, new TransActionResponse(getRoleResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request"));
             }
 
         }
@@ -57,19 +58,15 @@ namespace TransAction.API.Controllers
         {
             if (createRole == null)
             {
-                return BadRequest();
-            }
-            if (createRole.Description == null || createRole.Name == null)
-            {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("No Role entered."));
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
             if (_unitOfWork.Role.RoleExists(createRole.Name))
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("Role Already exists"));
             }
 
             var newRole = _mapper.Map<TraRole>(createRole);
@@ -79,11 +76,11 @@ namespace TransAction.API.Controllers
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
             var createRoleResult = _mapper.Map<RoleDto>(newRole);
-            return CreatedAtRoute("GetRole", new { id = createRoleResult.RoleId }, createRoleResult);
+            return CreatedAtRoute("GetRole", new { id = createRoleResult.RoleId }, new TransActionResponse(createRoleResult));
 
 
         }
@@ -92,24 +89,23 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateRole(int id, [FromBody] RoleUpdateDto updateRole)
         {
-            var roleEntity = _unitOfWork.Role.GetRoleById(id);
-            if (roleEntity == null) return NotFound();
-            if (updateRole == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
+            var roleEntity = _unitOfWork.Role.GetRoleById(id);
+            if (roleEntity == null) return StatusCode(404, new TransActionResponse("Role Not Found"));
+
             _mapper.Map(updateRole, roleEntity);
             _unitOfWork.Role.Update(roleEntity);
 
 
             if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
-            return NoContent();
+            return StatusCode(StatusCodes.Status204NoContent, new TransActionResponse());
         }
     }
 }

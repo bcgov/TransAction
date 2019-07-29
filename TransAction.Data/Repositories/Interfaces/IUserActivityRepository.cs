@@ -11,11 +11,12 @@ namespace TransAction.Data.Repositories.Interfaces
         TraUserActivity GetUserActivity(int id);
         int EventSpecificScore(int eventId);
         int UserSpecificScore(int userId, int eventId);
-        IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(int teamId);
-        int TeamEventSpecificScore(int teamId, int eventId);
+        IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(IEnumerable<TraUser> users, int teamId);
+        int TeamEventSpecificScore(IEnumerable<TraUser> users, int teamId, int eventId);
         IEnumerable<UserScoreDto> CurrentUserScore(int id);
         IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId);
         IEnumerable<RegionScoreDto> RegionalScore(int eventId);
+        int Count();
 
     }
 }

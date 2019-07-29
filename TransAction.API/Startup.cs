@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using TransAction.API.Authentication;
 using TransAction.API.Extensions;
 using TransAction.Data.Models;
@@ -20,9 +21,12 @@ namespace TransAction.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger<Startup> _logger;
+
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -81,7 +85,8 @@ namespace TransAction.API
 
             }
 
-            app.ConfigureExceptionHandler(env);
+            app.UseSerilogRequestLogging();
+            app.ConfigureExceptionHandler(_logger);
 
             app.UseCors(CORS_ALLOW_ALL);
             app.UseAuthentication();
