@@ -9,26 +9,26 @@ namespace TransAction.API.Responses
     {
         public TransActionPagedResponse(object responseData, int page, int pageSize, int itemCount) : base(responseData)
         {
-            this.page = page;
-            this.pageSize = pageSize;
-            this.itemCount = itemCount;
+            this.Page = page;
+            this.PageSize = pageSize;
+            this.ItemCount = itemCount;
             if (itemCount < pageSize || pageSize <= 0)
             {
-                pageCount = 1;
+                PageCount = 1;
             }
             else
             {
-                pageCount = (int)((itemCount / pageSize) + 1);
+                PageCount = (int)((itemCount / pageSize) + 1);
             }
         }
 
-        public int page { get; }
+        public int Page { get; }
 
-        public int pageSize { get; }
+        public int PageSize { get; }
 
-        public int pageCount { get; set; }
+        public int PageCount { get; set; }
 
-        public int itemCount { get; set; }
+        public int ItemCount { get; set; }
 
 
     }

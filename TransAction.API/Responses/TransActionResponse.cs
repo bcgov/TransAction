@@ -1,10 +1,7 @@
-﻿using AutoMapper.Configuration;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace TransAction.API.Responses
 {
@@ -45,6 +42,11 @@ namespace TransAction.API.Responses
         public string Message { get; }
 
         public List<ValidationError> Errors { get; }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 
     public class ValidationError
@@ -58,6 +60,11 @@ namespace TransAction.API.Responses
         {
             Field = field != string.Empty ? field : null;
             Message = message;
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 
