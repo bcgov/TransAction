@@ -18,13 +18,10 @@ class LogActivityForm extends React.Component {
   onInit = () => {
     if (this.props.activities.length === 0) {
       this.setState({ loading: true });
-      this.props
-        .fetchActivityList()
-        .then(() => {
-          this.props.initialize(this.props.initialValues);
-          this.setState({ loading: false });
-        })
-        .catch(() => {});
+      this.props.fetchActivityList().then(() => {
+        this.props.initialize(this.props.initialValues);
+        this.setState({ loading: false });
+      });
     }
   };
 
@@ -35,16 +32,13 @@ class LogActivityForm extends React.Component {
     if (!this.state.submitting) {
       this.setState({ submitting: true });
 
-      this.props
-        .createUserActivity(formValues)
-        .then(() => {
-          if (this.props.refreshStandings) {
-            this.props.fetchTeamStandings(this.props.eventId);
-          }
+      this.props.createUserActivity(formValues).then(() => {
+        if (this.props.refreshStandings) {
+          this.props.fetchTeamStandings(this.props.eventId);
+        }
 
-          this.toggleModal();
-        })
-        .catch(() => {});
+        this.toggleModal();
+      });
     }
   };
 

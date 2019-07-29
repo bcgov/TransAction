@@ -1,8 +1,15 @@
 import api from '../api/api';
-import { getApiReponseData } from '../utils';
+import { getApiReponseData, buildApiErrorObject } from '../utils';
 import * as Constants from '../Constants';
 
-import { FETCH_USER, FETCH_USERS, FETCH_CURRENT_USER, UPDATE_AUTH_USER, SET_CURRENT_USER_ROLE } from './types';
+import {
+  FETCH_USER,
+  FETCH_USERS,
+  FETCH_CURRENT_USER,
+  UPDATE_AUTH_USER,
+  SET_CURRENT_USER_ROLE,
+  SHOW_ERROR_DIALOG_MODAL,
+} from './types';
 
 //User Actions
 export const fetchCurrentUser = () => async dispatch => {
@@ -15,6 +22,7 @@ export const fetchCurrentUser = () => async dispatch => {
       dispatch({ type: FETCH_CURRENT_USER, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -29,6 +37,7 @@ export const fetchUsers = () => async dispatch => {
       dispatch({ type: FETCH_USERS, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -45,6 +54,7 @@ export const fetchUser = id => async dispatch => {
 
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -59,7 +69,7 @@ export const editUser = (id, userObj) => async dispatch => {
       dispatch({ type: FETCH_USER, payload: data });
       resolve();
     } catch (e) {
-      console.log('ERROR in edituser');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -74,7 +84,7 @@ export const editUserRole = userObj => async dispatch => {
       dispatch({ type: FETCH_USER, payload: data });
       resolve();
     } catch (e) {
-      console.log('ERROR in editUserRole');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });

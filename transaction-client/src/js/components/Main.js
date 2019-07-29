@@ -16,17 +16,11 @@ class Main extends Component {
 
   render() {
     const { errorDialog } = this.props;
-    const errorDialogOptions = {
-      message: errorDialog.message,
-      primaryText: 'Reload',
-    };
 
-    return this.state.loading ? (
-      <PageSpinner />
-    ) : (
+    return (
       <React.Fragment>
-        {this.props.children}
-        {errorDialog.show && <ErrorDialogModal isOpen={errorDialog.show} options={errorDialogOptions} />}
+        {this.state.loading ? <PageSpinner /> : this.props.children}}
+        {errorDialog.show && <ErrorDialogModal isOpen={errorDialog.show} {...errorDialog} />}
       </React.Fragment>
     );
   }

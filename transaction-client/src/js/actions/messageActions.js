@@ -1,6 +1,14 @@
 import api from '../api/api';
-import { getApiReponseData } from '../utils';
-import { FETCH_TOPICS, FETCH_TOPIC, EDIT_TOPIC, CREATE_TOPIC, CREATE_POST, EDIT_POST } from './types';
+import { getApiReponseData, buildApiErrorObject } from '../utils';
+import {
+  FETCH_TOPICS,
+  FETCH_TOPIC,
+  EDIT_TOPIC,
+  CREATE_TOPIC,
+  CREATE_POST,
+  EDIT_POST,
+  SHOW_ERROR_DIALOG_MODAL,
+} from './types';
 
 import history from '../history';
 import * as Constants from '../Constants';
@@ -13,6 +21,7 @@ export const fetchTopics = () => async dispatch => {
       dispatch({ type: FETCH_TOPICS, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -26,6 +35,7 @@ export const fetchTopicDetail = topicId => async dispatch => {
       dispatch({ type: FETCH_TOPIC, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -39,6 +49,7 @@ export const editTopic = topic => async dispatch => {
       dispatch({ type: EDIT_TOPIC, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -54,6 +65,7 @@ export const createTopic = topic => async dispatch => {
       history.push(`${Constants.PATHS.MESSAGES}/${response.data.id}`);
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -67,6 +79,7 @@ export const createPost = message => async dispatch => {
       dispatch({ type: CREATE_POST, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -80,6 +93,7 @@ export const editPost = message => async dispatch => {
       dispatch({ type: EDIT_POST, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });

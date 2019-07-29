@@ -52,10 +52,10 @@ class EventTeamStandings extends React.Component {
     return this.state.loading ? (
       <PageSpinner />
     ) : (
-        <React.Fragment>
-          <h5>Team Standings</h5> {this.renderContent()}
-        </React.Fragment>
-      );
+      <React.Fragment>
+        <h5>Team Standings</h5> {this.renderContent()}
+      </React.Fragment>
+    );
   }
 }
 

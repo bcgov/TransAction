@@ -1,6 +1,6 @@
 import api from '../api/api';
-import { getApiReponseData } from '../utils';
-import { FETCH_ROLES, FETCH_CURRENT_ROLE } from './types';
+import { getApiReponseData, buildApiErrorObject } from '../utils';
+import { FETCH_ROLES, FETCH_CURRENT_ROLE, SHOW_ERROR_DIALOG_MODAL } from './types';
 
 export const fetchRoles = () => async (dispatch, getState) => {
   return new Promise(async (resolve, reject) => {
@@ -18,6 +18,7 @@ export const fetchRoles = () => async (dispatch, getState) => {
 
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -32,6 +33,7 @@ export const fetchRole = id => async dispatch => {
 
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });

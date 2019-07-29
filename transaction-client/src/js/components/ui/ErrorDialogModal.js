@@ -1,6 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 // import PropTypes from 'prop-types';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+
+import { hideErrorDialog } from '../../actions';
 
 class ErrorDialogModal extends React.Component {
   state = { clicked: false };
@@ -9,19 +12,30 @@ class ErrorDialogModal extends React.Component {
     this.setState({ clicked: false });
   };
 
-  handleOnClick = confirm => {
+  handleOnClick = reload => {
     this.setState({ clicked: true });
 
-    this.props.options.callback(confirm);
+    if (reload) window.location.reload();
+    else this.props.hideErrorDialog();
   };
 
   render() {
-    const { isOpen, options } = this.props;
+    const { isOpen, message, statusCode, path, method } = this.props;
     return (
       <div>
         <Modal isOpen={isOpen} toggle={this.closeDialog} onOpened={this.init}>
-          <ModalHeader toggle={this.closeDialog}>{options.title}</ModalHeader>
-          <ModalBody>{options.body}</ModalBody>
+          <ModalHeader toggle={this.closeDialog}>Server Error</ModalHeader>
+          <ModalBody>
+            <p>
+              A <strong>{method}</strong> request to <strong className="text-primary">{path}</strong> has returned a{' '}
+              <strong className="text-danger">{statusCode}</strong> status code.
+            </p>
+            <p>
+              <small>
+                <strong>Additional Information:</strong> {message}
+              </small>
+            </p>
+          </ModalBody>
           <ModalFooter>
             <Button
               size="sm"
@@ -30,18 +44,11 @@ class ErrorDialogModal extends React.Component {
               onClick={() => this.handleOnClick(true)}
               style={{ minWidth: '50px' }}
             >
-              {this.state.clicked && <Spinner size="sm" />} {options.primaryText ? options.primaryText : 'Yes'}
+              Reload
             </Button>
-            {options.secondary && (
-              <Button
-                size="sm"
-                color="secondary"
-                onClick={() => this.handleOnClick(false)}
-                disabled={this.state.clicked}
-              >
-                Cancel
-              </Button>
-            )}
+            <Button size="sm" color="secondary" onClick={() => this.handleOnClick(false)} disabled={this.state.clicked}>
+              Close
+            </Button>
           </ModalFooter>
         </Modal>
       </div>
@@ -49,4 +56,7 @@ class ErrorDialogModal extends React.Component {
   }
 }
 
-export default ErrorDialogModal;
+export default connect(
+  null,
+  { hideErrorDialog }
+)(ErrorDialogModal);

@@ -39,3 +39,15 @@ export const isCurrentUserTeamlead = () => {
 export const getApiReponseData = response => {
   return response.data.data ? response.data.data : response.data;
 };
+
+export const buildApiErrorObject = response => {
+  const method = response.config.method.toUpperCase();
+  const path = response.config.url.replace(response.config.baseURL, '');
+
+  return {
+    message: response.data.message,
+    statusCode: response.status,
+    path,
+    method,
+  };
+};
