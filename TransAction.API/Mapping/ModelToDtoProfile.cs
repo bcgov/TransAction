@@ -12,7 +12,7 @@ namespace TransAction.API.Mapping
 
             CreateMap<TraImage, ImageDto>();
 
-            // for profile 
+            // for profile
             CreateMap<TraUser, UserDto>();
             CreateMap<TraUserView, UserDto>();
             CreateMap<TraUser, UserUpdateDto>();
@@ -25,7 +25,7 @@ namespace TransAction.API.Mapping
             CreateMap<TraRegion, RegionDto>();
             CreateMap<TraRegion, RegionUpdateDto>();
 
-            //for activity                
+            //for activity
             CreateMap<TraActivity, ActivityDto>();
             CreateMap<TraActivity, ActivityUpdateDto>();
 

@@ -11,7 +11,7 @@ namespace TransAction.API.Mapping
             CreateMap<EventCreateDto, TraEvent>();
             CreateMap<EventUpdateDto, TraEvent>();
 
-            // for profile 
+            // for profile
             CreateMap<UserDto, TraUser>();
             CreateMap<UserCreateDto, TraUser>();
             CreateMap<UserUpdateDto, TraUser>();
@@ -26,7 +26,7 @@ namespace TransAction.API.Mapping
             CreateMap<RegionCreateDto, TraRegion>();
             CreateMap<RegionUpdateDto, TraRegion>();
 
-            //for activity                
+            //for activity
             CreateMap<ActivityDto, TraActivity>();
             CreateMap<ActivityCreateDto, TraActivity>();
             CreateMap<ActivityUpdateDto, TraActivity>();
