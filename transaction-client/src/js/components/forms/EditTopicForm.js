@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
-import { editTopic, createTopic, editPost, fetchTopicDetail } from '../../actions';
+import { editTopic, createTopic, fetchTopicDetail } from '../../actions';
 import FormModal from '../ui/FormModal';
 import FormInput from '../ui/FormInput';
 
@@ -18,7 +18,7 @@ class EditTopicForm extends React.Component {
   };
 
   onSubmit = formValues => {
-    const { formType, editTopic, createTopic, editPost, fetchTopicDetail, topic, currentUser } = this.props;
+    const { formType, editTopic, createTopic, fetchTopicDetail, topic, currentUser } = this.props;
 
     if (!this.state.submitting) {
       this.setState({ submitting: true });
@@ -26,13 +26,11 @@ class EditTopicForm extends React.Component {
 
     if (formType === Constants.FORM_TYPE.ADD) {
       const topicObj = { ...formValues, userId: currentUser.id };
-      createTopic(topicObj).then(() => {
-        //this.toggleModal();
-      });
+      createTopic(topicObj).then(() => {});
     } else {
-      const topicObj = { ...topic, title: formValues.title };
+      const topicObj = { ...topic, title: formValues.title, body: formValues.body };
 
-      Promise.all([editTopic(topicObj), editPost(formValues)]).then(() => {
+      Promise.all([editTopic(topicObj)]).then(() => {
         fetchTopicDetail(formValues.topicId);
         this.toggleModal();
       });
@@ -93,7 +91,7 @@ const mapStateToProp = state => {
 
 const formConnect = connect(
   mapStateToProp,
-  { editTopic, createTopic, editPost, fetchTopicDetail }
+  { editTopic, createTopic, fetchTopicDetail }
 )(form);
 
 export default formConnect;

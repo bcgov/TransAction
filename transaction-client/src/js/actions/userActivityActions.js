@@ -1,5 +1,5 @@
 import api from '../api/api';
-import { getApiReponseData } from '../utils';
+import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_ACTIVITY_LIST,
   CREATE_USER_ACTIVITY,
@@ -9,6 +9,7 @@ import {
   FETCH_TEAM_EVENT_SCORE,
   FETCH_TEAM_STANDINGS,
   FETCH_REGION_STANDINGS,
+  SHOW_ERROR_DIALOG_MODAL,
 } from './types';
 
 //Activity Actions
@@ -21,6 +22,7 @@ export const fetchActivityList = () => async dispatch => {
       dispatch({ type: FETCH_ACTIVITY_LIST, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -39,6 +41,7 @@ export const createUserActivity = activityObj => async dispatch => {
 
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -55,7 +58,7 @@ export const fetchUserEventScore = (userId, eventId) => async dispatch => {
       dispatch({ type: FETCH_USER_EVENT_SCORE, payload: { userId, eventId, data: data } });
       resolve();
     } catch (e) {
-      console.log('ERROR in fetchUserEventScore');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -71,7 +74,7 @@ export const fetchAllUserScores = userId => async dispatch => {
       dispatch({ type: FETCH_USER_SCORES, payload: { userId, data: data } });
       resolve();
     } catch (e) {
-      console.log('ERROR in fetchAllUserScores');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -86,7 +89,7 @@ export const fetchTeamEventScore = (teamId, eventId) => async dispatch => {
       dispatch({ type: FETCH_TEAM_EVENT_SCORE, payload: { teamId, eventId, data: data } });
       resolve();
     } catch (e) {
-      console.log('Error in fetchTeamEventScore' + e);
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -102,6 +105,7 @@ export const fetchAllTeamScores = teamId => async dispatch => {
       dispatch({ type: FETCH_TEAM_SCORES, payload: { teamId, data: data } });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -116,6 +120,7 @@ export const fetchTeamStandings = (eventId, teamCount = 20) => async dispatch =>
       dispatch({ type: FETCH_TEAM_STANDINGS, payload: { eventId, data: data } });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -130,6 +135,7 @@ export const fetchRegionStandings = eventId => async dispatch => {
       dispatch({ type: FETCH_REGION_STANDINGS, payload: { eventId, data: data } });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });

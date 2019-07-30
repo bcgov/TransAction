@@ -17,7 +17,7 @@ class TeamsList extends Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-    Promise.all([this.props.fetchTeams(), this.props.fetchUsers(), this.props.fetchJoinRequests()])
+    Promise.all([this.props.fetchTeams(), this.props.fetchJoinRequests()])
       .then(() => {
         this.setState({ loading: false });
       })
@@ -75,7 +75,7 @@ class TeamsList extends Component {
   }
 
   renderTeamRows() {
-    const { currentUser, users, regions } = this.props;
+    const { currentUser, regions } = this.props;
     const userRequests = this.props.joinRequests
       .filter(request => {
         return request.userId === currentUser.id;
@@ -92,9 +92,7 @@ class TeamsList extends Component {
               {team.name}
             </Link>
           </td>
-          <td>
-            {users[team.teamLeaderId].fname} {users[team.teamLeaderId].lname}
-          </td>
+          <td>{team.teamLeaderName}</td>
           <td>{regions[team.regionId].name}</td>
           <td>{team.numMembers}</td>
           {!currentUser.teamId && (

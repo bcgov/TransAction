@@ -1,5 +1,5 @@
 import api from '../api/api';
-import { getApiReponseData } from '../utils';
+import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_TEAM,
   CREATE_TEAM,
@@ -10,6 +10,7 @@ import {
   FETCH_JOIN_REQUESTS,
   EDIT_JOIN_REQUEST,
   DELETE_JOIN_REQUEST,
+  SHOW_ERROR_DIALOG_MODAL,
 } from './types';
 import history from '../history';
 import * as Constants from '../Constants';
@@ -28,6 +29,7 @@ export const fetchCurrentTeam = () => async (dispatch, getStore) => {
 
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -43,7 +45,7 @@ export const fetchTeam = id => async dispatch => {
 
       resolve();
     } catch (e) {
-      console.log('ERROR in fetchTeam');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -60,7 +62,7 @@ export const editTeam = (id, teamObj) => async dispatch => {
       dispatch({ type: FETCH_TEAM, payload: data });
       resolve();
     } catch (e) {
-      console.log('ERROR in editeam');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -79,7 +81,7 @@ export const createTeam = teamObj => async dispatch => {
       history.push(`${Constants.PATHS.TEAM}/${response.data.id}`);
       resolve();
     } catch (e) {
-      console.log('ERROR in createteam');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -93,6 +95,7 @@ export const fetchTeams = () => async dispatch => {
       dispatch({ type: FETCH_TEAMS, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -109,6 +112,7 @@ export const fetchJoinRequests = () => async dispatch => {
       dispatch({ type: FETCH_JOIN_REQUESTS, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -122,6 +126,7 @@ export const fetchSpecificTeamRequests = id => async dispatch => {
       dispatch({ type: FETCH_SPECIFIC_TEAM_REQUESTS, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -135,6 +140,7 @@ export const createJoinRequest = reqObj => async dispatch => {
       dispatch({ type: POST_REQUEST, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -148,6 +154,7 @@ export const editJoinRequest = (id, reqObj) => async dispatch => {
       dispatch({ type: EDIT_JOIN_REQUEST, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -163,6 +170,7 @@ export const addUserToTeam = reqObj => async dispatch => {
       dispatch({ type: DELETE_JOIN_REQUEST, payload: reqObj.id });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -178,6 +186,7 @@ export const rejectJoinRequest = reqObj => async dispatch => {
 
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -191,6 +200,7 @@ export const joinTeam = joinObj => async dispatch => {
       dispatch({ type: FETCH_TEAM, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -204,6 +214,7 @@ export const leaveTeam = (teamId, userId) => async dispatch => {
       dispatch({ type: FETCH_TEAM, payload: data });
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });

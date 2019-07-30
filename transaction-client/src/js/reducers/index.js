@@ -12,6 +12,7 @@ import scoreReducer from './scoreReducer';
 import teamsReducer from './teamReducer';
 import usersReducer from './usersReducer';
 import userActivityReducer from './userActivityReducer';
+import errorDialogReducer from './errorDialogReducer';
 
 export default combineReducers({
   form: formReducer,
@@ -26,4 +27,5 @@ export default combineReducers({
   users: usersReducer,
   userActivities: userActivityReducer,
   messages: messageReducer,
+  errorDialog: errorDialogReducer,
 });

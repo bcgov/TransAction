@@ -5,6 +5,14 @@
         IEventRepository Event { get; }
         IUserRepository User { get; }
         ITeamRepository Team { get; }
+        ITopicRepRository Topic { get; }
+        IMessageRepository Message { get; }
+        IRegionRepository Region { get; }
+        IActivityRepository Activity { get; }
+        IRoleRepository Role { get; }
+        IRequestRepository Request { get; }
+        IImageRepository Image { get; }
+        IUserActivityRepository UserAct { get; }
         bool Save();
     }
 }

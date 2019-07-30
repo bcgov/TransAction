@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Linq;
 using TransAction.Data.Models;
 
 namespace TransAction.API.Mapping
@@ -12,20 +13,23 @@ namespace TransAction.API.Mapping
 
             CreateMap<TraImage, ImageDto>();
 
-            // for profile 
+            // for profile
             CreateMap<TraUser, UserDto>();
             CreateMap<TraUserView, UserDto>();
             CreateMap<TraUser, UserUpdateDto>();
 
             //for teams
-            CreateMap<TraTeam, TeamDto>();
+            CreateMap<TraTeam, TeamDto>()
+                .ForMember(dto => dto.TeamLeaderName, opt => opt.MapFrom(model => $"{model.User.Fname} {model.User.Lname}"))
+                .ForMember(dto => dto.TeamMemberIds, opt => opt.MapFrom(model => model.TraUser.Select(x => x.UserId)))
+                .ForMember(dto => dto.NumMembers, opt => opt.MapFrom(model => model.TraUser.Count));
             CreateMap<TraTeam, TeamUpdateDto>();
 
             //for regions
             CreateMap<TraRegion, RegionDto>();
             CreateMap<TraRegion, RegionUpdateDto>();
 
-            //for activity                
+            //for activity
             CreateMap<TraActivity, ActivityDto>();
             CreateMap<TraActivity, ActivityUpdateDto>();
 

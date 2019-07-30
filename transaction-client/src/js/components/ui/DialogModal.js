@@ -30,7 +30,7 @@ class DialogModal extends React.Component {
               onClick={() => this.handleOnClick(true)}
               style={{ minWidth: '50px' }}
             >
-              {this.state.clicked && <Spinner size="sm" />} Yes
+              {this.state.clicked && <Spinner size="sm" />} {options.primaryText ? options.primaryText : 'Yes'}
             </Button>
             {options.secondary && (
               <Button

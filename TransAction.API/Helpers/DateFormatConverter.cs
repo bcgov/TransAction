@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TransAction.API.Helpers
 {
-    public class DateFormatConverter :IsoDateTimeConverter
+    public class DateFormatConverter : IsoDateTimeConverter
     {
         public DateFormatConverter(string format)
         {

@@ -61,7 +61,7 @@ class MessagePostFragment extends React.Component {
         {post.concurrencyControlNumber > 1 && (
           <small>
             <em>
-              Updated {post.concurrencyControlNumber} times. Last updated at{' '}
+              Updated {post.concurrencyControlNumber - 1} time(s). Last updated at{' '}
               {moment(post.dbLastUpdateTimestamp).format(Constants.MESSAGE_DATE_FORMAT)}
             </em>
           </small>

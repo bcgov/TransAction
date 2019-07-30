@@ -9,8 +9,6 @@ namespace TransAction.Data.Models
 {
     public partial class TransActionContext : DbContext
     {
-        // public DateTime DbCreateTimestamp { get; set; } 
-        // public DateTime DbLastUpdateTimestamp { get; set; } 
 
         public override int SaveChanges()
         {
@@ -25,32 +23,32 @@ namespace TransAction.Data.Models
                 if (entry.State == EntityState.Added)
                 {
 
-                        var createTimeStampProp = entry.Member("DbCreateTimestamp");
-                        createTimeStampProp.CurrentValue = currentTime;
+                    var createTimeStampProp = entry.Member("DbCreateTimestamp");
+                    createTimeStampProp.CurrentValue = currentTime;
 
 
-                        var concurrencyControl = entry.Member("ConcurrencyControlNumber");
-                        Int64 controlNumber = 1;
-                        concurrencyControl.CurrentValue = controlNumber;
+                    var concurrencyControl = entry.Member("ConcurrencyControlNumber");
+                    Int64 controlNumber = 1;
+                    concurrencyControl.CurrentValue = controlNumber;
 
 
-                        var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
-                        lastUpdateTimeStampProp.CurrentValue = currentTime;
+                    var lastUpdateTimeStampProp = entry.Member("DbLastUpdateTimestamp");
+                    lastUpdateTimeStampProp.CurrentValue = currentTime;
 
 
-                        var createUserId = entry.Member("DbCreateUserid");
-                        createUserId.CurrentValue = "Test Value";
+                    var createUserId = entry.Member("DbCreateUserid");
+                    createUserId.CurrentValue = "Test Value";
 
-                        var lastUserId = entry.Member("DbLastUpdateUserid");
-                        lastUserId.CurrentValue = "Test Value";
+                    var lastUserId = entry.Member("DbLastUpdateUserid");
+                    lastUserId.CurrentValue = "Test Value";
 
-                                             
+
 
                 }
                 else if (entry.State == EntityState.Modified)
-                {                                   
+                {
                     var concurrencyControl = entry.Member("ConcurrencyControlNumber");
-                    concurrencyControl.CurrentValue = (Int64)concurrencyControl.CurrentValue + 1;                               
+                    concurrencyControl.CurrentValue = (Int64)concurrencyControl.CurrentValue + 1;
                 }
 
             }
@@ -66,7 +64,7 @@ namespace TransAction.Data.Models
                 {
                     Console.WriteLine(e);
                     throw;
-                }              
+                }
             }
 
             return result;

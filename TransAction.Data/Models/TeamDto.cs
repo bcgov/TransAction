@@ -15,7 +15,8 @@ namespace TransAction.Data.Models
         public int Goal { get; set; }
         [JsonProperty("teamLeaderId")]
         public int UserId { get; set; }
-        public Array TeamMemberIds { get; set; }
+        public string TeamLeaderName { get; set; }
+        public int[] TeamMemberIds { get; set; }
         public int NumMembers { get; set; }
         public long ConcurrencyControlNumber { get; set; }
         [JsonProperty("images")]

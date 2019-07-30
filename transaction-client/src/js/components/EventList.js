@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Row, Col } from 'reactstrap';
+import { Button, Row, Col, Alert } from 'reactstrap';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -23,14 +23,9 @@ class EventList extends Component {
   };
 
   componentDidMount() {
-    this.props
-      .fetchEvents()
-      .then(() => {
-        this.setState({ loading: false });
-      })
-      .catch(() => {
-        this.setState({ loading: false });
-      });
+    this.props.fetchEvents().then(() => {
+      this.setState({ loading: false });
+    });
   }
 
   showAddEventForm = () => {
@@ -86,7 +81,7 @@ class EventList extends Component {
       />
     ));
 
-    return events;
+    return events.length === 0 ? <Alert color="primary">There are no active events at the moment.</Alert> : events;
   }
 
   renderAddEventButton() {

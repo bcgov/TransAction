@@ -36,7 +36,7 @@ class Header extends Component {
               />
               <img
                 className="img-fluid d-md-none"
-                src={`${process.env.PUBLIC_URL}/bcid-symbol-rev.svg`}
+                src={`${process.env.PUBLIC_URL}/images/bcid-symbol-rev.svg`}
                 width="64"
                 height="44"
                 alt="B.C. Government Logo"

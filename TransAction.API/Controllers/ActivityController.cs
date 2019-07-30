@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TransAction.API.Helpers;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
+using AutoMapper;
+using TransAction.API.Responses;
 
 namespace TransAction.API.Controllers
 {
@@ -13,16 +16,17 @@ namespace TransAction.API.Controllers
     public class ActivityController : BaseController
     {
 
-        public ActivityController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger) :
-            base(httpContextAccessor, logger)
+        public ActivityController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
         [HttpGet()]
-        public IActionResult GetActivities()
+        public IActionResult GetActivities(int page = 1, int pageSize = 25)
         {
-            var activities = _transActionRepo.GetActivities();
+            var activities = _unitOfWork.Activity.GetAll(page, pageSize);
             var getActivities = _mapper.Map<IEnumerable<ActivityDto>>(activities);
-            return Ok(getActivities);
+            int count = _unitOfWork.Activity.GetCount();
+            return StatusCode(200, new TransActionPagedResponse(getActivities, page, pageSize, count));
 
         }
 
@@ -32,21 +36,20 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getActivities = _transActionRepo.GetActivities().FirstOrDefault(c => c.ActivityId == id);
+                var getActivity = _unitOfWork.Activity.GetById(id);
 
-                if (getActivities == null)
+                if (getActivity == null)
                 {
-                    return NotFound();
+                    return StatusCode(404, new TransActionResponse("Activity does not exist."));
                 }
-                var getActivity = _transActionRepo.GetActivity(id);
                 var getActivityResult = _mapper.Map<ActivityDto>(getActivity);
-                return Ok(getActivityResult);
+                return StatusCode(200, new TransActionResponse(getActivityResult));
 
             }
 
             catch (Exception)
             {
-                return StatusCode(500, "A problem happened while handeling your request");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
             }
 
         }
@@ -54,43 +57,32 @@ namespace TransAction.API.Controllers
         [HttpPost()]
         public IActionResult CreateActivity([FromBody] ActivityCreateDto createActivity)
         {
-            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
-            if(getUser.TeamId == null)
-            {
-                return BadRequest();
-            }
-
-
             if (createActivity == null)
             {
-                return BadRequest();
-            }
-            if (createActivity.Description == null || createActivity.Name == null)
-            {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("No user Activity entry entered."));
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
-            if (_transActionRepo.ActivityExists(createActivity.Name))
+            if (_unitOfWork.Activity.ActivityExists(createActivity.Name))
             {
-                return BadRequest();
+                return BadRequest(new TransActionResponse("Activity already exists."));
             }
 
             var newActivity = _mapper.Map<TraActivity>(createActivity);
 
 
-            _transActionRepo.CreateActivity(newActivity);
+            _unitOfWork.Activity.Create(newActivity);
 
-            if (!_transActionRepo.Save())
+            if (!_unitOfWork.Save())
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
+                // return StatusCode(500, "A problem happened while handling your request.");
             }
 
             var createActivityResult = _mapper.Map<ActivityDto>(newActivity);
-            return CreatedAtRoute("GetActivity", new { id = createActivityResult.ActivityId }, createActivityResult);
+            return CreatedAtRoute("GetActivity", new { id = createActivityResult.ActivityId }, new TransActionResponse(createActivity));
 
 
         }
@@ -98,30 +90,29 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateActivity(int id, [FromBody] ActivityUpdateDto updateActivity)
         {
-            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _transActionRepo.GetUsers().FirstOrDefault(c => c.Guid == userGuid);
-            if (getUser.TeamId == null)
-            {
-                return BadRequest();
-            }
-
-            var activityEntity = _transActionRepo.GetActivity(id);
-            if (activityEntity == null) return NotFound();
-            if (updateActivity == null) return NotFound();
-
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new TransActionResponse(ModelState));
             }
-            _mapper.Map(updateActivity, activityEntity);
-
-
-            if (!_transActionRepo.Save())
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+            if (getUser.TeamId == null)
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                return BadRequest(new TransActionResponse("User is not in a team."));
             }
 
-            return NoContent();
+            var activityEntity = _unitOfWork.Activity.GetById(id);
+            if (activityEntity == null) return StatusCode(404, new TransActionResponse("Activity does not exist"));
+
+            _mapper.Map(updateActivity, activityEntity);
+            _unitOfWork.Activity.Update(activityEntity);
+
+            if (!!_unitOfWork.Save())
+            {
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
+            }
+
+            return StatusCode(StatusCodes.Status204NoContent, new TransActionResponse());
         }
 
     }

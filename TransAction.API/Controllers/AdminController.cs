@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TransAction.API.Authorization;
+using TransAction.API.Responses;
 using TransAction.Data.Models;
+using TransAction.Data.Repositories.Interfaces;
 
 namespace TransAction.API.Controllers
 {
@@ -11,8 +14,8 @@ namespace TransAction.API.Controllers
     public class AdminController : BaseController
     {
 
-        public AdminController(IHttpContextAccessor httpContextAccessor, ILogger<AdminController> logger) :
-            base(httpContextAccessor, logger)
+        public AdminController(IHttpContextAccessor httpContextAccessor, ILogger<ActivityController> logger, IUnitOfWork unitOfWork, IMapper mapper) :
+            base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
@@ -20,17 +23,20 @@ namespace TransAction.API.Controllers
         public IActionResult UpdateUserRole([FromBody] UserRoleUpdateDto userRoleUpdate)
         {
             var user = _unitOfWork.User.GetById(userRoleUpdate.UserId);
+            user.TraImage = null;
+            user.Role = null;
             if (user == null)
-                return NotFound("User not found");
+                return StatusCode(404, new TransActionResponse("User not found."));
 
-            var role = _transActionRepo.GetRole(userRoleUpdate.RoleId);
+            var role = _unitOfWork.Role.GetRoleById(userRoleUpdate.RoleId);
             if (role == null)
-                return NotFound("Role not found");
+                return StatusCode(404, new TransActionResponse("Role not found"));
 
             user.RoleId = role.RoleId;
 
+            _unitOfWork.User.Update(user);
             if (!_unitOfWork.Save())
-                return StatusCode(500, "Error occurred while updating user role");
+                return StatusCode(500, new TransActionResponse("Error occurred while updating user role"));
 
             return CreatedAtRoute("GetUser", new { controller = "user", id = user.UserId }, _mapper.Map<UserDto>(user));
         }
