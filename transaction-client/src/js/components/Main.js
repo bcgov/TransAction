@@ -19,7 +19,7 @@ class Main extends Component {
 
     return (
       <React.Fragment>
-        {this.state.loading ? <PageSpinner /> : this.props.children}}
+        {this.state.loading ? <PageSpinner /> : this.props.children}
         {errorDialog.show && <ErrorDialogModal isOpen={errorDialog.show} {...errorDialog} />}
       </React.Fragment>
     );
