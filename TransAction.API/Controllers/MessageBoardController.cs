@@ -99,21 +99,29 @@ namespace TransAction.API.Controllers
             if (topicEntity == null) return StatusCode(404, new TransActionResponse("Topic Not Found"));
 
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
-            var getUser = _unitOfWork.User.GetByGuid(userGuid);
-            topicEntity.UserId = getUser.UserId;
-            _mapper.Map(updateTopic, topicEntity);
+            var user = _unitOfWork.User.GetCurrentUser(userGuid);
 
-            _unitOfWork.Topic.Update(topicEntity);
-
-            var mess = topicEntity.TraTopicMessage.FirstOrDefault();
-            mess.Body = updateTopic.Body;
-
-            if (!_unitOfWork.Save())
+            if (user.Role.Name.ToLower() == "admin" || user.UserId == topicEntity.UserId)
             {
-                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
-            }
 
-            return GetTopicById(id);
+                _mapper.Map(updateTopic, topicEntity);
+
+                _unitOfWork.Topic.Update(topicEntity);
+
+                var mess = topicEntity.TraTopicMessage.FirstOrDefault();
+                mess.Body = updateTopic.Body;
+
+                if (!_unitOfWork.Save())
+                {
+                    return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
+                }
+
+                return GetTopicById(id);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized, new TransActionResponse());
+            }
         }
 
         [HttpGet("{topicId}/message")]
@@ -231,7 +239,7 @@ namespace TransAction.API.Controllers
             }
             else
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new TransActionResponse());
+                return StatusCode(StatusCodes.Status401Unauthorized, new TransActionResponse());
             }
 
         }
