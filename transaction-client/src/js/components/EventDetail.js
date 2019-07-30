@@ -19,14 +19,9 @@ class EventDetail extends React.Component {
   componentDidMount() {
     const eventId = this.props.match.params.id;
 
-    this.props
-      .fetchEvent(eventId)
-      .then(() => {
-        this.setState({ loading: false });
-      })
-      .catch(() => {
-        //this.setState({ loading: false });
-      });
+    this.props.fetchEvent(eventId).then(() => {
+      this.setState({ loading: false });
+    });
   }
 
   renderContent() {

@@ -1,6 +1,6 @@
 import api from '../api/api';
-import { getApiReponseData } from '../utils';
-import { FETCH_REGIONS } from './types';
+import { getApiReponseData, buildApiErrorObject } from '../utils';
+import { FETCH_REGIONS, SHOW_ERROR_DIALOG_MODAL } from './types';
 
 export const fetchRegions = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
@@ -11,7 +11,7 @@ export const fetchRegions = () => async dispatch => {
 
       resolve();
     } catch (e) {
-      console.log('ERROR in fetchR');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });

@@ -1,6 +1,6 @@
 import api from '../api/api';
-import { getApiReponseData } from '../utils';
-import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT } from './types';
+import { getApiReponseData, buildApiErrorObject } from '../utils';
+import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT, SHOW_ERROR_DIALOG_MODAL } from './types';
 
 export const fetchEvents = () => async dispatch => {
   return new Promise(async (resolve, reject) => {
@@ -11,6 +11,7 @@ export const fetchEvents = () => async dispatch => {
 
       resolve();
     } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -25,7 +26,7 @@ export const createEvent = formValues => async dispatch => {
 
       resolve();
     } catch (e) {
-      console.log('Error in createEvent');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -40,7 +41,7 @@ export const editEvent = (id, formValues) => async dispatch => {
 
       resolve();
     } catch (e) {
-      console.log('Error in editEvent');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -55,7 +56,7 @@ export const fetchEvent = id => async dispatch => {
 
       resolve();
     } catch (e) {
-      console.log('Error in fetchEvent');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });
@@ -72,7 +73,7 @@ export const archiveEvent = event => async dispatch => {
 
       resolve();
     } catch (e) {
-      console.log('Error in archiveEvent');
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
     }
   });

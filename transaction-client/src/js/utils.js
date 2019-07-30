@@ -34,6 +34,26 @@ export const isCurrentUserTeamlead = () => {
   return false;
 };
 
+// This function is for compatibility purposes.  API response used to contain only the data.
+// This was changed midway to include other data with the API response data
 export const getApiReponseData = response => {
   return response.data.data ? response.data.data : response.data;
+};
+
+export const buildApiErrorObject = response => {
+  try {
+    const method = response.config.method.toUpperCase();
+    const path = response.config.url.replace(response.config.baseURL, '');
+
+    return {
+      message: response.data.message,
+      statusCode: response.status,
+      path,
+      method,
+    };
+  } catch {
+    return {
+      message: 'Connection to server cannot be established',
+    };
+  }
 };

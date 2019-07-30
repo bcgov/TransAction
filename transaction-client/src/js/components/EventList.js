@@ -23,14 +23,9 @@ class EventList extends Component {
   };
 
   componentDidMount() {
-    this.props
-      .fetchEvents()
-      .then(() => {
-        this.setState({ loading: false });
-      })
-      .catch(() => {
-        this.setState({ loading: false });
-      });
+    this.props.fetchEvents().then(() => {
+      this.setState({ loading: false });
+    });
   }
 
   showAddEventForm = () => {

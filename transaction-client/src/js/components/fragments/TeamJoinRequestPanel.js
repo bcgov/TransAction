@@ -29,9 +29,6 @@ class TeamJoinRequestPanel extends React.Component {
       })
       .then(() => {
         this.setState({ loading: false });
-      })
-      .catch(e => {
-        console.error(e);
       });
   }
 

@@ -52,10 +52,6 @@ class Profile extends Component {
       })
       .then(() => {
         this.setState({ loading: false });
-      })
-      .catch(e => {
-        //this.setState({ loading: false });
-        console.error(e);
       });
   };
 

@@ -51,10 +51,7 @@ class MessageBoard extends React.Component {
             {topics.map(topic => {
               const lastMessage = topic.messages[topic.messages.length - 1];
               const postTime = moment(topic.dbCreateTimestamp);
-              const lastUpdateTime = moment.max(
-                moment(lastMessage.dbLastUpdateTimestamp),
-                moment(topic.dbLastUpdateTimestamp)
-              );
+              const lastUpdateTime = moment.max(moment(lastMessage.dbCreateTimestamp), moment(topic.dbCreateTimestamp));
               return (
                 <tr key={topic.id}>
                   <td>
@@ -95,16 +92,16 @@ class MessageBoard extends React.Component {
         {this.state.loading ? (
           <PageSpinner />
         ) : (
-            <CardWrapper>
-              <h4>Message Board</h4>
-              <div className="text-right">
-                <Button size="sm" color="primary" className="mb-3" onClick={this.showEditTopicForm}>
-                  New Thread
+          <CardWrapper>
+            <h4>Message Board</h4>
+            <div className="text-right">
+              <Button size="sm" color="primary" className="mb-3" onClick={this.showEditTopicForm}>
+                New Thread
               </Button>
-              </div>
-              {this.renderContent()}
-            </CardWrapper>
-          )}
+            </div>
+            {this.renderContent()}
+          </CardWrapper>
+        )}
         {this.state.showEditTopicForm && (
           <EditTopicForm
             isOpen={this.state.showEditTopicForm}
@@ -119,7 +116,16 @@ class MessageBoard extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    topics: _.orderBy(Object.values(state.messages), ['dbLastUpdateTimestamp'], ['desc']),
+    topics: _.orderBy(
+      Object.values(state.messages),
+      topic => {
+        const lastMessage = topic.messages[topic.messages.length - 1];
+        const lastUpdateTime = moment.max(moment(lastMessage.dbCreateTimestamp), moment(topic.dbCreateTimestamp));
+
+        return lastUpdateTime;
+      },
+      ['desc']
+    ),
   };
 };
 
