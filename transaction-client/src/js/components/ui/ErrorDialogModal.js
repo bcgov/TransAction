@@ -26,15 +26,19 @@ class ErrorDialogModal extends React.Component {
         <Modal isOpen={isOpen} toggle={this.closeDialog} onOpened={this.init}>
           <ModalHeader toggle={this.closeDialog}>Server Error</ModalHeader>
           <ModalBody>
-            <p>
-              A <strong>{method}</strong> request to <strong className="text-primary">{path}</strong> has returned a{' '}
-              <strong className="text-danger">{statusCode}</strong> status code.
-            </p>
-            <p>
-              <small>
-                <strong>Additional Information:</strong> {message}
-              </small>
-            </p>
+            {message && (
+              <p>
+                <strong>Error:</strong> {message}
+              </p>
+            )}
+            {statusCode && path && method && (
+              <p>
+                <small>
+                  A <strong>{method}</strong> request to <strong className="text-primary">{path}</strong> has returned a{' '}
+                  <strong className="text-danger">{statusCode}</strong> status code.
+                </small>
+              </p>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button

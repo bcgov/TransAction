@@ -23,26 +23,26 @@ namespace TransAction.Data.Repositories
             return teamCount.Count();
         }
 
-        public IEnumerable<TraTeam> GetAll(string Name, int page, int pageSize)
+        public IEnumerable<TraTeam> GetAll(string name, int page, int pageSize)
         {
             if (--page < 0) page = 0;
             var teams = FindAll();
-            if (!string.IsNullOrEmpty(Name))
+            if (!string.IsNullOrEmpty(name))
             {
-                teams = teams.Where(x => x.Name.Contains(Name));
+                teams = teams.Where(x => x.Name.Contains(name));
             }
-            return teams.OrderBy(x => x.Name).Skip(page * pageSize).Take(pageSize).ToList();
+            return teams.Include(x => x.User).Include(x => x.TraUser).OrderBy(x => x.Name).Skip(page * pageSize).Take(pageSize).ToList();
 
         }
 
         public TraTeam GetById(int id)
         {
-            return Find(e => e.TeamId == id).FirstOrDefault();
+            return Find(e => e.TeamId == id).Include(x => x.User).Include(x => x.TraUser).FirstOrDefault();
         }
 
-        public bool GetTeamByName(string Name)
+        public bool GetTeamByName(string name)
         {
-            var checkTeam = Find(c => c.Name == Name).FirstOrDefault();
+            var checkTeam = Find(c => c.Name == name).FirstOrDefault();
             if (checkTeam != null)
             {
                 return true;

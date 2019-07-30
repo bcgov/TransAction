@@ -41,13 +41,19 @@ export const getApiReponseData = response => {
 };
 
 export const buildApiErrorObject = response => {
-  const method = response.config.method.toUpperCase();
-  const path = response.config.url.replace(response.config.baseURL, '');
+  try {
+    const method = response.config.method.toUpperCase();
+    const path = response.config.url.replace(response.config.baseURL, '');
 
-  return {
-    message: response.data.message,
-    statusCode: response.status,
-    path,
-    method,
-  };
+    return {
+      message: response.data.message,
+      statusCode: response.status,
+      path,
+      method,
+    };
+  } catch {
+    return {
+      message: 'Connection to server cannot be established',
+    };
+  }
 };

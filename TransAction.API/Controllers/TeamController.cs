@@ -22,19 +22,12 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetTeams(string Name, int page = 1, int pageSize = 25)
+        public IActionResult GetTeams(string name, int page = 1, int pageSize = 25)
         {
-            var teams = _unitOfWork.Team.GetAll(Name, page, pageSize);
+            var teams = _unitOfWork.Team.GetAll(name, page, pageSize);
             var getTeams = _mapper.Map<IEnumerable<TeamDto>>(teams);
-            foreach (var team in getTeams)
-            {
-                var members = _unitOfWork.User.GetByTeamId(team.TeamId);
-                team.NumMembers = members.Count();
-                team.TeamMemberIds = members.Select(x => x.UserId).ToArray();
-
-            }
             var resultTeams = getTeams.Where(x => x.NumMembers > 0);
-            return StatusCode(200, new TransActionPagedResponse(resultTeams, page, pageSize, _unitOfWork.Team.Count(Name)));
+            return StatusCode(200, new TransActionPagedResponse(resultTeams, page, pageSize, _unitOfWork.Team.Count(name)));
         }
 
         [HttpGet("{id}")]
@@ -48,10 +41,7 @@ namespace TransAction.API.Controllers
                 {
                     return StatusCode(404, new TransActionResponse("Team Not found"));
                 }
-                var members = _unitOfWork.User.GetByTeamId(id);
                 var getTeamResult = _mapper.Map<TeamDto>(getTeam);
-                getTeamResult.NumMembers = members.Count();
-                getTeamResult.TeamMemberIds = members.Select(x => x.UserId).ToArray();
                 return StatusCode(200, new TransActionResponse(getTeamResult));
 
             }
