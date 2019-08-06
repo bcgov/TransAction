@@ -121,7 +121,16 @@ class EventList extends Component {
         {this.state.loading ? (
           <PageSpinner />
         ) : (
-          <ScrollLoader loader={this.loadData}>{this.renderEventList()}</ScrollLoader>
+          <ScrollLoader loader={this.loadData}>
+            {this.renderEventList()}
+            {this.state.page < this.state.pageCount && (
+              <div className="text-center mb-5">
+                <Button color="primary" onClick={this.loadData}>
+                  More
+                </Button>
+              </div>
+            )}
+          </ScrollLoader>
         )}
       </React.Fragment>
     );

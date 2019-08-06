@@ -62,7 +62,7 @@ export const createTopic = topic => async dispatch => {
       const data = getApiReponseData(response);
       dispatch({ type: CREATE_TOPIC, payload: data });
 
-      history.push(`${Constants.PATHS.MESSAGES}/${response.data.id}`);
+      history.push(`${Constants.PATHS.MESSAGES}/${data.id}`);
       resolve();
     } catch (e) {
       dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
