@@ -9,6 +9,7 @@ import PageSpinner from './ui/PageSpinner';
 import { fetchEvents, archiveEvent } from '../actions';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
+import ScrollLoader from './fragments/ScollLoader';
 
 import * as utils from '../utils';
 import * as Constants from '../Constants';
@@ -20,13 +21,28 @@ class EventList extends Component {
     eventFormInitialValues: null,
     showConfirmDialog: false,
     confirmDialogOptions: {},
+    searchTerm: undefined,
+    page: 0,
+    pageSize: 3,
+    pageCount: 1,
   };
 
   componentDidMount() {
-    this.props.fetchEvents().then(() => {
-      this.setState({ loading: false });
-    });
+    this.loadData();
   }
+
+  loadData = () => {
+    const nextPage = this.state.page + 1;
+    if (this.state.page < this.state.pageCount) {
+      this.props.fetchEvents(this.state.searchTerm, nextPage, this.state.pageSize).then(pageCount => {
+        this.setState({ loading: false, page: nextPage, pageCount });
+      });
+    }
+  };
+
+  loadMoreData = () => {
+    if (this.state.page <= this.state.pageCount) this.loadData();
+  };
 
   showAddEventForm = () => {
     this.setState({ showEventForm: true, eventFormType: Constants.FORM_TYPE.ADD, eventFormInitialValues: null });
@@ -102,7 +118,20 @@ class EventList extends Component {
     return (
       <React.Fragment>
         {this.renderAddEventButton()}
-        {this.state.loading ? <PageSpinner /> : this.renderEventList()}
+        {this.state.loading ? (
+          <PageSpinner />
+        ) : (
+          <ScrollLoader loader={this.loadData}>
+            {this.renderEventList()}
+            {this.state.page < this.state.pageCount && (
+              <div className="text-center mb-5">
+                <Button color="primary" onClick={this.loadData}>
+                  More
+                </Button>
+              </div>
+            )}
+          </ScrollLoader>
+        )}
       </React.Fragment>
     );
   }

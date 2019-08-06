@@ -21,11 +21,11 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetEvents(string Name, int page = 1, int pageSize = 25)
+        public IActionResult GetEvents(string name, int page = 1, int pageSize = 25)
         {
-            var events = _unitOfWork.Event.GetAll(page, pageSize, Name);
+            var events = _unitOfWork.Event.GetAll(page, pageSize, name);
             var getEvents = _mapper.Map<IEnumerable<EventDto>>(events);
-            int count = _unitOfWork.Event.GetCount(Name);
+            int count = _unitOfWork.Event.Count(name);
             return StatusCode(200, new TransActionPagedResponse(getEvents, page, pageSize, count));
 
         }
