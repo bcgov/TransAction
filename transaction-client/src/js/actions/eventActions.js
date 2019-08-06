@@ -1,15 +1,15 @@
 import api from '../api/api';
-import { getApiReponseData, buildApiErrorObject } from '../utils';
+import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
 import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT, SHOW_ERROR_DIALOG_MODAL } from './types';
 
-export const fetchEvents = () => async dispatch => {
+export const fetchEvents = (name, page, pageSize) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get('/events');
-      const data = getApiReponseData(response);
+      const response = await api.get(`/events/?${buildApiQueryString(name, page, pageSize)}`);
+      const data = getApiPagedReponseData(response).data;
       dispatch({ type: FETCH_EVENTS, payload: data });
 
-      resolve();
+      resolve(getApiPagedReponseData(response).pageCount);
     } catch (e) {
       dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);
