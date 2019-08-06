@@ -40,6 +40,10 @@ export const getApiReponseData = response => {
   return response.data.data ? response.data.data : response.data;
 };
 
+export const getApiPagedReponseData = response => {
+  return { data: response.data.data, pageCount: response.data.pageCount };
+};
+
 export const buildApiErrorObject = response => {
   try {
     const method = response.config.method.toUpperCase();
@@ -56,4 +60,14 @@ export const buildApiErrorObject = response => {
       message: 'Connection to server cannot be established',
     };
   }
+};
+
+export const buildApiQueryString = (searchTerm, page, pageSize) => {
+  const queries = [];
+
+  if (searchTerm) queries.push(`name=${searchTerm}`);
+  if (page) queries.push(`page=${page}`);
+  if (pageSize) queries.push(`pageSize=${pageSize}`);
+
+  return queries.join('&');
 };

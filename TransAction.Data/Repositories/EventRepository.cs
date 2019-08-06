@@ -12,13 +12,13 @@ namespace TransAction.Data.Repositories
 
         }
 
-        public IEnumerable<TraEvent> GetAll(int page, int pageSize, string Name)
+        public IEnumerable<TraEvent> GetAll(int page, int pageSize, string name)
         {
             if (--page < 0) page = 0;
             var events = FindAll().Where(x => x.IsActive == true);
-            if (!string.IsNullOrEmpty(Name))
+            if (!string.IsNullOrEmpty(name))
             {
-                events = events.Where(x => x.Name.Contains(Name));
+                events = events.Where(x => x.Name.Contains(name));
             }
             return events.OrderByDescending(x => x.StartDate).Skip(page * pageSize).Take(pageSize).ToList();
 
@@ -28,12 +28,12 @@ namespace TransAction.Data.Repositories
         {
             return Find(e => e.EventId == id).FirstOrDefault();
         }
-        public int GetCount(string Name)
+        public int Count(string name)
         {
             var eventCount = FindAll().Where(x => x.IsActive == true);
-            if (!string.IsNullOrEmpty(Name))
+            if (!string.IsNullOrEmpty(name))
             {
-                return eventCount.Where(x => x.Name.Contains(Name)).Count();
+                return eventCount.Where(x => x.Name.Contains(name)).Count();
             }
             return eventCount.Count();
         }

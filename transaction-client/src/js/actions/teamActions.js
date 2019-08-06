@@ -78,7 +78,7 @@ export const createTeam = teamObj => async dispatch => {
 
       dispatch({ type: CREATE_TEAM, payload: data });
 
-      history.push(`${Constants.PATHS.TEAM}/${response.data.id}`);
+      history.push(`${Constants.PATHS.TEAM}/${data.id}`);
       resolve();
     } catch (e) {
       dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });

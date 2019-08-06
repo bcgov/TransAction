@@ -21,11 +21,11 @@ namespace TransAction.API.Controllers
 
 
         [HttpGet()]
-        public IActionResult GetUsers(string Name, int page = 1, int pageSize = 25)
+        public IActionResult GetUsers(string name, int page = 1, int pageSize = 25)
         {
-            var user = _unitOfWork.User.GetAll(Name, page, pageSize);
+            var user = _unitOfWork.User.GetAll(name, page, pageSize);
             var getUsers = _mapper.Map<IEnumerable<UserDto>>(user);
-            return StatusCode(200, new TransActionPagedResponse(getUsers, page, pageSize, _unitOfWork.User.Count(Name)));
+            return StatusCode(200, new TransActionPagedResponse(getUsers, page, pageSize, _unitOfWork.User.Count(name)));
         }
 
         [HttpGet("{id}", Name = "GetUser")]
