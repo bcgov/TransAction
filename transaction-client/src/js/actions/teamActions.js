@@ -1,5 +1,5 @@
 import api from '../api/api';
-import { getApiReponseData, buildApiErrorObject } from '../utils';
+import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
 import {
   FETCH_TEAM,
   CREATE_TEAM,
@@ -87,13 +87,14 @@ export const createTeam = teamObj => async dispatch => {
   });
 };
 
-export const fetchTeams = () => async dispatch => {
+export const fetchTeams = (name, page, pageSize) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get('/teams');
+      const response = await api.get(`/teams/?${buildApiQueryString(name, page, pageSize)}`);
       const data = getApiReponseData(response);
       dispatch({ type: FETCH_TEAMS, payload: data });
-      resolve();
+
+      resolve(getApiPagedReponseData(response).pageCount);
     } catch (e) {
       dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);

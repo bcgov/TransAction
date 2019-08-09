@@ -14,6 +14,7 @@ namespace TransAction.Data.Models
         public string Title { get; set; }
         public int UserId { get; set; }
         public DateTime DbCreateTimestamp { get; set; }
+        public DateTime LastMessageTimestamp { get; set; }
         public string DbCreateUserid { get; set; }
         public DateTime DbLastUpdateTimestamp { get; set; }
         public string DbLastUpdateUserid { get; set; }

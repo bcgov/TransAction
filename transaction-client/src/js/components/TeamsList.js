@@ -2,27 +2,47 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Alert, Row, Col, Table, Button } from 'reactstrap';
+import _ from 'lodash';
 
-import { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
+import { fetchTeams, fetchCurrentTeam, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
+import ScrollLoader from './fragments/ScollLoader';
 
 import * as Constants from '../Constants';
 
 class TeamsList extends Component {
-  state = { loading: true, showConfirmDialog: false, confirmDialogOptions: {} };
+  state = {
+    loading: true,
+    showConfirmDialog: false,
+    confirmDialogOptions: {},
+    searchTerm: undefined,
+    page: 0,
+    pageSize: 15,
+    pageCount: 1,
+  };
 
   componentDidMount() {
-    this.setState({ loading: true });
-    Promise.all([this.props.fetchTeams(), this.props.fetchJoinRequests()])
-      .then(() => {
-        this.setState({ loading: false });
-      })
-      .catch(() => {});
+    const { currentUser, teams, fetchCurrentTeam, fetchJoinRequests } = this.props;
+    if (currentUser.teamId && !teams[currentUser.teamId]) {
+      fetchCurrentTeam();
+    }
+
+    fetchJoinRequests();
+    this.loadData();
   }
+
+  loadData = () => {
+    const nextPage = this.state.page + 1;
+    if (this.state.page < this.state.pageCount) {
+      this.props.fetchTeams(this.state.searchTerm, nextPage, this.state.pageSize).then(pageCount => {
+        this.setState({ loading: false, page: nextPage, pageCount });
+      });
+    }
+  };
 
   sendJoinRequest = (confirm, userId, teamId) => {
     if (confirm) {
@@ -84,7 +104,9 @@ class TeamsList extends Component {
         return request.teamId;
       });
 
-    var teams = Object.values(this.props.teams).map(team => {
+    var teams = _.orderBy(Object.values(this.props.teams), user => {
+      return user.name.toLowerCase();
+    }).map(team => {
       return (
         <tr key={team.id}>
           <td>
@@ -125,18 +147,20 @@ class TeamsList extends Component {
           </div>
         )}
         {teamRows.length > 0 ? (
-          <Table size="sm" hover bordered responsive>
-            <thead className="thead-dark">
-              <tr>
-                <th>Team Name</th>
-                <th>Team Leader</th>
-                <th>Region</th>
-                <th>Members</th>
-                {!this.props.currentUser.teamId && <th className="fit" />}
-              </tr>
-            </thead>
-            <tbody>{teamRows}</tbody>
-          </Table>
+          <ScrollLoader loader={this.loadData} page={this.state.page} pageCount={this.state.pageCount}>
+            <Table size="sm" hover bordered responsive>
+              <thead className="thead-dark">
+                <tr>
+                  <th>Team Name</th>
+                  <th>Team Leader</th>
+                  <th>Region</th>
+                  <th>Members</th>
+                  {!this.props.currentUser.teamId && <th className="fit" />}
+                </tr>
+              </thead>
+              <tbody>{teamRows}</tbody>
+            </Table>
+          </ScrollLoader>
         ) : (
           <Alert color="primary">There are no teams at the moment.</Alert>
         )}
@@ -156,8 +180,12 @@ class TeamsList extends Component {
     if (currentUser.teamId) {
       output = (
         <p>
-          You are on team <strong>{teams[currentUser.teamId].name}</strong>!{' '}
-          <Link to={`${Constants.PATHS.TEAM}/${currentUser.teamId}`}>View Details</Link>.
+          {teams[currentUser.teamId] && (
+            <React.Fragment>
+              You are on team <strong>{teams[currentUser.teamId].name}</strong>!{' '}
+              <Link to={`${Constants.PATHS.TEAM}/${currentUser.teamId}`}>View Details</Link>.
+            </React.Fragment>
+          )}
         </p>
       );
     } else {
@@ -214,5 +242,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests }
+  { fetchTeams, fetchCurrentTeam, fetchUsers, editUser, createJoinRequest, fetchJoinRequests }
 )(TeamsList);

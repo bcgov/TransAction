@@ -1,5 +1,5 @@
 import api from '../api/api';
-import { getApiReponseData, buildApiErrorObject } from '../utils';
+import { getApiReponseData, buildApiErrorObject, buildApiQueryString, getApiPagedReponseData } from '../utils';
 import {
   FETCH_TOPICS,
   FETCH_TOPIC,
@@ -13,13 +13,13 @@ import {
 import history from '../history';
 import * as Constants from '../Constants';
 
-export const fetchTopics = () => async dispatch => {
+export const fetchTopics = (title, page, pageSize) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get('/messageboard');
+      const response = await api.get(`/messageboard/?${buildApiQueryString(title, page, pageSize)}`);
       const data = getApiReponseData(response);
       dispatch({ type: FETCH_TOPICS, payload: data });
-      resolve();
+      resolve(getApiPagedReponseData(response).pageCount);
     } catch (e) {
       dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
       reject(e);

@@ -6,7 +6,7 @@ export const fetchEvents = (name, page, pageSize) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await api.get(`/events/?${buildApiQueryString(name, page, pageSize)}`);
-      const data = getApiPagedReponseData(response).data;
+      const data = getApiReponseData(response);
       dispatch({ type: FETCH_EVENTS, payload: data });
 
       resolve(getApiPagedReponseData(response).pageCount);
