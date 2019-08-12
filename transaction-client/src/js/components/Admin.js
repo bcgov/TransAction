@@ -21,7 +21,7 @@ class Admin extends React.Component {
 
   handleRoleIdChanged = (confirm, roleId, userId) => {
     if (confirm) {
-      this.props.editUserRole({ roleId, userId }).then(() => this.closeConfirmDialog());
+      this.props.editUserRole(userId, roleId).then(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
       window.location.reload();

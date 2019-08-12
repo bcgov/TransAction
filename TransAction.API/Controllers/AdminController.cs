@@ -21,10 +21,10 @@ namespace TransAction.API.Controllers
         { }
 
         [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
-        [HttpPost("users/role")]
-        public IActionResult UpdateUserRole([FromBody] UserRoleUpdateDto userRoleUpdate)
+        [HttpPut("users/{userId}/role")]
+        public IActionResult UpdateUserRole(int userId, [FromBody] UserRoleUpdateDto userRoleUpdate)
         {
-            var user = _unitOfWork.User.GetById(userRoleUpdate.UserId);
+            var user = _unitOfWork.User.GetById(userId);
             user.TraImage = null;
             user.Role = null;
             if (user == null)
@@ -36,6 +36,7 @@ namespace TransAction.API.Controllers
 
             user.RoleId = role.RoleId;
 
+            // Make sure the user can't revoke his own admin role if he is the only admin
             var adminRole = _unitOfWork.Role.GetAllRoles().Where(x => x.Name.ToLower() == "admin").FirstOrDefault();
             var adminUsers = _unitOfWork.User.GetAdmins(adminRole.RoleId);
 

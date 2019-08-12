@@ -92,10 +92,10 @@ export const editUser = (id, userObj) => async dispatch => {
   });
 };
 
-export const editUserRole = userObj => async dispatch => {
+export const editUserRole = (userId, roleId) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.post(`/admin/users/role`, userObj);
+      const response = await api.put(`/admin/users/${userId}/role`, { roleId });
       const data = getApiReponseData(response);
 
       dispatch({ type: FETCH_USER, payload: data });
