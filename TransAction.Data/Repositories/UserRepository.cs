@@ -39,6 +39,11 @@ namespace TransAction.Data.Repositories
             return Find(e => e.TeamId == teamId).ToList();
         }
 
+        public IEnumerable<TraUser> GetAdmins(int adminRoleId)
+        {
+            return Find(e => e.RoleId == adminRoleId).ToList();
+        }
+
         public TraUser GetCurrentUser(string guid)
         {
             return Find(c => c.Guid == guid).Include(x => x.Role).Include(x => x.TraImage).FirstOrDefault();

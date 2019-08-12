@@ -1,10 +1,11 @@
 import api from '../api/api';
-import { getApiReponseData, buildApiErrorObject } from '../utils';
+import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
 import * as Constants from '../Constants';
 
 import {
   FETCH_USER,
   FETCH_USERS,
+  FETCH_ADMIN_USERS,
   FETCH_CURRENT_USER,
   UPDATE_AUTH_USER,
   SET_CURRENT_USER_ROLE,
@@ -28,13 +29,28 @@ export const fetchCurrentUser = () => async dispatch => {
   });
 };
 
-export const fetchUsers = () => async dispatch => {
+export const fetchUsers = (name, page, pageSize) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get('/users');
+      const response = await api.get(`/users/?${buildApiQueryString(name, page, pageSize)}`);
       const data = getApiReponseData(response);
 
       dispatch({ type: FETCH_USERS, payload: data });
+      resolve(getApiPagedReponseData(response).pageCount);
+    } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+      reject(e);
+    }
+  });
+};
+
+export const fetchAdminUsers = () => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await api.get('/admin/users');
+      const data = getApiReponseData(response);
+
+      dispatch({ type: FETCH_ADMIN_USERS, payload: data });
       resolve();
     } catch (e) {
       dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
@@ -42,6 +58,7 @@ export const fetchUsers = () => async dispatch => {
     }
   });
 };
+
 export const fetchUser = id => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -78,7 +95,7 @@ export const editUser = (id, userObj) => async dispatch => {
 export const editUserRole = userObj => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.post(`/admin/user/role`, userObj);
+      const response = await api.post(`/admin/users/role`, userObj);
       const data = getApiReponseData(response);
 
       dispatch({ type: FETCH_USER, payload: data });

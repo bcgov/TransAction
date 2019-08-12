@@ -18,10 +18,9 @@ namespace TransAction.Data.Repositories
             return FindAll().Count();
         }
 
-        public IEnumerable<TraRole> GetAllRoles(int page, int pageSize)
+        public IEnumerable<TraRole> GetAllRoles()
         {
-            if (--page < 0) page = 0;
-            return FindAll().Skip(page * pageSize).Take(pageSize).ToList();
+            return FindAll().ToList();
         }
 
         public TraRole GetRoleById(int id)

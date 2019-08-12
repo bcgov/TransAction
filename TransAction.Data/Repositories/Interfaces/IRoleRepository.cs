@@ -7,7 +7,7 @@ namespace TransAction.Data.Repositories.Interfaces
 {
     public interface IRoleRepository
     {
-        IEnumerable<TraRole> GetAllRoles(int page, int pageSize);
+        IEnumerable<TraRole> GetAllRoles();
         TraRole GetRoleById(int id);
         void Create(TraRole newRole);
         void Update(TraRole updateRole);
