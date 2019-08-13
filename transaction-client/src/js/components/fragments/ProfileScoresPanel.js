@@ -9,29 +9,30 @@ import UserScoreCard from './UserScoreCard';
 import LogActivityForm from '../forms/LogActivityForm';
 
 import * as Constants from '../../Constants';
-import * as utils from '../../utils';
+import { CancelToken } from '../../api/api';
 
 class ProfileScoresPanel extends React.Component {
-  state = { loading: true, showLogActivityForm: false, logActivityEventId: null };
+  state = { loading: true, showLogActivityForm: false, logActivityEventId: null, cancelTokenSource: undefined };
+  cancelTokenSource = undefined;
 
   componentDidMount() {
     this.setState({ loading: true });
 
     const { fetchAllUserScores, fetchAllTeamScores, currentUser } = this.props;
-    const actionPromises = [];
 
     if (currentUser.teamId) {
-      actionPromises.push(utils.buildActionWithParam(fetchAllUserScores, currentUser.id));
-      actionPromises.push(utils.buildActionWithParam(fetchAllTeamScores, currentUser.teamId));
+      this.cancelTokenSource = CancelToken.source();
+      Promise.all([
+        fetchAllUserScores(this.cancelTokenSource, currentUser.id),
+        fetchAllTeamScores(this.cancelTokenSource, currentUser.teamId),
+      ]).then(() => {
+        this.setState({ loading: false });
+      });
     }
+  }
 
-    Promise.all(
-      actionPromises.map(promise => {
-        return promise.action(promise.param);
-      })
-    ).then(() => {
-      this.setState({ loading: false });
-    });
+  componentWillUnmount() {
+    if (this.cancelTokenSource) this.cancelTokenSource.cancel('ProfileScoresPanel componentWillUnmount');
   }
 
   showLogActivityForm = eventId => {

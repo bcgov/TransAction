@@ -2,33 +2,37 @@ import { api } from '../api/api';
 import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
 import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT, SHOW_ERROR_DIALOG_MODAL } from './types';
 
-export const fetchEvents = (name, page, pageSize) => async dispatch => {
+export const fetchEvents = (name, page, pageSize) => dispatch => {
   return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get(`/events/?${buildApiQueryString(name, page, pageSize)}`);
-      const data = getApiReponseData(response);
-      dispatch({ type: FETCH_EVENTS, payload: data });
+    api
+      .get(`/events/?${buildApiQueryString(name, page, pageSize)}`)
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_EVENTS, payload: data });
 
-      resolve(getApiPagedReponseData(response).pageCount);
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+        resolve(getApiPagedReponseData(response).pageCount);
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
   });
 };
 
 export const createEvent = formValues => async dispatch => {
   return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.post('/events', formValues);
-      const data = getApiReponseData(response);
-      dispatch({ type: CREATE_EVENT, payload: data });
+    api
+      .post('/events', formValues)
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: CREATE_EVENT, payload: data });
 
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
   });
 };
 

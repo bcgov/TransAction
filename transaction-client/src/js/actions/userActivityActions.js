@@ -1,4 +1,4 @@
-import { api, cancelTokenSource } from '../api/api';
+import { api, isCancel } from '../api/api';
 import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_ACTIVITY_LIST,
@@ -64,19 +64,24 @@ export const fetchUserEventScore = (userId, eventId) => async dispatch => {
   });
 };
 
-export const fetchAllUserScores = userId => async dispatch => {
+export const fetchAllUserScores = (cancelTokenSource, userId) => async dispatch => {
   return new Promise(async (resolve, reject) => {
-    try {
-      // this fetches a specific user scores for ALL active events
-      const response = await api.get(`/useractivity/user/${userId}`, { cancelToken: cancelTokenSource.token });
-      const data = getApiReponseData(response);
+    api
+      .get(`/useractivity/user/${userId}`, { cancelToken: cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER_SCORES, payload: { userId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+        dispatch({ type: FETCH_USER_SCORES, payload: { userId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (isCancel(e)) {
+          console.log('Request canceled', e.message);
+        } else {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
@@ -95,19 +100,25 @@ export const fetchTeamEventScore = (teamId, eventId) => async dispatch => {
   });
 };
 
-export const fetchAllTeamScores = teamId => async dispatch => {
+export const fetchAllTeamScores = (cancelTokenSource, teamId) => dispatch => {
   return new Promise(async (resolve, reject) => {
-    try {
-      // specific team all ACTIVE events
-      const response = await api.get(`/useractivity/team/${teamId}`, { cancelToken: cancelTokenSource.token });
-      const data = getApiReponseData(response);
+    // specific team all ACTIVE events
+    api
+      .get(`/useractivity/team/${teamId}`, { cancelToken: cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_TEAM_SCORES, payload: { teamId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+        dispatch({ type: FETCH_TEAM_SCORES, payload: { teamId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (isCancel(e)) {
+          console.log('Request canceled', e.message);
+        } else {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
