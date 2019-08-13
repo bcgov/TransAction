@@ -13,97 +13,175 @@ import {
 } from './types';
 
 //User Actions
-export const fetchCurrentUser = () => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get(`/users/me`);
-      const data = getApiReponseData(response);
+export const fetchCurrentUser = () => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   const response = await api.get(`/users/me`);
+    //   const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER, payload: data });
-      dispatch({ type: FETCH_CURRENT_USER, payload: data });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
-  });
-};
+    //   dispatch({ type: FETCH_USER, payload: data });
+    //   dispatch({ type: FETCH_CURRENT_USER, payload: data });
+    //   resolve();
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
 
-export const fetchUsers = (name, page, pageSize) => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get(`/users/?${buildApiQueryString(name, page, pageSize)}`);
-      const data = getApiReponseData(response);
-
-      dispatch({ type: FETCH_USERS, payload: data });
-      resolve(getApiPagedReponseData(response).pageCount);
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
-  });
-};
-
-export const fetchAdminUsers = () => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get('/admin/users');
-      const data = getApiReponseData(response);
-
-      dispatch({ type: FETCH_ADMIN_USERS, payload: data });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
-  });
-};
-
-export const fetchUser = id => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (id) {
-        const response = await api.get(`/users/${id}`);
+    api
+      .get(`/users/me`)
+      .then(response => {
         const data = getApiReponseData(response);
 
         dispatch({ type: FETCH_USER, payload: data });
-      }
+        dispatch({ type: FETCH_CURRENT_USER, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
+  });
+};
 
+export const fetchUsers = (name, page, pageSize) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   const response = await api.get(`/users/?${buildApiQueryString(name, page, pageSize)}`);
+    //   const data = getApiReponseData(response);
+
+    //   dispatch({ type: FETCH_USERS, payload: data });
+    //   resolve(getApiPagedReponseData(response).pageCount);
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
+
+    api
+      .get(`/users/?${buildApiQueryString(name, page, pageSize)}`)
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_USERS, payload: data });
+        resolve(getApiPagedReponseData(response).pageCount);
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
+  });
+};
+
+export const fetchAdminUsers = () => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   const response = await api.get('/admin/users');
+    //   const data = getApiReponseData(response);
+
+    //   dispatch({ type: FETCH_ADMIN_USERS, payload: data });
+    //   resolve();
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
+
+    api
+      .get('/admin/users')
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_ADMIN_USERS, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
+  });
+};
+
+export const fetchUser = id => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   if (id) {
+    //     const response = await api.get(`/users/${id}`);
+    //     const data = getApiReponseData(response);
+
+    //     dispatch({ type: FETCH_USER, payload: data });
+    //   }
+
+    //   resolve();
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
+
+    if (id) {
+      api
+        .get(`/users/${id}`)
+        .then(response => {
+          const data = getApiReponseData(response);
+          dispatch({ type: FETCH_USER, payload: data });
+          resolve();
+        })
+        .catch(e => {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        });
+    } else {
       resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
     }
   });
 };
 
-export const editUser = (id, userObj) => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.put(`/users/${id}`, userObj);
-      const data = getApiReponseData(response);
+export const editUser = (id, userObj) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   const response = await api.put(`/users/${id}`, userObj);
+    //   const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER, payload: data });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+    //   dispatch({ type: FETCH_USER, payload: data });
+    //   resolve();
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
+
+    api
+      .put(`/users/${id}`, userObj)
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_USER, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
   });
 };
 
-export const editUserRole = (userId, roleId) => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.put(`/admin/users/${userId}/role`, { roleId });
-      const data = getApiReponseData(response);
+export const editUserRole = (userId, roleId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   const response = await api.put(`/admin/users/${userId}/role`, { roleId });
+    //   const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER, payload: data });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+    //   dispatch({ type: FETCH_USER, payload: data });
+    //   resolve();
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
+
+    api
+      .put(`/admin/users/${userId}/role`, { roleId })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_USER, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
   });
 };
 

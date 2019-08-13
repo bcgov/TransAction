@@ -3,7 +3,7 @@ import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildAp
 import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT, SHOW_ERROR_DIALOG_MODAL } from './types';
 
 export const fetchEvents = (name, page, pageSize) => dispatch => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     api
       .get(`/events/?${buildApiQueryString(name, page, pageSize)}`)
       .then(response => {
@@ -19,8 +19,8 @@ export const fetchEvents = (name, page, pageSize) => dispatch => {
   });
 };
 
-export const createEvent = formValues => async dispatch => {
-  return new Promise(async (resolve, reject) => {
+export const createEvent = formValues => dispatch => {
+  return new Promise((resolve, reject) => {
     api
       .post('/events', formValues)
       .then(response => {
@@ -36,49 +36,78 @@ export const createEvent = formValues => async dispatch => {
   });
 };
 
-export const editEvent = (id, formValues) => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.put(`/events/${id}`, formValues);
-      const data = getApiReponseData(response);
-      dispatch({ type: EDIT_EVENT, payload: data });
+export const editEvent = (id, formValues) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api
+      .put(`/events/${id}`, formValues)
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: EDIT_EVENT, payload: data });
 
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
   });
 };
 
-export const fetchEvent = id => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get(`/events/${id}`);
-      const data = getApiReponseData(response);
-      dispatch({ type: FETCH_EVENT, payload: data });
+export const fetchEvent = id => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   const response = await api.get(`/events/${id}`);
+    //   const data = getApiReponseData(response);
+    //   dispatch({ type: FETCH_EVENT, payload: data });
 
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+    //   resolve();
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
+
+    api
+      .get(`/events/${id}`)
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_EVENT, payload: data });
+
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
   });
 };
 
-export const archiveEvent = event => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      event = { ...event, isActive: false };
+export const archiveEvent = event => dispatch => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   event = { ...event, isActive: false };
 
-      const response = await api.put(`/events/${event.id}`, event);
-      const data = getApiReponseData(response);
-      dispatch({ type: ARCHIVE_EVENT, payload: data });
+    //   const response = await api.put(`/events/${event.id}`, event);
+    //   const data = getApiReponseData(response);
+    //   dispatch({ type: ARCHIVE_EVENT, payload: data });
 
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+    //   resolve();
+    // } catch (e) {
+    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+    //   reject(e);
+    // }
+
+    event = { ...event, isActive: false };
+    api
+      .put(`/events/${event.id}`, event)
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: ARCHIVE_EVENT, payload: data });
+
+        resolve();
+      })
+      .catch(e => {
+        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+        reject(e);
+      });
   });
 };
