@@ -9,5 +9,6 @@ namespace TransAction.Data.Models
         public int Score { get; set; }
         public int EventId { get; set; }
         public int TeamId { get; set; }
+        public string EventName { get; set; }
     }
 }

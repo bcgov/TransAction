@@ -12,7 +12,7 @@ import Keycloak from 'keycloak-js';
 
 import App from './js/App';
 import store from './js/store';
-import Api from './js/api/api';
+import { api } from './js/api/api';
 import initFontAwesome from './js/fontAwesome';
 
 import { UPDATE_AUTH_USER } from './js/actions/types';
@@ -73,7 +73,7 @@ keycloak
     //alert('failed to initialize');
   });
 
-Api.interceptors.request.use(
+api.interceptors.request.use(
   config =>
     new Promise(resolve =>
       keycloak

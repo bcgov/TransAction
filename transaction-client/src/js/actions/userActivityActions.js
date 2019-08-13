@@ -1,4 +1,4 @@
-import api from '../api/api';
+import { api, cancelTokenSource } from '../api/api';
 import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_ACTIVITY_LIST,
@@ -68,7 +68,7 @@ export const fetchAllUserScores = userId => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       // this fetches a specific user scores for ALL active events
-      const response = await api.get(`/useractivity/user/${userId}`);
+      const response = await api.get(`/useractivity/user/${userId}`, { cancelToken: cancelTokenSource.token });
       const data = getApiReponseData(response);
 
       dispatch({ type: FETCH_USER_SCORES, payload: { userId, data: data } });
@@ -99,7 +99,7 @@ export const fetchAllTeamScores = teamId => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
       // specific team all ACTIVE events
-      const response = await api.get(`/useractivity/team/${teamId}`);
+      const response = await api.get(`/useractivity/team/${teamId}`, { cancelToken: cancelTokenSource.token });
       const data = getApiReponseData(response);
 
       dispatch({ type: FETCH_TEAM_SCORES, payload: { teamId, data: data } });

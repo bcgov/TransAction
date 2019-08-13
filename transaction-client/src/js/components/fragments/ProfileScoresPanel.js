@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Alert } from 'reactstrap';
 
-import { fetchAllUserScores, fetchAllTeamScores, fetchEvents } from '../../actions';
+import { fetchAllUserScores, fetchAllTeamScores } from '../../actions';
 import PageSpinner from '../ui/PageSpinner';
 import UserScoreCard from './UserScoreCard';
 import LogActivityForm from '../forms/LogActivityForm';
@@ -17,12 +17,11 @@ class ProfileScoresPanel extends React.Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    const { fetchAllUserScores, fetchAllTeamScores, fetchEvents, currentUser } = this.props;
+    const { fetchAllUserScores, fetchAllTeamScores, currentUser } = this.props;
     const actionPromises = [];
 
     if (currentUser.teamId) {
       actionPromises.push(utils.buildActionWithParam(fetchAllUserScores, currentUser.id));
-      actionPromises.push(utils.buildActionWithParam(fetchEvents));
       actionPromises.push(utils.buildActionWithParam(fetchAllTeamScores, currentUser.teamId));
     }
 
@@ -46,7 +45,7 @@ class ProfileScoresPanel extends React.Component {
   };
 
   renderUserScores() {
-    const { events, userIdToDisplay, teamIdToDisplay, scores, currentUser } = this.props;
+    const { userIdToDisplay, teamIdToDisplay, scores, currentUser } = this.props;
 
     const combinedScores = [];
     const userScores = scores.user[userIdToDisplay];
@@ -54,13 +53,21 @@ class ProfileScoresPanel extends React.Component {
 
     if (userScores) {
       Object.values(userScores).forEach(score => {
-        combinedScores[score.eventId] = { ...combinedScores[score.eventId], userScore: score.score };
+        combinedScores[score.eventId] = {
+          ...combinedScores[score.eventId],
+          userScore: score.score,
+          event: { name: score.eventName, eventId: score.eventId },
+        };
       });
     }
 
     if (teamScores) {
       Object.values(teamScores).forEach(score => {
-        combinedScores[score.eventId] = { ...combinedScores[score.eventId], teamScore: score.score };
+        combinedScores[score.eventId] = {
+          ...combinedScores[score.eventId],
+          teamScore: score.score,
+          event: { name: score.eventName, id: score.eventId },
+        };
       });
     }
 
@@ -72,7 +79,7 @@ class ProfileScoresPanel extends React.Component {
           <UserScoreCard
             score={combinedScores[key].userScore}
             teamScore={combinedScores[key].teamScore}
-            event={events[key]}
+            event={combinedScores[key].event}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
           />
         </Col>
@@ -138,11 +145,10 @@ const mapStateToProps = state => {
   return {
     scores: state.scores,
     currentUser: state.users.all[state.users.current.id],
-    events: state.events,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchAllUserScores, fetchAllTeamScores, fetchEvents }
+  { fetchAllUserScores, fetchAllTeamScores }
 )(ProfileScoresPanel);

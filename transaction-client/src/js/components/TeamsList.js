@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Alert, Row, Col, Table, Button } from 'reactstrap';
+import { Alert, Row, Col, Input, Table, Button } from 'reactstrap';
 import _ from 'lodash';
 
 import { fetchTeams, fetchCurrentTeam, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
@@ -23,6 +23,7 @@ class TeamsList extends Component {
     page: 0,
     pageSize: 15,
     pageCount: 1,
+    teamSearchTerm: '',
   };
 
   componentDidMount() {
@@ -132,6 +133,10 @@ class TeamsList extends Component {
     return teams;
   }
 
+  handleTeamSearchTermChanged = e => {
+    this.setState({ teamSearchTerm: e.target.value });
+  };
+
   renderTeamList() {
     const teamRows = this.renderTeamRows();
 
@@ -146,6 +151,21 @@ class TeamsList extends Component {
             </Button>
           </div>
         )}
+
+        <Row className="mb-3">
+          <Col sm={0} md={6} />
+          <Col sm={12} md={6}>
+            <Input
+              type="text"
+              id="teamSearchTerm"
+              placeholder="Search by team name"
+              bsSize="sm"
+              value={this.state.teamSearchTerm}
+              onChange={this.handleTeamSearchTermChanged}
+            />
+          </Col>
+        </Row>
+
         {teamRows.length > 0 ? (
           <ScrollLoader loader={this.loadData} page={this.state.page} pageCount={this.state.pageCount}>
             <Table size="sm" hover bordered responsive>
@@ -179,14 +199,17 @@ class TeamsList extends Component {
 
     if (currentUser.teamId) {
       output = (
-        <p>
+        <div>
           {teams[currentUser.teamId] && (
-            <React.Fragment>
-              You are on team <strong>{teams[currentUser.teamId].name}</strong>!{' '}
-              <Link to={`${Constants.PATHS.TEAM}/${currentUser.teamId}`}>View Details</Link>.
-            </React.Fragment>
+            <Link
+              to={`${Constants.PATHS.TEAM}/${currentUser.teamId}`}
+              className="text-decoration-none"
+              style={{ fontSize: '2rem', fontWeight: '900' }}
+            >
+              {teams[currentUser.teamId].name} <Button color="primary">View</Button>
+            </Link>
           )}
-        </p>
+        </div>
       );
     } else {
       output = (
@@ -198,7 +221,7 @@ class TeamsList extends Component {
 
     return (
       <React.Fragment>
-        <h4>Personal Team Status</h4>
+        <h4>Personal Team</h4>
         {output}
       </React.Fragment>
     );

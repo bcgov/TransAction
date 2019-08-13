@@ -5,7 +5,7 @@ import { Button } from 'reactstrap';
 
 import ImageUploadModal from './ImageUploadModal';
 import { fetchUser, fetchCurrentUser, fetchTeam } from '../../actions';
-import api from '../../api/api';
+import { api } from '../../api/api';
 
 import * as Constants from '../../Constants';
 

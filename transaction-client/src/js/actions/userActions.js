@@ -1,4 +1,4 @@
-import api from '../api/api';
+import { api } from '../api/api';
 import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
 import * as Constants from '../Constants';
 

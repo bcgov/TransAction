@@ -1,4 +1,4 @@
-import api from '../api/api';
+import { api } from '../api/api';
 import { getApiReponseData, buildApiErrorObject, buildApiQueryString, getApiPagedReponseData } from '../utils';
 import {
   FETCH_TOPICS,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Alert, Col, FormGroup, Input, Label, Table } from 'reactstrap';
+import { Alert, Row, Col, Input, Table } from 'reactstrap';
 import _ from 'lodash';
 
 import CardWrapper from './ui/CardWrapper';
@@ -12,7 +12,7 @@ import * as utils from '../utils';
 // import * as Constants from '../Constants';
 
 class Admin extends React.Component {
-  state = { toggleActive: {}, showConfirmDialog: false, confirmDialogOptions: {}, userFilter: '' };
+  state = { toggleActive: {}, showConfirmDialog: false, confirmDialogOptions: {}, userSearchTerm: '' };
 
   componentDidMount() {
     //this.props.fetchUsers();
@@ -44,45 +44,43 @@ class Admin extends React.Component {
     this.setState({ showConfirmDialog: false, confirmDialogOptions: {}, clicked: false });
   }
 
-  handleUserFilterChnaged = e => {
-    this.setState({ userFilter: e.target.value });
+  handleUserSearchTermChanged = e => {
+    this.setState({ userSearchTerm: e.target.value });
 
     const value = e.target.value.trim();
     if (value !== '') this.props.fetchUsers(e.target.value.trim());
   };
 
   renderUserSearch() {
-    const userFilter = this.state.userFilter.trim().toUpperCase();
+    const userSearchTerm = this.state.userSearchTerm.trim().toUpperCase();
     let filteredUsers = [];
 
-    if (this.state.userFilter.trim() !== '')
+    if (this.state.userSearchTerm.trim() !== '')
       filteredUsers = _.filter(Object.values(this.props.users), u => {
-        return `${u.fname.toUpperCase()} ${u.lname.toUpperCase()}`.includes(userFilter);
+        return `${u.fname.toUpperCase()} ${u.lname.toUpperCase()}`.includes(userSearchTerm);
       });
 
     const userList = this.buildUserList(filteredUsers);
 
     return (
       <React.Fragment>
-        <FormGroup row>
-          <Label for="userFilter" sm={2}>
-            User Search
-          </Label>
-          <Col sm={10}>
+        <Row className="mb-3">
+          <Col sm={0} md={6} />
+          <Col sm={12} md={6}>
             <Input
               type="text"
-              id="userFilter"
+              id="userSearchTerm"
               placeholder="Search by first name or last name"
               bsSize="sm"
-              value={this.state.userFilter}
-              onChange={this.handleUserFilterChnaged}
+              value={this.state.userSearchTerm}
+              onChange={this.handleUserSearchTermChanged}
             />
           </Col>
-        </FormGroup>
+        </Row>
 
         {userList.length > 0 ? (
           this.renderUserTable(userList)
-        ) : this.state.userFilter.trim() !== '' ? (
+        ) : this.state.userSearchTerm.trim() !== '' ? (
           <Alert color="warning">No users found with that search criteria.</Alert>
         ) : (
           <Alert color="primary">Start a search using the field above</Alert>

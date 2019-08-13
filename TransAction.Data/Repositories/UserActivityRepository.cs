@@ -27,7 +27,7 @@ namespace TransAction.Data.Repositories
                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
                         EventId = x.Key.EventId,
                         UserId = id,
-
+                        EventName = x.Select(y => y.Event.Name).FirstOrDefault()
                     })
                     .ToList();
 
@@ -105,14 +105,13 @@ namespace TransAction.Data.Repositories
         public int TeamEventSpecificScore(IEnumerable<TraUser> users, int teamId, int eventId)
         {
             var userList = users.Select(x => x.UserId).ToList();
-            var userAct = Find()
-                .Where(p => p.EventId == eventId && userList.Contains(p.UserId))
-                    .Include(x => x.Activity)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
-                    .Select(x => new
-                    {
-                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
-                    }).Select(c => c.Score).Sum();
+            var userAct = Find(p => p.EventId == eventId && userList.Contains(p.UserId))
+                            .Include(x => x.Activity)
+                            .GroupBy(x => new { x.TeamId, x.EventId })
+                            .Select(x => new
+                            {
+                                Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
+                            }).Select(c => c.Score).Sum();
 
             return userAct;
 
@@ -121,38 +120,35 @@ namespace TransAction.Data.Repositories
         public IEnumerable<TeamSpecificScoreDto> TeamSpecificScore(IEnumerable<TraUser> users, int teamId)
         {
             var userList = users.Select(x => x.UserId).ToList();
-            var teamAct = Find()
-                .Where(p => userList.Contains(p.UserId))
-                    .Include(x => x.Activity)
-                    .Include(x => x.Event).Where(x => x.Event.IsActive == true)
-                    .GroupBy(x => new { x.TeamId, x.EventId })
-                    .Select(x => new TeamSpecificScoreDto()
-                    {
-                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
-                        EventId = x.Key.EventId,
-                        TeamId = teamId
-                    })
-                    .ToList();
-
-
+            var teamAct = Find(p => userList.Contains(p.UserId))
+                            .Include(x => x.Activity)
+                            .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+                            .GroupBy(x => new { x.TeamId, x.EventId })
+                            .Select(x => new TeamSpecificScoreDto()
+                            {
+                                Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                                EventId = x.Key.EventId,
+                                TeamId = teamId,
+                                EventName = x.Select(y => y.Event.Name).FirstOrDefault()
+                            })
+                            .ToList();
 
             return teamAct;
         }
 
         public IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId)
         {
-            var teams = Find()
-                 .Where(p => p.EventId == eventId)
-                     .Include(x => x.Activity)
-                     .Include(x => x.Event)
-                     .GroupBy(x => new { x.TeamId, x.EventId })
-                     .Select(x => new TeamSpecificScoreDto()
-                     {
-                         Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
-                         EventId = x.Key.EventId,
-                         TeamId = x.Key.TeamId
-                     }).OrderByDescending(x => x.Score).Take(number)
-                     .ToList();
+            var teams = Find(p => p.EventId == eventId)
+                         .Include(x => x.Activity)
+                         .Include(x => x.Event)
+                         .GroupBy(x => new { x.TeamId, x.EventId })
+                         .Select(x => new TeamSpecificScoreDto()
+                         {
+                             Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                             EventId = x.Key.EventId,
+                             TeamId = x.Key.TeamId
+                         }).OrderByDescending(x => x.Score).Take(number)
+                         .ToList();
 
             return teams;
         }
@@ -161,15 +157,14 @@ namespace TransAction.Data.Repositories
 
         public int UserSpecificScore(int userId, int eventId)
         {
-            var userAct = Find()
-                .Where(p => p.EventId == eventId && p.UserId == userId)
-                    .Include(x => x.Activity)
-                    .Include(x => x.Event)
-                    .GroupBy(x => new { x.UserId, x.EventId })
-                    .Select(x => new
-                    {
-                        Score = x.Sum(y => y.Minutes * y.Activity.Intensity)
-                    }).Select(c => c.Score).Sum();
+            var userAct = Find(p => p.EventId == eventId && p.UserId == userId)
+                            .Include(x => x.Activity)
+                            .Include(x => x.Event)
+                            .GroupBy(x => new { x.UserId, x.EventId })
+                            .Select(x => new
+                            {
+                                Score = x.Sum(y => y.Minutes * y.Activity.Intensity),
+                            }).Select(c => c.Score).Sum();
 
             return userAct;
         }

@@ -2,9 +2,10 @@ import axios from 'axios';
 
 import { API_URL } from '../Constants';
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: `${API_URL}`,
   'Access-Control-Allow-Origin': '*',
 });
 
-export default api;
+const CancelToken = axios.CancelToken;
+export const cancelTokenSource = CancelToken.source;
