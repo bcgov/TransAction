@@ -7,5 +7,14 @@ export const api = axios.create({
   'Access-Control-Allow-Origin': '*',
 });
 
-export const CancelToken = axios.CancelToken;
+export let cancelTokenSource = axios.CancelToken.source();
+
+export const resetCancelTokenSource = () => {
+  cancelTokenSource = axios.CancelToken.source();
+};
+
 export const isCancel = axios.isCancel;
+
+export const cancelRequest = () => {
+  cancelTokenSource.cancel();
+};

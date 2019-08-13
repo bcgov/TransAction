@@ -1,4 +1,4 @@
-import { api, isCancel } from '../api/api';
+import { api, isCancel, cancelTokenSource } from '../api/api';
 import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_ACTIVITY_LIST,
@@ -66,7 +66,7 @@ export const fetchUserEventScore = (userId, eventId) => dispatch => {
   });
 };
 
-export const fetchAllUserScores = (cancelTokenSource, userId) => dispatch => {
+export const fetchAllUserScores = userId => dispatch => {
   return new Promise((resolve, reject) => {
     api
       .get(`/useractivity/user/${userId}`, { cancelToken: cancelTokenSource.token })
@@ -77,9 +77,7 @@ export const fetchAllUserScores = (cancelTokenSource, userId) => dispatch => {
         resolve();
       })
       .catch(e => {
-        if (isCancel(e)) {
-          console.log('Request canceled', e.message);
-        } else {
+        if (!isCancel(e)) {
           dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
           reject(e);
         }
@@ -103,7 +101,7 @@ export const fetchTeamEventScore = (teamId, eventId) => dispatch => {
   });
 };
 
-export const fetchAllTeamScores = (cancelTokenSource, teamId) => dispatch => {
+export const fetchAllTeamScores = teamId => dispatch => {
   return new Promise((resolve, reject) => {
     // specific team all ACTIVE events
     api
@@ -115,9 +113,7 @@ export const fetchAllTeamScores = (cancelTokenSource, teamId) => dispatch => {
         resolve();
       })
       .catch(e => {
-        if (isCancel(e)) {
-          console.log('Request canceled', e.message);
-        } else {
+        if (!isCancel(e)) {
           dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
           reject(e);
         }
