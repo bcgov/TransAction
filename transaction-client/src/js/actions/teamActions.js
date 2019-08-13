@@ -17,22 +17,6 @@ import * as Constants from '../Constants';
 
 export const fetchCurrentTeam = () => (dispatch, getStore) => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const teamId = getStore().users.current.teamId;
-    //   if (teamId) {
-    //     const response = await api.get(`/teams/${teamId}`);
-    //     const data = getApiReponseData(response);
-
-    //     dispatch({ type: FETCH_TEAM, payload: data });
-    //     dispatch({ type: FETCH_CURRENT_TEAM, payload: data });
-    //   }
-
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     const teamId = getStore().users.current.teamId;
     if (teamId) {
       api
@@ -55,18 +39,6 @@ export const fetchCurrentTeam = () => (dispatch, getStore) => {
 
 export const fetchTeam = id => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/teams/${id}`);
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_TEAM, payload: data });
-
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/teams/${id}`)
       .then(response => {
@@ -83,19 +55,6 @@ export const fetchTeam = id => dispatch => {
 
 export const editTeam = (id, teamObj) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
-
-    //   const response = await api.put(`/teams/${id}`, teamObj);
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_TEAM, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
     api
       .put(`/teams/${id}`, teamObj)
@@ -113,20 +72,6 @@ export const editTeam = (id, teamObj) => dispatch => {
 
 export const createTeam = teamObj => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
-
-    //   const response = await api.post('/teams', teamObj);
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: CREATE_TEAM, payload: data });
-
-    //   history.push(`${Constants.PATHS.TEAM}/${data.id}`);
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
     teamObj = { ...teamObj, name: teamObj.name.trim(), description: teamObj.description.trim() };
     api
       .post('/teams', teamObj)
@@ -145,17 +90,6 @@ export const createTeam = teamObj => dispatch => {
 
 export const fetchTeams = (name, page, pageSize) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/teams/?${buildApiQueryString(name, page, pageSize)}`);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_TEAMS, payload: data });
-
-    //   resolve(getApiPagedReponseData(response).pageCount);
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/teams/?${buildApiQueryString(name, page, pageSize)}`)
       .then(response => {
@@ -175,16 +109,6 @@ export const fetchTeams = (name, page, pageSize) => dispatch => {
 //Team Requests
 export const fetchJoinRequests = () => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/teamrequests`);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_JOIN_REQUESTS, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/teamrequests`)
       .then(response => {
@@ -201,16 +125,6 @@ export const fetchJoinRequests = () => dispatch => {
 
 export const fetchSpecificTeamRequests = id => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/teamrequests/team/${id}`);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_SPECIFIC_TEAM_REQUESTS, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/teamrequests/team/${id}`)
       .then(response => {
@@ -227,16 +141,6 @@ export const fetchSpecificTeamRequests = id => dispatch => {
 
 export const createJoinRequest = reqObj => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.post(`/teamrequests`, reqObj);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: POST_REQUEST, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .post(`/teamrequests`, reqObj)
       .then(response => {
@@ -253,16 +157,6 @@ export const createJoinRequest = reqObj => dispatch => {
 
 export const editJoinRequest = (id, reqObj) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.put(`/teamrequests/${id}`, reqObj);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: EDIT_JOIN_REQUEST, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .put(`/teamrequests/${id}`, reqObj)
       .then(response => {
@@ -279,18 +173,6 @@ export const editJoinRequest = (id, reqObj) => dispatch => {
 
 export const addUserToTeam = reqObj => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.post(`/teams/join`, reqObj);
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_TEAM, payload: data });
-    //   dispatch({ type: DELETE_JOIN_REQUEST, payload: reqObj.id });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .post(`/teams/join`, reqObj)
       .then(response => {
@@ -308,18 +190,6 @@ export const addUserToTeam = reqObj => dispatch => {
 
 export const rejectJoinRequest = reqObj => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   reqObj = { ...reqObj, isActive: false };
-
-    //   await api.put(`/teamrequests/${reqObj.id}`, reqObj);
-    //   dispatch({ type: DELETE_JOIN_REQUEST, payload: reqObj.id });
-
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     reqObj = { ...reqObj, isActive: false };
     api
       .put(`/teamrequests/${reqObj.id}`, reqObj)
@@ -336,16 +206,6 @@ export const rejectJoinRequest = reqObj => dispatch => {
 
 export const joinTeam = joinObj => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.post(`/teams/join`, joinObj);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_TEAM, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .post(`/teams/join`, joinObj)
       .then(response => {
@@ -362,16 +222,6 @@ export const joinTeam = joinObj => dispatch => {
 
 export const leaveTeam = (teamId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.post(`/teams/remove`, { teamId, userId });
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_TEAM, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .post(`/teams/remove`, { teamId, userId })
       .then(response => {

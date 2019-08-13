@@ -55,17 +55,6 @@ export const editEvent = (id, formValues) => dispatch => {
 
 export const fetchEvent = id => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/events/${id}`);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_EVENT, payload: data });
-
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/events/${id}`)
       .then(response => {
@@ -83,19 +72,6 @@ export const fetchEvent = id => dispatch => {
 
 export const archiveEvent = event => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   event = { ...event, isActive: false };
-
-    //   const response = await api.put(`/events/${event.id}`, event);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: ARCHIVE_EVENT, payload: data });
-
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     event = { ...event, isActive: false };
     api
       .put(`/events/${event.id}`, event)

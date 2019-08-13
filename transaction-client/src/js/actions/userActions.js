@@ -15,18 +15,6 @@ import {
 //User Actions
 export const fetchCurrentUser = () => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/users/me`);
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_USER, payload: data });
-    //   dispatch({ type: FETCH_CURRENT_USER, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/users/me`)
       .then(response => {
@@ -45,17 +33,6 @@ export const fetchCurrentUser = () => dispatch => {
 
 export const fetchUsers = (name, page, pageSize) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/users/?${buildApiQueryString(name, page, pageSize)}`);
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_USERS, payload: data });
-    //   resolve(getApiPagedReponseData(response).pageCount);
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/users/?${buildApiQueryString(name, page, pageSize)}`)
       .then(response => {
@@ -72,17 +49,6 @@ export const fetchUsers = (name, page, pageSize) => dispatch => {
 
 export const fetchAdminUsers = () => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get('/admin/users');
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_ADMIN_USERS, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get('/admin/users')
       .then(response => {
@@ -99,20 +65,6 @@ export const fetchAdminUsers = () => dispatch => {
 
 export const fetchUser = id => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   if (id) {
-    //     const response = await api.get(`/users/${id}`);
-    //     const data = getApiReponseData(response);
-
-    //     dispatch({ type: FETCH_USER, payload: data });
-    //   }
-
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     if (id) {
       api
         .get(`/users/${id}`)
@@ -133,17 +85,6 @@ export const fetchUser = id => dispatch => {
 
 export const editUser = (id, userObj) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.put(`/users/${id}`, userObj);
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_USER, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .put(`/users/${id}`, userObj)
       .then(response => {
@@ -160,17 +101,6 @@ export const editUser = (id, userObj) => dispatch => {
 
 export const editUserRole = (userId, roleId) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.put(`/admin/users/${userId}/role`, { roleId });
-    //   const data = getApiReponseData(response);
-
-    //   dispatch({ type: FETCH_USER, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .put(`/admin/users/${userId}/role`, { roleId })
       .then(response => {

@@ -15,16 +15,6 @@ import * as Constants from '../Constants';
 
 export const fetchTopics = (title, page, pageSize) => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/messageboard/?${buildApiQueryString(title, page, pageSize)}`);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_TOPICS, payload: data });
-    //   resolve(getApiPagedReponseData(response).pageCount);
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/messageboard/?${buildApiQueryString(title, page, pageSize)}`)
       .then(response => {
@@ -41,16 +31,6 @@ export const fetchTopics = (title, page, pageSize) => dispatch => {
 
 export const fetchTopicDetail = topicId => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.get(`/messageboard/${topicId}`);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: FETCH_TOPIC, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .get(`/messageboard/${topicId}`)
       .then(response => {
@@ -67,16 +47,6 @@ export const fetchTopicDetail = topicId => dispatch => {
 
 export const editTopic = topic => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.put(`/messageboard/${topic.id}`, topic);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: EDIT_TOPIC, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .put(`/messageboard/${topic.id}`, topic)
       .then(response => {
@@ -93,18 +63,6 @@ export const editTopic = topic => dispatch => {
 
 export const createTopic = topic => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.post(`/messageboard`, topic);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: CREATE_TOPIC, payload: data });
-
-    //   history.push(`${Constants.PATHS.MESSAGES}/${data.id}`);
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .post(`/messageboard`, topic)
       .then(response => {
@@ -123,16 +81,6 @@ export const createTopic = topic => dispatch => {
 
 export const createPost = message => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.post(`/messageboard/message`, message);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: CREATE_POST, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .post(`/messageboard/message`, message)
       .then(response => {
@@ -149,16 +97,6 @@ export const createPost = message => dispatch => {
 
 export const editPost = message => dispatch => {
   return new Promise((resolve, reject) => {
-    // try {
-    //   const response = await api.put(`/messageboard/message/${message.id}`, message);
-    //   const data = getApiReponseData(response);
-    //   dispatch({ type: EDIT_POST, payload: data });
-    //   resolve();
-    // } catch (e) {
-    //   dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-    //   reject(e);
-    // }
-
     api
       .put(`/messageboard/message/${message.id}`, message)
       .then(response => {
