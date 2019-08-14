@@ -1,4 +1,4 @@
-import { api } from '../api/api';
+import * as api from '../api/api';
 import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
 import * as Constants from '../Constants';
 
@@ -15,8 +15,8 @@ import {
 //User Actions
 export const fetchCurrentUser = () => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .get(`/users/me`)
+    api.instance
+      .get(`/users/me`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
 
@@ -25,40 +25,46 @@ export const fetchCurrentUser = () => dispatch => {
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const fetchUsers = (name, page, pageSize) => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .get(`/users/?${buildApiQueryString(name, page, pageSize)}`)
+    api.instance
+      .get(`/users/?${buildApiQueryString(name, page, pageSize)}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_USERS, payload: data });
         resolve(getApiPagedReponseData(response).pageCount);
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const fetchAdminUsers = () => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .get('/admin/users')
+    api.instance
+      .get('/admin/users', { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_ADMIN_USERS, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
@@ -66,16 +72,18 @@ export const fetchAdminUsers = () => dispatch => {
 export const fetchUser = id => dispatch => {
   return new Promise((resolve, reject) => {
     if (id) {
-      api
-        .get(`/users/${id}`)
+      api.instance
+        .get(`/users/${id}`, { cancelToken: api.cancelTokenSource.token })
         .then(response => {
           const data = getApiReponseData(response);
           dispatch({ type: FETCH_USER, payload: data });
           resolve();
         })
         .catch(e => {
-          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-          reject(e);
+          if (!api.isCancel(e)) {
+            dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+            reject(e);
+          }
         });
     } else {
       resolve();
@@ -85,32 +93,36 @@ export const fetchUser = id => dispatch => {
 
 export const editUser = (id, userObj) => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .put(`/users/${id}`, userObj)
+    api.instance
+      .put(`/users/${id}`, userObj, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_USER, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const editUserRole = (userId, roleId) => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .put(`/admin/users/${userId}/role`, { roleId })
+    api.instance
+      .put(`/admin/users/${userId}/role`, { roleId }, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_USER, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };

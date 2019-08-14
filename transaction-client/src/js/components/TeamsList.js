@@ -12,6 +12,7 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
 import ScrollLoader from './fragments/ScollLoader';
 
+import * as api from '../api/api';
 import * as Constants from '../Constants';
 
 class TeamsList extends Component {
@@ -27,6 +28,7 @@ class TeamsList extends Component {
   };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     const { currentUser, teams, fetchCurrentTeam, fetchJoinRequests } = this.props;
     if (currentUser.teamId && !teams[currentUser.teamId]) {
       fetchCurrentTeam();
@@ -34,6 +36,10 @@ class TeamsList extends Component {
 
     fetchJoinRequests();
     this.loadData();
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   loadData = () => {

@@ -12,13 +12,19 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import EditTopicForm from './forms/EditTopicForm';
 import ScrollLoader from './fragments/ScollLoader';
 
+import * as api from '../api/api';
 import * as Constants from '../Constants';
 
 class MessageBoard extends React.Component {
   state = { loading: true, showEditTopicForm: false, searchTerm: undefined, page: 0, pageSize: 10, pageCount: 1 };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     this.loadData();
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   loadData = () => {

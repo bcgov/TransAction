@@ -1,12 +1,12 @@
-import { api } from '../api/api';
+import * as api from '../api/api';
 import { getApiReponseData, buildApiErrorObject } from '../utils';
 import { FETCH_ROLES, FETCH_CURRENT_ROLE, SHOW_ERROR_DIALOG_MODAL } from './types';
 
 export const fetchRoles = () => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     if (Object.keys(getState().roles).length === 0) {
-      api
-        .get(`/roles`)
+      api.instance
+        .get(`/roles`, { cancelToken: api.cancelTokenSource.token })
         .then(response => {
           const data = getApiReponseData(response);
 
@@ -19,8 +19,10 @@ export const fetchRoles = () => (dispatch, getState) => {
           resolve();
         })
         .catch(e => {
-          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-          reject(e);
+          if (!api.isCancel(e)) {
+            dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+            reject(e);
+          }
         });
     } else {
       resolve();
@@ -30,16 +32,18 @@ export const fetchRoles = () => (dispatch, getState) => {
 
 export const fetchRole = id => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .get(`/roles/${id}`)
+    api.instance
+      .get(`/roles/${id}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_CURRENT_ROLE, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };

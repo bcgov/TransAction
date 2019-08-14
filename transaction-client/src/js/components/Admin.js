@@ -8,15 +8,19 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import { fetchUsers, editUserRole, fetchAdminUsers } from '../actions';
 import DialogModal from './ui/DialogModal';
 
+import * as api from '../api/api';
 import * as utils from '../utils';
-// import * as Constants from '../Constants';
 
 class Admin extends React.Component {
   state = { toggleActive: {}, showConfirmDialog: false, confirmDialogOptions: {}, userSearchTerm: '' };
 
   componentDidMount() {
-    //this.props.fetchUsers();
+    api.resetCancelTokenSource();
     this.props.fetchAdminUsers();
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   handleRoleIdChanged = (confirm, roleId, userId) => {

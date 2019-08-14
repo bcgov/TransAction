@@ -13,6 +13,7 @@ import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import UserProfileTeamPanel from './fragments/UserProfileTeamPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 
@@ -24,7 +25,12 @@ class Profile extends Component {
   };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     this.init(this.props.match.params.id);
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   componentWillReceiveProps(newProps) {

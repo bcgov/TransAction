@@ -11,6 +11,7 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
 import ScrollLoader from './fragments/ScollLoader';
 
+import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 class EventList extends Component {
@@ -28,7 +29,12 @@ class EventList extends Component {
   };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     this.loadData();
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   loadData = () => {

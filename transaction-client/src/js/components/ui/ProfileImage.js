@@ -5,7 +5,7 @@ import { Button } from 'reactstrap';
 
 import ImageUploadModal from './ImageUploadModal';
 import { fetchUser, fetchCurrentUser, fetchTeam } from '../../actions';
-import { api } from '../../api/api';
+import * as api from '../../api/api';
 
 import * as Constants from '../../Constants';
 
@@ -34,7 +34,7 @@ class ProfileImage extends React.Component {
       formData.append('teamId', profileId);
     }
 
-    await api.post('/images', formData);
+    await api.instance.post('/images', formData);
 
     if (type === Constants.PROFILE_TYPE.USER) {
       if (currentUser.id === profileId) fetchCurrentUser();

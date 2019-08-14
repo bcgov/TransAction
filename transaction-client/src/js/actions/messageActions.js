@@ -1,4 +1,4 @@
-import { api } from '../api/api';
+import * as api from '../api/api';
 import { getApiReponseData, buildApiErrorObject, buildApiQueryString, getApiPagedReponseData } from '../utils';
 import {
   FETCH_TOPICS,
@@ -15,56 +15,62 @@ import * as Constants from '../Constants';
 
 export const fetchTopics = (title, page, pageSize) => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .get(`/messageboard/?${buildApiQueryString(title, page, pageSize)}`)
+    api.instance
+      .get(`/messageboard/?${buildApiQueryString(title, page, pageSize)}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_TOPICS, payload: data });
         resolve(getApiPagedReponseData(response).pageCount);
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const fetchTopicDetail = topicId => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .get(`/messageboard/${topicId}`)
+    api.instance
+      .get(`/messageboard/${topicId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_TOPIC, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const editTopic = topic => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .put(`/messageboard/${topic.id}`, topic)
+    api.instance
+      .put(`/messageboard/${topic.id}`, topic, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: EDIT_TOPIC, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const createTopic = topic => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .post(`/messageboard`, topic)
+    api.instance
+      .post(`/messageboard`, topic, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: CREATE_TOPIC, payload: data });
@@ -73,40 +79,46 @@ export const createTopic = topic => dispatch => {
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const createPost = message => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .post(`/messageboard/message`, message)
+    api.instance
+      .post(`/messageboard/message`, message, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: CREATE_POST, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };
 
 export const editPost = message => dispatch => {
   return new Promise((resolve, reject) => {
-    api
-      .put(`/messageboard/message/${message.id}`, message)
+    api.instance
+      .put(`/messageboard/message/${message.id}`, message, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: EDIT_POST, payload: data });
         resolve();
       })
       .catch(e => {
-        dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-        reject(e);
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
       });
   });
 };

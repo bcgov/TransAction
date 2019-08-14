@@ -8,6 +8,7 @@ import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
 
+import * as api from '../api/api';
 import * as utils from '../utils';
 
 class FreeAgentsList extends Component {
@@ -20,6 +21,7 @@ class FreeAgentsList extends Component {
   };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     const { fetchUsers, fetchTeam, teams, currentUser } = this.props;
 
     fetchUsers()
@@ -30,6 +32,10 @@ class FreeAgentsList extends Component {
       .then(() => {
         this.setState({ loading: false });
       });
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   handleRecruitUser = (confirm, userId) => {

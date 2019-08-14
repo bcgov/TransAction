@@ -9,8 +9,6 @@ import UserScoreCard from './UserScoreCard';
 import LogActivityForm from '../forms/LogActivityForm';
 
 import * as Constants from '../../Constants';
-import * as api from '../../api/api';
-//import { cancelTokenSource, resetCancelTokenSource } from '../../api/api';
 
 class ProfileScoresPanel extends React.Component {
   state = { loading: true, showLogActivityForm: false, logActivityEventId: null, cancelTokenSource: undefined };
@@ -21,15 +19,10 @@ class ProfileScoresPanel extends React.Component {
     const { fetchAllUserScores, fetchAllTeamScores, currentUser } = this.props;
 
     if (currentUser.teamId) {
-      api.resetCancelTokenSource();
       Promise.all([fetchAllUserScores(currentUser.id), fetchAllTeamScores(currentUser.teamId)]).then(() => {
         this.setState({ loading: false });
       });
     }
-  }
-
-  componentWillUnmount() {
-    api.cancelRequest();
   }
 
   showLogActivityForm = eventId => {
