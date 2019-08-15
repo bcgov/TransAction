@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import _ from 'lodash';
 
@@ -16,17 +17,17 @@ class ScrollLoader extends React.Component {
   scrollListener = _.debounce(() => {
     if (window.innerHeight + window.pageYOffset >= document.documentElement.offsetHeight) {
       // Scrolled to the bottom
-      if (this.props.loader) this.props.loader();
+      if (this.props.shouldLoad && this.props.loader) this.props.loader();
     }
   }, 100);
 
   render() {
-    const { children, page, pageCount, loader } = this.props;
+    const { children, page, pageCount, loader, shouldLoad } = this.props;
 
     return (
       <React.Fragment>
         {children}
-        {page < pageCount && (
+        {shouldLoad && page < pageCount && (
           <div className="text-center mb-5">
             <Button color="primary" onClick={loader}>
               More
@@ -37,5 +38,11 @@ class ScrollLoader extends React.Component {
     );
   }
 }
+
+ScrollLoader.propTypes = {
+  shouldLoad: PropTypes.bool,
+};
+
+ScrollLoader.defaultProps = { shouldLoad: true };
 
 export default ScrollLoader;

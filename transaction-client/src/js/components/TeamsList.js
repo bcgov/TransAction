@@ -22,7 +22,7 @@ class TeamsList extends Component {
     confirmDialogOptions: {},
     searchTerm: undefined,
     page: 0,
-    pageSize: 15,
+    pageSize: 3,
     pageCount: 1,
     teamSearchTerm: '',
   };
@@ -111,7 +111,15 @@ class TeamsList extends Component {
         return request.teamId;
       });
 
-    var teams = _.orderBy(Object.values(this.props.teams), user => {
+    const teamSearchTerm = this.state.teamSearchTerm.trim().toUpperCase();
+    let filteredTeams = Object.values(this.props.teams);
+
+    if (this.state.teamSearchTerm.trim() !== '')
+      filteredTeams = _.filter(filteredTeams, t => {
+        return t.name.toUpperCase().includes(teamSearchTerm);
+      });
+
+    var teams = _.orderBy(filteredTeams, user => {
       return user.name.toLowerCase();
     }).map(team => {
       return (
@@ -141,6 +149,9 @@ class TeamsList extends Component {
 
   handleTeamSearchTermChanged = e => {
     this.setState({ teamSearchTerm: e.target.value });
+
+    const value = e.target.value.trim();
+    if (value !== '') this.props.fetchTeams(e.target.value.trim());
   };
 
   renderTeamList() {
@@ -173,7 +184,12 @@ class TeamsList extends Component {
         </Row>
 
         {teamRows.length > 0 ? (
-          <ScrollLoader loader={this.loadData} page={this.state.page} pageCount={this.state.pageCount}>
+          <ScrollLoader
+            loader={this.loadData}
+            page={this.state.page}
+            pageCount={this.state.pageCount}
+            shouldLoad={this.state.teamSearchTerm.trim() === ''}
+          >
             <Table size="sm" hover bordered responsive>
               <thead className="thead-dark">
                 <tr>
