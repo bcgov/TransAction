@@ -22,7 +22,7 @@ class TeamsList extends Component {
     confirmDialogOptions: {},
     searchTerm: undefined,
     page: 0,
-    pageSize: 3,
+    pageSize: 15,
     pageCount: 1,
     teamSearchTerm: '',
   };
