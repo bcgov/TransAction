@@ -18,17 +18,33 @@ class EventListItem extends React.Component {
     this.props.handleArchiveEvent(this.props.event);
   };
 
+  unArchiveEvent = () => {
+    this.props.handleUnArchiveEvent(this.props.event);
+  };
   renderEditButton() {
-    return (
-      <div className="float-right">
-        <Button color="primary" size="sm" className="mr-1" onClick={this.showForm}>
-          Edit
-        </Button>
-        <Button color="primary" size="sm" onClick={this.archiveEvent}>
-          Archive
-        </Button>
-      </div>
-    );
+    if (this.props.isActive) {
+      return (
+        <div className="float-right">
+          <Button color="primary" size="sm" className="mr-1" onClick={this.showForm}>
+            Edit
+          </Button>
+          <Button color="primary" size="sm" onClick={this.archiveEvent}>
+            Archive
+          </Button>
+        </div>
+      );
+    } else {
+      return (
+        <div className="float-right">
+          <Button color="primary" size="sm" className="mr-1" onClick={this.showForm}>
+            Edit
+          </Button>
+          <Button color="primary" size="sm" onClick={this.unArchiveEvent}>
+            UnArchive
+          </Button>
+        </div>
+      );
+    }
   }
 
   render() {

@@ -3,6 +3,7 @@ export const FETCH_EVENTS = 'FETCH_EVENTS';
 export const FETCH_EVENT = 'FETCH_EVENT';
 export const EDIT_EVENT = 'EDIT_EVENT';
 export const ARCHIVE_EVENT = 'ARCHIVE_EVENT';
+export const UN_ARCHIVE_EVENT = 'UN_ARCHIVE_EVENT';
 
 export const FETCH_USER = 'FETCH_USER';
 export const FETCH_USERS = 'FETCH_USERS';

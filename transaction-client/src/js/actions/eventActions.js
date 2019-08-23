@@ -1,12 +1,21 @@
 import api from '../api/api';
 import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
-import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT, SHOW_ERROR_DIALOG_MODAL } from './types';
+import {
+  CREATE_EVENT,
+  FETCH_EVENTS,
+  FETCH_EVENT,
+  EDIT_EVENT,
+  ARCHIVE_EVENT,
+  UN_ARCHIVE_EVENT,
+  SHOW_ERROR_DIALOG_MODAL,
+} from './types';
 
-export const fetchEvents = (name, page, pageSize) => async dispatch => {
+export const fetchEvents = (name, page, pageSize, isActive) => async dispatch => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await api.get(`/events/?${buildApiQueryString(name, page, pageSize)}`);
+      const response = await api.get(`/events/?${buildApiQueryString(name, page, pageSize, isActive)}`);
       const data = getApiPagedReponseData(response).data;
+
       dispatch({ type: FETCH_EVENTS, payload: data });
 
       resolve(getApiPagedReponseData(response).pageCount);
@@ -70,6 +79,23 @@ export const archiveEvent = event => async dispatch => {
       const response = await api.put(`/events/${event.id}`, event);
       const data = getApiReponseData(response);
       dispatch({ type: ARCHIVE_EVENT, payload: data });
+
+      resolve();
+    } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+      reject(e);
+    }
+  });
+};
+
+export const unArchiveEvent = event => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      event = { ...event, isActive: true };
+
+      const response = await api.put(`/events/${event.id}`, event);
+      const data = getApiReponseData(response);
+      dispatch({ type: UN_ARCHIVE_EVENT, payload: data });
 
       resolve();
     } catch (e) {
