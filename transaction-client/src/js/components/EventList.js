@@ -139,40 +139,30 @@ class EventList extends Component {
     return events.length === 0 ? <Alert color="primary">There are no active events at the moment.</Alert> : events;
   }
 
-  renderAddEventButton() {
+  RenderAdminEventButtons() {
     if (utils.isCurrentUserAdmin()) {
-      return (
-        <Row>
-          <Col>
-            <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
-              Add an Event
-            </Button>
-          </Col>
-        </Row>
-      );
-    }
-  }
-
-  RenderEventButtons() {
-    if (this.state.isActive) {
-      if (utils.isCurrentUserAdmin()) {
+      if (this.state.isActive) {
         return (
           <Row>
             <Col>
-              <Button color="primary" className="btn-sm mb-4" onClick={this.showArchiveEvents}>
+              <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showArchiveEvents}>
                 Show Archive Events
+              </Button>
+              <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
+                Add an Event
               </Button>
             </Col>
           </Row>
         );
-      }
-    } else {
-      if (utils.isCurrentUserAdmin()) {
+      } else {
         return (
           <Row>
             <Col>
-              <Button color="primary" className="btn-sm mb-4" onClick={this.showActiveEvents}>
+              <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showActiveEvents}>
                 Show Active Events
+              </Button>
+              <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
+                Add an Event
               </Button>
             </Col>
           </Row>
@@ -184,8 +174,7 @@ class EventList extends Component {
   renderContent() {
     return (
       <React.Fragment>
-        {this.renderAddEventButton()}
-        {this.RenderEventButtons()}
+        {this.RenderAdminEventButtons()}
         {this.state.loading ? (
           <PageSpinner />
         ) : (
