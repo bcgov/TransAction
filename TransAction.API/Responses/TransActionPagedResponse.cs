@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace TransAction.API.Responses
 {
     public class TransActionPagedResponse : TransActionResponse
@@ -18,7 +19,8 @@ namespace TransAction.API.Responses
             }
             else
             {
-                PageCount = (int)((itemCount / pageSize) + 1);
+
+                PageCount = (int)Math.Ceiling((decimal)itemCount / (decimal)pageSize);
             }
         }
 

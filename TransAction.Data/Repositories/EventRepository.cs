@@ -28,9 +28,9 @@ namespace TransAction.Data.Repositories
         {
             return Find(e => e.EventId == id).FirstOrDefault();
         }
-        public int Count(string name)
+        public int Count(string name, bool isActive)
         {
-            var eventCount = FindAll().Where(x => x.IsActive == true);
+            var eventCount = FindAll().Where(x => x.IsActive == isActive);
             if (!string.IsNullOrEmpty(name))
             {
                 return eventCount.Where(x => x.Name.Contains(name)).Count();

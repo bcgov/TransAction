@@ -25,7 +25,7 @@ namespace TransAction.API.Controllers
         {
             var events = _unitOfWork.Event.GetAll(page, pageSize, name, isActive);
             var getEvents = _mapper.Map<IEnumerable<EventDto>>(events);
-            int count = _unitOfWork.Event.Count(name);
+            int count = _unitOfWork.Event.Count(name, isActive);
             return StatusCode(200, new TransActionPagedResponse(getEvents, page, pageSize, count));
 
         }

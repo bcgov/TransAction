@@ -139,14 +139,14 @@ class EventList extends Component {
     return events.length === 0 ? <Alert color="primary">There are no active events at the moment.</Alert> : events;
   }
 
-  RenderAdminEventButtons() {
+  renderAdminEventButtons() {
     if (utils.isCurrentUserAdmin()) {
       if (this.state.isActive) {
         return (
           <Row>
             <Col>
               <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showArchiveEvents}>
-                Show Archive Events
+                Show Archived Events
               </Button>
               <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
                 Add an Event
@@ -174,7 +174,7 @@ class EventList extends Component {
   renderContent() {
     return (
       <React.Fragment>
-        {this.RenderAdminEventButtons()}
+        {this.renderAdminEventButtons()}
         {this.state.loading ? (
           <PageSpinner />
         ) : (

@@ -40,7 +40,7 @@ class EventListItem extends React.Component {
             Edit
           </Button>
           <Button color="primary" size="sm" onClick={this.unArchiveEvent}>
-            UnArchive
+            Unarchive
           </Button>
         </div>
       );
