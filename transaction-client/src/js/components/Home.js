@@ -65,11 +65,13 @@ class Home extends React.Component {
         <CardWrapper>
           <Row>
             <Col>
-              <img
-                className="w-100"
-                src={`${process.env.PUBLIC_URL}/images/eaf-banner.jpg`}
-                alt="Employee Advisory Forum"
-              />
+              <a href="http://gww.th.gov.bc.ca/EAF_TRANNET/" target="_blank" rel="noopener noreferrer">
+                <img
+                  className="w-100"
+                  src={`${process.env.PUBLIC_URL}/images/eaf-banner.jpg`}
+                  alt="Employee Advisory Forum"
+                />
+              </a>
             </Col>
           </Row>
         </CardWrapper>
