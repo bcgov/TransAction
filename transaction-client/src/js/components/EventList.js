@@ -6,7 +6,7 @@ import _ from 'lodash';
 import EventListItem from './fragments/EventListItem';
 import EditEventForm from './forms/EditEventForm';
 import PageSpinner from './ui/PageSpinner';
-import { fetchEvents, archiveEvent } from '../actions';
+import { fetchEvents, archiveEvent, unArchiveEvent } from '../actions';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
 import ScrollLoader from './fragments/ScollLoader';
@@ -25,6 +25,7 @@ class EventList extends Component {
     page: 0,
     pageSize: 3,
     pageCount: 1,
+    isActive: true,
   };
 
   componentDidMount() {
@@ -34,10 +35,24 @@ class EventList extends Component {
   loadData = () => {
     const nextPage = this.state.page + 1;
     if (this.state.page < this.state.pageCount) {
-      this.props.fetchEvents(this.state.searchTerm, nextPage, this.state.pageSize).then(pageCount => {
-        this.setState({ loading: false, page: nextPage, pageCount });
-      });
+      this.props
+        .fetchEvents(this.state.searchTerm, nextPage, this.state.pageSize, this.state.isActive)
+        .then(pageCount => {
+          this.setState({ loading: false, page: nextPage, pageCount });
+        });
     }
+  };
+
+  showArchiveEvents = () => {
+    this.setState({ isActive: false, page: 0 }, () => {
+      this.loadData();
+    });
+  };
+
+  showActiveEvents = () => {
+    this.setState({ isActive: true, page: 0 }, () => {
+      this.loadData();
+    });
   };
 
   loadMoreData = () => {
@@ -70,6 +85,26 @@ class EventList extends Component {
     }
   };
 
+  unArchiveEvent = (confirm, event) => {
+    if (confirm) {
+      this.props.unArchiveEvent(event).then(() => this.closeConfirmDialog());
+    } else {
+      this.closeConfirmDialog();
+    }
+  };
+
+  confirmUnArchive = event => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'UnArchive Event',
+        body: 'The event will be unarchived and visible to the users',
+        secondary: true,
+        callback: confirm => this.unArchiveEvent(confirm, event),
+      },
+    });
+  };
+
   confirmArchive = event => {
     this.setState({
       showConfirmDialog: true,
@@ -87,37 +122,59 @@ class EventList extends Component {
   }
 
   renderEventList() {
-    const events = this.props.events.map(event => (
+    const events = _.filter(this.props.events, o => {
+      return o.isActive === this.state.isActive;
+    }).map(event => (
       <EventListItem
         key={event.id}
         event={event}
         isAdmin={utils.isCurrentUserAdmin()}
         showEditForm={this.showEditEventForm}
         handleArchiveEvent={this.confirmArchive}
+        handleUnArchiveEvent={this.confirmUnArchive}
+        isActive={event.isActive}
       />
     ));
 
     return events.length === 0 ? <Alert color="primary">There are no active events at the moment.</Alert> : events;
   }
 
-  renderAddEventButton() {
+  renderAdminEventButtons() {
     if (utils.isCurrentUserAdmin()) {
-      return (
-        <Row>
-          <Col>
-            <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
-              Add an Event
-            </Button>
-          </Col>
-        </Row>
-      );
+      if (this.state.isActive) {
+        return (
+          <Row>
+            <Col>
+              <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showArchiveEvents}>
+                Show Archived Events
+              </Button>
+              <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
+                Add an Event
+              </Button>
+            </Col>
+          </Row>
+        );
+      } else {
+        return (
+          <Row>
+            <Col>
+              <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showActiveEvents}>
+                Show Active Events
+              </Button>
+              <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
+                Add an Event
+              </Button>
+            </Col>
+          </Row>
+        );
+      }
     }
   }
 
   renderContent() {
     return (
       <React.Fragment>
-        {this.renderAddEventButton()}
+        {this.renderAdminEventButtons()}
         {this.state.loading ? (
           <PageSpinner />
         ) : (
@@ -166,5 +223,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchEvents, archiveEvent }
+  { fetchEvents, archiveEvent, unArchiveEvent }
 )(EventList);
