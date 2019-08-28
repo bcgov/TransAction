@@ -1,11 +1,21 @@
 import * as api from '../api/api';
 import { getApiReponseData, getApiPagedReponseData, buildApiErrorObject, buildApiQueryString } from '../utils';
-import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT, SHOW_ERROR_DIALOG_MODAL } from './types';
+import {
+  CREATE_EVENT,
+  FETCH_EVENTS,
+  FETCH_EVENT,
+  EDIT_EVENT,
+  ARCHIVE_EVENT,
+  UN_ARCHIVE_EVENT,
+  SHOW_ERROR_DIALOG_MODAL,
+} from './types';
 
-export const fetchEvents = (name, page, pageSize) => dispatch => {
+export const fetchEvents = (name, page, pageSize, isActive) => dispatch => {
   return new Promise((resolve, reject) => {
     api.instance
-      .get(`/events/?${buildApiQueryString(name, page, pageSize)}`, { cancelToken: api.cancelTokenSource.token })
+      .get(`/events/?${buildApiQueryString(name, page, pageSize, isActive)}`, {
+        cancelToken: api.cancelTokenSource.token,
+      })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_EVENTS, payload: data });
@@ -86,6 +96,26 @@ export const archiveEvent = event => dispatch => {
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: ARCHIVE_EVENT, payload: data });
+
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const unarchiveEvent = event => dispatch => {
+  return new Promise((resolve, reject) => {
+    event = { ...event, isActive: true };
+    api.instance
+      .put(`/events/${event.id}`, event, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: UN_ARCHIVE_EVENT, payload: data });
 
         resolve();
       })

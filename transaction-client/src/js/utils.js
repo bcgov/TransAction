@@ -62,12 +62,12 @@ export const buildApiErrorObject = response => {
   }
 };
 
-export const buildApiQueryString = (searchTerm, page, pageSize) => {
+export const buildApiQueryString = (searchTerm, page, pageSize, isActive) => {
   const queries = [];
-
   if (searchTerm) queries.push(`name=${searchTerm}`);
   if (page) queries.push(`page=${page}`);
   if (pageSize) queries.push(`pageSize=${pageSize}`);
+  if (!isActive) queries.push(`isActive=${isActive}`);
 
   return queries.join('&');
 };
