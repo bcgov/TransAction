@@ -5,17 +5,18 @@ import _ from 'lodash';
 
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
-import { fetchUsers, editUserRole } from '../actions';
+import { fetchUsers, editUserRole, fetchActivityList, editActivity } from '../actions';
 import DialogModal from './ui/DialogModal';
 
 import * as utils from '../utils';
 // import * as Constants from '../Constants';
 
 class Admin extends React.Component {
-  state = { toggleActive: {}, showConfirmDialog: false, confirmDialogOptions: {} };
+  state = { toggleActive: {}, showConfirmDialog: false, confirmDialogOptions: {}, intensity: [1, 2, 3] };
 
   componentDidMount() {
     this.props.fetchUsers();
+    this.props.fetchActivityList();
   }
 
   handleRoleIdChanged = (confirm, roleId, userId) => {
@@ -27,6 +28,26 @@ class Admin extends React.Component {
     }
   };
 
+  handleActivityChanged = (confirm, activityId) => {
+    if (confirm) {
+      this.props.editActivity(activityId).then(() => this.closeConfirmDialog());
+    } else {
+      this.closeConfirmDialog();
+      window.location.reload();
+    }
+  };
+
+  confirmActivityChange = activityId => {
+    this.setState({
+      showConfirmDialog: true,
+      confirmDialogOptions: {
+        title: 'Change Activity type',
+        body: 'The activty intensity will be changed',
+        secondary: true,
+        callback: confirm => this.handleActivityChanged(confirm, activityId),
+      },
+    });
+  };
   confirmRoleChange = (roleId, userId) => {
     this.setState({
       showConfirmDialog: true,
@@ -43,6 +64,32 @@ class Admin extends React.Component {
     this.setState({ showConfirmDialog: false, confirmDialogOptions: {}, clicked: false });
   }
 
+  renderActivities() {
+    const intensityList = this.state.intensity.map(activity => {
+      return (
+        <option key={activity} value={activity}>
+          {activity}
+        </option>
+      );
+    });
+    return _.orderBy(Object.values(this.props.activities), ['name', 'intensity']).map(activity => {
+      return (
+        <tr key={activity.id}>
+          <td>{`${activity.name}`}</td>
+          <td>
+            <Input
+              type="select"
+              bsSize="sm"
+              defaultValue={activity.intensity}
+              onChange={() => this.confirmActivityChange(activity.id)}
+            >
+              {intensityList}
+            </Input>
+          </td>
+        </tr>
+      );
+    });
+  }
   renderContent() {
     const roleOptions = Object.values(this.props.roles).map(role => (
       <option key={role.id} value={role.id}>
@@ -80,6 +127,16 @@ class Admin extends React.Component {
           </thead>
           <tbody>{userList}</tbody>
         </Table>
+
+        <Table size="sm" bordered>
+          <thead className="thead-dark">
+            <tr>
+              <th>Activity</th>
+              <th>Intensity</th>
+            </tr>
+          </thead>
+          <tbody>{this.renderActivities()}</tbody>
+        </Table>
         {this.state.showConfirmDialog && (
           <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
         )}
@@ -109,10 +166,11 @@ const mapStateToProps = state => {
     currentUser: state.users.all[state.users.current.id],
     users: state.users.all,
     roles: state.roles,
+    activities: state.activities,
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchUsers, editUserRole }
+  { fetchUsers, editUserRole, fetchActivityList, editActivity }
 )(Admin);

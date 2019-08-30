@@ -3,6 +3,7 @@ import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_ACTIVITY_LIST,
   CREATE_USER_ACTIVITY,
+  EDIT_ACTIVITY,
   FETCH_USER_SCORES,
   FETCH_TEAM_SCORES,
   FETCH_USER_EVENT_SCORE,
@@ -38,6 +39,23 @@ export const createUserActivity = activityObj => async dispatch => {
       dispatch({ type: CREATE_USER_ACTIVITY, payload: data });
       dispatch(fetchUserEventScore(activityObj.userId, activityObj.eventId));
       dispatch(fetchTeamEventScore(activityObj.teamId, activityObj.eventId));
+
+      resolve();
+    } catch (e) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+      reject(e);
+    }
+  });
+};
+
+export const editActivity = (id, formValues) => async dispatch => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(formValues);
+      const response = await api.put(`/activities/${id}`, formValues);
+      const data = getApiReponseData(response);
+      console.log(response);
+      dispatch({ type: EDIT_ACTIVITY, payload: data });
 
       resolve();
     } catch (e) {
