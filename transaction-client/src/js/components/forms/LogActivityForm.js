@@ -10,7 +10,10 @@ import { fetchActivityList, createUserActivity, fetchTeamStandings } from '../..
 import FormModal from '../ui/FormModal';
 import FormInput from '../ui/FormInput';
 import DatePickerInput from '../ui/DatePickerInput';
+import DropdownInput from '../ui/DropdownInput';
 import PageSpinner from '../ui/PageSpinner';
+
+const headers = ['> Low Intensity Activities', '> Medium Intensity Activities', '> High Intensity Activities'];
 
 class LogActivityForm extends React.Component {
   state = { submitting: false, loading: false };
@@ -48,31 +51,59 @@ class LogActivityForm extends React.Component {
     this.props.toggle();
   };
 
-  renderActivityOptions = () => {
-    const activityOptions = this.props.activities.map(activity => {
-      return (
-        <option value={activity.id} key={activity.id}>
-          {activity.name} - {activity.intensity}
-        </option>
-      );
-    });
+  createActivityOptions = () => {
+    const activityOptions = [];
 
-    activityOptions.unshift(<option value={0} key={0} />);
-    activityOptions.unshift(
-      <option value={-1} key={-1}>
-        Select an activity
-      </option>
-    );
+    let i;
+    for (i = 0; i < 3; i++) {
+      activityOptions.push(...this.createActivityIntensitySection(i + 1));
+    }
 
     return activityOptions;
   };
 
+  createActivityIntensitySection(intensity) {
+    const { activities } = this.props;
+    const activityOptions = [];
+
+    activityOptions.push({ type: 'header', text: headers[intensity - 1] });
+
+    activityOptions.push(
+      ..._.orderBy(activities.filter(o => o.name.toLowerCase() !== 'other' && o.intensity === intensity), ['name']).map(
+        o => ({
+          type: 'item',
+          text: o.name,
+          description: o.description,
+          value: o.id,
+        })
+      )
+    );
+
+    activityOptions.push(
+      ...activities
+        .filter(o => o.name.toLowerCase() === 'other' && o.intensity === intensity)
+        .map(o => ({
+          type: 'item',
+          text: o.name,
+          description: o.description,
+          value: o.id,
+        }))
+    );
+
+    return activityOptions;
+  }
+
   renderFields = () => {
     return (
       <React.Fragment>
-        <Field name="activityId" component={FormInput} type="select" label="Activity Type">
-          {this.renderActivityOptions()}
-        </Field>
+        <Field
+          name="activityId"
+          component={DropdownInput}
+          label="Activity Type"
+          title="Select an activity"
+          menuItems={this.createActivityOptions()}
+        ></Field>
+
         <Field
           name="activityTimestamp"
           component={DatePickerInput}
