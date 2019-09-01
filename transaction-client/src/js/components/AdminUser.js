@@ -7,11 +7,18 @@ import CardWrapper from './ui/CardWrapper';
 import { fetchUsers, editUserRole, fetchAdminUsers } from '../actions';
 import DialogModal from './ui/DialogModal';
 
+import * as api from '../api/api';
+
 class AdminUser extends React.Component {
   state = { showConfirmDialog: false, confirmDialogOptions: {}, userSearchTerm: '' };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     this.props.fetchAdminUsers();
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   handleRoleIdChanged = (confirm, roleId, userId) => {

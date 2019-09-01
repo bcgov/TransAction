@@ -9,6 +9,7 @@ import DialogModal from './ui/DialogModal';
 import EditActivityTypeForm from './forms/EditActivityTypeForm';
 
 import * as Constants from '../Constants';
+import * as api from '../api/api';
 
 class AdminActivity extends React.Component {
   state = {
@@ -20,7 +21,12 @@ class AdminActivity extends React.Component {
   };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     this.props.fetchActivityList();
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   closeConfirmDialog() {
