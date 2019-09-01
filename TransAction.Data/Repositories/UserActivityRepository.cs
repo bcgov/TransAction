@@ -55,10 +55,15 @@ namespace TransAction.Data.Repositories
             return FindAll().OrderBy(c => c.UserActivityId).Count();
         }
 
-        public IEnumerable<TraUserActivity> GetAllUserActivities(int page, int pageSize)
+        public IEnumerable<TraUserActivity> GetAll(int page, int pageSize)
         {
             if (--page < 0) page = 0;
             return FindAll().OrderBy(c => c.UserActivityId).Skip(page * pageSize).Take(pageSize).ToList();
+        }
+
+        public IEnumerable<TraUserActivity> GetAllByEventUser(int eventId, int userId)
+        {
+            return Find(x => x.EventId == eventId && x.UserId == userId).ToList();
         }
 
         public TraUserActivity GetUserActivity(int id)

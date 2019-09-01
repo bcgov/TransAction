@@ -122,7 +122,7 @@ namespace TransAction.API.Controllers
             var activityEntity = _unitOfWork.Activity.GetById(id);
             if (activityEntity == null) return StatusCode(404, new TransActionResponse("Activity does not exist"));
 
-            if (_unitOfWork.UserAct.CountByActivityType(activityEntity.ActivityId) > 0)
+            if (_unitOfWork.UserActivity.CountByActivityType(activityEntity.ActivityId) > 0)
                 return StatusCode(400, new TransActionResponse("Cannot delete activity type.  Activity type is in use."));
 
             _unitOfWork.Activity.Delete(activityEntity);

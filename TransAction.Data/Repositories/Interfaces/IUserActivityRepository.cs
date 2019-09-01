@@ -5,7 +5,8 @@ namespace TransAction.Data.Repositories.Interfaces
 {
     public interface IUserActivityRepository
     {
-        IEnumerable<TraUserActivity> GetAllUserActivities(int page, int pageSize);
+        IEnumerable<TraUserActivity> GetAll(int page, int pageSize);
+        IEnumerable<TraUserActivity> GetAllByEventUser(int eventId, int userId);
         void Create(TraUserActivity newUserActivity);
         void Update(TraUserActivity updateUserActivity);
         TraUserActivity GetUserActivity(int id);
