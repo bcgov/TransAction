@@ -113,7 +113,7 @@ export const createUserActivity = activityObj => dispatch => {
 export const fetchUserEventScore = (userId, eventId) => dispatch => {
   return new Promise((resolve, reject) => {
     api.instance
-      .get(`/useractivity/user/${userId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
+      .get(`/useractivity/score/user/${userId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_USER_EVENT_SCORE, payload: { userId, eventId, data: data } });
@@ -131,7 +131,7 @@ export const fetchUserEventScore = (userId, eventId) => dispatch => {
 export const fetchAllUserScores = userId => dispatch => {
   return new Promise((resolve, reject) => {
     api.instance
-      .get(`/useractivity/user/${userId}`, { cancelToken: api.cancelTokenSource.token })
+      .get(`/useractivity/score/user/${userId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
 
@@ -150,7 +150,7 @@ export const fetchAllUserScores = userId => dispatch => {
 export const fetchTeamEventScore = (teamId, eventId) => dispatch => {
   return new Promise((resolve, reject) => {
     api.instance
-      .get(`/useractivity/team/${teamId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
+      .get(`/useractivity/score/team/${teamId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_TEAM_EVENT_SCORE, payload: { teamId, eventId, data: data } });
@@ -169,7 +169,7 @@ export const fetchAllTeamScores = teamId => dispatch => {
   return new Promise((resolve, reject) => {
     // specific team all ACTIVE events
     api.instance
-      .get(`/useractivity/team/${teamId}`, { cancelToken: api.cancelTokenSource.token })
+      .get(`/useractivity/score/team/${teamId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
 
@@ -188,7 +188,7 @@ export const fetchAllTeamScores = teamId => dispatch => {
 export const fetchTeamStandings = (eventId, teamCount = 20) => dispatch => {
   return new Promise((resolve, reject) => {
     api.instance
-      .get(`/useractivity/event/${eventId}/top/${teamCount}`, { cancelToken: api.cancelTokenSource.token })
+      .get(`/useractivity/score/event/${eventId}/top/${teamCount}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_TEAM_STANDINGS, payload: { eventId, data: data } });
@@ -206,7 +206,7 @@ export const fetchTeamStandings = (eventId, teamCount = 20) => dispatch => {
 export const fetchRegionStandings = eventId => dispatch => {
   return new Promise((resolve, reject) => {
     api.instance
-      .get(`/useractivity/event/${eventId}/region`, { cancelToken: api.cancelTokenSource.token })
+      .get(`/useractivity/score/event/${eventId}/region`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_REGION_STANDINGS, payload: { eventId, data: data } });

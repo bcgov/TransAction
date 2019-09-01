@@ -111,7 +111,7 @@ namespace TransAction.API.Controllers
         }
 
 
-        [HttpGet("event/{eventId}")]
+        [HttpGet("score/event/{eventId}")]
         public IActionResult EventSpecificScore(int eventId)
         {
             var score = _unitOfWork.UserAct.EventSpecificScore(eventId);
@@ -125,7 +125,7 @@ namespace TransAction.API.Controllers
 
         }
 
-        [HttpGet("user/{userId}/event/{eventId}")]
+        [HttpGet("score/user/{userId}/event/{eventId}")]
         public IActionResult UserSpecificScore(int userId, int eventId)
         {
             var eventEntity = _unitOfWork.Event.GetById(eventId);
@@ -140,7 +140,7 @@ namespace TransAction.API.Controllers
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("team/{teamId}/event/{eventId}")]
+        [HttpGet("score/team/{teamId}/event/{eventId}")]
         public IActionResult TeamEventSpecificScore(int teamId, int eventId)
         {
             var eventEntity = _unitOfWork.Event.GetById(eventId);
@@ -156,7 +156,7 @@ namespace TransAction.API.Controllers
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("team/{teamId}")]
+        [HttpGet("score/team/{teamId}")]
         public IActionResult TeamSpecificScore(int teamId)
         {
             var users = _unitOfWork.User.GetByTeamId(teamId);
@@ -166,14 +166,14 @@ namespace TransAction.API.Controllers
 
 
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("score/user/{userId}")]
         public IActionResult CurrentUserScore(int userId)
         {
             var result = _unitOfWork.UserAct.CurrentUserScore(userId);
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("event/{eventId}/top/{number}")]
+        [HttpGet("score/event/{eventId}/top/{number}")]
         public IActionResult TopTeams(int number, int eventId)
         {
             var result = _unitOfWork.UserAct.TopTeams(number, eventId);
@@ -181,7 +181,7 @@ namespace TransAction.API.Controllers
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("event/{eventId}/region")]
+        [HttpGet("score/event/{eventId}/region")]
         public IActionResult RegionScore(int eventId)
         {
 
