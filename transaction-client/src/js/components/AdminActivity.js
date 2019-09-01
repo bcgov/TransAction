@@ -62,6 +62,7 @@ class AdminActivity extends React.Component {
     const activityTableRows = _.orderBy(activities, ['intensity', 'name']).map(o => (
       <tr key={o.id}>
         <td>{o.name}</td>
+        <td>{o.description}</td>
         <td>{o.intensity}</td>
         <td style={{ width: '1%' }}>
           <Button
@@ -86,6 +87,7 @@ class AdminActivity extends React.Component {
         <thead className="thead-dark">
           <tr>
             <th>Name</th>
+            <th>Description</th>
             <th>Intensity</th>
             <th></th>
             <th></th>
