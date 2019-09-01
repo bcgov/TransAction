@@ -6,25 +6,43 @@ import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { fetchActivityList, createUserActivity, fetchTeamStandings } from '../../actions';
+import { fetchActivityList, createUserActivity, fetchTeamStandings, fetchEvent } from '../../actions';
 import FormModal from '../ui/FormModal';
 import FormInput from '../ui/FormInput';
 import DatePickerInput from '../ui/DatePickerInput';
 import DropdownInput from '../ui/DropdownInput';
 import PageSpinner from '../ui/PageSpinner';
 
+import * as utils from '../../utils';
+
 const headers = ['> Low Intensity Activities', '> Medium Intensity Activities', '> High Intensity Activities'];
 
 class LogActivityForm extends React.Component {
-  state = { submitting: false, loading: false };
+  state = { submitting: false, loading: true };
+
+  componentDidMount() {}
 
   onInit = () => {
-    if (this.props.activities.length === 0) {
+    const { events, eventId, fetchEvent, activities, fetchActivityList, initialize, initialValues } = this.props;
+
+    const actions = [];
+
+    if (!events[eventId]) {
+      actions.push(utils.buildActionWithParam(fetchEvent, eventId));
+    }
+
+    if (activities.length === 0) {
+      actions.push(utils.buildActionWithParam(fetchActivityList));
+    }
+
+    if (actions.length > 0) {
       this.setState({ loading: true });
-      this.props.fetchActivityList().then(() => {
-        this.props.initialize(this.props.initialValues);
+      Promise.all(actions.map(action => action.action(action.param))).then(() => {
+        initialize(initialValues);
         this.setState({ loading: false });
       });
+    } else {
+      this.setState({ loading: false });
     }
   };
 
@@ -94,6 +112,10 @@ class LogActivityForm extends React.Component {
   }
 
   renderFields = () => {
+    const { eventId, events } = this.props;
+
+    const maxDate = moment.min(moment(), moment(events[eventId].endDate, 'YYYY-MM-DD')).toDate();
+    const minDate = moment(events[eventId].startDate, 'YYYY-MM-DD').toDate();
     return (
       <React.Fragment>
         <Field
@@ -111,7 +133,8 @@ class LogActivityForm extends React.Component {
           className="form-control"
           todayButton="Today"
           placeholderText="Enter activity date"
-          maxDate={new Date()}
+          maxDate={maxDate}
+          minDate={minDate}
         />
         <Row>
           <Col xs="6">
@@ -155,12 +178,13 @@ class LogActivityForm extends React.Component {
 }
 
 LogActivityForm.propTypes = {
+  eventId: PropTypes.number.isRequired,
   isOpen: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
 };
 
-const validate = formValues => {
+const validate = (formValues, props) => {
   const errors = {};
 
   if (formValues.activityId <= 0) {
@@ -175,6 +199,19 @@ const validate = formValues => {
     errors.activityTimestamp = 'Invalid date';
   } else if (activityTimestamp.toDate() > new Date()) {
     errors.activityTimestamp = 'Selected date is in the future';
+  }
+
+  const event = props.events[props.eventId];
+
+  if (event) {
+    const eventStartDate = moment(event.startDate, 'YYYY-MM-DD');
+    const eventEndDate = moment(event.endDate, 'YYYY-MM-DD');
+
+    if (activityTimestamp > eventEndDate) {
+      errors.activityTimestamp = 'Selected date is after the event end date';
+    } else if (activityTimestamp < eventStartDate) {
+      errors.activityTimestamp = 'Selected date is before the event start date';
+    }
   }
 
   if (isNaN(formValues.activityHours) || isNaN(formValues.activityMinutes)) {
@@ -213,12 +250,13 @@ const mapStateToProps = (state, ownProps) => {
       activityMinutes: 0,
       activityId: -1,
     },
+    events: state.events,
   };
 };
 
 const formConnect = connect(
   mapStateToProps,
-  { fetchActivityList, createUserActivity, fetchTeamStandings }
+  { fetchActivityList, createUserActivity, fetchTeamStandings, fetchEvent }
 )(form);
 
 export default formConnect;

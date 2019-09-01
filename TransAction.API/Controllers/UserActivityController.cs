@@ -68,6 +68,14 @@ namespace TransAction.API.Controllers
                 return BadRequest(new TransActionResponse(ModelState));
             }
 
+            var eventEntity = _unitOfWork.Event.GetById(createUserActivity.EventId);
+
+            if (eventEntity == null)
+                return NotFound(new TransActionResponse("Event not found"));
+
+            if (createUserActivity.ActivityTimestamp < eventEntity.StartDate || createUserActivity.ActivityTimestamp > eventEntity.EndDate)
+                return BadRequest(new TransActionResponse("Activity time is outside of event start and end date"));
+
             var newUserActivity = _mapper.Map<TraUserActivity>(createUserActivity);
 
             _unitOfWork.UserAct.Create(newUserActivity);
