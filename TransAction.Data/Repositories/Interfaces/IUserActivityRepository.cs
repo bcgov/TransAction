@@ -17,6 +17,7 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId);
         IEnumerable<RegionScoreDto> RegionalScore(int eventId);
         int Count();
+        int CountByActivityType(int activityId);
 
     }
 }

@@ -53,9 +53,7 @@ class TeamsList extends Component {
 
   sendJoinRequest = (confirm, userId, teamId) => {
     if (confirm) {
-      this.props.createJoinRequest({ userId, teamId }).then(() => {
-        this.closeConfirmDialog();
-      });
+      this.props.createJoinRequest({ userId, teamId }).finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }
@@ -78,7 +76,7 @@ class TeamsList extends Component {
       const { currentUser, editUser } = this.props;
       const userObj = { ...currentUser, isFreeAgent: true };
 
-      editUser(userObj.id, userObj).then(() => this.closeConfirmDialog());
+      editUser(userObj.id, userObj).finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }

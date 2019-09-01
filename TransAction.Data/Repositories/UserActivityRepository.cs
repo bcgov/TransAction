@@ -153,8 +153,6 @@ namespace TransAction.Data.Repositories
             return teams;
         }
 
-
-
         public int UserSpecificScore(int userId, int eventId)
         {
             var userAct = Find(p => p.EventId == eventId && p.UserId == userId)
@@ -167,6 +165,11 @@ namespace TransAction.Data.Repositories
                             }).Select(c => c.Score).Sum();
 
             return userAct;
+        }
+
+        public int CountByActivityType(int activityId)
+        {
+            return Find(x => x.ActivityId == activityId).Count();
         }
     }
 }

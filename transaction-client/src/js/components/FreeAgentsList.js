@@ -45,7 +45,7 @@ class FreeAgentsList extends Component {
 
       addUserToTeam({ userId, teamId: team.id })
         .then(() => Promise.all([fetchUser(userId), fetchTeam[team.id]]))
-        .then(() => this.closeConfirmDialog());
+        .finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }

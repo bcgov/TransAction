@@ -85,7 +85,7 @@ class EventList extends Component {
 
   archiveEvent = (confirm, event) => {
     if (confirm) {
-      this.props.archiveEvent(event).then(() => this.closeConfirmDialog());
+      this.props.archiveEvent(event).finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }
@@ -93,7 +93,7 @@ class EventList extends Component {
 
   unarchiveEvent = (confirm, event) => {
     if (confirm) {
-      this.props.unarchiveEvent(event).then(() => this.closeConfirmDialog());
+      this.props.unarchiveEvent(event).finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }

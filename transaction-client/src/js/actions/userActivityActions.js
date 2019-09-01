@@ -2,6 +2,9 @@ import * as api from '../api/api';
 import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_ACTIVITY_LIST,
+  CREATE_ACTIVITY_TYPE,
+  EDIT_ACTIVITY_TYPE,
+  DELETE_ACTIVITY_TYPE,
   CREATE_USER_ACTIVITY,
   FETCH_USER_SCORES,
   FETCH_TEAM_SCORES,
@@ -21,6 +24,59 @@ export const fetchActivityList = () => dispatch => {
       .then(response => {
         const data = getApiReponseData(response);
         dispatch({ type: FETCH_ACTIVITY_LIST, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const createActivityType = activityType => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .post(`/activities/`, activityType, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: CREATE_ACTIVITY_TYPE, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const editActivityType = (id, activityType) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .put(`/activities/${id}`, activityType, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: EDIT_ACTIVITY_TYPE, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const deleteActivityType = id => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .delete(`/activities/${id}`, { cancelToken: api.cancelTokenSource.token })
+      .then(() => {
+        dispatch({ type: DELETE_ACTIVITY_TYPE, payload: id });
         resolve();
       })
       .catch(e => {

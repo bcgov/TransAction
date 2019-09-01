@@ -39,17 +39,13 @@ class TeamJoinRequestPanel extends React.Component {
         .then(() => {
           return this.props.fetchUser(request.userId);
         })
-        .then(() => {
-          this.closeConfirmDialog();
-        });
+        .finally(() => this.closeConfirmDialog());
     }
   };
 
   rejectRequest = (confirm, request) => {
     if (confirm) {
-      this.props.rejectJoinRequest(request).then(() => {
-        this.closeConfirmDialog();
-      });
+      this.props.rejectJoinRequest(request).finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }
