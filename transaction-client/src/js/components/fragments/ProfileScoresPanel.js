@@ -22,6 +22,8 @@ class ProfileScoresPanel extends React.Component {
       Promise.all([fetchAllUserScores(currentUser.id), fetchAllTeamScores(currentUser.teamId)]).then(() => {
         this.setState({ loading: false });
       });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
