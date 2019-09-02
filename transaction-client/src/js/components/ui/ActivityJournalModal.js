@@ -35,10 +35,10 @@ class ActivityJournalModal extends React.Component {
     const tableRows = _.orderBy(thisEventUserActivities, ['activityTimestamp'], ['desc']).map(o => (
       <tr key={o.id}>
         <td>{activityTypes[o.activityId].name}</td>
-        <td>{o.description}</td>
-        <td className="text-nowrap">{o.minutes} Minutes</td>
         <td>{activityTypes[o.activityId].intensity}</td>
-        <td className="text-nowrap">{moment(o.activityTimestamp).format('dddd YYYY-MM-DD')}</td>
+        <td>{o.description}</td>
+        <td className="text-nowrap">{o.minutes}</td>
+        <td className="text-nowrap">{moment(o.activityTimestamp).format('YYYY-MM-DD')}</td>
       </tr>
     ));
 
@@ -47,9 +47,9 @@ class ActivityJournalModal extends React.Component {
         <thead className="thead-dark">
           <tr>
             <th>Activity</th>
-            <th>Description</th>
-            <th>Duration</th>
             <th>Intensity</th>
+            <th>Description</th>
+            <th>Duration (minutes)</th>
             <th>Date</th>
           </tr>
         </thead>
