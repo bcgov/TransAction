@@ -16,12 +16,13 @@ class TeamMembersPanel extends React.Component {
 
   handleRemoveUser = (confirm, user) => {
     if (confirm) {
-      this.props.leaveTeam(user.teamId, user.id).then(() => {
-        if (user.id === this.props.currentUser.id) this.props.fetchCurrentUser();
-        else this.props.fetchUser(user.id);
-
-        this.closeConfirmDialog();
-      });
+      this.props
+        .leaveTeam(user.teamId, user.id)
+        .then(() => {
+          if (user.id === this.props.currentUser.id) this.props.fetchCurrentUser();
+          else this.props.fetchUser(user.id);
+        })
+        .finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }

@@ -9,6 +9,7 @@ namespace TransAction.Data.Repositories.Interfaces
         TraUser GetById(int id);
         TraUser GetByGuid(string guid);
         IEnumerable<TraUser> GetByTeamId(int teamId);
+        IEnumerable<TraUser> GetAdmins(int adminRoleId);
         void Create(TraUser newUser);
         void Update(TraUser updateUser);
         TraUser GetCurrentUser(string guid);

@@ -8,10 +8,12 @@ using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
 using TransAction.API.Responses;
+using TransAction.API.Authorization;
+using TransAction.API.Helpers;
 
 namespace TransAction.API.Controllers
 {
-    [Route("api/useractivity")]
+    [Route("api/useractivities")]
     public class UserActivityController : BaseController
     {
 
@@ -19,13 +21,28 @@ namespace TransAction.API.Controllers
             base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
+        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpGet()]
         public IActionResult GetUserActivity(int page = 1, int pageSize = 25)
         {
-            var userActivity = _unitOfWork.UserAct.GetAllUserActivities(page, pageSize);
+            var userActivity = _unitOfWork.UserActivity.GetAll(page, pageSize);
             var getUserActivities = _mapper.Map<IEnumerable<UserActivityDto>>(userActivity);
-            return StatusCode(200, new TransActionPagedResponse(getUserActivities, page, pageSize, _unitOfWork.UserAct.Count()));
+            return StatusCode(200, new TransActionPagedResponse(getUserActivities, page, pageSize, _unitOfWork.UserActivity.Count()));
 
+        }
+
+        [HttpGet("event/{eventId}/user/{userId}")]
+        public IActionResult GetUserActivityByEventUser(int eventId, int userId)
+        {
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var user = _unitOfWork.User.GetByGuid(userGuid);
+            if (user.Role.Name.ToLower() != "admin" || user.UserId != userId)
+            {
+                return BadRequest(new TransActionResponse("Unauthorized user"));
+            }
+
+            var userActivities = _unitOfWork.UserActivity.GetAllByEventUser(eventId, userId);
+            return StatusCode(200, new TransActionResponse(_mapper.Map<IEnumerable<UserActivityDto>>(userActivities)));
         }
 
         [HttpGet("{id}", Name = "GetThatUserActivity")]
@@ -33,7 +50,7 @@ namespace TransAction.API.Controllers
         {
             try
             {
-                var getUserActivity = _unitOfWork.UserAct.GetUserActivity(id);
+                var getUserActivity = _unitOfWork.UserActivity.GetUserActivity(id);
 
                 if (getUserActivity == null)
                 {
@@ -68,9 +85,17 @@ namespace TransAction.API.Controllers
                 return BadRequest(new TransActionResponse(ModelState));
             }
 
+            var eventEntity = _unitOfWork.Event.GetById(createUserActivity.EventId);
+
+            if (eventEntity == null)
+                return NotFound(new TransActionResponse("Event not found"));
+
+            if (createUserActivity.ActivityTimestamp < eventEntity.StartDate || createUserActivity.ActivityTimestamp > eventEntity.EndDate)
+                return BadRequest(new TransActionResponse("Activity time is outside of event start and end date"));
+
             var newUserActivity = _mapper.Map<TraUserActivity>(createUserActivity);
 
-            _unitOfWork.UserAct.Create(newUserActivity);
+            _unitOfWork.UserActivity.Create(newUserActivity);
 
             if (!_unitOfWork.Save())
             {
@@ -89,7 +114,7 @@ namespace TransAction.API.Controllers
                 return BadRequest(new TransActionResponse(ModelState));
             }
 
-            var userActivityEntity = _unitOfWork.UserAct.GetUserActivity(id);
+            var userActivityEntity = _unitOfWork.UserActivity.GetUserActivity(id);
             if (userActivityEntity == null) return StatusCode(404, new TransActionResponse("User Activity Not Found"));
 
             _mapper.Map(updateUserActivity, userActivityEntity);
@@ -103,10 +128,10 @@ namespace TransAction.API.Controllers
         }
 
 
-        [HttpGet("event/{eventId}")]
+        [HttpGet("score/event/{eventId}")]
         public IActionResult EventSpecificScore(int eventId)
         {
-            var score = _unitOfWork.UserAct.EventSpecificScore(eventId);
+            var score = _unitOfWork.UserActivity.EventSpecificScore(eventId);
 
             var result = new EventSpecificScoreDto
             {
@@ -117,63 +142,67 @@ namespace TransAction.API.Controllers
 
         }
 
-        [HttpGet("user/{userId}/event/{eventId}")]
+        [HttpGet("score/user/{userId}/event/{eventId}")]
         public IActionResult UserSpecificScore(int userId, int eventId)
         {
-            var score = _unitOfWork.UserAct.UserSpecificScore(userId, eventId);
+            var eventEntity = _unitOfWork.Event.GetById(eventId);
+            var score = _unitOfWork.UserActivity.UserSpecificScore(userId, eventId);
             var result = new UserScoreDto
             {
                 EventId = eventId,
                 UserId = userId,
-                Score = score
+                Score = score,
+                EventName = eventEntity.Name
             };
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("team/{teamId}/event/{eventId}")]
+        [HttpGet("score/team/{teamId}/event/{eventId}")]
         public IActionResult TeamEventSpecificScore(int teamId, int eventId)
         {
+            var eventEntity = _unitOfWork.Event.GetById(eventId);
             var users = _unitOfWork.User.GetByTeamId(teamId);
-            var score = _unitOfWork.UserAct.TeamEventSpecificScore(users, teamId, eventId);
+            var score = _unitOfWork.UserActivity.TeamEventSpecificScore(users, teamId, eventId);
             var result = new TeamSpecificScoreDto
             {
                 EventId = eventId,
                 TeamId = teamId,
-                Score = score
+                Score = score,
+                EventName = eventEntity.Name
             };
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("team/{teamId}")]
+        [HttpGet("score/team/{teamId}")]
         public IActionResult TeamSpecificScore(int teamId)
         {
             var users = _unitOfWork.User.GetByTeamId(teamId);
-            var score = _unitOfWork.UserAct.TeamSpecificScore(users, teamId);
+            var score = _unitOfWork.UserActivity.TeamSpecificScore(users, teamId);
             return StatusCode(200, new TransActionResponse(score));
         }
 
 
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("score/user/{userId}")]
         public IActionResult CurrentUserScore(int userId)
         {
-            var result = _unitOfWork.UserAct.CurrentUserScore(userId);
+            var result = _unitOfWork.UserActivity.CurrentUserScore(userId);
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("event/{eventId}/top/{number}")]
+        [HttpGet("score/event/{eventId}/top/{number}")]
         public IActionResult TopTeams(int number, int eventId)
         {
-            var result = _unitOfWork.UserAct.TopTeams(number, eventId);
+            var result = _unitOfWork.UserActivity.TopTeams(number, eventId);
 
             return StatusCode(200, new TransActionResponse(result));
         }
 
-        [HttpGet("event/{eventId}/region")]
+        [HttpGet("score/event/{eventId}/region")]
         public IActionResult RegionScore(int eventId)
         {
 
-            var result = _unitOfWork.UserAct.RegionalScore(eventId);
+            var result = _unitOfWork.UserActivity.RegionalScore(eventId);
 
             return StatusCode(200, new TransActionResponse(result));
         }

@@ -10,17 +10,31 @@ import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import EditTopicForm from './forms/EditTopicForm';
+import ScrollLoader from './fragments/ScollLoader';
 
+import * as api from '../api/api';
 import * as Constants from '../Constants';
 
 class MessageBoard extends React.Component {
-  state = { loading: true, showEditTopicForm: false };
+  state = { loading: true, showEditTopicForm: false, searchTerm: undefined, page: 0, pageSize: 10, pageCount: 1 };
 
   componentDidMount() {
-    this.props.fetchTopics().then(() => {
-      this.setState({ loading: false });
-    });
+    api.resetCancelTokenSource();
+    this.loadData();
   }
+
+  componentWillUnmount() {
+    api.cancelRequest();
+  }
+
+  loadData = () => {
+    const nextPage = this.state.page + 1;
+    if (this.state.page < this.state.pageCount) {
+      this.props.fetchTopics(this.state.searchTerm, nextPage, this.state.pageSize).then(pageCount => {
+        this.setState({ loading: false, page: nextPage, pageCount });
+      });
+    }
+  };
 
   showEditTopicForm = () => {
     this.setState({ showEditTopicForm: true });
@@ -39,48 +53,50 @@ class MessageBoard extends React.Component {
 
     return (
       <React.Fragment>
-        <Table size="sm" bordered responsive>
-          <thead className="thead-dark">
-            <tr>
-              <th>Topics</th>
-              <th>Replies</th>
-              <th>Last Post</th>
-            </tr>
-          </thead>
-          <tbody>
-            {topics.map(topic => {
-              const lastMessage = topic.messages[topic.messages.length - 1];
-              const postTime = moment(topic.dbCreateTimestamp);
-              const lastUpdateTime = moment.max(moment(lastMessage.dbCreateTimestamp), moment(topic.dbCreateTimestamp));
-              return (
-                <tr key={topic.id}>
-                  <td>
-                    <div>
-                      <strong>
-                        <Link to={`${Constants.PATHS.MESSAGES}/${topic.id}`}>{topic.title}</Link>
-                      </strong>
-                    </div>
-                    <div>
-                      <small>
-                        by <Link to={`${Constants.PATHS.PROFILE}/${topic.userId}`}>{topic.userName}</Link> >>{' '}
-                        {postTime.format(Constants.MESSAGE_DATE_FORMAT)}
-                      </small>
-                    </div>
-                  </td>
-                  <td>{topic.postCount}</td>
+        <ScrollLoader loader={this.loadData} page={this.state.page} pageCount={this.state.pageCount}>
+          <Table size="sm" bordered responsive>
+            <thead className="thead-dark">
+              <tr>
+                <th>Topics</th>
+                <th>Replies</th>
+                <th>Last Post</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topics.map(topic => {
+                const lastMessage = topic.messages[topic.messages.length - 1];
+                const postTime = moment(topic.dbCreateTimestamp);
+                const lastUpdateTime = moment(lastMessage.dbCreateTimestamp);
+                return (
+                  <tr key={topic.id}>
+                    <td>
+                      <div>
+                        <strong>
+                          <Link to={`${Constants.PATHS.MESSAGES}/${topic.id}`}>{topic.title}</Link>
+                        </strong>
+                      </div>
+                      <div>
+                        <small>
+                          by <Link to={`${Constants.PATHS.PROFILE}/${topic.userId}`}>{topic.userName}</Link> >>{' '}
+                          {postTime.format(Constants.MESSAGE_DATE_FORMAT)}
+                        </small>
+                      </div>
+                    </td>
+                    <td>{topic.postCount}</td>
 
-                  <td>
-                    <small>
-                      by <Link to={`${Constants.PATHS.PROFILE}/${lastMessage.userId}`}>{lastMessage.userName}</Link>
-                      <br />
-                      {lastUpdateTime.format(Constants.MESSAGE_DATE_FORMAT)}
-                    </small>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+                    <td>
+                      <small>
+                        by <Link to={`${Constants.PATHS.PROFILE}/${lastMessage.userId}`}>{lastMessage.userName}</Link>
+                        <br />
+                        {lastUpdateTime.format(Constants.MESSAGE_DATE_FORMAT)}
+                      </small>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </ScrollLoader>
       </React.Fragment>
     );
   }
@@ -116,16 +132,7 @@ class MessageBoard extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    topics: _.orderBy(
-      Object.values(state.messages),
-      topic => {
-        const lastMessage = topic.messages[topic.messages.length - 1];
-        const lastUpdateTime = moment.max(moment(lastMessage.dbCreateTimestamp), moment(topic.dbCreateTimestamp));
-
-        return lastUpdateTime;
-      },
-      ['desc']
-    ),
+    topics: _.orderBy(Object.values(state.messages), ['lastMessageTimestamp'], ['desc']),
   };
 };
 

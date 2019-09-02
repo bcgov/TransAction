@@ -1,6 +1,12 @@
 import _ from 'lodash';
 
-import { FETCH_USERS, FETCH_USER, FETCH_CURRENT_USER, SET_CURRENT_USER_ROLE } from '../actions/types';
+import {
+  FETCH_USERS,
+  FETCH_ADMIN_USERS,
+  FETCH_USER,
+  FETCH_CURRENT_USER,
+  SET_CURRENT_USER_ROLE,
+} from '../actions/types';
 
 const defaultState = {
   current: {},
@@ -10,7 +16,8 @@ const defaultState = {
 export default (state = defaultState, action) => {
   switch (action.type) {
     case FETCH_USERS:
-      return { ...state, all: { ..._.mapKeys(action.payload, 'id') } };
+    case FETCH_ADMIN_USERS:
+      return { ...state, all: { ...state.all, ..._.mapKeys(action.payload, 'id') } };
     case FETCH_USER:
       return { ...state, all: { ...state.all, [action.payload.id]: action.payload } };
     case FETCH_CURRENT_USER:

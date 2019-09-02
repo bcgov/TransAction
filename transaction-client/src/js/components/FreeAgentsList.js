@@ -8,6 +8,7 @@ import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
 
+import * as api from '../api/api';
 import * as utils from '../utils';
 
 class FreeAgentsList extends Component {
@@ -20,6 +21,7 @@ class FreeAgentsList extends Component {
   };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     const { fetchUsers, fetchTeam, teams, currentUser } = this.props;
 
     fetchUsers()
@@ -32,6 +34,10 @@ class FreeAgentsList extends Component {
       });
   }
 
+  componentWillUnmount() {
+    api.cancelRequest();
+  }
+
   handleRecruitUser = (confirm, userId) => {
     if (confirm) {
       const { teams, currentUser, addUserToTeam, fetchUser } = this.props;
@@ -39,7 +45,7 @@ class FreeAgentsList extends Component {
 
       addUserToTeam({ userId, teamId: team.id })
         .then(() => Promise.all([fetchUser(userId), fetchTeam[team.id]]))
-        .then(() => this.closeConfirmDialog());
+        .finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }

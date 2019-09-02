@@ -13,9 +13,9 @@ namespace TransAction.Data.Repositories
         {
         }
 
-        public bool ActivityExists(string Name)
+        public bool Exists(string Name, int intensity)
         {
-            var checkActivity = FindAll().FirstOrDefault(c => c.Name == Name);
+            var checkActivity = FindAll().FirstOrDefault(c => c.Name == Name && c.Intensity == intensity);
             if (checkActivity != null)
             {
                 return true;

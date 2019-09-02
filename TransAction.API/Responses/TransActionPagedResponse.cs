@@ -10,17 +10,14 @@ namespace TransAction.API.Responses
     {
         public TransActionPagedResponse(object responseData, int page, int pageSize, int itemCount) : base(responseData)
         {
-            this.Page = page;
-            this.PageSize = pageSize;
-            this.ItemCount = itemCount;
-            if (itemCount < pageSize || pageSize <= 0)
-            {
-                PageCount = 1;
-            }
-            else
-            {
+            Page = page;
+            PageSize = pageSize;
+            ItemCount = itemCount;
+            PageCount = 1;
 
-                PageCount = (int)Math.Ceiling((decimal)itemCount / (decimal)pageSize);
+            if (itemCount > pageSize)
+            {
+                PageCount = (int)Math.Ceiling((double)itemCount / (double)pageSize);
             }
         }
 

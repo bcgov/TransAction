@@ -12,7 +12,7 @@
         IRoleRepository Role { get; }
         IRequestRepository Request { get; }
         IImageRepository Image { get; }
-        IUserActivityRepository UserAct { get; }
+        IUserActivityRepository UserActivity { get; }
         bool Save();
     }
 }

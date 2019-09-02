@@ -7,10 +7,19 @@ import EditTeamForm from './forms/EditTeamForm';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
+import * as api from '../api/api';
 import * as Constants from '../Constants';
 
 class GettingStarted extends React.Component {
   state = { showCreateTeamForm: false };
+
+  componentDidMount() {
+    api.resetCancelTokenSource();
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
+  }
 
   showCreateTeamForm = () => {
     this.setState({ showCreateTeamForm: true });

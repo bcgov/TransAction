@@ -1,8 +1,12 @@
-import api from '../api/api';
+import * as api from '../api/api';
 import { getApiReponseData, buildApiErrorObject } from '../utils';
 import {
   FETCH_ACTIVITY_LIST,
+  CREATE_ACTIVITY_TYPE,
+  EDIT_ACTIVITY_TYPE,
+  DELETE_ACTIVITY_TYPE,
   CREATE_USER_ACTIVITY,
+  FETCH_USER_ACTIVITIES,
   FETCH_USER_SCORES,
   FETCH_TEAM_SCORES,
   FETCH_USER_EVENT_SCORE,
@@ -14,129 +18,224 @@ import {
 
 //Activity Actions
 
-export const fetchActivityList = () => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get('/activities');
-      const data = getApiReponseData(response);
-      dispatch({ type: FETCH_ACTIVITY_LIST, payload: data });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+export const fetchActivityList = () => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get('/activities', { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_ACTIVITY_LIST, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
-export const createUserActivity = activityObj => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // create new activity, should contain minutes, activity type, team id , user id, event id
-      const response = await api.post(`/useractivity`, activityObj);
-      const data = getApiReponseData(response);
+export const createActivityType = activityType => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .post(`/activities/`, activityType, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: CREATE_ACTIVITY_TYPE, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
 
-      dispatch({ type: CREATE_USER_ACTIVITY, payload: data });
-      dispatch(fetchUserEventScore(activityObj.userId, activityObj.eventId));
-      dispatch(fetchTeamEventScore(activityObj.teamId, activityObj.eventId));
+export const editActivityType = (id, activityType) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .put(`/activities/${id}`, activityType, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: EDIT_ACTIVITY_TYPE, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
 
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+export const deleteActivityType = id => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .delete(`/activities/${id}`, { cancelToken: api.cancelTokenSource.token })
+      .then(() => {
+        dispatch({ type: DELETE_ACTIVITY_TYPE, payload: id });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const fetchEventUserActivityList = (eventId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get(`/useractivities/event/${eventId}/user/${userId}`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_USER_ACTIVITIES, payload: data });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const createUserActivity = activityObj => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .post(`/useractivities`, activityObj, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: CREATE_USER_ACTIVITY, payload: data });
+        dispatch(fetchUserEventScore(activityObj.userId, activityObj.eventId));
+        dispatch(fetchTeamEventScore(activityObj.teamId, activityObj.eventId));
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
 //Score Actions
 
-export const fetchUserEventScore = (userId, eventId) => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // this fetches a specific user score for a specific event
-      const response = await api.get(`/useractivity/user/${userId}/event/${eventId}`);
-      const data = getApiReponseData(response);
-      dispatch({ type: FETCH_USER_EVENT_SCORE, payload: { userId, eventId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+export const fetchUserEventScore = (userId, eventId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get(`/useractivities/score/user/${userId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_USER_EVENT_SCORE, payload: { userId, eventId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
-export const fetchAllUserScores = userId => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // this fetches a specific user scores for ALL active events
-      const response = await api.get(`/useractivity/user/${userId}`);
-      const data = getApiReponseData(response);
+export const fetchAllUserScores = userId => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get(`/useractivities/score/user/${userId}`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_USER_SCORES, payload: { userId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+        dispatch({ type: FETCH_USER_SCORES, payload: { userId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
-export const fetchTeamEventScore = (teamId, eventId) => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // specific team specific event
-      const response = await api.get(`/useractivity/team/${teamId}/event/${eventId}`);
-      const data = getApiReponseData(response);
-      dispatch({ type: FETCH_TEAM_EVENT_SCORE, payload: { teamId, eventId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+export const fetchTeamEventScore = (teamId, eventId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get(`/useractivities/score/team/${teamId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_TEAM_EVENT_SCORE, payload: { teamId, eventId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
-export const fetchAllTeamScores = teamId => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // specific team all ACTIVE events
-      const response = await api.get(`/useractivity/team/${teamId}`);
-      const data = getApiReponseData(response);
+export const fetchAllTeamScores = teamId => dispatch => {
+  return new Promise((resolve, reject) => {
+    // specific team all ACTIVE events
+    api.instance
+      .get(`/useractivities/score/team/${teamId}`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
 
-      dispatch({ type: FETCH_TEAM_SCORES, payload: { teamId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+        dispatch({ type: FETCH_TEAM_SCORES, payload: { teamId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
-export const fetchTeamStandings = (eventId, teamCount = 20) => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get(`/useractivity/event/${eventId}/top/${teamCount}`);
-      const data = getApiReponseData(response);
-
-      dispatch({ type: FETCH_TEAM_STANDINGS, payload: { eventId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+export const fetchTeamStandings = (eventId, teamCount = 20) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get(`/useractivities/score/event/${eventId}/top/${teamCount}`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_TEAM_STANDINGS, payload: { eventId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };
 
-export const fetchRegionStandings = eventId => async dispatch => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await api.get(`/useractivity/event/${eventId}/region`);
-      const data = getApiReponseData(response);
-
-      dispatch({ type: FETCH_REGION_STANDINGS, payload: { eventId, data: data } });
-      resolve();
-    } catch (e) {
-      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-      reject(e);
-    }
+export const fetchRegionStandings = eventId => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get(`/useractivities/score/event/${eventId}/region`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_REGION_STANDINGS, payload: { eventId, data: data } });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
   });
 };

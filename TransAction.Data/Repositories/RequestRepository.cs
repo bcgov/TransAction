@@ -15,25 +15,19 @@ namespace TransAction.Data.Repositories
 
         public int Count()
         {
-            return FindAll().Where(x => x.IsActive == true).OrderBy(c => c.MemberReqId).Count();
+            return Find(x => x.IsActive == true).OrderBy(c => c.MemberReqId).Count();
         }
 
-        public IEnumerable<MemberReqDto> CurrentTeamReq(int teamId)
+        public IEnumerable<TraMemberReq> GetByTeamId(int teamId)
         {
-            var teamRequests = Find()
-                .Where(p => p.TeamId == teamId)
-                .Where(p => p.IsActive == true)
-                    .Select(x => new MemberReqDto()
-                    {
-                        MemberReqId = x.MemberReqId,
-                        TeamId = teamId,
-                        UserId = x.UserId,
-                        IsActive = x.IsActive,
-                        ConcurrencyControlNumber = x.ConcurrencyControlNumber
-                    })
-                    .ToList();
+            var teamRequests = Find(p => p.TeamId == teamId && p.IsActive == true).ToList();
 
+            return teamRequests;
+        }
 
+        public IEnumerable<TraMemberReq> GetByUserId(int userId)
+        {
+            var teamRequests = Find(p => p.UserId == userId && p.IsActive == true).ToList();
 
             return teamRequests;
         }
@@ -41,7 +35,7 @@ namespace TransAction.Data.Repositories
         public IEnumerable<TraMemberReq> GetAllReq(int page, int pageSize)
         {
             if (--page < 0) page = 0;
-            return FindAll().Where(x => x.IsActive == true).OrderBy(c => c.MemberReqId).Skip(page * pageSize).Take(pageSize).ToList();
+            return Find(x => x.IsActive == true).OrderBy(c => c.MemberReqId).Skip(page * pageSize).Take(pageSize).ToList();
         }
 
         public TraMemberReq GetReqById(int id)

@@ -9,12 +9,14 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import MessagePostFragment from './fragments/MessagePostFragment';
 import EditMessageForm from './forms/EditMessageForm';
 
+import * as api from '../api/api';
 import * as Constants from '../Constants';
 
 class MessageBoardTopicDetail extends React.Component {
   state = { loading: true, topicId: null, showReplyForm: false };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     const topicId = parseInt(this.props.match.params.id);
     const { messages, fetchTopicDetail } = this.props;
 
@@ -25,6 +27,10 @@ class MessageBoardTopicDetail extends React.Component {
     } else {
       this.setState({ loading: false, topicId });
     }
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   showReplyForm = () => {

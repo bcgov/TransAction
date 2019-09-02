@@ -9,16 +9,16 @@ namespace TransAction.API.Helpers
 {
     public class UserHelper
     {
-          
 
-     
+
+
         public static string GetUserGuid(IHttpContextAccessor httpContextAccessor)
         {
-             String userGuid = httpContextAccessor.HttpContext.User.FindFirst("idir_guid").Value;
-                       
+            String userGuid = httpContextAccessor.HttpContext.User.FindFirst("idir_guid").Value;
+
             return userGuid;
         }
-        
-        
+
+
     }
 }

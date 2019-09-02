@@ -5,7 +5,8 @@ namespace TransAction.Data.Repositories.Interfaces
 {
     public interface IUserActivityRepository
     {
-        IEnumerable<TraUserActivity> GetAllUserActivities(int page, int pageSize);
+        IEnumerable<TraUserActivity> GetAll(int page, int pageSize);
+        IEnumerable<TraUserActivity> GetAllByEventUser(int eventId, int userId);
         void Create(TraUserActivity newUserActivity);
         void Update(TraUserActivity updateUserActivity);
         TraUserActivity GetUserActivity(int id);
@@ -17,6 +18,7 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TeamSpecificScoreDto> TopTeams(int number, int eventId);
         IEnumerable<RegionScoreDto> RegionalScore(int eventId);
         int Count();
+        int CountByActivityType(int activityId);
 
     }
 }

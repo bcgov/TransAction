@@ -555,6 +555,10 @@ namespace TransAction.Data.Models
                     .HasColumnName("CONCURRENCY_CONTROL_NUMBER")
                     .HasDefaultValueSql("((1))");
 
+                entity.Property(e => e.LastMessageTimestamp)
+                    .HasColumnName("LAST_MESSAGE_TIMESTAMP")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.DbCreateTimestamp)
                     .HasColumnName("DB_CREATE_TIMESTAMP")
                     .HasColumnType("datetime");
