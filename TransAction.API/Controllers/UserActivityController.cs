@@ -8,6 +8,8 @@ using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
 using TransAction.API.Responses;
+using TransAction.API.Authorization;
+using TransAction.API.Helpers;
 
 namespace TransAction.API.Controllers
 {
@@ -19,6 +21,7 @@ namespace TransAction.API.Controllers
             base(httpContextAccessor, logger, unitOfWork, mapper)
         { }
 
+        [ClaimRequirement(AuthorizationTypes.ADMIN_CLAIM)]
         [HttpGet()]
         public IActionResult GetUserActivity(int page = 1, int pageSize = 25)
         {
@@ -31,6 +34,13 @@ namespace TransAction.API.Controllers
         [HttpGet("event/{eventId}/user/{userId}")]
         public IActionResult GetUserActivityByEventUser(int eventId, int userId)
         {
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var user = _unitOfWork.User.GetByGuid(userGuid);
+            if (user.Role.Name.ToLower() != "admin" || user.UserId != userId)
+            {
+                return BadRequest(new TransActionResponse("Unauthorized user"));
+            }
+
             var userActivities = _unitOfWork.UserActivity.GetAllByEventUser(eventId, userId);
             return StatusCode(200, new TransActionResponse(_mapper.Map<IEnumerable<UserActivityDto>>(userActivities)));
         }

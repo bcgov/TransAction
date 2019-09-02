@@ -6,6 +6,7 @@ import {
   EDIT_ACTIVITY_TYPE,
   DELETE_ACTIVITY_TYPE,
   CREATE_USER_ACTIVITY,
+  FETCH_USER_ACTIVITIES,
   FETCH_USER_SCORES,
   FETCH_TEAM_SCORES,
   FETCH_USER_EVENT_SCORE,
@@ -77,6 +78,24 @@ export const deleteActivityType = id => dispatch => {
       .delete(`/activities/${id}`, { cancelToken: api.cancelTokenSource.token })
       .then(() => {
         dispatch({ type: DELETE_ACTIVITY_TYPE, payload: id });
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const fetchEventUserActivityList = (eventId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .get(`/useractivities/event/${eventId}/user/${userId}`, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: FETCH_USER_ACTIVITIES, payload: data });
         resolve();
       })
       .catch(e => {
