@@ -81,6 +81,8 @@
     <Build Include="dbo\Views\TRA_TEAM_VW.sql" />
     <Build Include="dbo\Tables\TRA_IMAGE.sql" />
     <Build Include="dbo\Views\TRA_USER_VW.sql" />
+    <Build Include="dbo\Tables\TRA_CONTENT.sql" />
+    <Build Include="dbo\Tables\TRA_CONTENT_TYPE.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="TransAction.SQL.refactorlog" />
