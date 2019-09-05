@@ -8,6 +8,7 @@ using TransAction.Data.Models;
 using TransAction.Data.Repositories.Interfaces;
 using AutoMapper;
 using TransAction.API.Responses;
+using TransAction.API.Helpers;
 
 namespace TransAction.API.Controllers
 {
@@ -20,15 +21,17 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetRequests(int page = 1, int pageSize = 25)
+        public IActionResult GetRequests()
         {
-            var request = _unitOfWork.Request.GetAllReq(page, pageSize);
+            var guid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var user = _unitOfWork.User.GetByGuid(guid);
+            var request = _unitOfWork.Request.GetByUserId(user.UserId);
             var getRequest = _mapper.Map<IEnumerable<MemberReqDto>>(request);
-            return StatusCode(200, new TransActionPagedResponse(getRequest, page, pageSize, _unitOfWork.Request.Count()));
+            return StatusCode(200, new TransActionResponse(getRequest));
         }
 
         [HttpGet("{id}", Name = "GetMemberReq")]
-        public IActionResult GetUserActivityById(int id)
+        public IActionResult GetmemberRequestById(int id)
         {
             try
             {
@@ -40,8 +43,8 @@ namespace TransAction.API.Controllers
                 }
                 var getRequest = _unitOfWork.Request.GetReqById(id);
                 var getUserResult = _mapper.Map<MemberReqDto>(getRequest);
-                return StatusCode(200, new TransActionResponse(getUserResult));
 
+                return StatusCode(200, new TransActionResponse(getUserResult));
             }
 
             catch (Exception)
@@ -111,8 +114,8 @@ namespace TransAction.API.Controllers
         [HttpGet("team/{teamId}")]
         public IActionResult CurrentTeamRequests(int teamId)
         {
-            var result = _unitOfWork.Request.CurrentTeamReq(teamId);
-            return StatusCode(200, new TransActionResponse(result));
+            var result = _unitOfWork.Request.GetByTeamId(teamId);
+            return StatusCode(200, new TransActionResponse(_mapper.Map<IEnumerable<MemberReqDto>>(result)));
         }
     }
 }

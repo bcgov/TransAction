@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Card, CardBody, CardHeader, Button, Progress } from 'reactstrap';
 
 import LogActivityForm from '../forms/LogActivityForm';
+import ActivityJournalModal from '../ui/ActivityJournalModal';
 import * as Constants from '../../Constants';
 
 const ScoreRow = ({ score, description }) => {
@@ -22,7 +23,7 @@ const ScoreRow = ({ score, description }) => {
 };
 
 class UserScoreCard extends React.Component {
-  state = { loading: true, showLogActivityForm: false };
+  state = { loading: true, showLogActivityForm: false, showActivityJournal: false };
 
   showLogActivityForm = () => {
     this.setState({ showLogActivityForm: true });
@@ -34,13 +35,23 @@ class UserScoreCard extends React.Component {
     }));
   };
 
-  handleOnClick = () => {
+  showActivityJournal = () => {
+    this.setState({ showActivityJournal: true });
+  };
+
+  toggleActivityJournal = () => {
+    this.setState(prevState => ({
+      showActivityJournal: !prevState.showActivityJournal,
+    }));
+  };
+
+  handleShowLogActivityFormClick = () => {
     this.showLogActivityForm(this.props.event.id);
   };
 
   renderLogActivityButton = () => {
     return (
-      <Button color="primary" className="btn-sm" onClick={this.handleOnClick}>
+      <Button color="primary" className="btn-sm" onClick={this.handleShowLogActivityFormClick}>
         Log Activity
       </Button>
     );
@@ -63,7 +74,12 @@ class UserScoreCard extends React.Component {
                 </Link>
               </Col>
               {cardWidth === Constants.USER_SCORE_CARD_WIDTH.WIDE && (
-                <Col className="text-right">{this.renderLogActivityButton()}</Col>
+                <Col className="text-right">
+                  {this.renderLogActivityButton()}
+                  <Button color="primary" className="btn-sm ml-2" onClick={this.showActivityJournal}>
+                    View Journal
+                  </Button>
+                </Col>
               )}
             </Row>
           </CardHeader>
@@ -88,6 +104,13 @@ class UserScoreCard extends React.Component {
             toggle={this.toggleLogActivityForm}
             eventId={event.id}
             refreshStandings={refreshStandings}
+          />
+        )}
+        {this.state.showActivityJournal && (
+          <ActivityJournalModal
+            isOpen={this.state.showActivityJournal}
+            toggle={this.toggleActivityJournal}
+            eventId={event.id}
           />
         )}
       </React.Fragment>

@@ -12,6 +12,7 @@ import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 
@@ -22,7 +23,12 @@ class Team extends Component {
   };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     this.init(this.props.match.params.id);
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   componentDidUpdate(prevProps) {

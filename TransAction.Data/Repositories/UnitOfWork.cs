@@ -149,17 +149,17 @@ namespace TransAction.Data.Repositories
             }
         }
 
-        private IUserActivityRepository _userAct;
-        public IUserActivityRepository UserAct
+        private IUserActivityRepository _userActivity;
+        public IUserActivityRepository UserActivity
         {
             get
             {
-                if (_userAct == null)
+                if (_userActivity == null)
                 {
-                    _userAct = new UserActivityRepository(_context);
+                    _userActivity = new UserActivityRepository(_context);
                 }
 
-                return _userAct;
+                return _userActivity;
             }
         }
 

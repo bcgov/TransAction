@@ -1,34 +1,59 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Alert, Row, Col, Table, Button } from 'reactstrap';
+import { Alert, Row, Col, Input, Table, Button } from 'reactstrap';
+import _ from 'lodash';
 
-import { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
+import { fetchTeams, fetchCurrentTeam, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import DialogModal from './ui/DialogModal';
+import ScrollLoader from './fragments/ScollLoader';
 
+import * as api from '../api/api';
 import * as Constants from '../Constants';
 
 class TeamsList extends Component {
-  state = { loading: true, showConfirmDialog: false, confirmDialogOptions: {} };
+  state = {
+    loading: true,
+    showConfirmDialog: false,
+    confirmDialogOptions: {},
+    searchTerm: undefined,
+    page: 0,
+    pageSize: 15,
+    pageCount: 1,
+    teamSearchTerm: '',
+  };
 
   componentDidMount() {
-    this.setState({ loading: true });
-    Promise.all([this.props.fetchTeams(), this.props.fetchJoinRequests()])
-      .then(() => {
-        this.setState({ loading: false });
-      })
-      .catch(() => {});
+    api.resetCancelTokenSource();
+    const { currentUser, teams, fetchCurrentTeam, fetchJoinRequests } = this.props;
+    if (currentUser.teamId && !teams[currentUser.teamId]) {
+      fetchCurrentTeam();
+    }
+
+    fetchJoinRequests();
+    this.loadData();
   }
+
+  componentWillUnmount() {
+    api.cancelRequest();
+  }
+
+  loadData = () => {
+    const nextPage = this.state.page + 1;
+    if (this.state.page < this.state.pageCount) {
+      this.props.fetchTeams(this.state.searchTerm, nextPage, this.state.pageSize).then(pageCount => {
+        this.setState({ loading: false, page: nextPage, pageCount });
+      });
+    }
+  };
 
   sendJoinRequest = (confirm, userId, teamId) => {
     if (confirm) {
-      this.props.createJoinRequest({ userId, teamId }).then(() => {
-        this.closeConfirmDialog();
-      });
+      this.props.createJoinRequest({ userId, teamId }).finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }
@@ -51,7 +76,7 @@ class TeamsList extends Component {
       const { currentUser, editUser } = this.props;
       const userObj = { ...currentUser, isFreeAgent: true };
 
-      editUser(userObj.id, userObj).then(() => this.closeConfirmDialog());
+      editUser(userObj.id, userObj).finally(() => this.closeConfirmDialog());
     } else {
       this.closeConfirmDialog();
     }
@@ -84,7 +109,17 @@ class TeamsList extends Component {
         return request.teamId;
       });
 
-    var teams = Object.values(this.props.teams).map(team => {
+    const teamSearchTerm = this.state.teamSearchTerm.trim().toUpperCase();
+    let filteredTeams = Object.values(this.props.teams);
+
+    if (this.state.teamSearchTerm.trim() !== '')
+      filteredTeams = _.filter(filteredTeams, t => {
+        return t.name.toUpperCase().includes(teamSearchTerm);
+      });
+
+    var teams = _.orderBy(filteredTeams, user => {
+      return user.name.toLowerCase();
+    }).map(team => {
       return (
         <tr key={team.id}>
           <td>
@@ -110,6 +145,13 @@ class TeamsList extends Component {
     return teams;
   }
 
+  handleTeamSearchTermChanged = e => {
+    this.setState({ teamSearchTerm: e.target.value });
+
+    const value = e.target.value.trim();
+    if (value !== '') this.props.fetchTeams(e.target.value.trim());
+  };
+
   renderTeamList() {
     const teamRows = this.renderTeamRows();
 
@@ -124,19 +166,41 @@ class TeamsList extends Component {
             </Button>
           </div>
         )}
+
+        <Row className="mb-3">
+          <Col sm={0} md={6} />
+          <Col sm={12} md={6}>
+            <Input
+              type="text"
+              id="teamSearchTerm"
+              placeholder="Search by team name"
+              bsSize="sm"
+              value={this.state.teamSearchTerm}
+              onChange={this.handleTeamSearchTermChanged}
+            />
+          </Col>
+        </Row>
+
         {teamRows.length > 0 ? (
-          <Table size="sm" hover bordered responsive>
-            <thead className="thead-dark">
-              <tr>
-                <th>Team Name</th>
-                <th>Team Leader</th>
-                <th>Region</th>
-                <th>Members</th>
-                {!this.props.currentUser.teamId && <th className="fit" />}
-              </tr>
-            </thead>
-            <tbody>{teamRows}</tbody>
-          </Table>
+          <ScrollLoader
+            loader={this.loadData}
+            page={this.state.page}
+            pageCount={this.state.pageCount}
+            shouldLoad={this.state.teamSearchTerm.trim() === ''}
+          >
+            <Table size="sm" hover bordered responsive>
+              <thead className="thead-dark">
+                <tr>
+                  <th>Team Name</th>
+                  <th>Team Leader</th>
+                  <th>Region</th>
+                  <th>Members</th>
+                  {!this.props.currentUser.teamId && <th className="fit" />}
+                </tr>
+              </thead>
+              <tbody>{teamRows}</tbody>
+            </Table>
+          </ScrollLoader>
         ) : (
           <Alert color="primary">There are no teams at the moment.</Alert>
         )}
@@ -155,10 +219,17 @@ class TeamsList extends Component {
 
     if (currentUser.teamId) {
       output = (
-        <p>
-          You are on team <strong>{teams[currentUser.teamId].name}</strong>!{' '}
-          <Link to={`${Constants.PATHS.TEAM}/${currentUser.teamId}`}>View Details</Link>.
-        </p>
+        <div>
+          {teams[currentUser.teamId] && (
+            <Link
+              to={`${Constants.PATHS.TEAM}/${currentUser.teamId}`}
+              className="text-decoration-none"
+              style={{ fontSize: '2rem', fontWeight: '900' }}
+            >
+              {teams[currentUser.teamId].name} <Button color="primary">View</Button>
+            </Link>
+          )}
+        </div>
       );
     } else {
       output = (
@@ -170,7 +241,7 @@ class TeamsList extends Component {
 
     return (
       <React.Fragment>
-        <h4>Personal Team Status</h4>
+        <h4>Personal Team</h4>
         {output}
       </React.Fragment>
     );
@@ -214,5 +285,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchTeams, fetchUsers, editUser, createJoinRequest, fetchJoinRequests }
+  { fetchTeams, fetchCurrentTeam, fetchUsers, editUser, createJoinRequest, fetchJoinRequests }
 )(TeamsList);

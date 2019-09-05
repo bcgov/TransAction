@@ -21,11 +21,11 @@ namespace TransAction.API.Controllers
         { }
 
         [HttpGet()]
-        public IActionResult GetRoles(int page = 1, int pageSize = 25)
+        public IActionResult GetRoles()
         {
-            var roles = _unitOfWork.Role.GetAllRoles(page, pageSize);
+            var roles = _unitOfWork.Role.GetAllRoles();
             var getRoles = _mapper.Map<IEnumerable<RoleDto>>(roles);
-            return StatusCode(200, new TransActionPagedResponse(getRoles, page, pageSize, _unitOfWork.Role.Count()));
+            return StatusCode(200, new TransActionResponse(getRoles));
 
         }
 

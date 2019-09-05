@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using TransAction.API.Authentication;
 using TransAction.API.Extensions;
+using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories;
 using TransAction.Data.Repositories.Interfaces;
@@ -62,7 +63,6 @@ namespace TransAction.API
                 builder =>
                 {
                     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-
                 });
             });
 
@@ -70,7 +70,8 @@ namespace TransAction.API
             {
                 options.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
             })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            .AddJsonOptions(a => a.SerializerSettings.Converters.Add(new TrimmingConverter()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -11,10 +11,10 @@ class DatePickerInput extends React.Component {
   };
 
   handleOnFucus = e => {
-    const { input } = this.props;
+    const { input, maxDate } = this.props;
 
     if (!input.value) {
-      this.props.input.onChange(new Date());
+      this.props.input.onChange(moment.min(moment(), moment(maxDate)).toDate());
     }
 
     input.onFocus(e);
@@ -33,7 +33,9 @@ class DatePickerInput extends React.Component {
       maxDate,
     } = this.props;
 
-    const date = input.value ? moment(input.value, 'YYYY-MM-DD').toDate() : new Date();
+    const date = input.value
+      ? moment(input.value, 'YYYY-MM-DD').toDate()
+      : moment.min(moment(), moment(maxDate)).toDate();
 
     return (
       <FormGroup>

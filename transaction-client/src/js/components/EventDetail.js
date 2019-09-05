@@ -11,17 +11,23 @@ import EventRegionStandings from './fragments/EventRegionStandings';
 import EventScoresPanel from './fragments/EventScoresPanel';
 import CardWrapper from './ui/CardWrapper';
 
+import * as api from '../api/api';
 import * as Constants from '../Constants';
 
 class EventDetail extends React.Component {
   state = { loading: true };
 
   componentDidMount() {
+    api.resetCancelTokenSource();
     const eventId = this.props.match.params.id;
 
     this.props.fetchEvent(eventId).then(() => {
       this.setState({ loading: false });
     });
+  }
+
+  componentWillUnmount() {
+    api.cancelRequest();
   }
 
   renderContent() {

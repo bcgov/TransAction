@@ -64,6 +64,7 @@ namespace TransAction.API.Controllers
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var getUser = _unitOfWork.User.GetByGuid(userGuid);
             newTopic.UserId = getUser.UserId;
+            newTopic.LastMessageTimestamp = DateTime.Now;
 
             _unitOfWork.Topic.Create(newTopic);
             if (!_unitOfWork.Save())
@@ -192,6 +193,7 @@ namespace TransAction.API.Controllers
 
             var topic = _unitOfWork.Topic.GetTopicById(newMessage.TopicId);
             topic.DbLastUpdateTimestamp = DateTime.Now;
+            topic.LastMessageTimestamp = DateTime.Now;
 
             if (!_unitOfWork.Save())
             {
