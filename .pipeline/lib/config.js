@@ -1,7 +1,7 @@
 "use strict";
 const options = require("pipeline-cli").Util.parseArguments();
 const changeId = options.pr; //aka pull-request
-const version = "2.1.0";
+const version = "2.3.1";
 const name = "transaction";
 
 //  prettier-ignore
