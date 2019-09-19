@@ -6,7 +6,7 @@ import CardWrapper from './ui/CardWrapper';
 
 import * as Constants from '../Constants';
 
-const carouselIds = ['01', '02', '03', '04', '05'];
+const carouselIds = ['01', '02', '03', '04', '05', '06', '07'];
 
 class Home extends React.Component {
   state = { slides: [] };
