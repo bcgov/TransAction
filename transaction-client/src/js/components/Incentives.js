@@ -31,11 +31,10 @@ class Incentives extends React.Component {
         <BreadcrumbFragment>{[{ active: true, text: 'Incentives' }]}</BreadcrumbFragment>
 
         <CardWrapper>
-          To keep us all encouraged as we follow our TransAction - Healthy Workplace Challenge, we have a lot of
-          incentives to keep your spirits high this year. Check out a selection of some of the great prizes below to
-          help with your recovery or to supplement your activity of choice. Door prizes will be drawn randomly each
-          week, and prize packages will be awarded to the first, second and third place teams in both the Competitive
-          and Recreational categories!
+          To keep us all motivated during TransAction, we have a lot of incentives to keep your spirits high! Check out
+          a selection of some of the great prizes below to help with your recovery or to supplement your activity of
+          choice. Door prizes will be drawn randomly each week, and prize packages will be awarded to the first, second
+          and third place teams in both the Competitive and Recreational categories!
           <CardColumns className="mt-5">{incentiveCols}</CardColumns>
         </CardWrapper>
       </React.Fragment>
