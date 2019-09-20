@@ -11,7 +11,7 @@ const faqItems = [
   {
     q: 'Why am I experiencing technical difficulties?',
     a:
-      'The new and improved TransAction is best used with Microsoft Edge or Google Chrome. You’ll experience technical difficulties if you are using Internet Explorer.',
+      'The new and improved TransAction is best used with Microsoft Edge, Google Chrome or Mozilla Firefox. You’ll experience technical difficulties if you are using Internet Explorer.',
   },
   {
     q: 'Which event do I enter?',
