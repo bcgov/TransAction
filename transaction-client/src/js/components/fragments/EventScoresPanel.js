@@ -52,6 +52,7 @@ class EventScoresPanel extends React.Component {
             event={this.props.event}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
             refreshStandings={true}
+            showLogButton={true}
           />
         </Col>
       </Row>

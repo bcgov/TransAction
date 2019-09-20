@@ -74,6 +74,7 @@ class ProfileScoresPanel extends React.Component {
             teamScore={combinedScores[key].teamScore}
             event={combinedScores[key].event}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.NARROW}
+            showLogButton={false}
           />
         </Col>
       );
