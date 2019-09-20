@@ -54,14 +54,14 @@ class Home extends React.Component {
               </p>
 
               <p>
-                <h6>Create/Join a Team</h6>
+                <h6>Create or join a team:</h6>
                 To participate in TransAction, you will need to join a team of people you know or create a team by
-                clicking the Get Started button below. Teams can have a maximum of five members. If you would like to
-                make yourself available to join any team in the ministry you will select Join Team and then Become Free
-                Agent. Teams can have a maximum of five members.
+                clicking the Get Started button below. If you would like to make yourself available to join any team in
+                the ministry, click Join Team and then click Become Free Agent. Teams can have a maximum of five
+                members.
               </p>
               <p>
-                <h6>Selecting a Category: Competitive or Recreational</h6>
+                <h6>Entering an event: </h6>
                 One of the exciting changes this year is the introduction of two new categories on the Events page:
                 Competitive and Recreational. If you are competitive by nature and you strive to burn calories daily,
                 you will enter the Competitive category. If you are looking to increase your physical activity but
@@ -70,7 +70,7 @@ class Home extends React.Component {
                 category each week.
               </p>
               <p>
-                <h6>Logging Your Activity</h6>
+                <h6>Logging your activity:</h6>
                 To log your activity, click on the Events page and select your chosen category: Competitive or
                 Recreational. Click on Log Activity to enter your activity in 15-minute increments based on intensity
                 from the dropdown list. If your activity isn’t listed, choose the intensity performed (i.e. Low, Medium
@@ -78,7 +78,7 @@ class Home extends React.Component {
                 performed.
               </p>
               <p>
-                <h6>Prizes</h6>
+                <h6>Prizes:</h6>
                 Your "fitness points" will be automatically calculated and prizes will be awarded to the top three
                 highest ranking teams in both the Competitive and Recreational categories. There will also be a
                 participation prize drawn every week so long as you have joined a TransAction team, you will be eligible
