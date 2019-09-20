@@ -6,7 +6,7 @@ import CardWrapper from './ui/CardWrapper';
 
 import * as Constants from '../Constants';
 
-const carouselIds = ['01', '02', '03', '04'];
+const carouselIds = ['01', '02', '03', '04', '05', '06', '07', '08'];
 
 class Home extends React.Component {
   state = { slides: [] };
@@ -37,24 +37,52 @@ class Home extends React.Component {
         <CardWrapper>
           <Row>
             <Col>
-              <h4 className="text-center">Welcome to TransAction</h4>
+              <h3 className="text-center">Welcome to TransAction</h3>
+              <p className="text-center">
+                <strong>
+                  <em>
+                    Please note the new and improved TransAction website is best
+                    <br /> used with Microsoft Edge, Google Chrome or Mozilla Firefox.
+                  </em>
+                </strong>
+              </p>
               <p>
-                TransAction is a voluntary initiative sponsored by the ministry’s Employee Advisory Forum (EAF) and
-                ministry executive as a fun, dynamic way of getting active during Healthy Workplace Month (October).
-                Ministry employees are encouraged to form teams of five colleagues and earn “fitness points.” Not only
-                do teams compete against one another, but individual time will also help each geographic area compete in
+                TransAction is a voluntary initiative sponsored by the ministry’s Employee Advisory Forum and ministry
+                executive as a fun, dynamic way of getting active during Healthy Workplace Month (October). Not only do
+                teams compete against one another, but individual time will also help each geographic area compete in
                 the four-way battle between regions and headquarters.
               </p>
 
               <p>
-                To participate in TransAction, you will need to register into one of two categories. If you are
-                competitive by nature and you strive to burn calories you will enter the Competitive category. If you
-                are hoping to increase your activity but prefer a less competitive challenge, then you will register
-                into the Recreational category. Each day you will enter your physical activity time on the TransAction
-                website based on level of intensity and in 15-minute increments. Your fitness points will be
-                automatically calculated. Prizes will be awarded to the top three highest ranking teams in both the
-                Competitive and Recreational categories. There will also be a participation prize drawn every week so,
-                if you have joined a TransAction team, you will be eligible to win the weekly prizes.
+                <h6>Create or join a team:</h6>
+                To participate in TransAction, you will need to join a team of people you know or create a team by
+                clicking the Get Started button below. If you would like to make yourself available to join any team in
+                the ministry, click Join Team and then click Become Free Agent. Teams can have a maximum of five
+                members.
+              </p>
+              <p>
+                <h6>Entering an event: </h6>
+                One of the exciting changes this year is the introduction of two new categories on the Events page:
+                Competitive and Recreational. If you are competitive by nature and you strive to burn calories daily,
+                you will enter the Competitive category. If you are looking to increase your physical activity but
+                prefer a less competitive challenge, then you will enter the Recreational category. Your teammates will
+                need to discuss which category you want to participate in. Be sure to log your activity in the same
+                category each week.
+              </p>
+              <p>
+                <h6>Logging your activity:</h6>
+                To log your activity, click on the Events page and select your chosen category: Competitive or
+                Recreational. Click on Log Activity to enter your activity in 15-minute increments based on intensity
+                from the dropdown list. If your activity isn’t listed, choose the intensity performed (i.e. Low, Medium
+                or High) and select “Other.” You will be prompted to provide a short description of the activity
+                performed.
+              </p>
+              <p>
+                <h6>Prizes:</h6>
+                Your "fitness points" will be automatically calculated and prizes will be awarded to the top three
+                highest ranking teams in both the Competitive and Recreational categories. There will also be a
+                participation prize drawn every week so long as you have joined a TransAction team, you will be eligible
+                to win!
               </p>
               <div className="text-center mt-5">
                 <Link to={Constants.PATHS.START}>

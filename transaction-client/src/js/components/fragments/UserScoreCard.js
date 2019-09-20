@@ -50,11 +50,12 @@ class UserScoreCard extends React.Component {
   };
 
   renderLogActivityButton = () => {
-    return (
-      <Button color="primary" className="btn-sm" onClick={this.handleShowLogActivityFormClick}>
-        Log Activity
-      </Button>
-    );
+    if (this.props.showLogButton)
+      return (
+        <Button color="primary" className="btn-sm" onClick={this.handleShowLogActivityFormClick}>
+          Log Activity
+        </Button>
+      );
   };
 
   render() {
@@ -126,6 +127,7 @@ UserScoreCard.propTypes = {
   showLogActivityForm: PropTypes.func,
   goal: PropTypes.number,
   refreshStandings: PropTypes.bool,
+  showLogButton: PropTypes.bool,
 };
 
 export default UserScoreCard;
