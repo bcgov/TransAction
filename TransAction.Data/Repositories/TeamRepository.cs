@@ -31,13 +31,13 @@ namespace TransAction.Data.Repositories
             {
                 teams = teams.Where(x => x.Name.Contains(name));
             }
-            return teams.Include(x => x.User).Include(x => x.TraUser).OrderBy(x => x.Name).Skip(page * pageSize).Take(pageSize).ToList();
+            return teams.Include(x => x.User).Include(x => x.TraImage).Include(x => x.TraUser).OrderBy(x => x.Name).Skip(page * pageSize).Take(pageSize).ToList();
 
         }
 
         public TraTeam GetById(int id)
         {
-            return Find(e => e.TeamId == id).Include(x => x.User).Include(x => x.TraUser).FirstOrDefault();
+            return Find(e => e.TeamId == id).Include(x => x.TraImage).Include(x => x.User).Include(x => x.TraUser).FirstOrDefault();
         }
 
         public bool GetTeamByName(string name)
