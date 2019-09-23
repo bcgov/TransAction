@@ -5,7 +5,7 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <RepositoryUrl>https://github.com/bcgov/TransAction.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>2.3.1</Version>
+    <Version>2.3.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
