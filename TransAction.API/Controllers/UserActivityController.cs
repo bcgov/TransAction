@@ -36,7 +36,7 @@ namespace TransAction.API.Controllers
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var user = _unitOfWork.User.GetByGuid(userGuid);
-            if (user.Role.Name.ToLower() != "admin" || user.UserId != userId)
+            if (user.Role.Name.ToLower() != "admin" && user.UserId != userId)
             {
                 return BadRequest(new TransActionResponse("Unauthorized user"));
             }
