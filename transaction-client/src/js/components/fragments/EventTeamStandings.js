@@ -11,9 +11,11 @@ class EventTeamStandings extends React.Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    Promise.all([this.props.fetchTeamStandings(this.props.eventId), this.props.fetchTeams()]).then(() => {
-      this.setState({ loading: false });
-    });
+    Promise.all([this.props.fetchTeamStandings(this.props.eventId), this.props.fetchTeams('', 0, 2147483647)]).then(
+      () => {
+        this.setState({ loading: false });
+      }
+    );
   }
 
   renderContent() {
