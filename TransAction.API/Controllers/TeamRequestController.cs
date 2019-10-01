@@ -74,6 +74,12 @@ namespace TransAction.API.Controllers
                 return BadRequest(new TransActionResponse(ModelState));
             }
 
+            var count = _unitOfWork.Request.GetByUserId(createRequest.UserId).Where(x => x.TeamId == createRequest.TeamId).Count();
+            if (count > 0)
+            {
+                return BadRequest(new TransActionResponse("Request already created"));
+            }
+
             var newRequest = _mapper.Map<TraMemberReq>(createRequest);
             newRequest.IsActive = true;
 
