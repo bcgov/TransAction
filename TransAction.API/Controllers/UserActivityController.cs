@@ -90,6 +90,9 @@ namespace TransAction.API.Controllers
             if (eventEntity == null)
                 return NotFound(new TransActionResponse("Event not found"));
 
+            if (!eventEntity.IsActive.Value)
+                return NotFound(new TransActionResponse("Event not active"));
+
             if (createUserActivity.ActivityTimestamp < eventEntity.StartDate || createUserActivity.ActivityTimestamp > eventEntity.EndDate)
                 return BadRequest(new TransActionResponse("Activity time is outside of event start and end date"));
 
