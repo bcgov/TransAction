@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import PageSpinner from './PageSpinner';
 import LogActivityForm from '../forms/LogActivityForm';
-import { fetchEventUserActivityList, fetchActivityList, deleteUserActivity } from '../../actions';
+import { fetchEventUserActivityList, fetchActivityList, deleteUserActivity, fetchTeamStandings } from '../../actions';
 import DialogModal from './DialogModal';
 import * as Constants from '../../Constants';
 
@@ -50,7 +50,10 @@ class ActivityJournalModal extends React.Component {
 
   deleteUserActivity = (confirm, userActivity) => {
     if (confirm) {
-      this.props.deleteUserActivity(userActivity).then(() => this.closeConfirmDialog());
+      this.props.deleteUserActivity(userActivity).then(() => {
+        this.props.fetchTeamStandings(userActivity.eventId);
+        this.closeConfirmDialog();
+      });
     } else {
       this.closeConfirmDialog();
     }
@@ -168,5 +171,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchEventUserActivityList, fetchActivityList, deleteUserActivity }
+  { fetchEventUserActivityList, fetchActivityList, deleteUserActivity, fetchTeamStandings }
 )(ActivityJournalModal);

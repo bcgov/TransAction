@@ -172,6 +172,7 @@ export const deleteUserActivity = activityObj => dispatch => {
 
 export const fetchUserEventScore = (userId, eventId) => dispatch => {
   return new Promise((resolve, reject) => {
+    console.log('fetchUserEventScore');
     api.instance
       .get(`/useractivities/score/user/${userId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
@@ -209,6 +210,7 @@ export const fetchAllUserScores = userId => dispatch => {
 
 export const fetchTeamEventScore = (teamId, eventId) => dispatch => {
   return new Promise((resolve, reject) => {
+    console.log('fetchTeamEventScore');
     api.instance
       .get(`/useractivities/score/team/${teamId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
