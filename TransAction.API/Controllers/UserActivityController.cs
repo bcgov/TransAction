@@ -150,6 +150,12 @@ namespace TransAction.API.Controllers
                 return BadRequest(new TransActionResponse(ModelState));
             }
 
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+
+            if (getUser.UserId != updateUserActivity.UserId)
+                return BadRequest(new TransActionResponse("Not allowed to edit resource."));
+
             var userActivityEntity = _unitOfWork.UserActivity.GetUserActivity(id);
             if (userActivityEntity == null) return StatusCode(404, new TransActionResponse("User Activity Not Found"));
 
@@ -172,6 +178,33 @@ namespace TransAction.API.Controllers
             }
 
             return GetUserActivityById(id);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUserActivity(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new TransActionResponse(ModelState));
+            }
+
+            var userActivityEntity = _unitOfWork.UserActivity.GetUserActivity(id);
+            if (userActivityEntity == null) return StatusCode(404, new TransActionResponse("User Activity Not Found"));
+
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+
+            if (userActivityEntity.UserId != getUser.UserId)
+                return BadRequest(new TransActionResponse("Not allowed to delete resource."));
+
+            _unitOfWork.UserActivity.Delete(userActivityEntity);
+
+            if (!_unitOfWork.Save())
+            {
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
+            }
+
+            return StatusCode(StatusCodes.Status204NoContent, new TransActionResponse());
         }
 
 
