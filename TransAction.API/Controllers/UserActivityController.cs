@@ -112,6 +112,11 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateUserActivity(int id, [FromBody] UserActivityUpdateDto updateUserActivity)
         {
+            //making sure the user enters atleast 15 mins
+            if (updateUserActivity.Minutes < 15)
+            {
+                return BadRequest(new TransActionResponse("Minutes should be more then 15"));
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(new TransActionResponse(ModelState));
@@ -119,6 +124,17 @@ namespace TransAction.API.Controllers
 
             var userActivityEntity = _unitOfWork.UserActivity.GetUserActivity(id);
             if (userActivityEntity == null) return StatusCode(404, new TransActionResponse("User Activity Not Found"));
+
+            var eventEntity = _unitOfWork.Event.GetById(updateUserActivity.EventId);
+
+            if (eventEntity == null)
+                return NotFound(new TransActionResponse("Event not found"));
+
+            if (!eventEntity.IsActive.Value)
+                return NotFound(new TransActionResponse("Event not active"));
+
+            if (updateUserActivity.ActivityTimestamp < eventEntity.StartDate || updateUserActivity.ActivityTimestamp > eventEntity.EndDate)
+                return BadRequest(new TransActionResponse("Activity time is outside of event start and end date"));
 
             _mapper.Map(updateUserActivity, userActivityEntity);
 

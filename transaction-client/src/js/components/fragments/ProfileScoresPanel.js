@@ -6,12 +6,11 @@ import { Row, Col, Alert } from 'reactstrap';
 import { fetchAllUserScores, fetchAllTeamScores } from '../../actions';
 import PageSpinner from '../ui/PageSpinner';
 import UserScoreCard from './UserScoreCard';
-import LogActivityForm from '../forms/LogActivityForm';
 
 import * as Constants from '../../Constants';
 
 class ProfileScoresPanel extends React.Component {
-  state = { loading: true, showLogActivityForm: false, logActivityEventId: null, cancelTokenSource: undefined };
+  state = { loading: true, logActivityEventId: null, cancelTokenSource: undefined };
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -26,16 +25,6 @@ class ProfileScoresPanel extends React.Component {
       this.setState({ loading: false });
     }
   }
-
-  showLogActivityForm = eventId => {
-    this.setState({ showLogActivityForm: true, logActivityEventId: eventId });
-  };
-
-  toggleLogActivityForm = () => {
-    this.setState(prevState => ({
-      showLogActivityForm: !prevState.showLogActivityForm,
-    }));
-  };
 
   renderUserScores() {
     const { userIdToDisplay, teamIdToDisplay, scores, currentUser } = this.props;
@@ -118,20 +107,7 @@ class ProfileScoresPanel extends React.Component {
   }
 
   render() {
-    return this.state.loading ? (
-      <PageSpinner />
-    ) : (
-      <React.Fragment>
-        {this.renderContent()}
-        {this.state.showLogActivityForm && (
-          <LogActivityForm
-            isOpen={this.state.showLogActivityForm}
-            toggle={this.toggleLogActivityForm}
-            eventId={this.state.logActivityEventId}
-          />
-        )}
-      </React.Fragment>
-    );
+    return this.state.loading ? <PageSpinner /> : <React.Fragment>{this.renderContent()}</React.Fragment>;
   }
 }
 

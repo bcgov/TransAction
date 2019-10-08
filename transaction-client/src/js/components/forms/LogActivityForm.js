@@ -23,7 +23,7 @@ class LogActivityForm extends React.Component {
   componentDidMount() {}
 
   onInit = () => {
-    const { events, eventId, fetchEvent, activities, fetchActivityList, initialize, initialValues } = this.props;
+    const { events, eventId, fetchEvent, activities, fetchActivityList } = this.props;
 
     const actions = [];
 
@@ -38,7 +38,6 @@ class LogActivityForm extends React.Component {
     if (actions.length > 0) {
       this.setState({ loading: true });
       Promise.all(actions.map(action => action.action(action.param))).then(() => {
-        initialize(initialValues);
         this.setState({ loading: false });
       });
     } else {
@@ -238,18 +237,9 @@ const validate = (formValues, props) => {
 
 const form = reduxForm({ form: 'logActivityForm', enableReinitialize: true, validate })(LogActivityForm);
 
-const mapStateToProps = (state, ownProps) => {
-  const currentUser = state.users.all[state.users.current.id];
+const mapStateToProps = state => {
   return {
     activities: Object.values(state.activities),
-    initialValues: {
-      eventId: ownProps.eventId,
-      userId: currentUser.id,
-      teamId: currentUser.teamId,
-      activityHours: 0,
-      activityMinutes: 0,
-      activityId: -1,
-    },
     events: state.events,
   };
 };

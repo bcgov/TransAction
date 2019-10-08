@@ -39,6 +39,15 @@ class ActivityJournalModal extends React.Component {
         <td>{o.description}</td>
         <td className="text-nowrap">{o.minutes}</td>
         <td className="text-nowrap">{moment(o.activityTimestamp).format('YYYY-MM-DD')}</td>
+        <td>
+          <Button size="sm" color="link">
+            Edit
+          </Button>
+          /
+          <Button size="sm" color="link">
+            Delete
+          </Button>
+        </td>
       </tr>
     ));
 
@@ -51,6 +60,7 @@ class ActivityJournalModal extends React.Component {
             <th>Description</th>
             <th>Duration (minutes)</th>
             <th>Date</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{tableRows}</tbody>
