@@ -17,7 +17,6 @@ export default (state = {}, action) => {
     case EDIT_USER_ACTIVITY:
       return { ...state, [action.payload.id]: action.payload };
     case DELETE_USER_ACTIVITY:
-      console.log(action.payload);
       return _.omit(state, action.payload);
     default:
       return state;
