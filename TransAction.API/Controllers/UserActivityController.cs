@@ -57,7 +57,7 @@ namespace TransAction.API.Controllers
                     return StatusCode(404, new TransActionResponse("User Activity not found"));
                 }
                 var getUserResult = _mapper.Map<UserActivityDto>(getUserActivity);
-                return StatusCode(200, new TransActionResponse(getUserActivity));
+                return StatusCode(200, new TransActionResponse(getUserResult));
 
             }
 
@@ -80,6 +80,20 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(new TransActionResponse("Minutes should be more then 15"));
             }
+
+            var activityType = _unitOfWork.Activity.GetById(createUserActivity.ActivityId);
+            if (activityType == null)
+                return NotFound(new TransActionResponse("Activity type not found"));
+
+            if (activityType.Name != "Other" && string.IsNullOrEmpty(createUserActivity.Description))
+            {
+                createUserActivity.Description = activityType.Description;
+                createUserActivity.Name = activityType.Description;
+            }
+
+            ModelState.Clear();
+            TryValidateModel(createUserActivity);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new TransActionResponse(ModelState));
@@ -117,6 +131,20 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(new TransActionResponse("Minutes should be more then 15"));
             }
+
+            var activityType = _unitOfWork.Activity.GetById(updateUserActivity.ActivityId);
+            if (activityType == null)
+                return NotFound(new TransActionResponse("Activity type not found"));
+
+            if (activityType.Name != "Other" && string.IsNullOrEmpty(updateUserActivity.Description))
+            {
+                updateUserActivity.Description = activityType.Description;
+                updateUserActivity.Name = activityType.Description;
+            }
+
+            ModelState.Clear();
+            TryValidateModel(updateUserActivity);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new TransActionResponse(ModelState));

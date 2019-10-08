@@ -6,11 +6,13 @@ import _ from 'lodash';
 import moment from 'moment';
 
 import PageSpinner from './PageSpinner';
-
+import LogActivityForm from '../forms/LogActivityForm';
 import { fetchEventUserActivityList, fetchActivityList } from '../../actions';
 
+import * as Constants from '../../Constants';
+
 class ActivityJournalModal extends React.Component {
-  state = { loading: true };
+  state = { loading: true, showLogActivityForm: false, selectedUserActivity: null };
 
   componentDidMount() {
     const { currentUser, eventId, fetchEventUserActivityList, activityTypes, fetchActivityList } = this.props;
@@ -24,6 +26,21 @@ class ActivityJournalModal extends React.Component {
         this.setState({ loading: false });
       });
   }
+
+  showEditLogActivityForm = userActivity => {
+    const activityHours = Math.floor(userActivity.minutes / 60);
+    const activityMinutes = userActivity.minutes % 60;
+    const activityTimestamp = moment(userActivity.activityTimestamp).format('YYYY-MM-DD');
+
+    const newUserActivity = { ...userActivity, activityHours, activityMinutes, activityTimestamp };
+    this.setState({ showLogActivityForm: true, selectedUserActivity: newUserActivity });
+  };
+
+  toggleLogActivityForm = () => {
+    this.setState(prevState => ({
+      showLogActivityForm: !prevState.showLogActivityForm,
+    }));
+  };
 
   renderContent() {
     const { userActivities, activityTypes, eventId, currentUser } = this.props;
@@ -40,11 +57,12 @@ class ActivityJournalModal extends React.Component {
         <td className="text-nowrap">{o.minutes}</td>
         <td className="text-nowrap">{moment(o.activityTimestamp).format('YYYY-MM-DD')}</td>
         <td>
-          <Button size="sm" color="link">
+          <Button size="sm" color="primary" block onClick={() => this.showEditLogActivityForm(o)}>
             Edit
           </Button>
-          /
-          <Button size="sm" color="link">
+        </td>
+        <td>
+          <Button size="sm" color="primary" block>
             Delete
           </Button>
         </td>
@@ -60,6 +78,7 @@ class ActivityJournalModal extends React.Component {
             <th>Description</th>
             <th>Duration (minutes)</th>
             <th>Date</th>
+            <th></th>
             <th></th>
           </tr>
         </thead>
@@ -87,6 +106,16 @@ class ActivityJournalModal extends React.Component {
             </Button>
           </ModalFooter>
         </Modal>
+        {this.state.showLogActivityForm && (
+          <LogActivityForm
+            isOpen={this.state.showLogActivityForm}
+            toggle={this.toggleLogActivityForm}
+            eventId={this.state.selectedUserActivity.eventId}
+            refreshStandings={true}
+            initialValues={{ ...this.state.selectedUserActivity }}
+            formType={Constants.FORM_TYPE.EDIT}
+          />
+        )}
       </div>
     );
   }

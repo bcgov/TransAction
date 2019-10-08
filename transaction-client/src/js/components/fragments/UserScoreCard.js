@@ -113,6 +113,7 @@ class UserScoreCard extends React.Component {
               activityMinutes: 0,
               activityId: -1,
             }}
+            formType={Constants.FORM_TYPE.ADD}
           />
         )}
         {this.state.showActivityJournal && (
