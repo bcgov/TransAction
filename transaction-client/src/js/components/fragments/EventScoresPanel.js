@@ -6,18 +6,17 @@ import { Row, Col, Alert } from 'reactstrap';
 import { fetchUserEventScore, fetchTeamEventScore } from '../../actions';
 import PageSpinner from '../ui/PageSpinner';
 import UserScoreCard from './UserScoreCard';
-import LogActivityForm from '../forms/LogActivityForm';
 
 import * as Constants from '../../Constants';
 
 class EventScoresPanel extends React.Component {
-  state = { loading: true, showLogActivityForm: false };
+  state = { loading: true };
 
   componentDidMount() {
     const { fetchUserEventScore, fetchTeamEventScore, currentUser, event } = this.props;
 
     if (currentUser.teamId) {
-      this.setState({ loding: true });
+      this.setState({ loading: true });
 
       Promise.all([
         fetchUserEventScore(currentUser.id, event.id),
@@ -27,16 +26,6 @@ class EventScoresPanel extends React.Component {
       });
     } else this.setState({ loading: false });
   }
-
-  showLogActivityForm = () => {
-    this.setState({ showLogActivityForm: true });
-  };
-
-  toggleLogActivityForm = () => {
-    this.setState(prevState => ({
-      showLogActivityForm: !prevState.showLogActivityForm,
-    }));
-  };
 
   renderScores() {
     const { scores, currentUser, event } = this.props;
@@ -52,7 +41,8 @@ class EventScoresPanel extends React.Component {
             event={this.props.event}
             cardWidth={Constants.USER_SCORE_CARD_WIDTH.WIDE}
             refreshStandings={true}
-            showLogButton={true}
+            showLogButton={event.isActive}
+            currentUser={currentUser}
           />
         </Col>
       </Row>
@@ -74,13 +64,6 @@ class EventScoresPanel extends React.Component {
               </Alert>
             </Col>
           </Row>
-        )}
-        {this.state.showLogActivityForm && (
-          <LogActivityForm
-            isOpen={this.state.showLogActivityForm}
-            toggle={this.toggleLogActivityForm}
-            eventId={this.props.event.id}
-          />
         )}
       </React.Fragment>
     );

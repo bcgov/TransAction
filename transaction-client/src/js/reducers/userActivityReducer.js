@@ -1,5 +1,11 @@
 import _ from 'lodash';
-import { CREATE_USER_ACTIVITY, FETCH_USER_ACTIVITIES, FETCH_USER_ACTIVITY } from '../actions/types';
+import {
+  CREATE_USER_ACTIVITY,
+  FETCH_USER_ACTIVITIES,
+  FETCH_USER_ACTIVITY,
+  EDIT_USER_ACTIVITY,
+  DELETE_USER_ACTIVITY,
+} from '../actions/types';
 
 export default (state = {}, action) => {
   switch (action.type) {
@@ -8,7 +14,10 @@ export default (state = {}, action) => {
     case FETCH_USER_ACTIVITY:
     case CREATE_USER_ACTIVITY:
       return { ...state, [action.payload.id]: action.payload };
-
+    case EDIT_USER_ACTIVITY:
+      return { ...state, [action.payload.id]: action.payload };
+    case DELETE_USER_ACTIVITY:
+      return _.omit(state, action.payload);
     default:
       return state;
   }

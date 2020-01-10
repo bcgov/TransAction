@@ -153,11 +153,17 @@ class EventList extends Component {
     );
   }
 
-  renderAdminEventButtons() {
-    if (utils.isCurrentUserAdmin()) {
-      return (
+  renderContent() {
+    return (
+      <React.Fragment>
         <Row>
           <Col>
+            {utils.isCurrentUserAdmin() && (
+              <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
+                Add an Event
+              </Button>
+            )}
+
             {this.state.isActive ? (
               <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showArchiveEvents}>
                 Show Archived Events
@@ -167,20 +173,8 @@ class EventList extends Component {
                 Show Active Events
               </Button>
             )}
-
-            <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
-              Add an Event
-            </Button>
           </Col>
         </Row>
-      );
-    }
-  }
-
-  renderContent() {
-    return (
-      <React.Fragment>
-        {this.renderAdminEventButtons()}
         {this.state.loading ? (
           <PageSpinner />
         ) : (

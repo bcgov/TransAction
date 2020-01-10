@@ -9,6 +9,7 @@ namespace TransAction.Data.Repositories.Interfaces
         IEnumerable<TraUserActivity> GetAllByEventUser(int eventId, int userId);
         void Create(TraUserActivity newUserActivity);
         void Update(TraUserActivity updateUserActivity);
+        void Delete(TraUserActivity userActivity);
         TraUserActivity GetUserActivity(int id);
         int EventSpecificScore(int eventId);
         int UserSpecificScore(int userId, int eventId);

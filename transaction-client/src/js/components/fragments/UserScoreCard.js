@@ -59,7 +59,7 @@ class UserScoreCard extends React.Component {
   };
 
   render() {
-    const { score, teamScore, event, cardWidth, goal, refreshStandings } = this.props;
+    const { score, teamScore, event, cardWidth, goal, refreshStandings, currentUser } = this.props;
 
     let progress = 0;
     if (goal > 0 && teamScore) progress = ((teamScore.score / goal) * 100).toFixed(0);
@@ -105,6 +105,15 @@ class UserScoreCard extends React.Component {
             toggle={this.toggleLogActivityForm}
             eventId={event.id}
             refreshStandings={refreshStandings}
+            initialValues={{
+              eventId: event.id,
+              userId: currentUser.id,
+              teamId: currentUser.teamId,
+              activityHours: 0,
+              activityMinutes: 0,
+              activityId: -1,
+            }}
+            formType={Constants.FORM_TYPE.ADD}
           />
         )}
         {this.state.showActivityJournal && (
@@ -124,6 +133,7 @@ UserScoreCard.propTypes = {
   teamScore: PropTypes.number,
   event: PropTypes.object.isRequired,
   cardWidth: PropTypes.string.isRequired,
+  currentUser: PropTypes.object.isRequired,
   showLogActivityForm: PropTypes.func,
   goal: PropTypes.number,
   refreshStandings: PropTypes.bool,

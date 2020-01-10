@@ -36,7 +36,7 @@ namespace TransAction.API.Controllers
         {
             string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
             var user = _unitOfWork.User.GetByGuid(userGuid);
-            if (user.Role.Name.ToLower() != "admin" || user.UserId != userId)
+            if (user.Role.Name.ToLower() != "admin" && user.UserId != userId)
             {
                 return BadRequest(new TransActionResponse("Unauthorized user"));
             }
@@ -57,7 +57,7 @@ namespace TransAction.API.Controllers
                     return StatusCode(404, new TransActionResponse("User Activity not found"));
                 }
                 var getUserResult = _mapper.Map<UserActivityDto>(getUserActivity);
-                return StatusCode(200, new TransActionResponse(getUserActivity));
+                return StatusCode(200, new TransActionResponse(getUserResult));
 
             }
 
@@ -80,6 +80,20 @@ namespace TransAction.API.Controllers
             {
                 return BadRequest(new TransActionResponse("Minutes should be more then 15"));
             }
+
+            var activityType = _unitOfWork.Activity.GetById(createUserActivity.ActivityId);
+            if (activityType == null)
+                return NotFound(new TransActionResponse("Activity type not found"));
+
+            if (activityType.Name != "Other" && string.IsNullOrEmpty(createUserActivity.Description))
+            {
+                createUserActivity.Description = activityType.Description;
+                createUserActivity.Name = activityType.Description;
+            }
+
+            ModelState.Clear();
+            TryValidateModel(createUserActivity);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new TransActionResponse(ModelState));
@@ -89,6 +103,9 @@ namespace TransAction.API.Controllers
 
             if (eventEntity == null)
                 return NotFound(new TransActionResponse("Event not found"));
+
+            if (!eventEntity.IsActive.Value)
+                return NotFound(new TransActionResponse("Event not active"));
 
             if (createUserActivity.ActivityTimestamp < eventEntity.StartDate || createUserActivity.ActivityTimestamp > eventEntity.EndDate)
                 return BadRequest(new TransActionResponse("Activity time is outside of event start and end date"));
@@ -109,13 +126,49 @@ namespace TransAction.API.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateUserActivity(int id, [FromBody] UserActivityUpdateDto updateUserActivity)
         {
+            //making sure the user enters atleast 15 mins
+            if (updateUserActivity.Minutes < 15)
+            {
+                return BadRequest(new TransActionResponse("Minutes should be more then 15"));
+            }
+
+            var activityType = _unitOfWork.Activity.GetById(updateUserActivity.ActivityId);
+            if (activityType == null)
+                return NotFound(new TransActionResponse("Activity type not found"));
+
+            if (activityType.Name != "Other" && string.IsNullOrEmpty(updateUserActivity.Description))
+            {
+                updateUserActivity.Description = activityType.Description;
+                updateUserActivity.Name = activityType.Description;
+            }
+
+            ModelState.Clear();
+            TryValidateModel(updateUserActivity);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new TransActionResponse(ModelState));
             }
 
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+
+            if (getUser.UserId != updateUserActivity.UserId)
+                return BadRequest(new TransActionResponse("Not allowed to edit resource."));
+
             var userActivityEntity = _unitOfWork.UserActivity.GetUserActivity(id);
             if (userActivityEntity == null) return StatusCode(404, new TransActionResponse("User Activity Not Found"));
+
+            var eventEntity = _unitOfWork.Event.GetById(updateUserActivity.EventId);
+
+            if (eventEntity == null)
+                return NotFound(new TransActionResponse("Event not found"));
+
+            if (!eventEntity.IsActive.Value)
+                return NotFound(new TransActionResponse("Event not active"));
+
+            if (updateUserActivity.ActivityTimestamp < eventEntity.StartDate || updateUserActivity.ActivityTimestamp > eventEntity.EndDate)
+                return BadRequest(new TransActionResponse("Activity time is outside of event start and end date"));
 
             _mapper.Map(updateUserActivity, userActivityEntity);
 
@@ -125,6 +178,33 @@ namespace TransAction.API.Controllers
             }
 
             return GetUserActivityById(id);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUserActivity(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new TransActionResponse(ModelState));
+            }
+
+            var userActivityEntity = _unitOfWork.UserActivity.GetUserActivity(id);
+            if (userActivityEntity == null) return StatusCode(404, new TransActionResponse("User Activity Not Found"));
+
+            string userGuid = UserHelper.GetUserGuid(_httpContextAccessor);
+            var getUser = _unitOfWork.User.GetByGuid(userGuid);
+
+            if (userActivityEntity.UserId != getUser.UserId)
+                return BadRequest(new TransActionResponse("Not allowed to delete resource."));
+
+            _unitOfWork.UserActivity.Delete(userActivityEntity);
+
+            if (!_unitOfWork.Save())
+            {
+                return StatusCode(500, new TransActionResponse("A problem happened while handling your request."));
+            }
+
+            return StatusCode(StatusCodes.Status204NoContent, new TransActionResponse());
         }
 
 

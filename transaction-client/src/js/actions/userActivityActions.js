@@ -6,6 +6,8 @@ import {
   EDIT_ACTIVITY_TYPE,
   DELETE_ACTIVITY_TYPE,
   CREATE_USER_ACTIVITY,
+  EDIT_USER_ACTIVITY,
+  DELETE_USER_ACTIVITY,
   FETCH_USER_ACTIVITIES,
   FETCH_USER_SCORES,
   FETCH_TEAM_SCORES,
@@ -127,10 +129,50 @@ export const createUserActivity = activityObj => dispatch => {
   });
 };
 
+export const editUserActivity = (activityId, activityObj) => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .put(`/useractivities/${activityId}`, activityObj, { cancelToken: api.cancelTokenSource.token })
+      .then(response => {
+        const data = getApiReponseData(response);
+        dispatch({ type: EDIT_USER_ACTIVITY, payload: data });
+        dispatch(fetchUserEventScore(activityObj.userId, activityObj.eventId));
+        dispatch(fetchTeamEventScore(activityObj.teamId, activityObj.eventId));
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
+export const deleteUserActivity = activityObj => dispatch => {
+  return new Promise((resolve, reject) => {
+    api.instance
+      .delete(`/useractivities/${activityObj.id}`, { cancelToken: api.cancelTokenSource.token })
+      .then(() => {
+        dispatch({ type: DELETE_USER_ACTIVITY, payload: activityObj.id });
+        dispatch(fetchUserEventScore(activityObj.userId, activityObj.eventId));
+        dispatch(fetchTeamEventScore(activityObj.teamId, activityObj.eventId));
+        resolve();
+      })
+      .catch(e => {
+        if (!api.isCancel(e)) {
+          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
+          reject(e);
+        }
+      });
+  });
+};
+
 //Score Actions
 
 export const fetchUserEventScore = (userId, eventId) => dispatch => {
   return new Promise((resolve, reject) => {
+    console.log('fetchUserEventScore');
     api.instance
       .get(`/useractivities/score/user/${userId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {
@@ -168,6 +210,7 @@ export const fetchAllUserScores = userId => dispatch => {
 
 export const fetchTeamEventScore = (teamId, eventId) => dispatch => {
   return new Promise((resolve, reject) => {
+    console.log('fetchTeamEventScore');
     api.instance
       .get(`/useractivities/score/team/${teamId}/event/${eventId}`, { cancelToken: api.cancelTokenSource.token })
       .then(response => {

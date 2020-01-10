@@ -25,7 +25,6 @@ export default (state = DEFAULT_STATE, action) => {
         user: {
           ...state.user,
           ...{
-            ...state.user[action.payload.userId],
             [action.payload.userId]: {
               ...state.user[action.payload.userId],
               [action.payload.eventId]: action.payload.data,
@@ -41,7 +40,6 @@ export default (state = DEFAULT_STATE, action) => {
         team: {
           ...state.team,
           ...{
-            ...state.team[action.payload.teamId],
             [action.payload.teamId]: {
               ...state.team[action.payload.teamId],
               [action.payload.eventId]: action.payload.data,
