@@ -23,76 +23,79 @@ class Header extends Component {
 
   render() {
     return (
-      <header>
-        <Navbar expand="lg" className="navbar-dark">
-          <Container>
-            <NavbarBrand tag={Link} onClick={this.hideNavbar} to="/">
-              <img
-                className="img-fluid d-none d-md-block"
-                src={`${process.env.PUBLIC_URL}/images/bcid-logo-rev-en.svg`}
-                width="181"
-                height="44"
-                alt="B.C. Government Logo"
-              />
-              <img
-                className="img-fluid d-md-none"
-                src={`${process.env.PUBLIC_URL}/images/bcid-symbol-rev.svg`}
-                width="64"
-                height="44"
-                alt="B.C. Government Logo"
-              />
-            </NavbarBrand>
-            <div className="navbar-brand">Transaction</div>
-            <NavbarToggler onClick={this.toggleNavbar} />
-            <Collapse isOpen={!this.state.collapsed} navbar>
-              <Nav className="navbar-nav">
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/">
-                    Home
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.EVENT}>
-                    Events
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.PROFILE}>
-                    Profile
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.TEAM}>
-                    Teams
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.MESSAGES}>
-                    Messages
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.INCENTIVES}>
-                    Incentives
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.FAQ}>
-                    FAQ
-                  </NavLink>
-                </NavItem>
-                {utils.isCurrentUserAdmin() && (
+      <React.Fragment>
+        <header>
+          <Navbar expand="lg" className="navbar-dark">
+            <Container>
+              <NavbarBrand tag={Link} onClick={this.hideNavbar} to="/">
+                <img
+                  className="img-fluid d-none d-md-block"
+                  src={`${process.env.PUBLIC_URL}/images/bcid-logo-rev-en.svg`}
+                  width="181"
+                  height="44"
+                  alt="B.C. Government Logo"
+                />
+                <img
+                  className="img-fluid d-md-none"
+                  src={`${process.env.PUBLIC_URL}/images/bcid-symbol-rev.svg`}
+                  width="64"
+                  height="44"
+                  alt="B.C. Government Logo"
+                />
+              </NavbarBrand>
+              <div className="navbar-brand">Transaction</div>
+              <NavbarToggler onClick={this.toggleNavbar} />
+              <Collapse isOpen={!this.state.collapsed} navbar>
+                <Nav className="navbar-nav">
                   <NavItem>
-                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.ADMIN}>
-                      Admin
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to="/">
+                      Home
                     </NavLink>
                   </NavItem>
-                )}
-              </Nav>
-            </Collapse>
-          </Container>
-        </Navbar>
-      </header>
+                  <NavItem>
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.EVENT}>
+                      Events
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.PROFILE}>
+                      Profile
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.TEAM}>
+                      Teams
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.MESSAGES}>
+                      Messages
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.INCENTIVES}>
+                      Incentives
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.FAQ}>
+                      FAQ
+                    </NavLink>
+                  </NavItem>
+                  {utils.isCurrentUserAdmin() && (
+                    <NavItem>
+                      <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.ADMIN}>
+                        Admin
+                      </NavLink>
+                    </NavItem>
+                  )}
+                </Nav>
+              </Collapse>
+            </Container>
+          </Navbar>
+        </header>
+        <div className={`nav-ribbon ${this.props.version.environment}`}></div>
+      </React.Fragment>
     );
   }
 }
@@ -100,10 +103,8 @@ class Header extends Component {
 const mapStateToProps = state => {
   return {
     users: state.users.all,
+    version: state.version,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(Header);
+export default connect(mapStateToProps, null)(Header);
