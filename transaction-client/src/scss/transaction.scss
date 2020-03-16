@@ -61,3 +61,19 @@ button.team-remove {
 textarea.form-control {
   height: 250px;
 }
+
+.nav-ribbon {
+  display: none;
+  height: 16px;
+}
+
+.nav-ribbon.development,
+.main-nav.unknown {
+  display: block;
+  background-color: #448a38;
+}
+
+.nav-ribbon.test {
+  display: block;
+  background-color: #f9a825;
+}

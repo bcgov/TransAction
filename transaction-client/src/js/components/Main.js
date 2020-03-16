@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchRoles, fetchCurrentUser, fetchRegions } from '../actions';
+import { fetchRoles, fetchCurrentUser, fetchRegions, fetchVersion } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import ErrorDialogModal from './ui/ErrorDialogModal';
 
@@ -9,7 +9,12 @@ class Main extends Component {
   state = { loading: true, showErrorDialog: false, errorDialogOptions: {} };
 
   componentDidMount() {
-    Promise.all([this.props.fetchRoles(), this.props.fetchCurrentUser(), this.props.fetchRegions()]).then(() => {
+    Promise.all([
+      this.props.fetchRoles(),
+      this.props.fetchCurrentUser(),
+      this.props.fetchRegions(),
+      this.props.fetchVersion(),
+    ]).then(() => {
       this.setState({ loading: false });
     });
   }
@@ -34,7 +39,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchRoles, fetchCurrentUser, fetchRegions }
-)(Main);
+export default connect(mapStateToProps, { fetchRoles, fetchCurrentUser, fetchRegions, fetchVersion })(Main);
