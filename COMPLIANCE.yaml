@@ -7,5 +7,5 @@ spec:
     status: Completed - TRAN16034
     last-updated: '2016-09-07T00:05:55.847Z'
   - name: STRA
-    status: in progress
-    last-updated: '2020-01-17T00:05:55.847Z'
+    status: Completed - ISO27001
+    last-updated: '2016-09-20T00:05:55.847Z'
