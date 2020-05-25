@@ -1,8 +1,8 @@
 "use strict";
-const { OpenShiftClientX } = require("pipeline-cli");
+const { OpenShiftClientX } = require("@bcgov/pipeline-cli");
 const path = require("path");
 
-module.exports = settings => {
+module.exports = (settings) => {
   const phases = settings.phases;
   const options = settings.options;
   const oc = new OpenShiftClientX(
@@ -14,20 +14,7 @@ module.exports = settings => {
     path.resolve(__dirname, "../../openshift")
   );
 
-  objects.push(
-    ...oc.processDeploymentTemplate(
-      `${templatesLocalBaseUrl}/nginx-build-config.yaml`,
-      {
-        param: {
-          NAME: `${settings.phases[phase].name}-nginx`,
-          SUFFIX: settings.phases[phase].suffix,
-          VERSION: settings.phases[phase].tag,
-          SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
-          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`
-        }
-      }
-    )
-  );
+  // The building of your cool app goes here ▼▼▼
 
   objects.push(
     ...oc.processDeploymentTemplate(
@@ -38,14 +25,14 @@ module.exports = settings => {
           SUFFIX: settings.phases[phase].suffix,
           VERSION: settings.phases[phase].tag,
           SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
-          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`
-        }
+          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`,
+        },
       }
     )
   );
 
-  objects = objects.concat(
-    oc.processDeploymentTemplate(
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/api-build-config.yaml`,
       {
         param: {
@@ -53,8 +40,8 @@ module.exports = settings => {
           SUFFIX: settings.phases[phase].suffix,
           VERSION: settings.phases[phase].tag,
           SOURCE_REPOSITORY_URL: `${oc.git.uri}`,
-          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`
-        }
+          SOURCE_REPOSITORY_REF: `${oc.git.branch_ref}`,
+        },
       }
     )
   );
