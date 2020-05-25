@@ -41,6 +41,7 @@ objects:
           uri: ${SOURCE_REPOSITORY_URL}
           ref: ${SOURCE_REPOSITORY_REF}
         type: Git
+        contextDir: api
       strategy:
         sourceStrategy:
           env:
