@@ -1,8 +1,8 @@
 "use strict";
-const { OpenShiftClientX } = require("pipeline-cli");
+const { OpenShiftClientX } = require("@bcgov/pipeline-cli");
 const path = require("path");
 
-module.exports = settings => {
+module.exports = (settings) => {
   const phases = settings.phases;
   const options = settings.options;
   const phase = options.env;
@@ -10,11 +10,13 @@ module.exports = settings => {
   const oc = new OpenShiftClientX(
     Object.assign({ namespace: phases[phase].namespace }, options)
   );
+
   const templatesLocalBaseUrl = oc.toFileUrl(
     path.resolve(__dirname, "../../openshift")
   );
   var objects = [];
 
+  // The deployment of your cool app goes here ▼▼▼
   objects.push(
     ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/client-deploy-config.yaml`,
@@ -23,8 +25,9 @@ module.exports = settings => {
           NAME: `${phases[phase].name}-client`,
           SUFFIX: phases[phase].suffix,
           VERSION: phases[phase].tag,
-          HOST: phases[phase].host
-        }
+          ENV: phases[phase].phase,
+          HOST: phases[phase].host,
+        },
       }
     )
   );
@@ -38,8 +41,8 @@ module.exports = settings => {
           SUFFIX: phases[phase].suffix,
           VERSION: phases[phase].tag,
           HOST: phases[phase].host,
-          ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env
-        }
+          ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env,
+        },
       }
     )
   );

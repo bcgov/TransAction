@@ -1,21 +1,18 @@
-FROM node:8-alpine AS build
+FROM node:13.7-alpine3.11 AS builder
+LABEL maintainer="neal.li@gov.bc.ca"
 
-COPY . /src
+COPY . ./src
 
-WORKDIR /src
+RUN cd ./src && npm ci && \
+    npm run build
 
-RUN npm install
-RUN npm run build
 
-FROM nginx:1.15.10-alpine
+FROM docker-registry.default.svc:5000/vlpweg-tools/nginx-116-rhel8:1
 
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./env2js.sh /env2js.sh
-COPY --from=build /src/build /usr/share/nginx/html
+COPY --from=builder /src/build/. /tmp/src
+COPY --from=builder /src/nginx-start/. /tmp/src/nginx-start
+COPY --from=builder /src/nginx.conf.tmpl /tmp/src/nginx.conf.tmpl
 
-RUN chmod +x /env2js.sh
-RUN chmod +w /usr/share/nginx/html/js/env.config.js
+RUN $STI_SCRIPTS_PATH/assemble
 
-EXPOSE 8080
-
-CMD /env2js.sh > /usr/share/nginx/html/js/env.config.js && nginx -g "daemon off;"
+CMD $STI_SCRIPTS_PATH/run
