@@ -30,7 +30,7 @@ class UserScoreCard extends React.Component {
   };
 
   toggleLogActivityForm = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showLogActivityForm: !prevState.showLogActivityForm,
     }));
   };
@@ -40,7 +40,7 @@ class UserScoreCard extends React.Component {
   };
 
   toggleActivityJournal = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showActivityJournal: !prevState.showActivityJournal,
     }));
   };
@@ -133,7 +133,6 @@ UserScoreCard.propTypes = {
   teamScore: PropTypes.number,
   event: PropTypes.object.isRequired,
   cardWidth: PropTypes.string.isRequired,
-  currentUser: PropTypes.object.isRequired,
   showLogActivityForm: PropTypes.func,
   goal: PropTypes.number,
   refreshStandings: PropTypes.bool,
