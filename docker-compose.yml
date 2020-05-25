@@ -2,7 +2,7 @@ version: "3.7"
 services:
   transaction-client:
     build:
-      context: ./transaction-client
+      context: ./client
     environment:
       - REACT_APP_SSO_HOST=https://sso-dev.pathfinder.gov.bc.ca/auth
       - REACT_APP_SSO_REALM=<realm-id>
@@ -13,7 +13,7 @@ services:
 
   transaction-api:
     build:
-      context: .
+      context: ./api
     environment:
       - CONNECTION_STRING=Server=<server>;User Id=<user>;Password=<password>;Database=<database>;
       - JWT_AUTHORITY=https://sso-dev.pathfinder.gov.bc.ca/auth/realms/<realm-id>
