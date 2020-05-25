@@ -13,7 +13,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.setState({
-      slides: carouselIds.map(item => {
+      slides: carouselIds.map((item) => {
         return {
           src: `${process.env.PUBLIC_URL}/images/carousel${item}.jpg`,
           caption: '',
@@ -47,41 +47,29 @@ class Home extends React.Component {
                 </strong>
               </p>
               <p>
-                TransAction is a voluntary initiative sponsored by the ministry’s Employee Advisory Forum and ministry
-                executive as a fun, dynamic way of getting active during Healthy Workplace Month (October). Not only do
-                teams compete against one another, but individual time will also help each geographic area compete in
-                the four-way battle between regions and headquarters.
+                TransAction Wellness is brought to you by your Employee Advisory Forum. This event was created as an
+                opportunity for everyone to explore the various dimensions of their personal health and well-being.
+                TransAction Wellness will run from June 1-30.
               </p>
               <h6>Create or join a team:</h6>
               <p>
-                To participate in TransAction, you will need to join a team of people you know or create a team by
-                clicking the Get Started button below. If you would like to make yourself available to join any team in
-                the ministry, click Join Team and then click Become Free Agent. Teams can have a maximum of five
-                members.
-              </p>
-              <h6>Entering an event: </h6>
-              <p>
-                One of the exciting changes this year is the introduction of two new categories on the Events page:
-                Competitive and Recreational. If you are competitive by nature and you strive to burn calories daily,
-                you will enter the Competitive category. If you are looking to increase your physical activity but
-                prefer a less competitive challenge, then you will enter the Recreational category. Your teammates will
-                need to discuss which category you want to participate in. Be sure to log your activity in the same
-                category each week.
+                To participate in TransAction Wellness, you can either join a team of people, create a team, or join
+                individually by clicking the Get Started button below. If you would like to make yourself available to
+                join any team in the ministry, click Join Team and then click Become Free Agent. Teams can have a
+                maximum of five members.
               </p>
               <h6>Logging your activity:</h6>
               <p>
-                To log your activity, click on the Events page and select your chosen category: Competitive or
-                Recreational. Click on Log Activity to enter your activity in 15-minute increments based on intensity
-                from the dropdown list. If your activity isn’t listed, choose the intensity performed (i.e. Low, Medium
-                or High) and select “Other.” You will be prompted to provide a short description of the activity
-                performed.
+                To log your activity, click on the Events page and select TransAction Wellness. Click on Log Activity to
+                enter your activity in 15-minute increments. Please note that all the activities are listed as Low
+                intensity. This event is not a competition, it is a tool to help log your activities and encourage each
+                of us to make healthy choices. If your activity isn’t listed, select “Other” and you will be prompted to
+                provide a short description of the activity performed.
               </p>
               <h6>Prizes:</h6>
               <p>
-                Your "fitness points" will be automatically calculated and prizes will be awarded to the top three
-                highest ranking teams in both the Competitive and Recreational categories. There will also be a
-                participation prize drawn every week so long as you have joined a TransAction team, you will be eligible
-                to win!
+                There will be a participation prize drawn every week so be sure to log your activity for a chance to
+                win!
               </p>
               <div className="text-center mt-5">
                 <Link to={Constants.PATHS.START}>
