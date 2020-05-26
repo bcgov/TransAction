@@ -41,10 +41,10 @@ objects:
               resources:
                 requests:
                   cpu: 250m
-                  memory: 32Mi
-                limits:
-                  cpu: 250m
                   memory: 64Mi
+                limits:
+                  cpu: 400m
+                  memory: 128Mi
               env:
                 - name: REACT_APP_SSO_HOST
                   valueFrom:
