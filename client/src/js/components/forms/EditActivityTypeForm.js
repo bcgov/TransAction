@@ -18,7 +18,7 @@ class EditActivityTypeForm extends React.Component {
     this.props.initialize(this.props.initialValues);
   };
 
-  onSubmit = formValues => {
+  onSubmit = (formValues) => {
     if (!this.state.submitting) {
       this.setState({ submitting: true });
     }
@@ -41,7 +41,7 @@ class EditActivityTypeForm extends React.Component {
   };
 
   renderRegionOptions() {
-    const regionOptions = Object.values(this.props.regions).map(region => {
+    const regionOptions = Object.values(this.props.regions).map((region) => {
       return (
         <option value={region.id} key={region.id}>
           {region.name}
@@ -97,7 +97,7 @@ EditActivityTypeForm.propTypes = {
 
 EditActivityTypeForm.defaultProps = { isOpen: false, pristine: false };
 
-const validate = formValues => {
+const validate = (formValues) => {
   const errors = {};
 
   if (!formValues.name) {
@@ -113,9 +113,6 @@ const validate = formValues => {
 
 const form = reduxForm({ form: 'editActivityTypeForm', enableReinitialize: true, validate })(EditActivityTypeForm);
 
-const formConnect = connect(
-  null,
-  { createActivityType, editActivityType }
-)(form);
+const formConnect = connect(null, { createActivityType, editActivityType })(form);
 
 export default formConnect;
