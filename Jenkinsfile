@@ -47,7 +47,8 @@ pipeline {
             }
         }
         stage('Deploy (PROD)') {
-            agent { label 'deploy' }when {
+            agent { label 'deploy' }
+            when {
                 expression { return env.CHANGE_TARGET == 'master';}
                 beforeInput true
             }
