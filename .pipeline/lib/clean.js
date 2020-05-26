@@ -23,6 +23,7 @@ module.exports = (settings) => {
     Object.assign({ namespace: phases.build.namespace }, options)
   );
   const target_phases = getTargetPhases(options.env, phases);
+  const kc = new KeyCloakClient(settings, oc);
 
   target_phases.forEach((k) => {
     if (phases.hasOwnProperty(k)) {
