@@ -33,6 +33,10 @@ pipeline {
         }
         stage('Deploy (TEST)') {
             agent { label 'deploy' }
+            when {
+                expression { return env.CHANGE_TARGET == 'master';}
+                beforeInput true
+            }
             input {
                 message "Should we continue with deployment to TEST?"
                 ok "Yes!"
@@ -43,7 +47,10 @@ pipeline {
             }
         }
         stage('Deploy (PROD)') {
-            agent { label 'deploy' }
+            agent { label 'deploy' }when {
+                expression { return env.CHANGE_TARGET == 'master';}
+                beforeInput true
+            }
             input {
                 message "Should we continue with deployment to PROD?"
                 ok "Yes!"
