@@ -1,7 +1,7 @@
 "use strict";
 const options = require("@bcgov/pipeline-cli").Util.parseArguments();
 const changeId = options.pr; //aka pull-request
-const version = "1.0.0";
+const version = "2.3.6";
 const name = "transaction";
 
 const phases = {
