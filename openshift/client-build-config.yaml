@@ -39,6 +39,7 @@ objects:
         build: ${NAME}${SUFFIX}
       name: ${NAME}${SUFFIX}
     spec:
+      runPolicy: Parallel
       nodeSelector: null
       completionDeadlineSeconds: 600
       output:

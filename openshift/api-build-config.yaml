@@ -22,6 +22,7 @@ objects:
       creationTimestamp: null
       name: ${NAME}${SUFFIX}
     spec:
+      runPolicy: Parallel
       completionDeadlineSeconds: 600
       nodeSelector: null
       output:
