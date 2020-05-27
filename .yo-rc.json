@@ -60,6 +60,28 @@
           "github_repo": "transaction",
           "jenkinsFilePath": "Jenkinsfile",
           "uuid": "25c0d98d-fa4e-4ab9-9733-0853baa98a41"
+        },
+        "jenkins": {
+          "path": ".jenkins",
+          "name": "jenkins",
+          "namespace": "vlpweg-tools",
+          "version": "1.0.0",
+          "environments": {
+            "build": {
+              "namespace": "vlpweg-tools"
+            },
+            "dev": {
+              "namespace": "vlpweg-tools"
+            },
+            "prod": {
+              "namespace": "vlpweg-tools"
+            }
+          },
+          "jenkinsJobName": "_jenkins",
+          "github_owner": "bcgov",
+          "github_repo": "TransAction",
+          "jenkinsFilePath": ".jenkins/Jenkinsfile",
+          "uuid": "7ba97447-6956-4010-9709-b1ae0ad3f7f6"
         }
       }
     }
