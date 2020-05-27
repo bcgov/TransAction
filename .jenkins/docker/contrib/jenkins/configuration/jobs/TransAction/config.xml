@@ -32,7 +32,7 @@
           <id>25c0d98d-fa4e-4ab9-9733-0853baa98a41</id>
           <credentialsId>github-account</credentialsId>
           <repoOwner>bcgov</repoOwner>
-          <repository>transaction</repository>
+          <repository>TransAction</repository>
           <traits>
             <org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
               <strategyId>2</strategyId>
