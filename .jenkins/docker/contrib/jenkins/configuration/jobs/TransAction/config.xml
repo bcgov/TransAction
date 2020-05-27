@@ -29,10 +29,10 @@
     <data>
       <jenkins.branch.BranchSource>
         <source class="org.jenkinsci.plugins.github_branch_source.GitHubSCMSource" plugin="github-branch-source@2.3.6">
-          <id>1a1f7df5-40d5-4647-bdbc-7c017210e12d</id>
+          <id>25c0d98d-fa4e-4ab9-9733-0853baa98a41</id>
           <credentialsId>github-account</credentialsId>
           <repoOwner>bcgov</repoOwner>
-          <repository>TransAction</repository>
+          <repository>transaction</repository>
           <traits>
             <org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
               <strategyId>2</strategyId>
@@ -41,7 +41,10 @@
             <org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait>
               <strategyId>2</strategyId>
             </org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait>
+            <!-- If you want Jenkins to NOT create a a commit status with a link back to the jenkins job, uncomment trait below -->
+            <!--
             <com.adobe.jenkins.disable__github__multibranch__status.DisableStatusUpdateTrait plugin="disable-github-multibranch-status@1.1"/>
+            -->
             <jenkins.plugins.git.traits.WipeWorkspaceTrait plugin="git@3.9.1">
               <extension class="hudson.plugins.git.extensions.impl.WipeWorkspace"/>
             </jenkins.plugins.git.traits.WipeWorkspaceTrait>

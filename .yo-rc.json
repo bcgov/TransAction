@@ -50,5 +50,18 @@
         }
       }
     }
+  },
+  "@bcgov/generator-bcdk": {
+    "promptValues": {
+      "modules": {
+        ".": {
+          "jenkinsJobName": "TransAction",
+          "github_owner": "bcgov",
+          "github_repo": "transaction",
+          "jenkinsFilePath": "Jenkinsfile",
+          "uuid": "25c0d98d-fa4e-4ab9-9733-0853baa98a41"
+        }
+      }
+    }
   }
 }
