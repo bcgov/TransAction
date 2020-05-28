@@ -16,7 +16,7 @@ class UserProfileFragment extends React.Component {
   };
 
   toggleEditUserForm = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showEditUserForm: !prevState.showEditUserForm,
     }));
   };
@@ -26,7 +26,7 @@ class UserProfileFragment extends React.Component {
 
     const imageUrl =
       userToDisplay.images.length > 0
-        ? `${Constants.API_URL}/images/${userToDisplay.images[0].guid}`
+        ? `api/images/${userToDisplay.images[0].guid}`
         : `${process.env.PUBLIC_URL}/images/profile-placeholder.png`;
 
     return (

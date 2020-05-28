@@ -33,14 +33,14 @@ class AdminActivity extends React.Component {
     this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
   }
 
-  confirmRemoveActivity = activity => {
+  confirmRemoveActivity = (activity) => {
     this.setState({
       showConfirmDialog: true,
       confirmDialogOptions: {
         title: 'Remove Activity Type?',
         body: `${activity.name} will be removed.`,
         secondary: true,
-        callback: confirm => this.handleRemoveActivity(confirm, activity.id),
+        callback: (confirm) => this.handleRemoveActivity(confirm, activity.id),
       },
     });
   };
@@ -58,14 +58,14 @@ class AdminActivity extends React.Component {
   };
 
   toggleEditActivityTypeForm = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showEditActivityTypeForm: !prevState.showEditActivityTypeForm,
     }));
   };
 
   renderActivityList = () => {
     const { activities } = this.props;
-    const activityTableRows = _.orderBy(activities, ['intensity', 'name']).map(o => (
+    const activityTableRows = _.orderBy(activities, ['intensity', 'name']).map((o) => (
       <tr key={o.id}>
         <td>{o.name}</td>
         <td>{o.description}</td>
@@ -113,7 +113,9 @@ class AdminActivity extends React.Component {
             size="sm"
             color="primary"
             className="float-right mb-2"
-            onClick={() => this.showEditActivityTypeForm(null, Constants.FORM_TYPE.ADD)}
+            onClick={() =>
+              this.showEditActivityTypeForm({ name: '', description: '', intensity: 1 }, Constants.FORM_TYPE.ADD)
+            }
           >
             New Activity Type
           </Button>
@@ -137,13 +139,10 @@ class AdminActivity extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     activities: Object.values(state.activities),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchActivityList, deleteActivityType }
-)(AdminActivity);
+export default connect(mapStateToProps, { fetchActivityList, deleteActivityType })(AdminActivity);
