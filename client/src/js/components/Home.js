@@ -6,7 +6,8 @@ import CardWrapper from './ui/CardWrapper';
 
 import * as Constants from '../Constants';
 
-const carouselIds = ['01', '02', '03', '04', '05', '06', '07', '08'];
+// const carouselIds = ['01', '02', '03', '04', '05', '06', '07', '08'];
+const carouselIds = ['wellness1', 'wellness2', 'wellness3', 'wellness4', 'wellness5'];
 
 class Home extends React.Component {
   state = { slides: [] };
@@ -37,7 +38,7 @@ class Home extends React.Component {
         <CardWrapper>
           <Row>
             <Col>
-              <h3 className="text-center">Welcome to TransAction</h3>
+              <h3 className="text-center">Welcome to TransAction Wellness</h3>
               <p className="text-center">
                 <strong>
                   <em>
