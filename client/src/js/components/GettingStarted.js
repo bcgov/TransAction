@@ -100,9 +100,9 @@ class GettingStarted extends React.Component {
               </CardDeck>
               <Alert color="primary" className="mt-5">
                 <p>
-                  The personal information is collected by the Ministry of Transportation and Infrastructure under s.26(
-                  c) of the Freedom of Information and Protection of Privacy Act ("FOIPPA") for the purposes of enabling
-                  ministry employees to participate in TransAction.
+                  <strong>Privacy Notice:</strong> The personal information is collected by the Ministry of
+                  Transportation and Infrastructure under s.26( c) of the Freedom of Information and Protection of
+                  Privacy Act ("FOIPPA") for the purposes of enabling ministry employees to participate in TransAction.
                 </p>
                 <p>
                   Should you have any questions about the collection of this personal information, please contact:
