@@ -99,8 +99,22 @@ class GettingStarted extends React.Component {
                 </Card>
               </CardDeck>
               <Alert color="primary" className="mt-5">
-                Privacy Notice: Your name and email will be collected and stored as a way to identify you and keep track
-                of your progress on this site.
+                <p>
+                  The personal information is collected by the Ministry of Transportation and Infrastructure under s.26(
+                  c) of the Freedom of Information and Protection of Privacy Act ("FOIPPA") for the purposes of enabling
+                  ministry employees to participate in TransAction.
+                </p>
+                <p>
+                  Should you have any questions about the collection of this personal information, please contact:
+                  <br />
+                  Manager, Workforce Programs,
+                  <br />
+                  Strategic HR Suite 5A - 940 Blanshard Street,
+                  <br />
+                  Victoria BC, VSW 9T5
+                  <br />
+                  778-678-4691
+                </p>
               </Alert>
             </Col>
           </Row>
