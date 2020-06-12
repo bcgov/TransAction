@@ -6,6 +6,21 @@ metadata:
 labels:
   template: api-build
 objects:
+  - apiVersion: "v1"
+    kind: ImageStream
+    metadata:
+      name: dotnet-31-rhel7
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - annotations: null
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/dotnet/dotnet-31-rhel7:3.1-5
+          name: "3.1"
+          referencePolicy:
+            type: Local
   - apiVersion: v1
     kind: ImageStream
     metadata:
@@ -50,7 +65,7 @@ objects:
               value: TransAction.API/TransAction.API.csproj
           from:
             kind: ImageStreamTag
-            name: "dotnet-22-rhel7:2.2"
+            name: "dotnet-31-rhel7:3.1"
         type: Source
 parameters:
   - description: Name of the project (TransAction)

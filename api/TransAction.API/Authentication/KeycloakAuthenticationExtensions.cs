@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace TransAction.API.Authentication
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        IHostingEnvironment env = context.HttpContext.RequestServices.GetRequiredService<IHostingEnvironment>();
+                        var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
                         context.NoResult();
 
                         context.Response.StatusCode = 500;

@@ -8,15 +8,19 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Text.Json;
+using Newtonsoft.Json;
 using TransAction.API.Authentication;
 using TransAction.API.Extensions;
-using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories;
 using TransAction.Data.Repositories.Interfaces;
 using TransAction.Data.Services;
+using Microsoft.CodeAnalysis.Options;
+using TransAction.API.Helpers;
 
 namespace TransAction.API
 {
@@ -31,8 +35,6 @@ namespace TransAction.API
         }
 
         public IConfiguration Configuration { get; }
-
-        private const string CORS_ALLOW_ALL = "CORS_ALLOW_ALL";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -57,25 +59,19 @@ namespace TransAction.API
             })
             .AddKeycloakAuth(new KeycloakAuthenticationOptions() { Authority = Configuration["JWT_AUTHORITY"], Audience = Configuration["JWT_AUDIENCE"] });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(CORS_ALLOW_ALL,
-                builder =>
-                {
-                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                });
-            });
-
-            services.AddMvc(options =>
+            services.AddControllers(options =>
             {
                 options.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
             })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-            .AddJsonOptions(a => a.SerializerSettings.Converters.Add(new TrimmingConverter()));
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new TrimmingConverter());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -88,10 +84,12 @@ namespace TransAction.API
 
             app.UseSerilogRequestLogging();
             app.ConfigureExceptionHandler(_logger);
-
-            app.UseCors(CORS_ALLOW_ALL);
+            app.UseRouting();
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
