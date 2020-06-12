@@ -40,11 +40,11 @@ objects:
                   protocol: TCP
               resources:
                 requests:
-                  cpu: 250m
-                  memory: 64Mi
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
                 limits:
-                  cpu: 400m
-                  memory: 128Mi
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
               env:
                 - name: REACT_APP_SSO_HOST
                   valueFrom:
