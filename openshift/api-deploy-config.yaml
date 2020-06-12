@@ -47,11 +47,11 @@ objects:
                   protocol: TCP
               resources:
                 requests:
-                  cpu: 500m
-                  memory: 256Mi
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
                 limits:
-                  cpu: 500m
-                  memory: 512Mi
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
               env:
                 - name: CONNECTION_STRING
                   valueFrom:
@@ -94,6 +94,19 @@ objects:
           targetPort: 8080
       selector:
         deploymentconfig: ${NAME}${SUFFIX}
+  # - apiVersion: autoscaling/v1
+  #   kind: HorizontalPodAutoscaler
+  #   metadata:
+  #     name: ${NAME}${SUFFIX}-autoscaler
+  #   spec:
+  #     scaleTargetRef:
+  #       apiVersion: apps.openshift.io/v1
+  #       kind: DeploymentConfig
+  #       name: ${NAME}${SUFFIX}
+  #       subresource: scale
+  #     minReplicas: 1
+  #     maxReplicas: 3
+  #     targetCPUUtilizationPercentage: 70
 parameters:
   - description: A name used for all objects
     displayName: Name
@@ -130,3 +143,23 @@ parameters:
     name: SOURCE_REPOSITORY_REF
     required: false
     value: ""
+  - description: CPU Request
+    displayName: CPU_REQUEST
+    name: CPU_REQUEST
+    required: false
+    value: "25m"
+  - description: CPU Limit
+    displayName: CPU_LIMIT
+    name: CPU_LIMIT
+    required: false
+    value: "150m"
+  - description: Memory Request
+    displayName: MEMORY_REQUEST
+    name: MEMORY_REQUEST
+    required: false
+    value: "125m"
+  - description: Memory Limit
+    displayName: MEMORY_LIMIT
+    name: MEMORY_LIMIT
+    required: false
+    value: "250m"
