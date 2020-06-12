@@ -21,6 +21,11 @@ using TransAction.Data.Repositories.Interfaces;
 using TransAction.Data.Services;
 using Microsoft.CodeAnalysis.Options;
 using TransAction.API.Helpers;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Net.Mime;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace TransAction.API
 {
@@ -68,6 +73,9 @@ namespace TransAction.API
             {
                 options.SerializerSettings.Converters.Add(new TrimmingConverter());
             });
+
+            services.AddHealthChecks()
+                .AddSqlServer(ConnectionString, name: "DB-Check", failureStatus: HealthStatus.Degraded, tags: new string[] { "sql", "db" });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +92,31 @@ namespace TransAction.API
 
             app.UseSerilogRequestLogging();
             app.ConfigureExceptionHandler(_logger);
+
+            var healthCheckOptions = new HealthCheckOptions
+            {
+                ResponseWriter = async (c, r) =>
+                {
+                    c.Response.ContentType = MediaTypeNames.Application.Json;
+                    var result = System.Text.Json.JsonSerializer.Serialize(
+                       new
+                       {
+                           checks = r.Entries.Select(e =>
+                              new
+                              {
+                                  description = e.Key,
+                                  status = e.Value.Status.ToString(),
+                                  tags = e.Value.Tags,
+                                  responseTime = e.Value.Duration.TotalMilliseconds
+                              }),
+                           totalResponseTime = r.TotalDuration.TotalMilliseconds
+                       });
+                    await c.Response.WriteAsync(result);
+                }
+            };
+
+            app.UseHealthChecks("/healthz", healthCheckOptions);
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseEndpoints(endpoints =>
