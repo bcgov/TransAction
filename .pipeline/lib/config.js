@@ -27,6 +27,16 @@ const phases = {
     host: `transaction-${changeId}-vlpweg-dev.pathfinder.gov.bc.ca`,
     dotnet_env: "Development",
     transient: true,
+    resources: {
+      api: {
+        cpu: { request: "25m", limit: "150m" },
+        memory: { request: "125M", limit: "250M" },
+      },
+      client: {
+        cpu: { request: "10m", limit: "150m" },
+        memory: { request: "30M", limit: "64M" },
+      },
+    },
   },
   test: {
     namespace: "vlpweg-test",
@@ -39,6 +49,16 @@ const phases = {
     tag: `test-${version}`,
     host: `transaction-vlpweg-test.pathfinder.gov.bc.ca`,
     dotnet_env: "Test",
+    resources: {
+      api: {
+        cpu: { request: "25m", limit: "150m" },
+        memory: { request: "125M", limit: "250M" },
+      },
+      client: {
+        cpu: { request: "10m", limit: "150m" },
+        memory: { request: "30M", limit: "64M" },
+      },
+    },
   },
   prod: {
     namespace: "vlpweg-prod",
@@ -51,6 +71,16 @@ const phases = {
     tag: `prod-${version}`,
     host: "transaction-vlpweg-prod.pathfinder.gov.bc.ca",
     dotnet_env: "Production",
+    resources: {
+      api: {
+        cpu: { request: "25m", limit: "150m" },
+        memory: { request: "250M", limit: "512M" },
+      },
+      client: {
+        cpu: { request: "10m", limit: "150m" },
+        memory: { request: "30M", limit: "64M" },
+      },
+    },
   },
 };
 
