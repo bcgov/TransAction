@@ -79,6 +79,7 @@ const phases = {
       client: {
         cpu: { request: "10m", limit: "150m" },
         memory: { request: "30M", limit: "64M" },
+      },
     },
   },
 };
