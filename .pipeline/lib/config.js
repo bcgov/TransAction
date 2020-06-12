@@ -29,12 +29,12 @@ const phases = {
     transient: true,
     resources: {
       api: {
-        cpu: { request: "100m", limit: "150m" },
-        memory: { request: "250M", limit: "375M" },
+        cpu: { request: "150m", limit: "200m" },
+        memory: { request: "250M", limit: "500M" },
       },
       client: {
-        cpu: { request: "25m", limit: "50m" },
-        memory: { request: "45M", limit: "45M" },
+        cpu: { request: "50m", limit: "100m" },
+        memory: { request: "50M", limit: "100M" },
       },
     },
   },
@@ -51,12 +51,12 @@ const phases = {
     dotnet_env: "Test",
     resources: {
       api: {
-        cpu: { request: "100m", limit: "150m" },
-        memory: { request: "250M", limit: "375M" },
+        cpu: { request: "150m", limit: "200m" },
+        memory: { request: "250M", limit: "500M" },
       },
       client: {
-        cpu: { request: "25m", limit: "50m" },
-        memory: { request: "45M", limit: "45M" },
+        cpu: { request: "50m", limit: "100m" },
+        memory: { request: "50M", limit: "100M" },
       },
     },
   },
@@ -73,12 +73,12 @@ const phases = {
     dotnet_env: "Production",
     resources: {
       api: {
-        cpu: { request: "100m", limit: "150m" },
-        memory: { request: "250M", limit: "375M" },
+        cpu: { request: "150m", limit: "200m" },
+        memory: { request: "250M", limit: "500M" },
       },
       client: {
-        cpu: { request: "25m", limit: "50m" },
-        memory: { request: "45M", limit: "45M" },
+        cpu: { request: "50m", limit: "100m" },
+        memory: { request: "50M", limit: "100M" },
       },
     },
   },
