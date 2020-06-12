@@ -74,12 +74,11 @@ const phases = {
     resources: {
       api: {
         cpu: { request: "25m", limit: "150m" },
-        memory: { request: "250M", limit: "512M" },
+        memory: { request: "125M", limit: "250M" },
       },
       client: {
         cpu: { request: "10m", limit: "150m" },
         memory: { request: "30M", limit: "64M" },
-      },
     },
   },
 };
