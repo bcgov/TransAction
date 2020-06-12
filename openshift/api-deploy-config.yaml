@@ -106,7 +106,7 @@ objects:
         subresource: scale
       minReplicas: 1
       maxReplicas: 3
-      targetCPUUtilizationPercentage: 80
+      targetCPUUtilizationPercentage: 70
 parameters:
   - description: A name used for all objects
     displayName: Name
