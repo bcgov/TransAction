@@ -149,3 +149,23 @@ parameters:
     name: SOURCE_REPOSITORY_REF
     required: false
     value: ""
+  - description: CPU Request
+    displayName: CPU_REQUEST
+    name: CPU_REQUEST
+    required: false
+    value: "10m"
+  - description: CPU Limit
+    displayName: CPU_LIMIT
+    name: CPU_LIMIT
+    required: false
+    value: "150m"
+  - description: Memory Request
+    displayName: MEMORY_REQUEST
+    name: MEMORY_REQUEST
+    required: false
+    value: "30m"
+  - description: Memory Limit
+    displayName: MEMORY_LIMIT
+    name: MEMORY_LIMIT
+    required: false
+    value: "64m"

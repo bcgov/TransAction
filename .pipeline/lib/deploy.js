@@ -32,6 +32,10 @@ module.exports = (settings) => {
           VERSION: phases[phase].tag,
           ENV: phases[phase].phase,
           HOST: phases[phase].host,
+          CPU_REQUEST: phases[phase].resources.api.cpu.request,
+          CPU_LIMIT: phases[phase].resources.api.cpu.limit,
+          MEMORY_REQUEST: phases[phase].resources.api.memory.request,
+          MEMORY_LIMIT: phases[phase].resources.api.memory.limit,
         },
       }
     )
@@ -47,6 +51,10 @@ module.exports = (settings) => {
           VERSION: phases[phase].tag,
           HOST: phases[phase].host,
           ASPNETCORE_ENVIRONMENT: phases[phase].dotnet_env,
+          CPU_REQUEST: phases[phase].resources.client.cpu.request,
+          CPU_LIMIT: phases[phase].resources.client.cpu.limit,
+          MEMORY_REQUEST: phases[phase].resources.client.memory.request,
+          MEMORY_LIMIT: phases[phase].resources.client.memory.limit,
         },
       }
     )
