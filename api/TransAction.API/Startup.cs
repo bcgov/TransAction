@@ -71,7 +71,7 @@ namespace TransAction.API
             });
 
             services.AddHealthChecks()
-                .AddDbContextCheck<TransActionContext>();
+                .AddSqlServer(ConnectionString, name: "DB-Check", failureStatus: HealthStatus.Degraded, tags: new string[] { "sql", "db" });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
