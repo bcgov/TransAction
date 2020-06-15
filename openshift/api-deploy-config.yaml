@@ -54,7 +54,7 @@ objects:
                   memory: ${MEMORY_LIMIT}
               readinessProbe:
                 httpGet:
-                  path: /healthz
+                  path: /api/version
                   port: 8080
                 initialDelaySeconds: 15
                 periodSeconds: 5
