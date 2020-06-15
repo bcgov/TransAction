@@ -68,7 +68,7 @@ objects:
             name: "dotnet-31-rhel7:3.1"
         type: Source
 parameters:
-  - description: Name of the project (TransAction)
+  - description: Name of the project  (TransAction)
     displayName: PROJECT_NAME
     name: PROJECT_NAME
     required: true

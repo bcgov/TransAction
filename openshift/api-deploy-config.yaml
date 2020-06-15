@@ -171,7 +171,7 @@ parameters:
     name: MEMORY_REQUEST
     required: false
     value: "125m"
-  - description: Memory Limit
+  - description: Memory Limits
     displayName: MEMORY_LIMIT
     name: MEMORY_LIMIT
     required: false
