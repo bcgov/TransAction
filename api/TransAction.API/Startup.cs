@@ -2,7 +2,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -11,21 +13,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System.Text.Json;
-using Newtonsoft.Json;
+using System.Linq;
+using System.Net.Mime;
 using TransAction.API.Authentication;
 using TransAction.API.Extensions;
+using TransAction.API.Helpers;
 using TransAction.Data.Models;
 using TransAction.Data.Repositories;
 using TransAction.Data.Repositories.Interfaces;
 using TransAction.Data.Services;
-using Microsoft.CodeAnalysis.Options;
-using TransAction.API.Helpers;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using System.Net.Mime;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 
 namespace TransAction.API
 {
@@ -75,7 +71,7 @@ namespace TransAction.API
             });
 
             services.AddHealthChecks()
-                .AddSqlServer(ConnectionString, name: "DB-Check", failureStatus: HealthStatus.Degraded, tags: new string[] { "sql", "db" });
+                .AddDbContextCheck<TransActionContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
