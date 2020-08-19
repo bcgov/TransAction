@@ -21,6 +21,7 @@ namespace TransAction.Data.Repositories
                 .Where(p => p.UserId == id)
                     .Include(x => x.Activity)//.Where(x => x.Event.IsActive == true)
                     .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+                    .ToList()
                     .GroupBy(x => new { x.TeamId, x.EventId })
                     .Select(x => new UserScoreDto()
                     {
@@ -78,6 +79,7 @@ namespace TransAction.Data.Repositories
                     .ThenInclude(user => user.Team)
                 .Include(userActivity => userActivity.Activity)
                 .Where(userActivity => userActivity.EventId == eventId && userActivity.User.Team != null)
+                .ToList()
                 .GroupBy(userActivity => userActivity.User.Team.RegionId)
                 .Select(g => new RegionScoreDto
                 {
@@ -112,6 +114,7 @@ namespace TransAction.Data.Repositories
             var userList = users.Select(x => x.UserId).ToList();
             var userAct = Find(p => p.EventId == eventId && userList.Contains(p.UserId))
                             .Include(x => x.Activity)
+                            .ToList()
                             .GroupBy(x => new { x.TeamId, x.EventId })
                             .Select(x => new
                             {
@@ -128,6 +131,7 @@ namespace TransAction.Data.Repositories
             var teamAct = Find(p => userList.Contains(p.UserId))
                             .Include(x => x.Activity)
                             .Include(x => x.Event).Where(x => x.Event.IsActive == true)
+                            .ToList()
                             .GroupBy(x => new { x.TeamId, x.EventId })
                             .Select(x => new TeamSpecificScoreDto()
                             {
@@ -146,6 +150,7 @@ namespace TransAction.Data.Repositories
             var teams = Find(p => p.EventId == eventId)
                          .Include(x => x.Activity)
                          .Include(x => x.Event)
+                         .ToList()
                          .GroupBy(x => new { x.TeamId, x.EventId })
                          .Select(x => new TeamSpecificScoreDto()
                          {
@@ -163,6 +168,7 @@ namespace TransAction.Data.Repositories
             var userAct = Find(p => p.EventId == eventId && p.UserId == userId)
                             .Include(x => x.Activity)
                             .Include(x => x.Event)
+                            .ToList()
                             .GroupBy(x => new { x.UserId, x.EventId })
                             .Select(x => new
                             {

@@ -1,6 +1,6 @@
 "use strict";
 const options = require("@bcgov/pipeline-cli").Util.parseArguments();
-const changeId = options.pr; //aka pull-request
+const changeId = options.pr; // aka pull-request
 const version = "2.3.6";
 const name = "transaction";
 
@@ -14,6 +14,7 @@ const phases = {
     instance: `${name}-build-${changeId}`,
     version: `${version}-${changeId}`,
     tag: `build-${version}-${changeId}`,
+    transient: true,
   },
   dev: {
     namespace: "vlpweg-dev",

@@ -21,7 +21,7 @@ module.exports = (settings) => {
   const kc = new KeyCloakClient(settings, oc);
   kc.addUris();
 
-  // The deployment of your cool app goes here ▼▼▼
+  // The deployment of your cool app goes here  ▼▼▼
   objects.push(
     ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/client-deploy-config.yaml`,

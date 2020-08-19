@@ -52,6 +52,19 @@ objects:
                 limits:
                   cpu: ${CPU_LIMIT}
                   memory: ${MEMORY_LIMIT}
+              readinessProbe:
+                httpGet:
+                  path: /api/version
+                  port: 8080
+                initialDelaySeconds: 15
+                periodSeconds: 5
+                failureThreshold: 10
+              livenessProbe:
+                httpGet:
+                  path: /healthz
+                  port: 8080
+                initialDelaySeconds: 15
+                periodSeconds: 5
               env:
                 - name: CONNECTION_STRING
                   valueFrom:
@@ -158,7 +171,7 @@ parameters:
     name: MEMORY_REQUEST
     required: false
     value: "125m"
-  - description: Memory Limit
+  - description: Memory Limits
     displayName: MEMORY_LIMIT
     name: MEMORY_LIMIT
     required: false
