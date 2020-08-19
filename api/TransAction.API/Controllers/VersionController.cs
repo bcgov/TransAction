@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -19,6 +20,7 @@ namespace TransAction.API.Controllers
             _config = config;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult<VersionInfo> GetVersionInfo()
         {

@@ -1,6 +1,6 @@
 "use strict";
 const options = require("@bcgov/pipeline-cli").Util.parseArguments();
-const changeId = options.pr; //aka pull-request
+const changeId = options.pr; // aka pull-request
 const version = "2.3.6";
 const name = "transaction";
 
@@ -14,6 +14,7 @@ const phases = {
     instance: `${name}-build-${changeId}`,
     version: `${version}-${changeId}`,
     tag: `build-${version}-${changeId}`,
+    transient: true,
   },
   dev: {
     namespace: "vlpweg-dev",
@@ -27,6 +28,16 @@ const phases = {
     host: `transaction-${changeId}-vlpweg-dev.pathfinder.gov.bc.ca`,
     dotnet_env: "Development",
     transient: true,
+    resources: {
+      api: {
+        cpu: { request: "150m", limit: "200m" },
+        memory: { request: "250M", limit: "500M" },
+      },
+      client: {
+        cpu: { request: "50m", limit: "100m" },
+        memory: { request: "50M", limit: "100M" },
+      },
+    },
   },
   test: {
     namespace: "vlpweg-test",
@@ -39,6 +50,16 @@ const phases = {
     tag: `test-${version}`,
     host: `transaction-vlpweg-test.pathfinder.gov.bc.ca`,
     dotnet_env: "Test",
+    resources: {
+      api: {
+        cpu: { request: "150m", limit: "200m" },
+        memory: { request: "250M", limit: "500M" },
+      },
+      client: {
+        cpu: { request: "50m", limit: "100m" },
+        memory: { request: "50M", limit: "100M" },
+      },
+    },
   },
   prod: {
     namespace: "vlpweg-prod",
@@ -51,6 +72,16 @@ const phases = {
     tag: `prod-${version}`,
     host: "transaction-vlpweg-prod.pathfinder.gov.bc.ca",
     dotnet_env: "Production",
+    resources: {
+      api: {
+        cpu: { request: "150m", limit: "200m" },
+        memory: { request: "250M", limit: "500M" },
+      },
+      client: {
+        cpu: { request: "50m", limit: "100m" },
+        memory: { request: "50M", limit: "100M" },
+      },
+    },
   },
 };
 
