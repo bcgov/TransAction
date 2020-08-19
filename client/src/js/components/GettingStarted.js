@@ -36,20 +36,23 @@ class GettingStarted extends React.Component {
       <CardWrapper>
         <Row>
           <Col>
-            <h4>How does TransAction Wellness work?</h4>
+            <h4>How does TransAction work?</h4>
             <p>
-              You participate in TransAction Wellness by creating or becoming a member of a team, or participating on
-              your own. A team is composed of a leader and up to four team members. You can join a team or make yourself
-              available to join any team in the ministry by becoming a Free Agent.
+              You participate in TransAction by becoming a member of a team. A team is composed of a leader and up to
+              four team members. You can join a team of people you know, or make yourself available to join any team in
+              the ministry.
             </p>
 
             <p>
-              Individuals enter daily activity time in TransAction Wellness, and you can monitor your team's progress on
-              the homepage. All activities for this event hold the same low intensity level. This is not a competitive
-              event. It is a tool to help encourage you to make healthy choices throughout the month of June.
+              Teams enter daily activity time in TransAction, and you monitor your team's progress and standings on the
+              homepage. You will not only compete against other teams, but your individual time will also help your
+              geographic area compete in the 4-way battle between regions and headquarters.
             </p>
+
             <p>
-              You can view your activity log entries on the calendar. More information can be found in the{' '}
+              Exercise time is entered for each day and points are assigned based on level of intensity. Time entered is
+              converted to points. High, medium and low intensity exercises are multiplied by factors of 3, 2, and 1,
+              respectively. You can view your activity log entries on the calendar. More information can be found in the{' '}
               <Link to={Constants.PATHS.FAQ}>FAQ</Link> section of this webpage.
             </p>
           </Col>
