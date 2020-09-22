@@ -56,6 +56,7 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 appsettings.*.json
+**/Properties/launchSettings.json
 
 # StyleCop
 StyleCopReport.xml
