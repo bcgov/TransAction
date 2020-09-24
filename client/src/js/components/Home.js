@@ -38,7 +38,7 @@ class Home extends React.Component {
         <CardWrapper>
           <Row>
             <Col>
-              <h3 className="text-center">Welcome to TransAction Wellness</h3>
+              <h3 className="text-center">Welcome to TransAction</h3>
               <p className="text-center">
                 <strong>
                   <em>
