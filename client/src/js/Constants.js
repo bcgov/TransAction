@@ -6,6 +6,8 @@ export const PATHS = {
   TEAM: '/team',
   START: '/start',
   FAQ: '/faq',
+  FAQ_HEALTH: '/faq#health',
+  FAQ_WELLNESS: '/faq#wellness',
   INCENTIVES: '/incentives',
   MESSAGES: '/messages',
   ADMIN: '/admin',
