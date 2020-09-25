@@ -72,11 +72,11 @@ class Header extends Component {
                       Messages
                     </NavLink>
                   </NavItem>
-                  <NavItem>
+                  {/* <NavItem>
                     <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.INCENTIVES}>
                       Incentives
                     </NavLink>
-                  </NavItem>
+                  </NavItem> */}
                   <NavItem>
                     <NavLink tag={RRNavLink} onClick={this.hideNavbar} to={Constants.PATHS.FAQ}>
                       FAQ
