@@ -43,9 +43,9 @@ class GettingStarted extends React.Component {
             </p>
             <h6>Create or join a team:</h6>
             <p>
-              To participate in an event, you can either join a team of people, create a team, or join individually by
-              clicking the Get Started button below. If you would like to make yourself available to join any cd team in
-              the ministry, click Join Team and then click Become Free Agent. Teams can have a maximum of five members.
+              To participate in an event, you can either join an existing team, create a team, or join individually by
+              clicking the Get Started button below. If you would like to make yourself available to join any team in
+              the ministry, click Become Free Agent. Teams can have a maximum of five members.
             </p>
             There are two categories on the Events page for TransAction Healthy Workplace Challenge:{' '}
             <strong>Competitive</strong> and <strong>Recreational</strong>.<p></p>
