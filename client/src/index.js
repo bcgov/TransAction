@@ -19,7 +19,7 @@ import initFontAwesome from './js/fontAwesome';
 import { UPDATE_AUTH_USER } from './js/actions/types';
 
 // CustomEvent Polyfill for IE11, used by Reactstrap Carousel
-(function() {
+(function () {
   if (typeof window.CustomEvent === 'function') return false;
 
   function CustomEvent(event, params) {
@@ -53,14 +53,14 @@ keycloak.onAuthRefreshSuccess = () => {
 };
 
 function getKeycloakUserInfo() {
-  keycloak.loadUserInfo().success(data => {
+  keycloak.loadUserInfo().success((data) => {
     store.dispatch({ type: UPDATE_AUTH_USER, payload: data });
   });
 }
 
 keycloak
-  .init({ onLoad: 'login-required' })
-  .success(authenticated => {
+  .init({ onLoad: 'login-required', checkLoginIframe: false })
+  .success((authenticated) => {
     if (authenticated) {
       ReactDOM.render(
         <Provider store={store}>
@@ -75,8 +75,8 @@ keycloak
   });
 
 api.instance.interceptors.request.use(
-  config =>
-    new Promise(resolve =>
+  (config) =>
+    new Promise((resolve) =>
       keycloak
         .updateToken(5)
         .success(() => {

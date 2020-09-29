@@ -7,7 +7,7 @@ import CardWrapper from './ui/CardWrapper';
 import * as Constants from '../Constants';
 
 // const carouselIds = ['01', '02', '03', '04', '05', '06', '07', '08'];
-const carouselIds = ['wellness1', 'wellness2', 'wellness3', 'wellness4', 'wellness5'];
+const carouselIds = ['wellness1', 'wellness2', 'wellness3', 'wellness4', 'wellness5', 'wellness6'];
 
 class Home extends React.Component {
   state = { slides: [] };
@@ -16,7 +16,7 @@ class Home extends React.Component {
     this.setState({
       slides: carouselIds.map((item) => {
         return {
-          src: `${process.env.PUBLIC_URL}/images/carousel${item}.jpg`,
+          src: `${process.env.PUBLIC_URL}/images/${item}.jpg`,
           caption: '',
           altText: '',
           header: '',
@@ -38,7 +38,7 @@ class Home extends React.Component {
         <CardWrapper>
           <Row>
             <Col>
-              <h3 className="text-center">Welcome to TransAction Wellness</h3>
+              <h3 className="text-center">Welcome to TransAction</h3>
               <p className="text-center">
                 <strong>
                   <em>
@@ -48,30 +48,13 @@ class Home extends React.Component {
                 </strong>
               </p>
               <p>
-                TransAction Wellness is brought to you by your Employee Advisory Forum. This event was created as an
-                opportunity for everyone to explore the various dimensions of their personal health and well-being.
-                TransAction Wellness will run from June 1-30.
+                This voluntary initiative is sponsored by your Employee Advisory Forum and your ministry executive as a
+                fun, dynamic way of getting active and supporting total health and wellbeing. You can participate in
+                different events, like TransAction Healthy Workplace Challenge and TransAction Wellness, hosted by the
+                EAF through this webpage. Individuals enter daily activities, and you monitor progress and standings on
+                the homepage.
               </p>
-              <h6>Create or join a team:</h6>
-              <p>
-                To participate in TransAction Wellness, you can either join a team of people, create a team, or join
-                individually by clicking the Get Started button below. If you would like to make yourself available to
-                join any team in the ministry, click Join Team and then click Become Free Agent. Teams can have a
-                maximum of five members.
-              </p>
-              <h6>Logging your activity:</h6>
-              <p>
-                To log your activity, click on the Events page and select TransAction Wellness. Click on Log Activity to
-                enter your activity in 15-minute increments. Please note that all the activities are listed as Low
-                intensity. This event is not a competition, it is a tool to help log your activities and encourage each
-                of us to make healthy choices. If your activity isn’t listed, select “Other” and you will be prompted to
-                provide a short description of the activity performed.
-              </p>
-              <h6>Prizes:</h6>
-              <p>
-                There will be a participation prize drawn every week so be sure to log your activity for a chance to
-                win!
-              </p>
+              <p>To find an active event, click 'Get Started' below and click on each event to learn more!</p>
               <div className="text-center mt-5">
                 <Link to={Constants.PATHS.START}>
                   <Button color="primary">Get Started</Button>
