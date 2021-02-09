@@ -6,7 +6,7 @@ COPY . ./src
 RUN cd ./src && npm ci && \
     npm run build
 
-FROM image-registry.openshift-image-registry.svc:5000/vlpweg-tools/nginx-116-rhel8:1
+FROM image-registry.openshift-image-registry.svc:5000/55b94d-tools/nginx-116-rhel8:1
 
 COPY --from=builder /src/build/. /tmp/src
 COPY --from=builder /src/nginx-start/. /tmp/src/nginx-start

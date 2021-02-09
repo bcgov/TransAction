@@ -4,7 +4,7 @@ services:
     build:
       context: ./client
     environment:
-      - REACT_APP_SSO_HOST=https://sso-dev.pathfinder.gov.bc.ca/auth
+      - REACT_APP_SSO_HOST=https://dev.oidc.gov.bc.ca/auth
       - REACT_APP_SSO_REALM=<realm-id>
       - REACT_APP_SSO_CLIENT=<client-id>
       - REACT_APP_API_HOST=localhost:8080
@@ -16,7 +16,7 @@ services:
       context: ./api
     environment:
       - CONNECTION_STRING=Server=<server>;User Id=<user>;Password=<password>;Database=<database>;
-      - JWT_AUTHORITY=https://sso-dev.pathfinder.gov.bc.ca/auth/realms/<realm-id>
+      - JWT_AUTHORITY=https://dev.oidc.gov.bc.ca/auth/realms/<realm-id>
       - JWT_AUDIENCE=<client-id>
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
