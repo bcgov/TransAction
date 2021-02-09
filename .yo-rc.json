@@ -4,18 +4,18 @@
       "modules": {
         "jenkins": {
           "path": ".jenkins",
-          "namespace": "vlpweg-tools",
+          "namespace": "55b94d-tools",
           "name": "jenkins",
           "version": "1.0.0",
           "environments": {
             "build": {
-              "namespace": "vlpweg-tools"
+              "namespace": "55b94d-tools"
             },
             "dev": {
-              "namespace": "vlpweg-tools"
+              "namespace": "55b94d-tools"
             },
             "prod": {
-              "namespace": "vlpweg-tools"
+              "namespace": "55b94d-tools"
             }
           },
           "jenkinsJobName": "_jenkins",
@@ -30,16 +30,16 @@
           "path": ".",
           "environments": {
             "build": {
-              "namespace": "vlpweg-tools"
+              "namespace": "55b94d-tools"
             },
             "dev": {
-              "namespace": "vlpweg-dev"
+              "namespace": "55b94d-dev"
             },
             "test": {
-              "namespace": "vlpweg-test"
+              "namespace": "55b94d-test"
             },
             "prod": {
-              "namespace": "vlpweg-prod"
+              "namespace": "55b94d-prod"
             }
           },
           "jenkinsJobName": "TransAction",

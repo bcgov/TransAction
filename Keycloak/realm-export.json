@@ -34,23 +34,15 @@
   "quickLoginCheckMilliSeconds": 1000,
   "maxDeltaTimeSeconds": 43200,
   "failureFactor": 30,
-  "defaultRoles": [
-    "offline_access",
-    "uma_authorization"
-  ],
-  "requiredCredentials": [
-    "password"
-  ],
+  "defaultRoles": ["offline_access", "uma_authorization"],
+  "requiredCredentials": ["password"],
   "otpPolicyType": "totp",
   "otpPolicyAlgorithm": "HmacSHA1",
   "otpPolicyInitialCounter": 0,
   "otpPolicyDigits": 6,
   "otpPolicyLookAheadWindow": 1,
   "otpPolicyPeriod": 30,
-  "otpSupportedApplications": [
-    "FreeOTP",
-    "Google Authenticator"
-  ],
+  "otpSupportedApplications": ["FreeOTP", "Google Authenticator"],
   "clients": [
     {
       "id": "5275c3e9-54e8-4f5b-9daa-3530917721e1",
@@ -178,13 +170,8 @@
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-      "defaultRoles": [
-        "view-profile",
-        "manage-account"
-      ],
-      "redirectUris": [
-        "/auth/realms/phtayzfq/account/*"
-      ],
+      "defaultRoles": ["view-profile", "manage-account"],
+      "redirectUris": ["/auth/realms/phtayzfq/account/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -667,11 +654,11 @@
       "secret": "**********",
       "redirectUris": [
         "https://transaction.th.gov.bc.ca/*",
-        "https://transaction-vlpweg-prod.pathfinder.gov.bc.ca/*"
+        "https://transaction-55b94d-prod.apps.silver.devops.gov.bc.ca/*"
       ],
       "webOrigins": [
         "https://transaction.th.gov.bc.ca",
-        "https://transaction-vlpweg-prod.pathfinder.gov.bc.ca"
+        "https://transaction-55b94d-prod.apps.silver.devops.gov.bc.ca"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -829,9 +816,7 @@
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-      "redirectUris": [
-        "/auth/admin/phtayzfq/console/*"
-      ],
+      "redirectUris": ["/auth/admin/phtayzfq/console/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -969,9 +954,7 @@
   "smtpServer": {},
   "loginTheme": "bcgov-v2",
   "eventsEnabled": false,
-  "eventsListeners": [
-    "jboss-logging"
-  ],
+  "eventsListeners": ["jboss-logging"],
   "enabledEventTypes": [],
   "adminEventsEnabled": false,
   "adminEventsDetailsEnabled": false,
@@ -1084,9 +1067,7 @@
             "saml-user-attribute-mapper",
             "oidc-address-mapper"
           ],
-          "consent-required-for-all-mappers": [
-            "true"
-          ]
+          "consent-required-for-all-mappers": ["true"]
         }
       },
       {
@@ -1096,9 +1077,7 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "max-clients": [
-            "200"
-          ]
+          "max-clients": ["200"]
         }
       },
       {
@@ -1132,12 +1111,8 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "host-sending-registration-request-must-match": [
-            "true"
-          ],
-          "client-uris-must-match": [
-            "true"
-          ]
+          "host-sending-registration-request-must-match": ["true"],
+          "client-uris-must-match": ["true"]
         }
       },
       {
@@ -1165,9 +1140,7 @@
             "oidc-address-mapper",
             "oidc-usermodel-property-mapper"
           ],
-          "consent-required-for-all-mappers": [
-            "true"
-          ]
+          "consent-required-for-all-mappers": ["true"]
         }
       }
     ],
@@ -1178,9 +1151,7 @@
         "providerId": "aes-generated",
         "subComponents": {},
         "config": {
-          "priority": [
-            "100"
-          ]
+          "priority": ["100"]
         }
       },
       {
@@ -1189,9 +1160,7 @@
         "providerId": "rsa-generated",
         "subComponents": {},
         "config": {
-          "priority": [
-            "100"
-          ]
+          "priority": ["100"]
         }
       },
       {
@@ -1200,17 +1169,13 @@
         "providerId": "hmac-generated",
         "subComponents": {},
         "config": {
-          "priority": [
-            "100"
-          ]
+          "priority": ["100"]
         }
       }
     ]
   },
   "internationalizationEnabled": false,
-  "supportedLocales": [
-    ""
-  ],
+  "supportedLocales": [""],
   "authenticationFlows": [
     {
       "id": "41347a2f-4b08-4661-b635-ed1f0ab70569",
