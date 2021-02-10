@@ -6,7 +6,7 @@ const name = "transaction";
 
 const phases = {
   build: {
-    namespace: "vlpweg-tools",
+    namespace: "55b94d-tools",
     name: `${name}`,
     phase: "build",
     changeId: changeId,
@@ -17,7 +17,7 @@ const phases = {
     transient: true,
   },
   dev: {
-    namespace: "vlpweg-dev",
+    namespace: "55b94d-dev",
     name: `${name}`,
     phase: "dev",
     changeId: changeId,
@@ -25,7 +25,7 @@ const phases = {
     instance: `${name}-dev-${changeId}`,
     version: `${version}-${changeId}`,
     tag: `dev-${version}-${changeId}`,
-    host: `transaction-${changeId}-vlpweg-dev.pathfinder.gov.bc.ca`,
+    host: `transaction-${changeId}-55b94d-dev.apps.silver.devops.gov.bc.ca`,
     dotnet_env: "Development",
     transient: true,
     resources: {
@@ -40,7 +40,7 @@ const phases = {
     },
   },
   test: {
-    namespace: "vlpweg-test",
+    namespace: "55b94d-test",
     name: `${name}`,
     phase: "test",
     changeId: changeId,
@@ -48,7 +48,7 @@ const phases = {
     instance: `${name}-test`,
     version: `${version}`,
     tag: `test-${version}`,
-    host: `transaction-vlpweg-test.pathfinder.gov.bc.ca`,
+    host: `transaction-55b94d-test.apps.silver.devops.gov.bc.ca`,
     dotnet_env: "Test",
     resources: {
       api: {
@@ -62,7 +62,7 @@ const phases = {
     },
   },
   prod: {
-    namespace: "vlpweg-prod",
+    namespace: "55b94d-prod",
     name: `${name}`,
     phase: "prod",
     changeId: changeId,
@@ -70,7 +70,7 @@ const phases = {
     instance: `${name}-prod`,
     version: `${version}`,
     tag: `prod-${version}`,
-    host: "transaction-vlpweg-prod.pathfinder.gov.bc.ca",
+    host: "transaction-55b94d-prod.apps.silver.devops.gov.bc.ca",
     dotnet_env: "Production",
     resources: {
       api: {
