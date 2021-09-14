@@ -10,7 +10,7 @@ const DEFAULT_USER = {
   preferred_username: null,
 };
 
-export default (state = DEFAULT_USER, action) => {
+const authUserReducer = (state = DEFAULT_USER, action) => {
   switch (action.type) {
     case UPDATE_AUTH_USER:
       return { ...state, ...action.payload };
@@ -18,3 +18,5 @@ export default (state = DEFAULT_USER, action) => {
       return state;
   }
 };
+
+export default authUserReducer;

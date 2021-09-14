@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { FETCH_ACTIVITY_LIST, CREATE_ACTIVITY_TYPE, EDIT_ACTIVITY_TYPE, DELETE_ACTIVITY_TYPE } from '../actions/types';
 
-export default (state = {}, action) => {
+const activityReducer = (state = {}, action) => {
   switch (action.type) {
     case FETCH_ACTIVITY_LIST:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
@@ -15,3 +15,5 @@ export default (state = {}, action) => {
       return state;
   }
 };
+
+export default activityReducer;

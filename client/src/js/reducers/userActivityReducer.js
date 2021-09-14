@@ -7,7 +7,7 @@ import {
   DELETE_USER_ACTIVITY,
 } from '../actions/types';
 
-export default (state = {}, action) => {
+const userActivityReducer = (state = {}, action) => {
   switch (action.type) {
     case FETCH_USER_ACTIVITIES:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
@@ -22,3 +22,5 @@ export default (state = {}, action) => {
       return state;
   }
 };
+
+export default userActivityReducer;

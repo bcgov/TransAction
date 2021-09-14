@@ -4,6 +4,7 @@ const changeId = options.pr; // aka pull-request
 const version = "2.3.7";
 const name = "transaction";
 
+Object.assign(options.git, { owner: "ychung-mot", repository: "TransAction" });
 const phases = {
   build: {
     namespace: "55b94d-tools",

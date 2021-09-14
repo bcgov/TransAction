@@ -15,7 +15,7 @@ const DEFAULT_STATE = {
   regionStandings: [],
 };
 
-export default (state = DEFAULT_STATE, action) => {
+const scoreReducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
     case FETCH_USER_SCORES:
       return { ...state, user: { ...state.user, [action.payload.userId]: _.mapKeys(action.payload.data, 'eventId') } };
@@ -61,3 +61,5 @@ export default (state = DEFAULT_STATE, action) => {
       return state;
   }
 };
+
+export default scoreReducer;
