@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 const DEFAULT_STATE = {};
 
-export default (state = DEFAULT_STATE, action) => {
+const messageReducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
     case FETCH_TOPICS:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
@@ -19,3 +19,5 @@ export default (state = DEFAULT_STATE, action) => {
       return state;
   }
 };
+
+export default messageReducer;

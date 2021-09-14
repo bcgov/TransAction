@@ -8,7 +8,7 @@ const defaultState = {
   method: undefined,
 };
 
-export default (state = defaultState, action) => {
+const errorDialogReducer = (state = defaultState, action) => {
   switch (action.type) {
     case SHOW_ERROR_DIALOG_MODAL:
       return { show: true, ...action.payload };
@@ -18,3 +18,5 @@ export default (state = defaultState, action) => {
       return state;
   }
 };
+
+export default errorDialogReducer;

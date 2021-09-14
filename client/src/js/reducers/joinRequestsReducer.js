@@ -7,7 +7,7 @@ import {
 } from '../actions/types';
 import _ from 'lodash';
 
-export default (state = {}, action) => {
+const joinRequestsReducer = (state = {}, action) => {
   switch (action.type) {
     case FETCH_JOIN_REQUESTS:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
@@ -23,3 +23,5 @@ export default (state = {}, action) => {
       return state;
   }
 };
+
+export default joinRequestsReducer;

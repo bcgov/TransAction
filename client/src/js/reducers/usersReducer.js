@@ -13,7 +13,7 @@ const defaultState = {
   all: {},
 };
 
-export default (state = defaultState, action) => {
+const usersReducer = (state = defaultState, action) => {
   switch (action.type) {
     case FETCH_USERS:
     case FETCH_ADMIN_USERS:
@@ -28,3 +28,5 @@ export default (state = defaultState, action) => {
       return state;
   }
 };
+
+export default usersReducer;

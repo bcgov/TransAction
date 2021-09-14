@@ -1,7 +1,7 @@
 import { FETCH_TEAM, CREATE_TEAM, FETCH_TEAMS } from '../actions/types';
 import _ from 'lodash';
 
-export default (state = {}, action) => {
+const teamReducer = (state = {}, action) => {
   switch (action.type) {
     case FETCH_TEAMS:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
@@ -15,3 +15,5 @@ export default (state = {}, action) => {
       return state;
   }
 };
+
+export default teamReducer;
