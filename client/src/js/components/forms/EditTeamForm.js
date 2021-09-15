@@ -18,7 +18,7 @@ class EditTeamForm extends React.Component {
     this.props.initialize(this.props.initialValues);
   };
 
-  onSubmit = formValues => {
+  onSubmit = (formValues) => {
     if (!this.state.submitting) {
       this.setState({ submitting: true });
     }
@@ -41,22 +41,13 @@ class EditTeamForm extends React.Component {
   };
 
   renderRegionOptions() {
-    const regionOptions = Object.values(this.props.regions).map(region => {
+    return Object.values(this.props.regions).map((region) => {
       return (
         <option value={region.id} key={region.id}>
           {region.name}
         </option>
       );
     });
-
-    regionOptions.unshift(<option value={0} key={0} />);
-    regionOptions.unshift(
-      <option value={-1} key={-1}>
-        Select a region
-      </option>
-    );
-
-    return regionOptions;
   }
 
   render() {
@@ -106,7 +97,7 @@ EditTeamForm.propTypes = {
 
 EditTeamForm.defaultProps = { regions: {}, isOpen: false, pristine: false };
 
-const validate = formValues => {
+const validate = (formValues) => {
   const errors = {};
 
   const goal = parseInt(formValues.goal);
@@ -136,16 +127,13 @@ const validate = formValues => {
 
 const form = reduxForm({ form: 'editTeamForm', enableReinitialize: true, validate })(EditTeamForm);
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     regions: state.regions,
     currentUser: state.users.all[state.users.current.id],
   };
 };
 
-const formConnect = connect(
-  mapStateToProps,
-  { editTeam, createTeam, fetchCurrentUser }
-)(form);
+const formConnect = connect(mapStateToProps, { editTeam, createTeam, fetchCurrentUser })(form);
 
 export default formConnect;

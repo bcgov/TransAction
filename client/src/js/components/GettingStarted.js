@@ -193,7 +193,7 @@ class GettingStarted extends React.Component {
           <EditTeamForm
             isOpen={this.state.showCreateTeamForm}
             toggle={this.toggleCreateTeamForm}
-            initialValues={{ goal: 0 }}
+            initialValues={{ goal: 0, regionId: this.props.currentUser.regionId }}
             formType={Constants.FORM_TYPE.ADD}
           />
         )}
