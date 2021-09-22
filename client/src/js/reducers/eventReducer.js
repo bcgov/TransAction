@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { CREATE_EVENT, FETCH_EVENTS, FETCH_EVENT, EDIT_EVENT, ARCHIVE_EVENT, UN_ARCHIVE_EVENT } from '../actions/types';
 
-export default (state = {}, action) => {
+const eventReducer = (state = {}, action) => {
   switch (action.type) {
     case FETCH_EVENTS:
       return { ...state, ..._.mapKeys(action.payload, 'id') };
@@ -20,3 +20,5 @@ export default (state = {}, action) => {
       return state;
   }
 };
+
+export default eventReducer;

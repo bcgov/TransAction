@@ -59,10 +59,10 @@ class EventListItem extends React.Component {
               {utils.isCurrentUserAdmin() ? this.renderEditButton() : ''}
             </div>
             <p className="text-muted">
-              {moment(this.props.event.startDate).format('MMMM Do, YYYY')} to{' '}
-              {moment(this.props.event.endDate).format('MMMM Do, YYYY')}
+              {moment(this.props.event.startDate).format('MMMM Do')} to{' '}
+              {moment(this.props.event.endDate).format('MMMM Do')}
             </p>
-            <Markdown source={this.props.event.description} allowedTypes={Constants.MARKDOWN.ALLOWED} />
+            <Markdown children={this.props.event.description} allowedElements={Constants.MARKDOWN.ALLOWED} />
             <p>
               <Link to={`/event/${this.props.event.id}`}>View Details</Link>
             </p>

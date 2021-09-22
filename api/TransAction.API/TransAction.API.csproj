@@ -5,18 +5,18 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <RepositoryUrl>https://github.com/bcgov/TransAction.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>2.3.8</Version>
+    <Version>2.3.9</Version>
     <Description>The API server for the TransAction System</Description>
     <Copyright>Copyright© 2019, Province of British Columbia.</Copyright>
-    <AssemblyVersion>2.3.8.0</AssemblyVersion>
-    <FileVersion>2.3.8.0</FileVersion>
+    <AssemblyVersion>2.3.9.0</AssemblyVersion>
+    <FileVersion>2.3.9.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="3.1.1" />
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
