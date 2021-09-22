@@ -1,5 +1,5 @@
-FROM docker.io/node:13.7-alpine3.11 AS builder
-LABEL maintainer="neal.li@gov.bc.ca"
+FROM image-registry.openshift-image-registry.svc:5000/55b94d-tools/node:1 AS builder
+LABEL maintainer="youngjin.chung@gov.bc.ca"
 
 COPY . ./src
 
