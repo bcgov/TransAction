@@ -18,7 +18,7 @@ class MessagePostFragment extends React.Component {
   };
 
   toggleEditForm = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showEditForm: !prevState.showEditForm,
     }));
   };
@@ -28,7 +28,7 @@ class MessagePostFragment extends React.Component {
   };
 
   toggleEditTopicForm = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showEditTopicForm: !prevState.showEditTopicForm,
     }));
   };
@@ -57,7 +57,7 @@ class MessagePostFragment extends React.Component {
             )}
           </Col>
         </Row>
-        <Markdown allowedTypes={Constants.MARKDOWN.ALLOWED}>{post.body}</Markdown>
+        <Markdown allowedElements={Constants.MARKDOWN.ALLOWED}>{post.body}</Markdown>
         {post.concurrencyControlNumber > 1 && (
           <small>
             <em>
@@ -96,13 +96,10 @@ class MessagePostFragment extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     currentUser: state.users.all[state.users.current.id],
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(MessagePostFragment);
+export default connect(mapStateToProps, null)(MessagePostFragment);

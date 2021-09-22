@@ -22,17 +22,24 @@ export const USER_SCORE_CARD_WIDTH = { WIDE: 'wide', NARROW: 'narrow' };
 
 export const MARKDOWN = {
   ALLOWED: [
-    'root',
+    'html', //root
     'text',
-    'break',
-    'paragraph',
-    'strong',
-    'emphasis',
-    'thematicBreak',
-    'delete',
-    'list',
-    'listItem',
-    'heading',
+    'br', //break
+    'p', //paragraph
+    'strong', //strong
+    'em', //emphasis
+    'hr', //thematicBreak
+    'del', //deleted
+    'ol', //lists
+    'ul',
+    'li', //list item
+    'h1', //headings
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'pre', //needed for code elements to be displayed
     'code',
   ],
 };

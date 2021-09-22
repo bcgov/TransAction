@@ -41,7 +41,7 @@ class EventDetail extends React.Component {
             {moment(this.props.event.startDate).format('MMMM Do')} to{' '}
             {moment(this.props.event.endDate).format('MMMM Do')}
           </p>
-          <Markdown source={this.props.event.description} allowedTypes={Constants.MARKDOWN.ALLOWED} />
+          <Markdown children={this.props.event.description} allowedElements={Constants.MARKDOWN.ALLOWED} />
           <EventScoresPanel event={this.props.event} />
         </CardWrapper>
         <CardWrapper>
