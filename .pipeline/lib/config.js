@@ -26,7 +26,7 @@ const phases = {
     instance: `${name}-dev-${changeId}`,
     version: `${version}-${changeId}`,
     tag: `dev-${version}-${changeId}`,
-    host: `transaction-${changeId}-55b94d-dev.apps.silver.devops.gov.bc.ca`,
+    host: `transaction-55b94d-dev.apps.silver.devops.gov.bc.ca`,
     dotnet_env: "Development",
     transient: true,
     resources: {
