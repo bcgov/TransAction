@@ -95,27 +95,9 @@ objects:
       annotations:
         haproxy.router.openshift.io/timeout: 1h
       creationTimestamp: null
-      name: ${NAME}${SUFFIX}
+      name: ${NAME}-${ENV}
     spec:
-      path: "/"
-      port:
-        targetPort: web
-      tls:
-        termination: edge
-      to:
-        kind: Service
-        name: ${NAME}${SUFFIX}
-        weight: 100
-      wildcardPolicy: None
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      annotations:
-        haproxy.router.openshift.io/timeout: 1h
-      creationTimestamp: null
-      name: ${NAME}
-    spec:
-      host: transaction-55b94d-${ENV}.apps.silver.devops.gov.bc.ca
+      host: ${HOST}
       path: "/"
       port:
         targetPort: web
