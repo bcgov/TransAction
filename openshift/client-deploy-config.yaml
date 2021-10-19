@@ -115,7 +115,7 @@ objects:
       creationTimestamp: null
       name: ${NAME}
     spec:
-      host: transaction-55b94d-{env}.apps.silver.devops.gov.bc.ca
+      host: transaction-55b94d-${ENV}.apps.silver.devops.gov.bc.ca
       path: "/"
       port:
         targetPort: web
