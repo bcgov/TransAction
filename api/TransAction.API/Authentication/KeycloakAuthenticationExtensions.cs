@@ -50,7 +50,7 @@ namespace TransAction.API.Authentication
                     {
                         var principal = context.Principal;
                         var db = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationRepo>();
-                        var dbUser = db.GetUser(principal.FindFirstValue("idir_guid"));
+                        var dbUser = db.GetUser(principal.FindFirstValue("idir_user_guid"));
 
                         if (dbUser == null)
                         {

@@ -34,15 +34,28 @@ import { UPDATE_AUTH_USER } from './js/actions/types';
 
 initFontAwesome();
 
-const keycloakConfig = {
+//bruce test 0815
+// const keycloakConfig = {
+//   url: window.RUNTIME_REACT_APP_SSO_HOST ? window.RUNTIME_REACT_APP_SSO_HOST : process.env.REACT_APP_SSO_HOST,
+//   realm: window.RUNTIME_REACT_APP_SSO_REALM ? window.RUNTIME_REACT_APP_SSO_REALM : process.env.REACT_APP_SSO_REALM,
+//   clientId: window.RUNTIME_REACT_APP_SSO_CLIENT
+//     ? window.RUNTIME_REACT_APP_SSO_CLIENT
+//     : process.env.REACT_APP_SSO_CLIENT,
+// };
+
+// const keycloak = Keycloak(keycloakConfig);
+
+const ssoConfig = {
   url: window.RUNTIME_REACT_APP_SSO_HOST ? window.RUNTIME_REACT_APP_SSO_HOST : process.env.REACT_APP_SSO_HOST,
   realm: window.RUNTIME_REACT_APP_SSO_REALM ? window.RUNTIME_REACT_APP_SSO_REALM : process.env.REACT_APP_SSO_REALM,
   clientId: window.RUNTIME_REACT_APP_SSO_CLIENT
     ? window.RUNTIME_REACT_APP_SSO_CLIENT
-    : process.env.REACT_APP_SSO_CLIENT,
+    : process.env.REACT_APP_SSO_CLIENT
 };
 
-const keycloak = Keycloak(keycloakConfig);
+
+
+const keycloak = new Keycloak(ssoConfig);
 
 keycloak.onAuthSuccess = () => {
   getKeycloakUserInfo();
@@ -58,8 +71,17 @@ function getKeycloakUserInfo() {
   });
 }
 
+//bruce test 0815
+var initOptions = {
+  onLoad: 'login-required',
+  checkLoginIframe: false,
+  pkceMethod: 'S256'
+};
+
 keycloak
-  .init({ onLoad: 'login-required', checkLoginIframe: false })
+  //bruce test 0815
+  //.init({ onLoad: 'login-required', checkLoginIframe: false })
+  .init(initOptions)
   .success((authenticated) => {
     if (authenticated) {
       ReactDOM.render(
