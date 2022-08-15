@@ -55,7 +55,6 @@ namespace TransAction.API
             var ConnectionString = Configuration["CONNECTION_STRING"];
             services.AddDbContext<TransActionContext>(opt =>
                 opt.UseSqlServer(ConnectionString));
-            //bruce test 0815
             IdentityModelEventSource.ShowPII = true;
 
             services.AddAuthentication(options =>
