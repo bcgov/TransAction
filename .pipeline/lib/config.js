@@ -1,7 +1,7 @@
 "use strict";
 const options = require("@bcgov/pipeline-cli").Util.parseArguments();
 const changeId = options.pr; // aka pull-request
-const version = "2.3.9";
+const version = "2.3.11";
 const name = "transaction";
 
 Object.assign(options.git, { owner: "ychung-mot", repository: "TransAction" });
