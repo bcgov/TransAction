@@ -23,6 +23,7 @@ using TransAction.Data.Models;
 using TransAction.Data.Repositories;
 using TransAction.Data.Repositories.Interfaces;
 using TransAction.Data.Services;
+using Microsoft.IdentityModel.Logging;
 
 namespace TransAction.API
 {
@@ -41,6 +42,7 @@ namespace TransAction.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             //Adding services
             services.AddHttpContextAccessor();
 
@@ -53,6 +55,7 @@ namespace TransAction.API
             var ConnectionString = Configuration["CONNECTION_STRING"];
             services.AddDbContext<TransActionContext>(opt =>
                 opt.UseSqlServer(ConnectionString));
+            IdentityModelEventSource.ShowPII = true;
 
             services.AddAuthentication(options =>
             {
