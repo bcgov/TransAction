@@ -18,8 +18,9 @@ module.exports = (settings) => {
   );
   var objects = [];
 
-  const kc = new KeyCloakClient(settings, oc);
-  kc.addUris();
+
+  //const kc = new KeyCloakClient(settings, oc);
+  //kc.addUris();
 
   // The deployment of your cool app goes here  ▼▼▼
   objects.push(
