@@ -53,7 +53,7 @@ module.exports = class KeyCloakClient {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         auth: {
           username: this.clientId,
-          password: this.clientSecret,
+          //password: this.clientSecret,
         },
       })
       .then(function (response) {
