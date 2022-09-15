@@ -18,7 +18,7 @@ module.exports = (settings) => {
   );
   var objects = [];
 
-
+  //Comment out this code to bypass keycloak part while deploying image
   //const kc = new KeyCloakClient(settings, oc);
   //kc.addUris();
 

@@ -21,7 +21,7 @@ module.exports = class KeyCloakClient {
       baseURL: `https://${this.ssoHost}`,
     });
 
-    const token = "";//await this.getAccessToken();
+    const token = await this.getAccessToken();
 
     this.api.defaults.headers.common = {
       Authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ module.exports = class KeyCloakClient {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         auth: {
           username: this.clientId,
-          //password: this.clientSecret,
+          password: this.clientSecret,
         },
       })
       .then(function (response) {
