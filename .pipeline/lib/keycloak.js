@@ -13,7 +13,7 @@ module.exports = class KeyCloakClient {
   }
 
   async init() {
-    //this.getSecrets();
+    this.getSecrets();
 
     this.apiTokenPath = `/auth/realms/${this.realmId}/protocol/openid-connect/token`;
     this.appClientPath = `auth/admin/realms/${this.realmId}/clients/${this.appClientId}`;
@@ -21,7 +21,7 @@ module.exports = class KeyCloakClient {
       baseURL: `https://${this.ssoHost}`,
     });
 
-    const token = await this.getAccessToken();
+    const token = "";//await this.getAccessToken();
 
     this.api.defaults.headers.common = {
       Authorization: `Bearer ${token}`,
