@@ -5,11 +5,11 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <RepositoryUrl>https://github.com/bcgov/TransAction.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>2.3.11</Version>
+    <Version>2.3.12</Version>
     <Description>The API server for the TransAction System</Description>
-    <Copyright>Copyright© 2019, Province of British Columbia.</Copyright>
-    <AssemblyVersion>2.3.11.0</AssemblyVersion>
-    <FileVersion>2.3.11.0</FileVersion>
+    <Copyright>Copyright© 2012, Province of British Columbia.</Copyright>
+    <AssemblyVersion>2.3.12.0</AssemblyVersion>
+    <FileVersion>2.3.12.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

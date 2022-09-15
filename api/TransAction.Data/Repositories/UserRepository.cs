@@ -20,7 +20,7 @@ namespace TransAction.Data.Repositories
             var users = FindAll();
             if (!string.IsNullOrEmpty(name))
             {
-                users = users.Where(x => ($"{x.Fname.ToLower()} {x.Lname.ToLower()}").Contains(name.ToLower()));
+                users = users.Where(x => x.Fname.ToLower().Contains(name.ToLower()) || x.Lname.ToLower().Contains(name.ToLower()));
             }
             return users.Include(x => x.TraImage).OrderBy(x => x.Fname).ThenBy(x => x.Lname).Skip(page * pageSize).Take(pageSize).ToList();
         }
@@ -54,7 +54,7 @@ namespace TransAction.Data.Repositories
             var userCount = FindAll().Include(x => x.TraImage);
             if (!string.IsNullOrEmpty(name))
             {
-                return userCount.Where(x => ($"{x.Fname.ToLower()} {x.Lname.ToLower()}").Contains(name.ToLower())).Count();
+                return userCount.Where(x => x.Fname.ToLower().Contains(name.ToLower()) || x.Lname.ToLower().Contains(name.ToLower())).ToList().Count();
             }
             return userCount.Count();
         }
