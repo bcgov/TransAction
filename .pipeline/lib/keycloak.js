@@ -13,7 +13,7 @@ module.exports = class KeyCloakClient {
   }
 
   async init() {
-    this.getSecrets();
+    //this.getSecrets();
 
     this.apiTokenPath = `/auth/realms/${this.realmId}/protocol/openid-connect/token`;
     this.appClientPath = `auth/admin/realms/${this.realmId}/clients/${this.appClientId}`;
