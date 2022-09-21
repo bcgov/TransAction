@@ -48,11 +48,11 @@ class Home extends React.Component {
                 </strong>
               </p>
               <p>
-                This voluntary initiative is sponsored by your Employee Advisory Forum and your ministry executive as a
-                fun, dynamic way of getting active and supporting total health and wellbeing. You can participate in
-                different events, like TransAction Healthy Workplace Challenge and TransAction Wellness, hosted by the
-                EAF through this webpage. Individuals enter daily activities, and you monitor progress and standings on
-                the homepage.
+              This voluntary initiative is a fun, dynamic way of getting active and supporting total health and wellbeing.
+              Over the month of October, the TransAction wellness program is hosted by the EAF through this webpage. 
+              You can create a team of five with members/teammates located anywhere in the province!
+              Individuals enter daily activities, and you can monitor progress and standings on the homepage.
+              To find an active event, click 'Get Started' below and click on each event to learn more!
               </p>
               <p>To find an active event, click 'Get Started' below and click on each event to learn more!</p>
               <div className="text-center mt-5">
