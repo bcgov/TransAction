@@ -42,19 +42,29 @@ class Home extends React.Component {
               <p className="text-center">
                 <strong>
                   <em>
-                    Please note the new and improved TransAction website is best
+                    Please note the TransAction website is best
                     <br /> used with Microsoft Edge, Google Chrome or Mozilla Firefox.
                   </em>
                 </strong>
               </p>
               <p>
-              This voluntary initiative is a fun, dynamic way of getting active and supporting total health and wellbeing.
-              Over the month of October, the TransAction wellness program is hosted by the EAF through this webpage. 
-              You can create a team of five with members/teammates located anywhere in the province!
-              Individuals enter daily activities, and you can monitor progress and standings on the homepage.
-              To find an active event, click 'Get Started' below and click on each event to learn more!
+                <p className='text-center'>
+                This voluntary initiative is a fun, dynamic way of getting active and supporting total health and wellbeing.
+              
+
+                </p>
+                <br/>
+                <p className='text-center'>
+                Over the month of October, the TransAction wellness program is hosted by the EAF through this webpage. You can create a team of five with members/teammates located anywhere in the province!
+                </p>
+                <br/>
+                <p className='text-center'>
+                Individuals enter daily activities, and you can monitor progress and standings on the homepage.
+                </p>
+                <p className='text-center'>To find an active event, click 'Get Started' below and click on each event to learn more!</p>
+              
               </p>
-              <p>To find an active event, click 'Get Started' below and click on each event to learn more!</p>
+              
               <div className="text-center mt-5">
                 <Link to={Constants.PATHS.START}>
                   <Button color="primary">Get Started</Button>
