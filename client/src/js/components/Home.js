@@ -53,11 +53,11 @@ class Home extends React.Component {
               
 
                 </p>
-                <br/>
+                
                 <p className='text-center'>
                 Over the month of October, the TransAction wellness program is hosted by the EAF through this webpage. You can create a team of five with members/teammates located anywhere in the province!
                 </p>
-                <br/>
+                
                 <p className='text-center'>
                 Individuals enter daily activities, and you can monitor progress and standings on the homepage.
                 </p>
