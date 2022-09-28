@@ -69,12 +69,12 @@ namespace TransAction.API.Authentication
                             newUser.RoleId = db.GetRole("USER").RoleId;
 
                             newUser.Email = principal.FindFirstValue(ClaimTypes.Email);
-                            var fullName = principal.FindFirstValue("idir_displayName").Split(",");
+                            var fullName = principal.FindFirstValue("display_name").Split(",");
                             newUser.Lname = fullName[0];
                             var firstName = fullName[1].TrimStart();
                             newUser.Fname = firstName.Remove(firstName.LastIndexOf(" "));
                             newUser.Description = "Hello, I'm new to TransAction";
-                            newUser.Guid = principal.FindFirstValue("idir_guid");
+                            newUser.Guid = principal.FindFirstValue("idir_user_guid");
                             newUser.RegionId = db.GetRegion("HQ").RegionId;
                             newUser.IsFreeAgent = false;
 
