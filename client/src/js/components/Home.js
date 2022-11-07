@@ -39,6 +39,15 @@ class Home extends React.Component {
           <Row>
             <Col>
               <h3 className="text-center">Welcome to TransAction</h3>
+              <p className="text-center text-danger">
+                <strong>
+                  <em>
+                  REMINDER: Activities up to November 4, 2022 can be logged in the TransAction site until end of day Monday, November 7, 2022.
+                  </em>
+                </strong>
+              </p>
+
+
               <p className="text-center">
                 <strong>
                   <em>
