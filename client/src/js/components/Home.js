@@ -42,7 +42,7 @@ class Home extends React.Component {
               <p className="text-center text-danger">
                 <strong>
                   <em>
-                  REMINDER: Activities up to November 4, 2022 can be logged in the TransAction site until end of day Monday, November 7, 2022.
+                    REMINDER: Activities up to November 4, 2022 can be logged in the TransAction site until end of day Monday, November 7, 2022.
                   </em>
                 </strong>
               </p>
@@ -56,24 +56,24 @@ class Home extends React.Component {
                   </em>
                 </strong>
               </p>
-              <p>
+              <div>
                 <p className='text-center'>
-                This voluntary initiative is a fun, dynamic way of getting active and supporting total health and wellbeing.
-              
+                  This voluntary initiative is a fun, dynamic way of getting active and supporting total health and wellbeing.
+
 
                 </p>
-                
+
                 <p className='text-center'>
-                Over the month of October, the TransAction wellness program is hosted by the EAF through this webpage. You can create a team of five with members/teammates located anywhere in the province!
+                  Over the month of October, the TransAction wellness program is hosted by the EAF through this webpage. You can create a team of five with members/teammates located anywhere in the province!
                 </p>
-                
+
                 <p className='text-center'>
-                Individuals enter daily activities, and you can monitor progress and standings on the homepage.
+                  Individuals enter daily activities, and you can monitor progress and standings on the homepage.
                 </p>
                 <p className='text-center'>To find an active event, click 'Get Started' below and click on each event to learn more!</p>
-              
-              </p>
-              
+
+              </div>
+
               <div className="text-center mt-5">
                 <Link to={Constants.PATHS.START}>
                   <Button color="primary">Get Started</Button>
