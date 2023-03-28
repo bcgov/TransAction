@@ -83,6 +83,15 @@ objects:
                       key: JWT_SSO_AUDIENCE
                 - name: ASPNETCORE_ENVIRONMENT
                   value: ${ASPNETCORE_ENVIRONMENT}
+              volumeMounts:
+                - name: ${NAME}${SUFFIX}-config-volume
+                  mountPath: /opt/app-root/configmap
+                  readOnly: true
+          volumes:
+            - name: ${NAME}${SUFFIX}-config-volume
+              configMap:
+                defaultMode: 420
+                name: api-appsettings-${ENV}
       test: false
       triggers:
         - imageChangeParams:
@@ -176,3 +185,8 @@ parameters:
     name: MEMORY_LIMIT
     required: false
     value: "250m"
+  - description: Environment short name (dev,test,uat,prod)
+    displayName: ENV
+    name: ENV
+    required: false
+    value: "dev"
