@@ -1,0 +1,51 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: "true"
+objects:
+  - apiVersion: v1
+    data:
+      appsettings.json: |-
+        {
+          "Constants": {
+            "Version": "2.3.13"
+          },
+          "Serilog": {
+            "MinimumLevel": {
+              "Default": "Warning",
+              "Override": {
+                "Microsoft": "Warning"
+              }
+            },
+            "WriteTo": [
+              {
+                "Name": "Console",
+                "Args": {
+                  "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+                }
+              }
+            ]
+          },
+          "AllowedHosts": "*",
+          "CONNECTION_STRING": "Server=localhost;User Id=<userid>;Password=<password>;Database=TransAction;",
+          "JWT_AUTHORITY": "https://dev.loginproxy.gov.bc.ca/auth/realms/<realmid>",
+          "JWT_AUDIENCE": "<app-id>",
+          "Kestrel": {
+            "EndPoints": {
+              "Http": {
+                "Url": "http://*:8080"
+              }
+            }
+          }
+        }
+    kind: ConfigMap
+    metadata:
+      name: api-appsettings-${ENV}
+      labels:
+        shared: "true"
+parameters:
+  - description: Deployment environment (dev, test, uat, prod)
+    displayName: ENV
+    name: ENV
+    required: true
+    value: "dev"

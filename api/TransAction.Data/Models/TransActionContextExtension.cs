@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,8 @@ namespace TransAction.Data.Models
             {
                 if (!e.InnerException.Message.Contains(" Cannot insert duplicate key in object 'dbo.TRA_USER'."))
                 {
-                    Console.WriteLine(e);
+                    string exceptionMessage = e.ToString();
+                    _logger.LogError($"TransActionContext exception: {exceptionMessage}");
                     throw;
                 }
             }

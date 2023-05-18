@@ -36,11 +36,9 @@ class GettingStarted extends React.Component {
       <CardWrapper>
         <Row>
           <Col>
-            <p>
-              <h4>
-                <em>How does TransAction Healthy Workplace Challenge work?</em>
-              </h4>
-            </p>
+            <h4>
+              <em>How does TransAction Healthy Workplace Challenge work?</em>
+            </h4>
             <h6>Create or join a team:</h6>
             <p>
               To participate in an event, you can either join an existing team, create a team, or join individually by
@@ -89,11 +87,9 @@ class GettingStarted extends React.Component {
             <p>
               Check out the <Link to={Constants.PATHS.FAQ_HEALTH}>FAQ</Link> for more information!
             </p>
-            <p>
-              <h4>
-                <em>How does TransAction Wellness work?</em>
-              </h4>
-            </p>
+            <h4>
+              <em>How does TransAction Wellness work?</em>
+            </h4>
             <p>
               You participate in TransAction Wellness by creating or becoming a member of a team, or participating on
               your own. A team is composed of a leader and up to four team members. You can join a team or make yourself

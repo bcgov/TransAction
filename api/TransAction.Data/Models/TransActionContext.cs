@@ -1,17 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 
 namespace TransAction.Data.Models
 {
     public partial class TransActionContext : DbContext
     {
+        private readonly ILogger<TransActionContext> _logger;
+
         public TransActionContext()
         {
         }
 
-        public TransActionContext(DbContextOptions<TransActionContext> options)
+        public TransActionContext(DbContextOptions<TransActionContext> options, ILogger<TransActionContext> logger)
             : base(options)
         {
+            _logger = logger;
         }
 
         public virtual DbSet<TraActivity> TraActivity { get; set; }

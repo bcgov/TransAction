@@ -44,6 +44,17 @@ module.exports = (settings) => {
 
   objects.push(
     ...oc.processDeploymentTemplate(
+      `${templatesLocalBaseUrl}/configmaps/api-appsettings.yaml`,
+      {
+        param: {
+          ENV: phases[phase].phase,
+        },
+      }
+    )
+  );
+
+  objects.push(
+    ...oc.processDeploymentTemplate(
       `${templatesLocalBaseUrl}/api-deploy-config.yaml`,
       {
         param: {
@@ -56,6 +67,7 @@ module.exports = (settings) => {
           CPU_LIMIT: phases[phase].resources.api.cpu.limit,
           MEMORY_REQUEST: phases[phase].resources.api.memory.request,
           MEMORY_LIMIT: phases[phase].resources.api.memory.limit,
+          ENV: phases[phase].phase,
         },
       }
     )
