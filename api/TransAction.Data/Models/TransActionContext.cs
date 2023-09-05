@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
@@ -149,10 +152,10 @@ namespace TransAction.Data.Models
                 entity.ToTable("TRA_EVENT_TEAM");
 
                 entity.HasIndex(e => e.EventId)
-                    .HasName("IX_FK_EVENT_TEAM_EVENT");
+                    .HasDatabaseName("IX_FK_EVENT_TEAM_EVENT");
 
                 entity.HasIndex(e => e.TeamId)
-                    .HasName("IX_FK_EVENT_TEAM_TEAM");
+                    .HasDatabaseName("IX_FK_EVENT_TEAM_TEAM");
 
                 entity.Property(e => e.EventTeamId).HasColumnName("EVENT_TEAM_ID");
 
@@ -205,10 +208,10 @@ namespace TransAction.Data.Models
                 entity.ToTable("TRA_EVENT_USER");
 
                 entity.HasIndex(e => e.EventId)
-                    .HasName("IX_FK_EVENT_USER_EVENT");
+                    .HasDatabaseName("IX_FK_EVENT_USER_EVENT");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("IX_FK_EVENT_USER_USER");
+                    .HasDatabaseName("IX_FK_EVENT_USER_USER");
 
                 entity.Property(e => e.EventUserId).HasColumnName("EVENT_USER_ID");
 
@@ -339,10 +342,10 @@ namespace TransAction.Data.Models
                 entity.ToTable("TRA_MEMBER_REQ");
 
                 entity.HasIndex(e => e.TeamId)
-                    .HasName("IX_FK_MEMBER_REQ_TEAM");
+                    .HasDatabaseName("IX_FK_MEMBER_REQ_TEAM");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("IX_FK_MEMBER_REQ_USER");
+                    .HasDatabaseName("IX_FK_MEMBER_REQ_USER");
 
                 entity.Property(e => e.MemberReqId).HasColumnName("MEMBER_REQ_ID");
 
@@ -606,10 +609,10 @@ namespace TransAction.Data.Models
                 entity.ToTable("TRA_TOPIC_MESSAGE");
 
                 entity.HasIndex(e => e.TopicId)
-                    .HasName("IX_FK_TOPIC_MESSAGE_TOPIC");
+                    .HasDatabaseName("IX_FK_TOPIC_MESSAGE_TOPIC");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("IX_FK_TOPIC_USER");
+                    .HasDatabaseName("IX_FK_TOPIC_USER");
 
                 entity.Property(e => e.TopicMessageId).HasColumnName("TOPIC_MESSAGE_ID");
 
@@ -667,14 +670,14 @@ namespace TransAction.Data.Models
                 entity.ToTable("TRA_USER");
 
                 entity.HasIndex(e => e.Guid)
-                    .HasName("UQ__TRA_USER__15B69B8FCA3954AF")
+                    .HasDatabaseName("UQ__TRA_USER__15B69B8FCA3954AF")
                     .IsUnique();
 
                 entity.HasIndex(e => e.RoleId)
-                    .HasName("IX_FK_USER_ROLE");
+                    .HasDatabaseName("IX_FK_USER_ROLE");
 
                 entity.HasIndex(e => e.TeamId)
-                    .HasName("IX_FK_USER_TEAM");
+                    .HasDatabaseName("IX_FK_USER_TEAM");
 
                 entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
@@ -781,10 +784,10 @@ namespace TransAction.Data.Models
                 entity.ToTable("TRA_USER_ACTIVITY");
 
                 entity.HasIndex(e => e.ActivityId)
-                    .HasName("IX_FK_USER_ACTIVITY_ACTIVITY");
+                    .HasDatabaseName("IX_FK_USER_ACTIVITY_ACTIVITY");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("IX_FK_USER_ACTIVITY_USER");
+                    .HasDatabaseName("IX_FK_USER_ACTIVITY_USER");
 
                 entity.Property(e => e.UserActivityId).HasColumnName("USER_ACTIVITY_ID");
 
@@ -863,6 +866,35 @@ namespace TransAction.Data.Models
             });
         }
 
+        public class BlankTriggerAddingConvention : IModelFinalizingConvention
+        {
+            public virtual void ProcessModelFinalizing(
+                IConventionModelBuilder modelBuilder,
+                IConventionContext<IConventionModelBuilder> context)
+            {
+                foreach (var entityType in modelBuilder.Metadata.GetEntityTypes())
+                {
+                    var table = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
+                    if (table != null
+                        && entityType.GetDeclaredTriggers().All(t => t.GetDatabaseName(table.Value) == null))
+                    {
+                        entityType.Builder.HasTrigger(table.Value.Name + "_Trigger");
+                    }
 
+                    foreach (var fragment in entityType.GetMappingFragments(StoreObjectType.Table))
+                    {
+                        if (entityType.GetDeclaredTriggers().All(t => t.GetDatabaseName(fragment.StoreObject) == null))
+                        {
+                            entityType.Builder.HasTrigger(fragment.StoreObject.Name + "_Trigger");
+                        }
+                    }
+                }
+            }
+        }
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());
+        }
     }
 }

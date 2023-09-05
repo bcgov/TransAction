@@ -30,20 +30,10 @@ namespace TransAction.API.Controllers
         [HttpGet("{guid}", Name = "GetImageByGuid")]
         public IActionResult GetImageByGuid(string guid)
         {
-            TraImage image = null;
+            TraImage image = _unitOfWork.Image.GetProfileImage(guid);
 
-            try
-            {
-                image = _unitOfWork.Image.GetProfileImage(guid);
-
-                if (image == null)
-                    return StatusCode(404, new TransActionResponse("Image Not Found"));
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
+            if (image == null)
+                return StatusCode(404, new TransActionResponse("Image Not Found"));
 
             return File(image.Data, image.ContentType, image.Filename);
         }
@@ -51,19 +41,10 @@ namespace TransAction.API.Controllers
         [HttpGet("user/{id}", Name = "GetImageByUserId")]
         public IActionResult GetImageByUserId(int id)
         {
-            TraImage image = null;
+            TraImage image = _unitOfWork.Image.GetUserProfileImage(id);
 
-            try
-            {
-                image = _unitOfWork.Image.GetUserProfileImage(id);
-
-                if (image == null)
-                    return StatusCode(404, new TransActionResponse("Image Not Found"));
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            if (image == null)
+                return StatusCode(404, new TransActionResponse("Image Not Found"));
 
             return File(image.Data, image.ContentType, image.Filename);
         }
@@ -71,19 +52,10 @@ namespace TransAction.API.Controllers
         [HttpGet("user/{id}", Name = "GetImageByTeamId")]
         public IActionResult GetImageByTeamId(int id)
         {
-            TraImage image = null;
+            TraImage image = _unitOfWork.Image.GetTeamProfileImage(id);
 
-            try
-            {
-                image = _unitOfWork.Image.GetTeamProfileImage(id);
-
-                if (image == null)
-                    return StatusCode(404, new TransActionResponse("Image Not Found"));
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            if (image == null)
+                return StatusCode(404, new TransActionResponse("Image Not Found"));
 
             return File(image.Data, image.ContentType, image.Filename);
         }
@@ -143,7 +115,7 @@ namespace TransAction.API.Controllers
                 model.Data.CopyTo(memoryStream);
                 bytes = memoryStream.ToArray();
 
-                using (Image<Rgba32> image = Image.Load(bytes))
+                using (Image<Rgba32> image = Image.Load<Rgba32>(bytes))
                 {
                     int maxWidthOrLength = Math.Max(image.Width, image.Height);
 
