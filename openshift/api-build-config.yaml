@@ -9,7 +9,8 @@ objects:
   - apiVersion: "v1"
     kind: ImageStream
     metadata:
-      name: dotnet-31-rhel7
+      # name: dotnet-31-rhel7
+      name: dotnet-70
     spec:
       lookupPolicy:
         local: false
@@ -17,7 +18,8 @@ objects:
         - annotations: null
           from:
             kind: DockerImage
-            name: registry.redhat.io/dotnet/dotnet-31-rhel7:3.1-24
+            # name: registry.redhat.io/dotnet/dotnet-31-rhel7:3.1-24
+            name: registry.redhat.io/rhel8/dotnet-70:7.0-18
           name: "3.1"
           referencePolicy:
             type: Local
@@ -65,7 +67,8 @@ objects:
               value: TransAction.API/TransAction.API.csproj
           from:
             kind: ImageStreamTag
-            name: "dotnet-31-rhel7:3.1"
+            # name: "dotnet-31-rhel7:3.1"
+            name: "dotnet-70:7.0"
         type: Source
 parameters:
   - description: Name of the project  (TransAction)
