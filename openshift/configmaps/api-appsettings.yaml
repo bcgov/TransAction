@@ -27,7 +27,7 @@ objects:
             ]
           },
           "AllowedHosts": "*",
-          "CONNECTION_STRING": "Server=localhost;User Id=<userid>;Password=<password>;Database=TransAction;",
+          "CONNECTION_STRING": "Server=localhost;User Id=<userid>;Password=<password>;Database=TransAction;TrustServerCertificate=true;",
           "JWT_AUTHORITY": "https://dev.loginproxy.gov.bc.ca/auth/realms/<realmid>",
           "JWT_AUDIENCE": "<app-id>",
           "Kestrel": {
