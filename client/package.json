@@ -1,6 +1,6 @@
 {
   "name": "transaction-client",
-  "version": "2.3.6",
+  "version": "2.3.14",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",

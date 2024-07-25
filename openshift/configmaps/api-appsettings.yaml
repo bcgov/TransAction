@@ -8,7 +8,7 @@ objects:
       appsettings.json: |-
         {
           "Constants": {
-            "Version": "2.3.13"
+            "Version": "2.3.14"
           },
           "Serilog": {
             "MinimumLevel": {
@@ -27,7 +27,7 @@ objects:
             ]
           },
           "AllowedHosts": "*",
-          "CONNECTION_STRING": "Server=localhost;User Id=<userid>;Password=<password>;Database=TransAction;",
+          "CONNECTION_STRING": "Server=localhost;Database=TransAction;user=<user_id>;password=<password>;MultipleActiveResultSets=true;TrustServerCertificate=True",
           "JWT_AUTHORITY": "https://dev.loginproxy.gov.bc.ca/auth/realms/<realmid>",
           "JWT_AUDIENCE": "<app-id>",
           "Kestrel": {
