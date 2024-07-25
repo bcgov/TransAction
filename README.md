@@ -8,7 +8,7 @@ TransAction is a voluntary initiative sponsored by the Ministry of Transportatio
 ## Requirements
 
 - .NET 7
-- Node.js 12+
+- NodeJS 12+
 - Microsoft SQL Server 2012+
 - Pre-configured Keycloak Server
 
