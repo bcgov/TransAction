@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row, Col, Alert } from 'reactstrap';
 import _ from 'lodash';
@@ -17,146 +16,125 @@ import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 
-class Profile extends Component {
-  state = {
-    loading: true,
-    userIdToDisplay: null,
-    teamIdToDisplay: null,
-  };
+const Profile = ({ currentUser, fetchUser, fetchTeam, users, regions, teams }) => {
+  const [loading, setLoading] = useState(true);
+  const [userIdToDisplay, setUserIdToDisplay] = useState(null);
+  const [teamIdToDisplay, setTeamIdToDisplay] = useState(null);
+  
+  const { id } = useParams(); // Get the user id from URL params
 
-  componentDidMount() {
+  useEffect(() => {
     api.resetCancelTokenSource();
-    this.init(this.props.match.params.id);
-  }
+    init(id);
 
-  componentWillUnmount() {
-    api.cancelRequest();
-  }
+    return () => {
+      api.cancelRequest();
+    };
+  }, [id]); // Re-run when user id changes
 
-  componentWillReceiveProps(newProps) {
-    const currId = newProps.match.params.id;
-    const prevId = this.props.match.params.id;
-    if (currId !== prevId && parseInt(prevId) !== this.props.currentUser.id) {
-      this.init(currId);
-    }
-  }
+  const init = (userId) => {
+    setLoading(true);
+    let userIdToUse = parseInt(userId);
 
-  init = userId => {
-    this.setState({ loading: true });
-
-    userId = parseInt(userId);
-
-    if (isNaN(userId)) userId = this.props.currentUser.id;
-    this.props
-      .fetchUser(userId)
+    if (isNaN(userIdToUse)) userIdToUse = currentUser.id;
+    fetchUser(userIdToUse)
       .then(() => {
-        const teamId = this.props.users.all[userId].teamId;
-        this.setState({ userIdToDisplay: userId, teamIdToDisplay: teamId });
+        const teamId = users.all[userIdToUse].teamId;
+        setUserIdToDisplay(userIdToUse);
+        setTeamIdToDisplay(teamId);
 
-        if (teamId) return this.props.fetchTeam(teamId);
+        if (teamId) return fetchTeam(teamId);
         else return Promise.resolve();
       })
       .then(() => {
-        this.setState({ loading: false });
+        setLoading(false);
       });
   };
 
-  userCanEditProfile = () => {
+  const userCanEditProfile = () => {
     if (utils.isCurrentUserAdmin()) return true;
-
-    return this.selfProfile();
+    return selfProfile();
   };
 
-  selfProfile = () => {
-    const userId = parseInt(this.props.match.params.id);
+  const selfProfile = () => {
+    const userId = parseInt(id);
 
     if (!userId) return true;
-
-    if (userId === this.props.currentUser.id) return true;
+    if (userId === currentUser.id) return true;
 
     return false;
   };
 
-  renderUserTeam() {
-    const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
-    const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
+  const renderUserTeam = () => {
+    const teamToDisplay = teams[teamIdToDisplay];
+    const userToDisplay = users.all[userIdToDisplay];
 
-    return (
-      <React.Fragment>
-        <Row>
-          <Col>
-            {(() => {
-              if (!teamToDisplay) {
-                if (this.selfProfile())
-                  return (
-                    <Alert color="warning">
-                      You are not currently on a team. Get started <Link to={Constants.PATHS.START}>here</Link>.
-                    </Alert>
-                  );
-                else return <p>{userToDisplay.fname} is not part of a team.</p>;
-              } else
-                return (
-                  <UserProfileFragment
-                    {..._.pick(teamToDisplay, 'name', 'description')}
-                    regionName={this.props.regions[teamToDisplay.regionId].name}
-                    profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
-                  />
-                );
-            })()}
-          </Col>
-        </Row>
-      </React.Fragment>
-    );
-  }
+    if (!teamToDisplay) {
+      if (selfProfile()) {
+        return (
+          <Alert color="warning">
+            You are not currently on a team. Get started <Link to={Constants.PATHS.START}>here</Link>.
+          </Alert>
+        );
+      } else {
+        return <p>{userToDisplay.fname} is not part of a team.</p>;
+      }
+    } else {
+      return (
+        <UserProfileFragment
+          {..._.pick(teamToDisplay, 'name', 'description')}
+          regionName={regions[teamToDisplay.regionId].name}
+          profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
+        />
+      );
+    }
+  };
 
-  render() {
-    const userToDisplay = this.props.users.all[this.state.userIdToDisplay];
+  const userToDisplay = users.all[userIdToDisplay];
+  const breadCrumbItems = [{ active: false, text: 'Profile', link: Constants.PATHS.TEAM }];
+  if (userToDisplay) breadCrumbItems.push({ active: true, text: `${userToDisplay.fname} ${userToDisplay.lname}` });
 
-    const breadCrumbItems = [{ active: false, text: 'Profile', link: Constants.PATHS.TEAM }];
-    if (userToDisplay) breadCrumbItems.push({ active: true, text: `${userToDisplay.fname} ${userToDisplay.lname}` });
+  return (
+    <>
+      <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
 
-    return (
-      <React.Fragment>
-        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
+      <CardWrapper>
+        {loading ? (
+          <PageSpinner />
+        ) : (
+          userToDisplay && (
+            <UserProfileFragment
+              canEdit={userCanEditProfile()}
+              userToDisplay={userToDisplay}
+              regionName={regions[userToDisplay.regionId].name}
+            />
+          )
+        )}
+      </CardWrapper>
 
+      {!loading && (
         <CardWrapper>
-          {this.state.loading ? (
-            <PageSpinner />
-          ) : (
-            userToDisplay && (
-              <UserProfileFragment
-                canEdit={this.userCanEditProfile()}
-                userToDisplay={userToDisplay}
-                regionName={this.props.regions[userToDisplay.regionId].name}
-              />
-            )
-          )}
+          <UserProfileTeamPanel
+            selfProfile={selfProfile()}
+            teamIdToDisplay={teamIdToDisplay}
+            userIdToDisplay={userIdToDisplay}
+          />
         </CardWrapper>
+      )}
 
-        {!this.state.loading && (
-          <CardWrapper>
-            <UserProfileTeamPanel
-              selfProfile={this.selfProfile()}
-              teamIdToDisplay={this.state.teamIdToDisplay}
-              userIdToDisplay={this.state.userIdToDisplay}
-            />
-          </CardWrapper>
-        )}
+      {!loading && selfProfile() && (
+        <CardWrapper>
+          <ProfileScoresPanel
+            userIdToDisplay={userIdToDisplay}
+            teamIdToDisplay={teamIdToDisplay}
+          />
+        </CardWrapper>
+      )}
+    </>
+  );
+};
 
-        {!this.state.loading && this.selfProfile() && (
-          <CardWrapper>
-            <ProfileScoresPanel
-              userIdToDisplay={this.state.userIdToDisplay}
-              teamIdToDisplay={this.state.teamIdToDisplay}
-            />
-          </CardWrapper>
-        )}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     currentUser: state.users.all[state.users.current.id],
     users: state.users,

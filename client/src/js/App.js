@@ -34,26 +34,28 @@ class App extends Component {
             <Header />
             <Container>
               <Switch>
-                <Route path="/" exact component={Home} />
-                <Route path={Constants.PATHS.EVENT} exact component={EventList} />
-                <Route path={`${Constants.PATHS.EVENT}/:id`} exact component={EventDetail} />
-                <Route path={Constants.PATHS.PROFILE} exact component={Profile} />
-                <Route path={`${Constants.PATHS.PROFILE}/:id`} exact component={Profile} />
-                <Route path={Constants.PATHS.TEAM} exact component={TeamsList} />
-                <Route path={`${Constants.PATHS.TEAM}/:id`} exact component={TeamDetail} />
-                <Route path={Constants.PATHS.START} exact component={GettingStarted} />
-                <Route path={Constants.PATHS.FREE_AGENTS} exact component={FreeAgentsList} />
-                <Route path={Constants.PATHS.INCENTIVES} exact component={Incentives} />
-                <Route path={Constants.PATHS.FAQ} exact component={FAQ} />
-                <Route path={Constants.PATHS.MESSAGES} exact component={MessageBoard} />
-                <Route path={`${Constants.PATHS.MESSAGES}/:id`} exact component={MessageBoardTopicDetail} />
-                <Route path={Constants.PATHS.ADMIN} exact component={Admin} />
+              {/* For each Route, I've replaced component={ComponentName} with render={() => <ComponentName />} because React Router expects the component
+               prop to be a function, and passing it as render={() => <Component />} is a good way to handle this issue. */}
+                <Route path="/" exact render={() => <Home />} />
+                <Route path={Constants.PATHS.EVENT} exact render={() => <EventList />} />
+                <Route path={`${Constants.PATHS.EVENT}/:id`} exact render={() => <EventDetail />} />
+                <Route path={Constants.PATHS.PROFILE} exact render={() => <Profile />} />
+                <Route path={`${Constants.PATHS.PROFILE}/:id`} exact render={() => <Profile />} />
+                <Route path={Constants.PATHS.TEAM} exact render={() => <TeamsList />} />
+                <Route path={`${Constants.PATHS.TEAM}/:id`} exact render={() => <TeamDetail />} />
+                <Route path={Constants.PATHS.START} exact render={() => <GettingStarted />} />
+                <Route path={Constants.PATHS.FREE_AGENTS} exact render={() => <FreeAgentsList />} />
+                <Route path={Constants.PATHS.INCENTIVES} exact render={() => <Incentives />} />
+                <Route path={Constants.PATHS.FAQ} exact render={() => <FAQ />} />
+                <Route path={Constants.PATHS.MESSAGES} exact render={() => <MessageBoard />} />
+                <Route path={`${Constants.PATHS.MESSAGES}/:id`} exact render={() => <MessageBoardTopicDetail />} />
+                <Route path={Constants.PATHS.ADMIN} exact render={() => <Admin />} />
               </Switch>
             </Container>
             <Footer />
           </React.Fragment>
         </Router>
-      </Main>
+      </Main> 
     );
   }
 }

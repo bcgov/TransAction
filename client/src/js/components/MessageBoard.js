@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Alert, Table, Button } from 'reactstrap';
 import _ from 'lodash';
@@ -15,45 +15,50 @@ import ScrollLoader from './fragments/ScollLoader';
 import * as api from '../api/api';
 import * as Constants from '../Constants';
 
-class MessageBoard extends React.Component {
-  state = { loading: true, showEditTopicForm: false, searchTerm: undefined, page: 0, pageSize: 10, pageCount: 1 };
+const MessageBoard = () => {
+  const [loading, setLoading] = useState(true);
+  const [showEditTopicForm, setShowEditTopicForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(undefined);
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(10);
+  const [pageCount, setPageCount] = useState(1);
 
-  componentDidMount() {
+  const dispatch = useDispatch();
+  const topics = useSelector(state => 
+    _.orderBy(Object.values(state.messages), ['lastMessageTimestamp'], ['desc'])
+  );
+
+  useEffect(() => {
     api.resetCancelTokenSource();
-    this.loadData();
-  }
+    loadData();
+    return () => {
+      api.cancelRequest();
+    };
+  }, []); // Runs only once on component mount/unmount
 
-  componentWillUnmount() {
-    api.cancelRequest();
-  }
-
-  loadData = () => {
-    const nextPage = this.state.page + 1;
-    if (this.state.page < this.state.pageCount) {
-      this.props.fetchTopics(this.state.searchTerm, nextPage, this.state.pageSize).then(pageCount => {
-        this.setState({ loading: false, page: nextPage, pageCount });
+  const loadData = useCallback(() => {
+    const nextPage = page + 1;
+    if (page < pageCount) {
+      dispatch(fetchTopics(searchTerm, nextPage, pageSize)).then(newPageCount => {
+        setLoading(false);
+        setPage(nextPage);
+        setPageCount(newPageCount);
       });
     }
+  }, [page, pageCount, searchTerm, pageSize, dispatch]);
+
+  const toggleEditTopicForm = () => {
+    setShowEditTopicForm(prev => !prev);
   };
 
-  showEditTopicForm = () => {
-    this.setState({ showEditTopicForm: true });
-  };
-
-  toggleEditTopicForm = () => {
-    this.setState(prevState => ({
-      showEditTopicForm: !prevState.showEditTopicForm,
-    }));
-  };
-
-  renderContent() {
-    const { topics } = this.props;
-
-    if (topics.length === 0) return <Alert color="primary">There are no posts at the moment.</Alert>;
+  const renderContent = () => {
+    if (topics.length === 0) {
+      return <Alert color="primary">There are no posts at the moment.</Alert>;
+    }
 
     return (
       <React.Fragment>
-        <ScrollLoader loader={this.loadData} page={this.state.page} pageCount={this.state.pageCount}>
+        <ScrollLoader loader={loadData} page={page} pageCount={pageCount}>
           <Table size="sm" bordered responsive>
             <thead className="thead-dark">
               <tr>
@@ -77,7 +82,7 @@ class MessageBoard extends React.Component {
                       </div>
                       <div>
                         <small>
-                          by <Link to={`${Constants.PATHS.PROFILE}/${topic.userId}`}>{topic.userName}</Link> >>{' '}
+                          by <Link to={`${Constants.PATHS.PROFILE}/${topic.userId}`}>{topic.userName}</Link> {' '}
                           {postTime.format(Constants.MESSAGE_DATE_FORMAT)}
                         </small>
                       </div>
@@ -99,44 +104,32 @@ class MessageBoard extends React.Component {
         </ScrollLoader>
       </React.Fragment>
     );
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <BreadcrumbFragment>{[{ active: true, text: 'Messages' }]}</BreadcrumbFragment>
-        {this.state.loading ? (
-          <PageSpinner />
-        ) : (
-          <CardWrapper>
-            <h4>Message Board</h4>
-            <div className="text-right">
-              <Button size="sm" color="primary" className="mb-3" onClick={this.showEditTopicForm}>
-                New Thread
-              </Button>
-            </div>
-            {this.renderContent()}
-          </CardWrapper>
-        )}
-        {this.state.showEditTopicForm && (
-          <EditTopicForm
-            isOpen={this.state.showEditTopicForm}
-            toggle={this.toggleEditTopicForm}
-            formType={Constants.FORM_TYPE.ADD}
-          />
-        )}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    topics: _.orderBy(Object.values(state.messages), ['lastMessageTimestamp'], ['desc']),
   };
+  return (
+    <React.Fragment>
+      <BreadcrumbFragment>{[{ active: true, text: 'Messages' }]}</BreadcrumbFragment>
+      {loading ? (
+        <PageSpinner />
+      ) : (
+        <CardWrapper>
+          <h4>Message Board</h4>
+          <div className="text-right">
+            <Button size="sm" color="primary" className="mb-3" onClick={() => setShowEditTopicForm(true)}>
+              New Thread
+            </Button>
+          </div>
+          {renderContent()}
+        </CardWrapper>
+      )}
+      {showEditTopicForm && (
+        <EditTopicForm
+          isOpen={showEditTopicForm}
+          toggle={toggleEditTopicForm}
+          formType={Constants.FORM_TYPE.ADD}
+        />
+      )}
+    </React.Fragment>
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchTopics }
-)(MessageBoard);
+export default MessageBoard;
