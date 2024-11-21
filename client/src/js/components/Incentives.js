@@ -13,33 +13,31 @@ const incentiveItems = [
   { image: 'microfibertowel.png', alt: 'Microfiber Towel' },
 ];
 
-class Incentives extends React.Component {
-  render() {
-    const incentiveCols = incentiveItems.map((item, index) => {
-      return (
-        <Card>
-          <CardImg top width="100%" src={`${process.env.PUBLIC_URL}/images/${item.image}`} alt={item.alt} />
-          <CardBody>
-            <CardTitle className="text-center">{item.alt}</CardTitle>
-          </CardBody>
-        </Card>
-      );
-    });
+const Incentives = () => {
+  const incentiveCols = incentiveItems.map((item, index) => (
+    <Card key={index}>
+      <CardImg top width="100%" src={`${process.env.PUBLIC_URL}/images/${item.image}`} alt={item.alt} />
+      <CardBody>
+        <CardTitle className="text-center">{item.alt}</CardTitle>
+      </CardBody>
+    </Card>
+  ));
 
-    return (
-      <React.Fragment>
-        <BreadcrumbFragment>{[{ active: true, text: 'Incentives' }]}</BreadcrumbFragment>
+  return (
+    <React.Fragment>
+      <BreadcrumbFragment>{[{ active: true, text: 'Incentives' }]}</BreadcrumbFragment>
 
-        <CardWrapper>
+      <CardWrapper>
+        <p>
           Check out a selection of some of the great prizes to help keep you motivated during TransAction! These items
           were selected to help with your recovery or supplement your activity of choice. Door prizes will be drawn
           randomly each week, and prize packages will be awarded to the first, second and third place teams in both the
           Competitive and Recreational categories!
-          <CardColumns className="mt-5">{incentiveCols}</CardColumns>
-        </CardWrapper>
-      </React.Fragment>
-    );
-  }
-}
+        </p>
+        <CardColumns className="mt-5">{incentiveCols}</CardColumns>
+      </CardWrapper>
+    </React.Fragment>
+  );
+};
 
 export default Incentives;
