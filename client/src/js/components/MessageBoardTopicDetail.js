@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Button, ListGroup, Row, Col } from 'reactstrap';
 
@@ -12,43 +13,41 @@ import EditMessageForm from './forms/EditMessageForm';
 import * as api from '../api/api';
 import * as Constants from '../Constants';
 
-class MessageBoardTopicDetail extends React.Component {
-  state = { loading: true, topicId: null, showReplyForm: false };
+const MessageBoardTopicDetail = ({ messages, fetchTopicDetail, currentUser }) => {
+  const { id } = useParams(); // Get the `id` param from the route
+  const [loading, setLoading] = useState(true);
+  const [topicId, setTopicId] = useState(null);
+  const [showReplyForm, setShowReplyForm] = useState(false);
 
-  componentDidMount() {
+  useEffect(() => {
     api.resetCancelTokenSource();
-    const topicId = parseInt(this.props.match.params.id);
-    const { messages, fetchTopicDetail } = this.props;
+    const topicIdFromParams = parseInt(id);
 
-    if (!messages[topicId]) {
-      fetchTopicDetail(topicId).then(() => {
-        this.setState({ loading: false, topicId });
+    if (!messages[topicIdFromParams]) {
+      fetchTopicDetail(topicIdFromParams).then(() => {
+        setLoading(false);
+        setTopicId(topicIdFromParams);
       });
     } else {
-      this.setState({ loading: false, topicId });
+      setLoading(false);
+      setTopicId(topicIdFromParams);
     }
-  }
 
-  componentWillUnmount() {
-    api.cancelRequest();
-  }
+    return () => {
+      api.cancelRequest();
+    };
+  }, [fetchTopicDetail, id, messages]);
 
-  showReplyForm = () => {
-    this.setState({ showReplyForm: true });
-  };
+  const toggleReplyForm = useCallback(() => {
+    setShowReplyForm(prev => !prev);
+  }, []);
 
-  toggleReplyForm = () => {
-    this.setState(prevState => ({
-      showReplyForm: !prevState.showReplyForm,
-    }));
-  };
-
-  renderContent() {
-    const topic = this.props.messages[this.state.topicId];
+  const renderContent = useCallback(() => {
+    const topic = messages[topicId];
     const firstMessage = topic.messages[0];
 
     return (
-      <React.Fragment>
+      <>
         <Row>
           <Col className="topic-title">
             <span className="h4">{topic.title}</span>
@@ -56,9 +55,9 @@ class MessageBoardTopicDetail extends React.Component {
         </Row>
         <ListGroup className="mt-3">
           <MessagePostFragment post={firstMessage} index={0} topic={topic} />
-          {topic.messages.slice(1).map((message, index) => {
-            return <MessagePostFragment key={message.id} post={message} index={index + 1} />;
-          })}
+          {topic.messages.slice(1).map((message, index) => (
+            <MessagePostFragment key={message.id} post={message} index={index + 1} />
+          ))}
         </ListGroup>
         <Row className="mt-3">
           <Col>
@@ -66,48 +65,40 @@ class MessageBoardTopicDetail extends React.Component {
               color="primary"
               size="sm"
               className="float-right"
-              onClick={this.showReplyForm}
+              onClick={() => setShowReplyForm(true)}
               style={{ marginRight: '24px' }}
             >
               Reply
             </Button>
           </Col>
         </Row>
-        {this.state.showReplyForm && (
+        {showReplyForm && (
           <EditMessageForm
-            isOpen={this.state.showReplyForm}
-            toggle={this.toggleReplyForm}
-            initialValues={{ topicId: this.state.topicId, userId: this.props.currentUser.id }}
+            isOpen={showReplyForm}
+            toggle={toggleReplyForm}
+            initialValues={{ topicId, userId: currentUser.id }}
             formType={Constants.FORM_TYPE.ADD}
           />
         )}
-      </React.Fragment>
+      </>
     );
-  }
+  }, [messages, topicId, showReplyForm, currentUser.id, toggleReplyForm]);
 
-  render() {
-    const topic = this.props.messages[this.state.topicId];
+  const topic = messages[topicId];
+  const breadCrumbItems = [{ active: false, text: 'Messages', link: Constants.PATHS.MESSAGES }];
+  if (topic) breadCrumbItems.push({ active: true, text: topic.title });
 
-    const breadCrumbItems = [{ active: false, text: 'Messages', link: Constants.PATHS.MESSAGES }];
-    if (topic) breadCrumbItems.push({ active: true, text: topic.title });
-
-    return (
-      <React.Fragment>
-        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
-        {this.state.loading ? <PageSpinner /> : <CardWrapper>{this.renderContent()}</CardWrapper>}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    messages: state.messages,
-    currentUser: state.users.all[state.users.current.id],
-  };
+  return (
+    <>
+      <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
+      {loading ? <PageSpinner /> : <CardWrapper>{renderContent()}</CardWrapper>}
+    </>
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchTopicDetail }
-)(MessageBoardTopicDetail);
+const mapStateToProps = state => ({
+  messages: state.messages,
+  currentUser: state.users.all[state.users.current.id],
+});
+
+export default connect(mapStateToProps, { fetchTopicDetail })(MessageBoardTopicDetail);
