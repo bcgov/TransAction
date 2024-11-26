@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Row, Col, Alert } from 'reactstrap';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -14,207 +14,186 @@ import ScrollLoader from './fragments/ScollLoader';
 import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
-class EventList extends Component {
-  state = {
-    loading: true,
-    showEventForm: false,
-    eventFormType: Constants.FORM_TYPE.ADD,
-    eventFormInitialValues: null,
-    showConfirmDialog: false,
-    confirmDialogOptions: {},
-    searchTerm: undefined,
-    page: 0,
-    pageSize: 3,
-    pageCount: 1,
-    isActive: true,
-  };
 
-  componentDidMount() {
+const EventList = ({ fetchEvents, archiveEvent, unarchiveEvent, events }) => {
+  const [loading, setLoading] = useState(true);
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [eventFormType, setEventFormType] = useState(Constants.FORM_TYPE.ADD);
+  const [eventFormInitialValues, setEventFormInitialValues] = useState(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [confirmDialogOptions, setConfirmDialogOptions] = useState({});
+  const [searchTerm, setSearchTerm] = useState(undefined);
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(3);
+  const [pageCount, setPageCount] = useState(1);
+  const [isActive, setIsActive] = useState(true);
+
+  useEffect(() => {
     api.resetCancelTokenSource();
-    this.loadData();
-  }
+    loadData();
+    return () => {
+      api.cancelRequest();
+    };
+  }, [page, isActive]);
 
-  componentWillUnmount() {
-    api.cancelRequest();
-  }
-
-  loadData = () => {
-    const nextPage = this.state.page + 1;
-    if (this.state.page < this.state.pageCount) {
-      this.props
-        .fetchEvents(this.state.searchTerm, nextPage, this.state.pageSize, this.state.isActive)
-        .then(pageCount => {
-          this.setState({ loading: false, page: nextPage, pageCount });
-        });
+  const loadData = () => {
+    if (page < pageCount) {
+      fetchEvents(searchTerm, page + 1, pageSize, isActive).then(newPageCount => {
+        setLoading(false);
+        setPage(page + 1);
+        setPageCount(newPageCount);
+      });
     }
   };
 
-  showArchiveEvents = () => {
-    this.setState({ isActive: false, page: 0 }, () => {
-      this.loadData();
-    });
+  const showArchiveEvents = () => {
+    setIsActive(false);
+    setPage(0);
   };
 
-  showActiveEvents = () => {
-    this.setState({ isActive: true, page: 0 }, () => {
-      this.loadData();
-    });
+  const showActiveEvents = () => {
+    setIsActive(true);
+    setPage(0);
   };
 
-  loadMoreData = () => {
-    if (this.state.page <= this.state.pageCount) this.loadData();
+  const loadMoreData = () => {
+    if (page <= pageCount) loadData();
   };
 
-  showAddEventForm = () => {
-    this.setState({ showEventForm: true, eventFormType: Constants.FORM_TYPE.ADD, eventFormInitialValues: null });
+  const showAddEventForm = () => {
+    setShowEventForm(true);
+    setEventFormType(Constants.FORM_TYPE.ADD);
+    setEventFormInitialValues(null);
   };
 
-  showEditEventForm = initialValues => {
-    this.setState({
-      showEventForm: true,
-      eventFormType: Constants.FORM_TYPE.EDIT,
-      eventFormInitialValues: initialValues,
-    });
+  const showEditEventForm = initialValues => {
+    setShowEventForm(true);
+    setEventFormType(Constants.FORM_TYPE.EDIT);
+    setEventFormInitialValues(initialValues);
   };
 
-  toggleEventForm = () => {
-    this.setState(prevState => ({
-      showEventForm: !prevState.showEventForm,
-    }));
+  const toggleEventForm = () => {
+    setShowEventForm(prevState => !prevState);
   };
 
-  archiveEvent = (confirm, event) => {
+  const archiveEventHandler = (confirm, event) => {
     if (confirm) {
-      this.props.archiveEvent(event).finally(() => this.closeConfirmDialog());
+      archiveEvent(event).finally(() => closeConfirmDialog());
     } else {
-      this.closeConfirmDialog();
+      closeConfirmDialog();
     }
   };
 
-  unarchiveEvent = (confirm, event) => {
+  const unarchiveEventHandler = (confirm, event) => {
     if (confirm) {
-      this.props.unarchiveEvent(event).finally(() => this.closeConfirmDialog());
+      unarchiveEvent(event).finally(() => closeConfirmDialog());
     } else {
-      this.closeConfirmDialog();
+      closeConfirmDialog();
     }
   };
 
-  confirmUnArchive = event => {
-    this.setState({
-      showConfirmDialog: true,
-      confirmDialogOptions: {
-        title: 'UnArchive Event',
-        body: 'The event will be unarchived and enable user participation',
-        secondary: true,
-        callback: confirm => this.unarchiveEvent(confirm, event),
-      },
+  const confirmUnArchive = event => {
+    setShowConfirmDialog(true);
+    setConfirmDialogOptions({
+      title: 'UnArchive Event',
+      body: 'The event will be unarchived and enable user participation',
+      secondary: true,
+      callback: confirm => unarchiveEventHandler(confirm, event),
     });
   };
 
-  confirmArchive = event => {
-    this.setState({
-      showConfirmDialog: true,
-      confirmDialogOptions: {
-        title: 'Archive Event?',
-        body: 'The event will be archived and disable user participation',
-        secondary: true,
-        callback: confirm => this.archiveEvent(confirm, event),
-      },
+  const confirmArchive = event => {
+    setShowConfirmDialog(true);
+    setConfirmDialogOptions({
+      title: 'Archive Event?',
+      body: 'The event will be archived and disable user participation',
+      secondary: true,
+      callback: confirm => archiveEventHandler(confirm, event),
     });
   };
 
-  closeConfirmDialog() {
-    this.setState({ showConfirmDialog: false, confirmDialogOptions: {}, clicked: false });
-  }
+  const closeConfirmDialog = () => {
+    setShowConfirmDialog(false);
+    setConfirmDialogOptions({});
+  };
 
-  renderEventList() {
-    const events = _.filter(this.props.events, o => {
-      return o.isActive === this.state.isActive;
-    }).map(event => (
+  const renderEventList = () => {
+    const filteredEvents = _.filter(events, o => o.isActive === isActive);
+
+    if (filteredEvents.length === 0) {
+      return isActive ? (
+        <Alert color="primary">There are no active events at the moment.</Alert>
+      ) : (
+        <Alert color="primary">There are no archived events at the moment.</Alert>
+      );
+    }
+
+    return filteredEvents.map(event => (
       <EventListItem
         key={event.id}
         event={event}
         isAdmin={utils.isCurrentUserAdmin()}
-        showEditForm={this.showEditEventForm}
-        handleArchiveEvent={this.confirmArchive}
-        handleUnArchiveEvent={this.confirmUnArchive}
+        showEditForm={showEditEventForm}
+        handleArchiveEvent={confirmArchive}
+        handleUnArchiveEvent={confirmUnArchive}
         isActive={event.isActive}
       />
     ));
-
-    return events.length === 0 ? (
-      this.state.isActive ? (
-        <Alert color="primary">There are no active events at the moment.</Alert>
-      ) : (
-        <Alert color="primary">There are no archived events at the moment.</Alert>
-      )
-    ) : (
-      events
-    );
-  }
-
-  renderContent() {
-    return (
-      <React.Fragment>
-        <Row>
-          <Col>
-            {utils.isCurrentUserAdmin() && (
-              <Button color="primary" className="btn-sm mb-4" onClick={this.showAddEventForm}>
-                Add an Event
-              </Button>
-            )}
-
-            {this.state.isActive ? (
-              <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showArchiveEvents}>
-                Show Archived Events
-              </Button>
-            ) : (
-              <Button color="primary" className="float-right btn-sm mb-4" onClick={this.showActiveEvents}>
-                Show Active Events
-              </Button>
-            )}
-          </Col>
-        </Row>
-        {this.state.loading ? (
-          <PageSpinner />
-        ) : (
-          <ScrollLoader loader={this.loadData} page={this.state.page} pageCount={this.state.pageCount}>
-            {this.renderEventList()}
-          </ScrollLoader>
-        )}
-      </React.Fragment>
-    );
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <BreadcrumbFragment>{[{ active: true, text: 'Events' }]}</BreadcrumbFragment>
-        {this.renderContent()}
-        {this.state.showEventForm && (
-          <EditEventForm
-            initialValues={this.state.eventFormInitialValues}
-            isOpen={this.state.showEventForm}
-            toggle={this.toggleEventForm}
-            formType={this.state.eventFormType}
-          />
-        )}
-        {this.state.showConfirmDialog && (
-          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
-        )}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
-    currentUser: state.users.all[state.users.current.id],
   };
+
+  const renderContent = () => (
+    <>
+      <Row>
+        <Col>
+          {utils.isCurrentUserAdmin() && (
+            <Button color="primary" className="btn-sm mb-4" onClick={showAddEventForm}>
+              Add an Event
+            </Button>
+          )}
+
+          {isActive ? (
+            <Button color="primary" className="float-right btn-sm mb-4" onClick={showArchiveEvents}>
+              Show Archived Events
+            </Button>
+          ) : (
+            <Button color="primary" className="float-right btn-sm mb-4" onClick={showActiveEvents}>
+              Show Active Events
+            </Button>
+          )}
+        </Col>
+      </Row>
+      {loading ? (
+        <PageSpinner />
+      ) : (
+        <ScrollLoader loader={loadData} page={page} pageCount={pageCount}>
+          {renderEventList()}
+        </ScrollLoader>
+      )}
+    </>
+  );
+
+  return (
+    <>
+      <BreadcrumbFragment>{[{ active: true, text: 'Events' }]}</BreadcrumbFragment>
+      {renderContent()}
+      {showEventForm && (
+        <EditEventForm
+          initialValues={eventFormInitialValues}
+          isOpen={showEventForm}
+          toggle={toggleEventForm}
+          formType={eventFormType}
+        />
+      )}
+      {showConfirmDialog && (
+        <DialogModal isOpen={showConfirmDialog} options={confirmDialogOptions} />
+      )}
+    </>
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchEvents, archiveEvent, unarchiveEvent }
-)(EventList);
+const mapStateToProps = state => ({
+  events: _.orderBy(Object.values(state.events), ['startDate'], ['desc']),
+  currentUser: state.users.all[state.users.current.id],
+});
+
+export default connect(mapStateToProps, { fetchEvents, archiveEvent, unarchiveEvent })(EventList);

@@ -1,42 +1,39 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchRoles, fetchCurrentUser, fetchRegions, fetchVersion } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import ErrorDialogModal from './ui/ErrorDialogModal';
 
-class Main extends Component {
-  state = { loading: true, showErrorDialog: false, errorDialogOptions: {} };
+const Main = ({ fetchRoles, fetchCurrentUser, fetchRegions, fetchVersion, errorDialog, children }) => {
+  const [loading, setLoading] = useState(true);
 
-  componentDidMount() {
-    Promise.all([
-      this.props.fetchRoles(),
-      this.props.fetchCurrentUser(),
-      this.props.fetchRegions(),
-      this.props.fetchVersion(),
-    ]).then(() => {
-      this.setState({ loading: false });
-    });
-  }
+  useEffect(() => {
+    const loadData = async () => {
+      await Promise.all([
+        fetchRoles(),
+        fetchCurrentUser(),
+        fetchRegions(),
+        fetchVersion(),
+      ]);
+      setLoading(false);
+    };
 
-  render() {
-    const { errorDialog } = this.props;
+    loadData();
+  }, [fetchRoles, fetchCurrentUser, fetchRegions, fetchVersion]);
 
-    return (
-      <React.Fragment>
-        {this.state.loading ? <PageSpinner /> : this.props.children}
-        {errorDialog.show && <ErrorDialogModal isOpen={errorDialog.show} {...errorDialog} />}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    currentUser: state.users.all[state.users.current.id],
-    roles: state.roles,
-    errorDialog: state.errorDialog,
-  };
+  return (
+    <>
+      {loading ? <PageSpinner /> : children}
+      {errorDialog.show && <ErrorDialogModal isOpen={errorDialog.show} {...errorDialog} />}
+    </>
+  );
 };
+
+const mapStateToProps = state => ({
+  currentUser: state.users.all[state.users.current.id],
+  roles: state.roles,
+  errorDialog: state.errorDialog,
+});
 
 export default connect(mapStateToProps, { fetchRoles, fetchCurrentUser, fetchRegions, fetchVersion })(Main);

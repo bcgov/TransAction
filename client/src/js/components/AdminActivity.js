@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Table } from 'reactstrap';
 import _ from 'lodash';
 
@@ -11,60 +11,59 @@ import EditActivityTypeForm from './forms/EditActivityTypeForm';
 import * as Constants from '../Constants';
 import * as api from '../api/api';
 
-class AdminActivity extends React.Component {
-  state = {
-    showConfirmDialog: false,
-    confirmDialogOptions: {},
-    showEditActivityTypeForm: false,
-    selectedActivity: undefined,
-    editActivityTypeFormType: Constants.FORM_TYPE.EDIT,
+const AdminActivity = () => {
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [confirmDialogOptions, setConfirmDialogOptions] = useState({});
+  const [showEditActivityTypeForm, setShowEditActivityTypeForm] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(undefined);
+  const [editActivityTypeFormType, setEditActivityTypeFormType] = useState(Constants.FORM_TYPE.EDIT);
+
+  const dispatch = useDispatch();
+  const activities = useSelector((state) => Object.values(state.activities));
+
+  useEffect(() => {
+    api.resetCancelTokenSource();
+    dispatch(fetchActivityList());
+
+    return () => {
+      api.cancelRequest();
+    };
+  }, [dispatch]);
+
+  const closeConfirmDialog = () => {
+    setShowConfirmDialog(false);
+    setConfirmDialogOptions({});
   };
 
-  componentDidMount() {
-    api.resetCancelTokenSource();
-    this.props.fetchActivityList();
-  }
-
-  componentWillUnmount() {
-    api.cancelRequest();
-  }
-
-  closeConfirmDialog() {
-    this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
-  }
-
-  confirmRemoveActivity = (activity) => {
-    this.setState({
-      showConfirmDialog: true,
-      confirmDialogOptions: {
-        title: 'Remove Activity Type?',
-        body: `${activity.name} will be removed.`,
-        secondary: true,
-        callback: (confirm) => this.handleRemoveActivity(confirm, activity.id),
-      },
+  const confirmRemoveActivity = (activity) => {
+    setShowConfirmDialog(true);
+    setConfirmDialogOptions({
+      title: 'Remove Activity Type?',
+      body: `${activity.name} will be removed.`,
+      secondary: true,
+      callback: (confirm) => handleRemoveActivity(confirm, activity.id),
     });
   };
 
-  handleRemoveActivity = (confirm, id) => {
+  const handleRemoveActivity = (confirm, id) => {
     if (confirm) {
-      this.props.deleteActivityType(id).finally(() => this.closeConfirmDialog());
+      dispatch(deleteActivityType(id)).finally(() => closeConfirmDialog());
     } else {
-      this.closeConfirmDialog();
+      closeConfirmDialog();
     }
   };
 
-  showEditActivityTypeForm = (activity, editActivityTypeFormType) => {
-    this.setState({ showEditActivityTypeForm: true, selectedActivity: activity, editActivityTypeFormType });
+  const showEditActivityTypeFormHandler = (activity, formType) => {
+    setSelectedActivity(activity);
+    setEditActivityTypeFormType(formType);
+    setShowEditActivityTypeForm(true);
   };
 
-  toggleEditActivityTypeForm = () => {
-    this.setState((prevState) => ({
-      showEditActivityTypeForm: !prevState.showEditActivityTypeForm,
-    }));
+  const toggleEditActivityTypeForm = () => {
+    setShowEditActivityTypeForm((prev) => !prev);
   };
 
-  renderActivityList = () => {
-    const { activities } = this.props;
+  const renderActivityList = () => {
     const activityTableRows = _.orderBy(activities, ['intensity', 'name']).map((o) => (
       <tr key={o.id}>
         <td>{o.name}</td>
@@ -75,13 +74,13 @@ class AdminActivity extends React.Component {
             size="sm"
             color="primary"
             className="mr-2"
-            onClick={() => this.showEditActivityTypeForm(o, Constants.FORM_TYPE.EDIT)}
+            onClick={() => showEditActivityTypeFormHandler(o, Constants.FORM_TYPE.EDIT)}
           >
             Edit
           </Button>
         </td>
         <td style={{ width: '1%' }}>
-          <Button size="sm" color="primary" onClick={() => this.confirmRemoveActivity(o)}>
+          <Button size="sm" color="primary" onClick={() => confirmRemoveActivity(o)}>
             Remove
           </Button>
         </td>
@@ -104,45 +103,35 @@ class AdminActivity extends React.Component {
     );
   };
 
-  render() {
-    return (
-      <React.Fragment>
-        <CardWrapper>
-          <h4>Activity List Management</h4>
-          <Button
-            size="sm"
-            color="primary"
-            className="float-right mb-2"
-            onClick={() =>
-              this.showEditActivityTypeForm({ name: '', description: '', intensity: 1 }, Constants.FORM_TYPE.ADD)
-            }
-          >
-            New Activity Type
-          </Button>
-          {this.renderActivityList()}
-        </CardWrapper>
+  return (
+    <React.Fragment>
+      <CardWrapper>
+        <h4>Activity List Management</h4>
+        <Button
+          size="sm"
+          color="primary"
+          className="float-right mb-2"
+          onClick={() => showEditActivityTypeFormHandler({ name: '', description: '', intensity: 1 }, Constants.FORM_TYPE.ADD)}
+        >
+          New Activity Type
+        </Button>
+        {renderActivityList()}
+      </CardWrapper>
 
-        {this.state.showConfirmDialog && (
-          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
-        )}
+      {showConfirmDialog && (
+        <DialogModal isOpen={showConfirmDialog} options={confirmDialogOptions} />
+      )}
 
-        {this.state.showEditActivityTypeForm && (
-          <EditActivityTypeForm
-            isOpen={this.state.showEditActivityTypeForm}
-            toggle={this.toggleEditActivityTypeForm}
-            initialValues={this.state.selectedActivity}
-            formType={this.state.editActivityTypeFormType}
-          />
-        )}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    activities: Object.values(state.activities),
-  };
+      {showEditActivityTypeForm && (
+        <EditActivityTypeForm
+          isOpen={showEditActivityTypeForm}
+          toggle={toggleEditActivityTypeForm}
+          initialValues={selectedActivity}
+          formType={editActivityTypeFormType}
+        />
+      )}
+    </React.Fragment>
+  );
 };
 
-export default connect(mapStateToProps, { fetchActivityList, deleteActivityType })(AdminActivity);
+export default AdminActivity;
