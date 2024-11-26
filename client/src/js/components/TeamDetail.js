@@ -1,173 +1,148 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom'; // Import useParams hook
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-
-import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
+import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, fetchSpecificTeamRequests, editUser } from '../actions';
 import PageSpinner from './ui/PageSpinner';
-
 import TeamProfileFragment from './fragments/TeamProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import TeamJoinRequestPanel from './fragments/TeamJoinRequestPanel';
 import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import CardWrapper from './ui/CardWrapper';
-
 import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 
-class Team extends Component {
-  state = {
-    loading: true,
-    teamIdToDisplay: null,
-  };
+const Team = ({
+  fetchTeam,
+  fetchUser,
+  fetchCurrentUser,
+  users,
+  teams,
+  regions,
+  currentUser
+}) => {
+  const [loading, setLoading] = useState(true);
+  const [teamIdToDisplay, setTeamIdToDisplay] = useState(null);
 
-  componentDidMount() {
+  const { id } = useParams(); // Use useParams to get the ID from the route
+
+  useEffect(() => {
     api.resetCancelTokenSource();
-    this.init(this.props.match.params.id);
-  }
+    init(id);
 
-  componentWillUnmount() {
-    api.cancelRequest();
-  }
+    return () => {
+      api.cancelRequest();
+    };
+  }, [id]);
 
-  componentDidUpdate(prevProps) {
-    // Re-init if URL param has changed
-    const prevId = prevProps.match.params.id;
-    const currId = this.props.match.params.id;
-    if (currId !== prevId) {
-      this.init(currId);
-    }
-  }
+  const init = useCallback((teamId) => {
+    setLoading(true);
+    const parsedTeamId = parseInt(teamId);
 
-  init = teamId => {
-    this.setState({ loading: true });
-
-    teamId = parseInt(teamId);
-
-    this.props
-      .fetchTeam(teamId)
+    fetchTeam(parsedTeamId)
       .then(() => {
-        const team = this.props.teams[teamId];
+        const team = teams[parsedTeamId];
+        if (team) setTeamIdToDisplay(team.id);
 
-        if (team) this.setState({ teamIdToDisplay: team.id });
-
-        let usersToFetch = team.teamMemberIds.filter(userId => {
-          return !(userId in this.props.users);
-        });
+        const usersToFetch = team.teamMemberIds.filter(userId => !(userId in users));
+        
+        // console.log('parsedTeamId:', parsedTeamId);
+        // console.log('teams:', teams);
 
         return Promise.all(
-          usersToFetch.map(user => {
-            return this.props.fetchUser(user);
-          })
+          usersToFetch.map(user => fetchUser(user))
         );
       })
-      .then(() => {
-        this.setState({ loading: false });
-      });
-  };
+      .then(() => setLoading(false));
+  }, [fetchTeam, fetchUser, users, teams]);
 
-  userIsTeamleadOrAdmin = () => {
-    const team = this.props.teams[this.state.teamIdToDisplay];
-    const currentUser = this.props.currentUser;
-
+  const userIsTeamleadOrAdmin = () => {
+    const team = teams[teamIdToDisplay];
     if (!team) return false;
-
     return utils.isCurrentUserAdmin() || team.teamLeaderId === currentUser.id;
   };
 
-  userIsTeamlead = () => {
-    const team = this.props.teams[this.state.teamIdToDisplay];
-    const currentUser = this.props.currentUser;
-
+  const userIsTeamlead = () => {
+    const team = teams[teamIdToDisplay];
     if (!team) return false;
-
     return team.teamLeaderId === currentUser.id;
   };
 
-  userBelongsToTeam = () => {
-    if (!this.props.currentUser.teamId) return false;
-    return this.state.teamIdToDisplay === this.props.currentUser.teamId;
+  const userBelongsToTeam = () => {
+    if (!currentUser.teamId) return false;
+    return teamIdToDisplay === currentUser.teamId;
   };
 
-  render() {
-    const teamToDisplay = this.props.teams[this.state.teamIdToDisplay];
+  const teamToDisplay = teams[teamIdToDisplay];
+  const breadCrumbItems = [
+    { active: false, text: 'Teams', link: Constants.PATHS.TEAM }
+  ];
+  if (teamToDisplay) breadCrumbItems.push({ active: true, text: teamToDisplay.name });
 
-    const breadCrumbItems = [{ active: false, text: 'Teams', link: Constants.PATHS.TEAM }];
-    if (teamToDisplay) breadCrumbItems.push({ active: true, text: teamToDisplay.name });
+  return (
+    <React.Fragment>
+      <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
 
-    return (
-      <React.Fragment>
-        <BreadcrumbFragment>{breadCrumbItems}</BreadcrumbFragment>
-
-        <CardWrapper>
-          {this.state.loading ? (
-            <PageSpinner />
-          ) : (
-            <TeamProfileFragment
-              canEdit={this.userIsTeamleadOrAdmin()}
-              team={teamToDisplay}
-              regionName={this.props.regions[teamToDisplay.regionId].name}
-            />
-          )}
-        </CardWrapper>
-
-        <CardWrapper>
-          <Row className="mb-3">
-            <Col>
-              <h4>Team Members</h4>
-            </Col>
-          </Row>
-          {this.state.loading ? (
-            <PageSpinner />
-          ) : (
-            <TeamMembersPanel
-              teamToDisplay={teamToDisplay}
-              users={this.props.users}
-              regions={this.props.regions}
-              currentUser={this.props.currentUser}
-            />
-          )}
-        </CardWrapper>
-
-        {teamToDisplay && this.userIsTeamlead() && teamToDisplay.numMembers < 5 && (
-          <TeamJoinRequestPanel team={teamToDisplay} />
+      <CardWrapper>
+        {loading ? (
+          <PageSpinner />
+        ) : (
+          <TeamProfileFragment
+            canEdit={userIsTeamleadOrAdmin()}
+            team={teamToDisplay}
+            regionName={regions[teamToDisplay.regionId]?.name}
+          />
         )}
+      </CardWrapper>
 
-        {this.userBelongsToTeam() && teamToDisplay && (
-          <CardWrapper>
-            <ProfileScoresPanel
-              userIdToDisplay={this.props.currentUser.id}
-              teamIdToDisplay={this.state.teamIdToDisplay}
-            />
-          </CardWrapper>
+      <CardWrapper>
+        <Row className="mb-3">
+          <Col>
+            <h4>Team Members</h4>
+          </Col>
+        </Row>
+        {loading ? (
+          <PageSpinner />
+        ) : (
+          <TeamMembersPanel
+            teamToDisplay={teamToDisplay}
+            users={users}
+            regions={regions}
+            currentUser={currentUser}
+          />
         )}
-      </React.Fragment>
-    );
-  }
-}
+      </CardWrapper>
 
-const mapStateToProps = state => {
-  return {
-    currentUser: state.users.all[state.users.current.id],
-    scores: state.scores,
-    teams: state.teams,
-    users: state.users.all,
-    roles: state.roles,
-    joinRequests: Object.values(state.joinRequests),
-    regions: state.regions,
-    events: state.events,
-  };
+      {teamToDisplay && userIsTeamlead() && teamToDisplay.numMembers < 5 && (
+        <TeamJoinRequestPanel team={teamToDisplay} />
+      )}
+
+      {userBelongsToTeam() && teamToDisplay && (
+        <CardWrapper>
+          <ProfileScoresPanel
+            userIdToDisplay={currentUser.id}
+            teamIdToDisplay={teamIdToDisplay}
+          />
+        </CardWrapper>
+      )}
+    </React.Fragment>
+  );
 };
+
+const mapStateToProps = (state) => ({
+  currentUser: state.users.all[state.users.current.id],
+  scores: state.scores,
+  teams: state.teams,
+  users: state.users.all,
+  roles: state.roles,
+  joinRequests: Object.values(state.joinRequests),
+  regions: state.regions,
+  events: state.events,
+});
 
 export default connect(
   mapStateToProps,
-  {
-    fetchCurrentUser,
-    fetchTeam,
-    editTeam,
-    fetchUser,
-    fetchSpecificTeamRequests,
-    editUser,
-  }
+  { fetchCurrentUser, fetchTeam, editTeam, fetchUser, fetchSpecificTeamRequests, editUser }
 )(Team);

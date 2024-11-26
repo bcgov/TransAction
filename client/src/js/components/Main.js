@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
 import { fetchRoles, fetchCurrentUser, fetchRegions, fetchVersion } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import ErrorDialogModal from './ui/ErrorDialogModal';
