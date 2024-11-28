@@ -6,13 +6,12 @@ import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 
 import * as utils from '../utils';
 
-const Admin = () => {
+export default function Admin  ()  {
   return (
     <React.Fragment>
       {utils.isCurrentUserAdmin() ? (
         <React.Fragment>
           <BreadcrumbFragment>{[{ active: true, text: 'Admin' }]}</BreadcrumbFragment>
-
           <AdminUser />
           <AdminActivity />
         </React.Fragment>
@@ -23,4 +22,3 @@ const Admin = () => {
   );
 };
 
-export default Admin;
