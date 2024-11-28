@@ -14,19 +14,11 @@ import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 
-const Team = ({
-  fetchTeam,
-  fetchUser,
-  fetchCurrentUser,
-  users,
-  teams,
-  regions,
-  currentUser
-}) => {
+const Team = ({fetchTeam, fetchUser, users, teams, regions, currentUser}) => {
   const [loading, setLoading] = useState(true);
   const [teamIdToDisplay, setTeamIdToDisplay] = useState(null);
 
-  const { id } = useParams(); // Use useParams to get the ID from the route
+  const { id } = useParams(); // ID from Route
 
   useEffect(() => {
     api.resetCancelTokenSource();
@@ -39,6 +31,7 @@ const Team = ({
 
   const init = useCallback((teamId) => {
     setLoading(true);
+    console.log(typeof(teamId));
     const parsedTeamId = parseInt(teamId);
 
     fetchTeam(parsedTeamId)
