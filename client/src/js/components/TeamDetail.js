@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom'; // Import useParams hook
+import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, fetchSpecificTeamRequests, editUser } from '../actions';
+import {
+  fetchCurrentUser,
+  fetchTeam,
+  editTeam,
+  fetchUser,
+  fetchSpecificTeamRequests,
+  editUser,
+} from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import TeamProfileFragment from './fragments/TeamProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
@@ -14,7 +21,7 @@ import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 
-const Team = ({fetchTeam, fetchUser, users, teams, regions, currentUser}) => {
+const Team = ({ fetchTeam, fetchUser, users, teams, regions, currentUser }) => {
   const [loading, setLoading] = useState(true);
   const [teamIdToDisplay, setTeamIdToDisplay] = useState(null);
 
@@ -29,27 +36,32 @@ const Team = ({fetchTeam, fetchUser, users, teams, regions, currentUser}) => {
     };
   }, [id]);
 
-  const init = useCallback((teamId) => {
-    setLoading(true);
-    console.log(typeof(teamId));
-    const parsedTeamId = parseInt(teamId);
+  const init = useCallback(
+    async (teamId) => {
+      setLoading(true);
+      try {
+        const parsedTeamId = parseInt(teamId);
 
-    fetchTeam(parsedTeamId)
-      .then(() => {
+        await fetchTeam(parsedTeamId);
+
         const team = teams[parsedTeamId];
         if (team) setTeamIdToDisplay(team.id);
 
-        const usersToFetch = team.teamMemberIds.filter(userId => !(userId in users));
-        
-        // console.log('parsedTeamId:', parsedTeamId);
-        // console.log('teams:', teams);
+        if (team) {
+          const usersToFetch = team.teamMemberIds.filter(
+            (userId) => !(userId in users)
+          );
 
-        return Promise.all(
-          usersToFetch.map(user => fetchUser(user))
-        );
-      })
-      .then(() => setLoading(false));
-  }, [fetchTeam, fetchUser, users, teams]);
+          await Promise.all(usersToFetch.map((userId) => fetchUser(userId)));
+        }
+      } catch (error) {
+        console.error('Error initializing team data:', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchTeam, fetchUser, teams, users]
+  );
 
   const userIsTeamleadOrAdmin = () => {
     const team = teams[teamIdToDisplay];
@@ -70,7 +82,7 @@ const Team = ({fetchTeam, fetchUser, users, teams, regions, currentUser}) => {
 
   const teamToDisplay = teams[teamIdToDisplay];
   const breadCrumbItems = [
-    { active: false, text: 'Teams', link: Constants.PATHS.TEAM }
+    { active: false, text: 'Teams', link: Constants.PATHS.TEAM },
   ];
   if (teamToDisplay) breadCrumbItems.push({ active: true, text: teamToDisplay.name });
 
@@ -135,7 +147,11 @@ const mapStateToProps = (state) => ({
   events: state.events,
 });
 
-export default connect(
-  mapStateToProps,
-  { fetchCurrentUser, fetchTeam, editTeam, fetchUser, fetchSpecificTeamRequests, editUser }
-)(Team);
+export default connect(mapStateToProps, {
+  fetchCurrentUser,
+  fetchTeam,
+  editTeam,
+  fetchUser,
+  fetchSpecificTeamRequests,
+  editUser,
+})(Team);
