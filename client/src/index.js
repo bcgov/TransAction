@@ -54,10 +54,13 @@ keycloak.onAuthRefreshSuccess = () => {
   getKeycloakUserInfo();
 };
 
-function getKeycloakUserInfo() {
-  keycloak.loadUserInfo().success((data) => {
+async function getKeycloakUserInfo() {
+  try {
+    const data = await keycloak.loadUserInfo();
     store.dispatch({ type: UPDATE_AUTH_USER, payload: data });
-  });
+  } catch (err) {
+    console.error('Failed to load user info:', err);
+  }
 }
 
 var initOptions = {
@@ -66,9 +69,10 @@ var initOptions = {
   pkceMethod: 'S256'
 };
 
-keycloak
-  .init(initOptions)
-  .success((authenticated) => {
+async function initializeKeycloak() {
+  try {
+    const authenticated = await keycloak.init(initOptions);
+
     if (authenticated) {
       ReactDOM.render(
         <Provider store={store}>
@@ -76,23 +80,23 @@ keycloak
         </Provider>,
         document.getElementById('root')
       );
+    } else {
+      console.warn('User is not authenticated');
     }
-  })
-  .error(() => {
-    //alert('failed to initialize');
-  });
+  } catch (err) {
+    console.error('Keycloak initialization failed:', err);
+  }
+}
 
-api.instance.interceptors.request.use(
-  (config) =>
-    new Promise((resolve) =>
-      keycloak
-        .updateToken(5)
-        .success(() => {
-          config.headers.Authorization = `Bearer ${keycloak.token}`;
-          resolve(config);
-        })
-        .error(() => {
-          keycloak.login();
-        })
-    )
-);
+initializeKeycloak();
+
+api.instance.interceptors.request.use(async (config) => {
+  try {
+    await keycloak.updateToken(5);
+    config.headers.Authorization = `Bearer ${keycloak.token}`;
+    return config;
+  } catch (err) {
+    keycloak.login();
+    throw err;
+  }
+});
