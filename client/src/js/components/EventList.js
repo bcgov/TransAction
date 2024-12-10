@@ -22,19 +22,13 @@ const EventList = ({ fetchEvents, archiveEvent, unarchiveEvent, events }) => {
   const [eventFormInitialValues, setEventFormInitialValues] = useState(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [confirmDialogOptions, setConfirmDialogOptions] = useState({});
-  const [searchTerm, setSearchTerm] = useState(undefined);
+  const [searchTerm] = useState(undefined);
   const [page, setPage] = useState(0);
   const [pageSize] = useState(3);
   const [pageCount, setPageCount] = useState(1);
   const [isActive, setIsActive] = useState(true);
 
-  useEffect(() => {
-    api.resetCancelTokenSource();
-    loadData();
-    return () => {
-      api.cancelRequest();
-    };
-  }, [page, isActive]);
+
 
   const loadData = () => {
     if (page < pageCount) {
@@ -46,6 +40,14 @@ const EventList = ({ fetchEvents, archiveEvent, unarchiveEvent, events }) => {
     }
   };
 
+  useEffect(() => {
+    api.resetCancelTokenSource();
+    loadData();
+    return () => {
+      api.cancelRequest();
+    };
+  }, [page, isActive]);
+
   const showArchiveEvents = () => {
     setIsActive(false);
     setPage(0);
@@ -54,10 +56,6 @@ const EventList = ({ fetchEvents, archiveEvent, unarchiveEvent, events }) => {
   const showActiveEvents = () => {
     setIsActive(true);
     setPage(0);
-  };
-
-  const loadMoreData = () => {
-    if (page <= pageCount) loadData();
   };
 
   const showAddEventForm = () => {

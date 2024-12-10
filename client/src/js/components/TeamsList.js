@@ -1,10 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Alert, Row, Col, Input, Table, Button } from 'reactstrap';
 import _ from 'lodash';
 
-import { fetchTeams, fetchCurrentTeam, fetchUsers, editUser, createJoinRequest, fetchJoinRequests } from '../actions';
+import {
+  fetchTeams,
+  fetchCurrentTeam,
+  editUser,
+  createJoinRequest,
+  fetchJoinRequests,
+} from '../actions';
 
 import PageSpinner from './ui/PageSpinner';
 import CardWrapper from './ui/CardWrapper';
@@ -15,158 +21,154 @@ import ScrollLoader from './fragments/ScollLoader';
 import * as api from '../api/api';
 import * as Constants from '../Constants';
 
-class TeamsList extends Component {
-  state = {
-    loading: true,
-    showConfirmDialog: false,
-    confirmDialogOptions: {},
-    searchTerm: undefined,
-    page: 0,
-    pageSize: 15,
-    pageCount: 1,
-    teamSearchTerm: '',
-  };
+const TeamsList = () => {
+  const [loading, setLoading] = useState(true);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [confirmDialogOptions, setConfirmDialogOptions] = useState({});
+  const [searchTerm] = useState('');
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(15);
+  const [pageCount, setPageCount] = useState(1);
+  const [teamSearchTerm, setTeamSearchTerm] = useState('');
 
-  componentDidMount() {
+  const dispatch = useDispatch();
+
+  const {
+    teams,
+    regions,
+    currentUser,
+    joinRequests,
+  } = useSelector((state) => ({
+    teams: state.teams,
+    users: state.users.all,
+    regions: state.regions,
+    currentUser: state.users.all[state.users.current.id],
+    joinRequests: Object.values(state.joinRequests),
+  }));
+
+  useEffect(() => {
     api.resetCancelTokenSource();
-    const { currentUser, teams, fetchCurrentTeam, fetchJoinRequests } = this.props;
-    if (currentUser.teamId && !teams[currentUser.teamId]) {
-      fetchCurrentTeam();
+
+    if (currentUser?.teamId && !teams[currentUser.teamId]) {
+      dispatch(fetchCurrentTeam());
     }
 
-    fetchJoinRequests();
-    this.loadData();
-  }
+    dispatch(fetchJoinRequests());
+    loadData();
 
-  componentWillUnmount() {
-    api.cancelRequest();
-  }
+    return () => {
+      api.cancelRequest();
+    };
+  }, [dispatch]);
 
-  loadData = () => {
-    const nextPage = this.state.page + 1;
-    if (this.state.page < this.state.pageCount) {
-      this.props.fetchTeams(this.state.searchTerm, nextPage, this.state.pageSize).then(pageCount => {
-        this.setState({ loading: false, page: nextPage, pageCount });
+  const loadData = () => {
+    const nextPage = page + 1;
+    if (page < pageCount) {
+      dispatch(fetchTeams(searchTerm, nextPage, pageSize)).then((newPageCount) => {
+        setLoading(false);
+        setPage(nextPage);
+        setPageCount(newPageCount);
       });
     }
   };
 
-  sendJoinRequest = (confirm, userId, teamId) => {
+  const sendJoinRequest = (confirm, userId, teamId) => {
     if (confirm) {
-      this.props.createJoinRequest({ userId, teamId }).finally(() => this.closeConfirmDialog());
+      dispatch(createJoinRequest({ userId, teamId })).finally(() => closeConfirmDialog());
     } else {
-      this.closeConfirmDialog();
+      closeConfirmDialog();
     }
   };
 
-  confirmJoin = (userId, teamId) => {
-    this.setState({
-      showConfirmDialog: true,
-      confirmDialogOptions: {
-        title: 'Send Join Request?',
-        body: 'This team leader will receive your join request.',
-        secondary: true,
-        callback: confirm => this.sendJoinRequest(confirm, userId, teamId),
-      },
+  const confirmJoin = (userId, teamId) => {
+    setShowConfirmDialog(true);
+    setConfirmDialogOptions({
+      title: 'Send Join Request?',
+      body: 'This team leader will receive your join request.',
+      secondary: true,
+      callback: (confirm) => sendJoinRequest(confirm, userId, teamId),
     });
   };
 
-  becomeFreeagent = confirm => {
+  const becomeFreeagent = (confirm) => {
     if (confirm) {
-      const { currentUser, editUser } = this.props;
       const userObj = { ...currentUser, isFreeAgent: true };
-
-      editUser(userObj.id, userObj).finally(() => this.closeConfirmDialog());
+      dispatch(editUser(userObj.id, userObj)).finally(() => closeConfirmDialog());
     } else {
-      this.closeConfirmDialog();
+      closeConfirmDialog();
     }
   };
 
-  confirmBecomeFreeagent = () => {
-    this.setState({
-      showConfirmDialog: true,
-      confirmDialogOptions: {
-        title: 'Become a Free Agent?',
-        body:
-          'Becoming a free agent will allow any team with extra room on its roster to recruit you as its new member.',
-        secondary: true,
-        callback: confirm => this.becomeFreeagent(confirm),
-      },
+  const confirmBecomeFreeagent = () => {
+    setShowConfirmDialog(true);
+    setConfirmDialogOptions({
+      title: 'Become a Free Agent?',
+      body:
+        'Becoming a free agent will allow any team with extra room on its roster to recruit you as its new member.',
+      secondary: true,
+      callback: (confirm) => becomeFreeagent(confirm),
     });
   };
 
-  closeConfirmDialog() {
-    this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
-  }
+  const closeConfirmDialog = () => {
+    setShowConfirmDialog(false);
+    setConfirmDialogOptions({});
+  };
 
-  renderTeamRows() {
-    const { currentUser, regions } = this.props;
-    const userRequests = this.props.joinRequests
-      .filter(request => {
-        return request.userId === currentUser.id;
-      })
-      .map(request => {
-        return request.teamId;
-      });
+  const renderTeamRows = () => {
+    const userRequests = joinRequests
+      .filter((request) => request.userId === currentUser.id)
+      .map((request) => request.teamId);
 
-    const teamSearchTerm = this.state.teamSearchTerm.trim().toUpperCase();
-    let filteredTeams = Object.values(this.props.teams);
+    const searchTermUpper = teamSearchTerm.trim().toUpperCase();
+    let filteredTeams = Object.values(teams);
 
-    if (this.state.teamSearchTerm.trim() !== '')
-      filteredTeams = _.filter(filteredTeams, t => {
-        return t.name.toUpperCase().includes(teamSearchTerm);
-      });
+    if (teamSearchTerm.trim() !== '') {
+      filteredTeams = _.filter(filteredTeams, (t) => t.name.toUpperCase().includes(searchTermUpper));
+    }
 
-    var teams = _.orderBy(filteredTeams, user => {
-      return user.name.toLowerCase();
-    }).map(team => {
-      return (
-        <tr key={team.id}>
-          <td>
-            <Link className="text-decoration-none" to={`${Constants.PATHS.TEAM}/${team.id}`}>
-              {team.name}
-            </Link>
+    return _.orderBy(filteredTeams, (user) => user.name.toLowerCase()).map((team) => (
+      <tr key={team.id}>
+        <td>
+          <Link className="text-decoration-none" to={`${Constants.PATHS.TEAM}/${team.id}`}>
+            {team.name}
+          </Link>
+        </td>
+        <td>{team.teamLeaderName}</td>
+        <td>{regions[team.regionId].name}</td>
+        <td>{team.numMembers}</td>
+        {!currentUser.teamId && (
+          <td className="fit">
+            {!userRequests.includes(team.id) && (
+              <Button size="sm" color="primary" onClick={() => confirmJoin(currentUser.id, team.id)}>
+                Request to Join
+              </Button>
+            )}
           </td>
-          <td>{team.teamLeaderName}</td>
-          <td>{regions[team.regionId].name}</td>
-          <td>{team.numMembers}</td>
-          {!currentUser.teamId && (
-            <td className="fit">
-              {!userRequests.includes(team.id) && (
-                <Button size="sm" color="primary" onClick={() => this.confirmJoin(currentUser.id, team.id)}>
-                  Request to Join
-                </Button>
-              )}
-            </td>
-          )}
-        </tr>
-      );
-    });
-    return teams;
-  }
-
-  handleTeamSearchTermChanged = e => {
-    this.setState({ teamSearchTerm: e.target.value });
-
-    const value = e.target.value.trim();
-    if (value !== '') this.props.fetchTeams(e.target.value.trim());
+        )}
+      </tr>
+    ));
   };
 
-  renderTeamList() {
-    const teamRows = this.renderTeamRows();
+  const handleTeamSearchTermChanged = (e) => {
+    setTeamSearchTerm(e.target.value);
+    const value = e.target.value.trim();
+    if (value !== '') dispatch(fetchTeams(value));
+  };
+
+  const renderTeamList = () => {
+    const teamRows = renderTeamRows();
 
     return (
-      <React.Fragment>
+      <>
         <h4 className="mb-3">All TransAction Teams</h4>
-
-        {!this.props.currentUser.teamId && !this.props.currentUser.isFreeAgent && (
+        {!currentUser.teamId && !currentUser.isFreeAgent && (
           <div className="mb-3 text-right">
-            <Button size="sm" color="primary" onClick={this.confirmBecomeFreeagent}>
+            <Button size="sm" color="primary" onClick={confirmBecomeFreeagent}>
               Become Free Agent
             </Button>
           </div>
         )}
-
         <Row className="mb-3">
           <Col sm={0} md={6} />
           <Col sm={12} md={6}>
@@ -175,18 +177,17 @@ class TeamsList extends Component {
               id="teamSearchTerm"
               placeholder="Search by team name"
               bsSize="sm"
-              value={this.state.teamSearchTerm}
-              onChange={this.handleTeamSearchTermChanged}
+              value={teamSearchTerm}
+              onChange={handleTeamSearchTermChanged}
             />
           </Col>
         </Row>
-
         {teamRows.length > 0 ? (
           <ScrollLoader
-            loader={this.loadData}
-            page={this.state.page}
-            pageCount={this.state.pageCount}
-            shouldLoad={this.state.teamSearchTerm.trim() === ''}
+            loader={loadData}
+            page={page}
+            pageCount={pageCount}
+            shouldLoad={teamSearchTerm.trim() === ''}
           >
             <Table size="sm" hover bordered responsive>
               <thead className="thead-dark">
@@ -195,7 +196,7 @@ class TeamsList extends Component {
                   <th>Team Leader</th>
                   <th>Region</th>
                   <th>Members</th>
-                  {!this.props.currentUser.teamId && <th className="fit" />}
+                  {!currentUser.teamId && <th className="fit" />}
                 </tr>
               </thead>
               <tbody>{teamRows}</tbody>
@@ -204,21 +205,14 @@ class TeamsList extends Component {
         ) : (
           <Alert color="primary">There are no teams at the moment.</Alert>
         )}
-
-        {this.state.showConfirmDialog && (
-          <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
-        )}
-      </React.Fragment>
+        {showConfirmDialog && <DialogModal isOpen={showConfirmDialog} options={confirmDialogOptions} />}
+      </>
     );
-  }
+  };
 
-  renderTeamProfile() {
-    const { currentUser, teams } = this.props;
-
-    let output = null;
-
+  const renderTeamProfile = () => {
     if (currentUser.teamId) {
-      output = (
+      return (
         <div>
           {teams[currentUser.teamId] && (
             <Link
@@ -232,58 +226,35 @@ class TeamsList extends Component {
         </div>
       );
     } else {
-      output = (
+      return (
         <p>
           You are not on a team. <Link to={Constants.PATHS.START}>Get started</Link> or join one of the teams below!
         </p>
       );
     }
-
-    return (
-      <React.Fragment>
-        <h4>Personal Team</h4>
-        {output}
-      </React.Fragment>
-    );
-  }
-
-  renderContent() {
-    return (
-      <React.Fragment>
-        <CardWrapper>
-          <Row>
-            <Col>{this.renderTeamProfile()}</Col>
-          </Row>
-        </CardWrapper>
-        <CardWrapper>
-          <Row>
-            <Col>{this.renderTeamList()}</Col>
-          </Row>
-        </CardWrapper>
-      </React.Fragment>
-    );
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <BreadcrumbFragment>{[{ active: true, text: 'Teams' }]}</BreadcrumbFragment>
-        {this.state.loading ? <PageSpinner /> : this.renderContent()}
-      </React.Fragment>
-    );
-  }
-}
-const mapStateToProps = state => {
-  return {
-    teams: state.teams,
-    users: state.users.all,
-    regions: state.regions,
-    currentUser: state.users.all[state.users.current.id],
-    joinRequests: Object.values(state.joinRequests),
   };
+
+  const renderContent = () => (
+    <>
+      <CardWrapper>
+        <Row>
+          <Col>{renderTeamProfile()}</Col>
+        </Row>
+      </CardWrapper>
+      <CardWrapper>
+        <Row>
+          <Col>{renderTeamList()}</Col>
+        </Row>
+      </CardWrapper>
+    </>
+  );
+
+  return (
+    <>
+      <BreadcrumbFragment>{[{ active: true, text: 'Teams' }]}</BreadcrumbFragment>
+      {loading ? <PageSpinner /> : renderContent()}
+    </>
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchTeams, fetchCurrentTeam, fetchUsers, editUser, createJoinRequest, fetchJoinRequests }
-)(TeamsList);
+export default TeamsList;

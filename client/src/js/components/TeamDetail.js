@@ -97,7 +97,7 @@ const Team = ({ fetchTeam, fetchUser, users, teams, regions, currentUser }) => {
           <TeamProfileFragment
             canEdit={userIsTeamleadOrAdmin()}
             team={teamToDisplay}
-            regionName={regions[teamToDisplay.regionId]?.name}
+            regionName={regions[teamToDisplay?.regionId]?.name}
           />
         )}
       </CardWrapper>

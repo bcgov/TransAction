@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, Alert } from 'reactstrap';
-import _ from 'lodash';
-
 import { fetchTeam, editUser, fetchUser } from '../actions';
 import PageSpinner from './ui/PageSpinner';
 import UserProfileFragment from './fragments/UserProfileFragment';
@@ -65,30 +62,6 @@ const Profile = ({ currentUser, fetchUser, fetchTeam, users, regions, teams }) =
     return false;
   };
 
-  const renderUserTeam = () => {
-    const teamToDisplay = teams[teamIdToDisplay];
-    const userToDisplay = users.all[userIdToDisplay];
-
-    if (!teamToDisplay) {
-      if (selfProfile()) {
-        return (
-          <Alert color="warning">
-            You are not currently on a team. Get started <Link to={Constants.PATHS.START}>here</Link>.
-          </Alert>
-        );
-      } else {
-        return <p>{userToDisplay.fname} is not part of a team.</p>;
-      }
-    } else {
-      return (
-        <UserProfileFragment
-          {..._.pick(teamToDisplay, 'name', 'description')}
-          regionName={regions[teamToDisplay.regionId].name}
-          profileLink={`${Constants.PATHS.TEAM}/${teamToDisplay.id}`}
-        />
-      );
-    }
-  };
 
   const userToDisplay = users.all[userIdToDisplay];
   const breadCrumbItems = [{ active: false, text: 'Profile', link: Constants.PATHS.TEAM }];

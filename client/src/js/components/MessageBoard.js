@@ -18,7 +18,7 @@ import * as Constants from '../Constants';
 const MessageBoard = () => {
   const [loading, setLoading] = useState(true);
   const [showEditTopicForm, setShowEditTopicForm] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(undefined);
+  const [searchTerm] = useState(undefined);
   const [page, setPage] = useState(0);
   const [pageSize] = useState(10);
   const [pageCount, setPageCount] = useState(1);
@@ -27,15 +27,7 @@ const MessageBoard = () => {
   const topics = useSelector(state => 
     _.orderBy(Object.values(state.messages), ['lastMessageTimestamp'], ['desc'])
   );
-
-  useEffect(() => {
-    api.resetCancelTokenSource();
-    loadData();
-    return () => {
-      api.cancelRequest();
-    };
-  }, []); // Runs only once on component mount/unmount
-
+  
   const loadData = useCallback(() => {
     const nextPage = page + 1;
     if (page < pageCount) {
@@ -46,6 +38,14 @@ const MessageBoard = () => {
       });
     }
   }, [page, pageCount, searchTerm, pageSize, dispatch]);
+
+  useEffect(() => {
+    api.resetCancelTokenSource();
+    loadData();
+    return () => {
+      api.cancelRequest();
+    };
+  }, [loadData]); // Runs only once on component mount/unmount
 
   const toggleEditTopicForm = () => {
     setShowEditTopicForm(prev => !prev);
