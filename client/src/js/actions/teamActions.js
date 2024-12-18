@@ -39,22 +39,18 @@ export const fetchCurrentTeam = () => (dispatch, getStore) => {
   });
 };
 
-export const fetchTeam = id => dispatch => {
-  return new Promise((resolve, reject) => {
-    api.instance
-      .get(`/teams/${id}`, { cancelToken: api.cancelTokenSource.token })
-      .then(response => {
-        const data = getApiReponseData(response);
-        dispatch({ type: FETCH_TEAM, payload: data });
-        resolve();
-      })
-      .catch(e => {
-        if (!api.isCancel(e)) {
-          dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(e.response) });
-          reject(e);
-        }
-      });
-  });
+export const fetchTeam = (id) => async (dispatch) => {
+  try {
+    api.resetCancelTokenSource();
+    const response = await api.instance.get(`/teams/${id}`, { cancelToken: api.cancelTokenSource.token });
+    const data = getApiReponseData(response);
+    dispatch({ type: FETCH_TEAM, payload: data });
+  } catch (error) {
+    if (!api.isCancel(error)) {
+      dispatch({ type: SHOW_ERROR_DIALOG_MODAL, payload: buildApiErrorObject(error.response) });
+      throw error; // Re-throw error for further handling
+    }
+  }
 };
 
 export const editTeam = (id, teamObj) => dispatch => {

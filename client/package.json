@@ -27,9 +27,9 @@
     "react-router-dom": "^7.0.2",
     "react-router-hash-link": "^2.1.0",
     "react-scripts": "^5.0.1",
-    "reactstrap": "^7.1.0",
-    "redux": "^5.0.1",
-    "redux-form": "^8.3.6",
+    "reactstrap": "^9.2.3",
+    "redux": "^4.2.1",
+    "redux-form": "^8.3.10",
     "redux-thunk": "^2.3.0",
     "sass": "^1.58.0"
   },
