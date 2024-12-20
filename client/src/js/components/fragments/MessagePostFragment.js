@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { ListGroupItem, Row, Col, Button } from 'reactstrap';
 import Markdown from 'react-markdown';
@@ -10,91 +10,71 @@ import EditTopicForm from '../forms/EditTopicForm';
 import * as utils from '../../utils';
 import * as Constants from '../../Constants';
 
-class MessagePostFragment extends React.Component {
-  state = { showEditForm: false, showEditTopicForm: false };
+const MessagePostFragment = ({ post, index, currentUser, topic }) => {
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showEditTopicForm, setShowEditTopicForm] = useState(false);
 
-  showEditForm = () => {
-    this.setState({ showEditForm: true });
-  };
+  const toggleEditForm = () => setShowEditForm((prev) => !prev);
+  const toggleEditTopicForm = () => setShowEditTopicForm((prev) => !prev);
 
-  toggleEditForm = () => {
-    this.setState((prevState) => ({
-      showEditForm: !prevState.showEditForm,
-    }));
-  };
+  const canEdit = post.userId === currentUser.id || utils.isCurrentUserAdmin();
+  const title = topic ? topic.title : '';
+  const originalPost = index === 0;
+  const buttonCallback = originalPost ? () => setShowEditTopicForm(true) : () => setShowEditForm(true);
 
-  showEditTopicForm = () => {
-    this.setState({ showEditTopicForm: true });
-  };
-
-  toggleEditTopicForm = () => {
-    this.setState((prevState) => ({
-      showEditTopicForm: !prevState.showEditTopicForm,
-    }));
-  };
-
-  render() {
-    const { post, index, currentUser, topic } = this.props;
-    const canEdit = post.userId === currentUser.id || utils.isCurrentUserAdmin();
-    const title = topic ? topic.title : '';
-    const originalPost = index === 0;
-    const buttonCallback = originalPost ? this.showEditTopicForm : this.showEditForm;
-
-    return (
-      <ListGroupItem className="topic-post-block">
-        <Row className="topic-post-header justify-content-between">
-          <Col>
-            <small>
-              {originalPost ? 'Original Post' : `Reply #${index}`} - {post.userName} -{' '}
-              {moment(post.dbCreateTimestamp).format(Constants.MESSAGE_DATE_FORMAT)}
-            </small>
-          </Col>
-          <Col xs="auto">
-            {canEdit && (
-              <Button color="primary" size="sm" onClick={buttonCallback}>
-                Edit
-              </Button>
-            )}
-          </Col>
-        </Row>
-        <Markdown allowedElements={Constants.MARKDOWN.ALLOWED}>{post.body}</Markdown>
-        {post.concurrencyControlNumber > 1 && (
+  return (
+    <ListGroupItem className="topic-post-block">
+      <Row className="topic-post-header justify-content-between">
+        <Col>
           <small>
-            <em>
-              Updated {post.concurrencyControlNumber - 1} time(s). Last updated at{' '}
-              {moment(post.dbLastUpdateTimestamp).format(Constants.MESSAGE_DATE_FORMAT)}
-            </em>
+            {originalPost ? 'Original Post' : `Reply #${index}`} - {post.userName} -{' '}
+            {moment(post.dbCreateTimestamp).format(Constants.MESSAGE_DATE_FORMAT)}
           </small>
-        )}
-        {this.state.showEditForm && (
-          <EditMessageForm
-            isOpen={this.state.showEditForm}
-            toggle={this.toggleEditForm}
-            initialValues={{
-              ...post,
-            }}
-            formType={Constants.FORM_TYPE.EDIT}
-            originalPost={originalPost}
-            topic={topic}
-          />
-        )}
-
-        {this.state.showEditTopicForm && (
-          <EditTopicForm
-            isOpen={this.state.showEditTopicForm}
-            toggle={this.toggleEditTopicForm}
-            initialValues={{
-              ...post,
-              title: title,
-            }}
-            formType={Constants.FORM_TYPE.EDIT}
-            topic={topic}
-          />
-        )}
-      </ListGroupItem>
-    );
-  }
-}
+        </Col>
+        <Col xs="auto">
+          {canEdit && (
+            <Button color="primary" size="sm" onClick={buttonCallback}>
+              Edit
+            </Button>
+          )}
+        </Col>
+      </Row>
+      <Markdown allowedElements={Constants.MARKDOWN.ALLOWED}>{post.body}</Markdown>
+      {post.concurrencyControlNumber > 1 && (
+        <small>
+          <em>
+            Updated {post.concurrencyControlNumber - 1} time(s). Last updated at{' '}
+            {moment(post.dbLastUpdateTimestamp).format(Constants.MESSAGE_DATE_FORMAT)}
+          </em>
+        </small>
+      )}
+      {showEditForm && (
+        <EditMessageForm
+          isOpen={showEditForm}
+          toggle={toggleEditForm}
+          initialValues={{
+            ...post,
+          }}
+          formType={Constants.FORM_TYPE.EDIT}
+          originalPost={originalPost}
+          topic={topic}
+        />
+      )}
+      {showEditTopicForm && (
+        <EditTopicForm
+          isOpen={showEditTopicForm}
+          toggle={toggleEditTopicForm}
+          initialValues={{
+            ...post,
+            title: title,
+          }}
+          formType={Constants.FORM_TYPE.EDIT}
+          topic={topic}
+        />
+      )}
+    </ListGroupItem>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -102,4 +82,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(MessagePostFragment);
+export default connect(mapStateToProps)(MessagePostFragment);

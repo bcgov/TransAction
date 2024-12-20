@@ -1,41 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Table } from 'reactstrap';
 
 import { fetchTeamStandings, fetchTeams } from '../../actions';
 import PageSpinner from '../ui/PageSpinner';
 
-class EventTeamStandings extends React.Component {
-  state = { loading: true };
+const EventTeamStandings = ({ eventId, teamStandings, teams, fetchTeamStandings, fetchTeams }) => {
+  const [loading, setLoading] = useState(true);
 
-  componentDidMount() {
-    this.setState({ loading: true });
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
 
-    Promise.all([
-      this.props.fetchTeamStandings(this.props.eventId, 200),
-      this.props.fetchTeams('', 0, 2147483647),
-    ]).then(() => {
-      this.setState({ loading: false });
-    });
-  }
+      await Promise.all([
+        fetchTeamStandings(eventId, 200),
+        fetchTeams('', 0, 2147483647),
+      ]);
 
-  renderContent() {
-    const { teams } = this.props;
-    const teamStandings = this.props.teamStandings[this.props.eventId];
+      setLoading(false);
+    };
 
-    if (teamStandings.length === 0) return <div>No standings</div>;
+    fetchData();
+  }, [eventId, fetchTeamStandings, fetchTeams]);
 
-    const topScore = teamStandings[0].score;
+  const renderContent = () => {
+    const standings = teamStandings[eventId] || [];
 
-    const teamStandingRows = teamStandings.map((standing, index) => {
+    if (standings.length === 0) {
+      return <div>No standings</div>;
+    }
+
+    const topScore = standings[0].score;
+
+    const teamStandingRows = standings.map((standing, index) => {
       const { teamId, score } = standing;
+
       return (
         <tr key={teamId}>
           <th scope="row" style={{ whiteSpace: 'nowrap', width: '1%' }}>
             {`#${index + 1}`}
           </th>
           <th scope="row" style={{ whiteSpace: 'nowrap', width: '1%' }}>
-            {teams[teamId].name}
+            {teams[teamId]?.name || 'Unknown Team'}
           </th>
           <td>
             <Progress value={(score / topScore) * 100}>{score}</Progress>
@@ -49,24 +55,21 @@ class EventTeamStandings extends React.Component {
         <tbody>{teamStandingRows}</tbody>
       </Table>
     );
-  }
-
-  render() {
-    return this.state.loading ? (
-      <PageSpinner />
-    ) : (
-      <React.Fragment>
-        <h5>Team Standings</h5> {this.renderContent()}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    teamStandings: state.scores.teamStandings,
-    teams: state.teams,
   };
+
+  return loading ? (
+    <PageSpinner />
+  ) : (
+    <>
+      <h5>Team Standings</h5>
+      {renderContent()}
+    </>
+  );
 };
+
+const mapStateToProps = (state) => ({
+  teamStandings: state.scores.teamStandings,
+  teams: state.teams,
+});
 
 export default connect(mapStateToProps, { fetchTeamStandings, fetchTeams })(EventTeamStandings);

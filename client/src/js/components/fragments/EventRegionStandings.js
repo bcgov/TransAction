@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Table } from 'reactstrap';
 import _ from 'lodash';
@@ -6,26 +6,25 @@ import _ from 'lodash';
 import { fetchRegionStandings } from '../../actions';
 import PageSpinner from '../ui/PageSpinner';
 
-class EventRegionStandings extends React.Component {
-  state = { loading: true };
+const EventRegionStandings = ({ eventId, regions, regionStandings, fetchRegionStandings }) => {
+  const [loading, setLoading] = useState(true);
 
-  componentDidMount() {
-    this.setState({ loading: true });
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchRegionStandings(eventId);
+      setLoading(false);
+    };
 
-    this.props.fetchRegionStandings(this.props.eventId).then(() => {
-      this.setState({ loading: false });
-    });
-  }
+    fetchData();
+  }, [eventId, fetchRegionStandings]);
 
-  renderContent() {
-    const { regions, regionStandings, eventId } = this.props;
+  const renderContent = () => {
     const regionStanding = regionStandings[eventId];
-    const maxScore = _.maxBy(Object.values(regionStanding), o => {
-      return o.score;
-    }).score;
+    const maxScore = _.maxBy(Object.values(regionStanding), (o) => o.score)?.score || 1;
 
     const regionStandingRows = regions.map((region, index) => {
-      const score = regionStanding[region.id] ? regionStanding[region.id].score : 0;
+      const score = regionStanding[region.id]?.score || 0;
 
       return (
         <tr key={region.id}>
@@ -49,27 +48,21 @@ class EventRegionStandings extends React.Component {
         <tbody>{regionStandingRows}</tbody>
       </Table>
     );
-  }
-
-  render() {
-    return this.state.loading ? (
-      <PageSpinner />
-    ) : (
-      <React.Fragment>
-        <h5>Region Standings</h5> {this.renderContent()}
-      </React.Fragment>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    regionStandings: state.scores.regionStandings,
-    regions: Object.values(state.regions),
   };
+
+  return loading ? (
+    <PageSpinner />
+  ) : (
+    <>
+      <h5>Region Standings</h5>
+      {renderContent()}
+    </>
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchRegionStandings }
-)(EventRegionStandings);
+const mapStateToProps = (state) => ({
+  regionStandings: state.scores.regionStandings,
+  regions: Object.values(state.regions),
+});
+
+export default connect(mapStateToProps, { fetchRegionStandings })(EventRegionStandings);

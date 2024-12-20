@@ -1,78 +1,59 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import {
-  fetchCurrentUser,
-  fetchTeam,
-  editTeam,
-  fetchUser,
-  fetchSpecificTeamRequests,
-  editUser,
-} from '../actions';
+import { useParams } from 'react-router-dom';
+
+import { fetchCurrentUser, fetchTeam, editTeam, fetchUser, editUser, fetchSpecificTeamRequests } from '../actions';
 import PageSpinner from './ui/PageSpinner';
+
 import TeamProfileFragment from './fragments/TeamProfileFragment';
 import BreadcrumbFragment from './fragments/BreadcrumbFragment';
 import TeamJoinRequestPanel from './fragments/TeamJoinRequestPanel';
 import TeamMembersPanel from './fragments/TeamMembersPanel';
 import ProfileScoresPanel from './fragments/ProfileScoresPanel';
 import CardWrapper from './ui/CardWrapper';
+
 import * as api from '../api/api';
 import * as utils from '../utils';
 import * as Constants from '../Constants';
 
-const Team = ({ fetchTeam, fetchUser, users, teams, regions, currentUser }) => {
+const Team = ({ fetchTeam, fetchUser, currentUser, teams, regions, users }) => {
+  const { id } = useParams(); // Extract the `id` param using `useParams`
   const [loading, setLoading] = useState(true);
   const [teamIdToDisplay, setTeamIdToDisplay] = useState(null);
 
-  const { id } = useParams(); // ID from Route
-
   useEffect(() => {
     api.resetCancelTokenSource();
-    init(id);
+    init(id); // Using the `id` param
+    return () => api.cancelRequest();
+  }, [id]); // Watch for changes in the `id` param
 
-    return () => {
-      api.cancelRequest();
-    };
-  }, [id]);
+  const init = async (teamId) => {
+    setLoading(true);
+    teamId = parseInt(teamId);
 
-  const init = useCallback(
-    async (teamId) => {
-      setLoading(true);
-      try {
-        const parsedTeamId = parseInt(teamId);
+    try {
+      await fetchTeam(teamId);
+      const team = teams[teamId];
+      if (team) setTeamIdToDisplay(team.id);
 
-        await fetchTeam(parsedTeamId);
-
-        const team = teams[parsedTeamId];
-        if (team) setTeamIdToDisplay(team.id);
-
-        if (team) {
-          const usersToFetch = team.teamMemberIds.filter(
-            (userId) => !(userId in users)
-          );
-
-          await Promise.all(usersToFetch.map((userId) => fetchUser(userId)));
-        }
-      } catch (error) {
-        console.error('Error initializing team data:', error);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [fetchTeam, fetchUser, teams, users]
-  );
+      let usersToFetch = team.teamMemberIds.filter(userId => !(userId in users));
+      await Promise.all(usersToFetch.map(user => fetchUser(user)));
+    } catch (error) {
+      console.error('Failed to fetch team data', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const userIsTeamleadOrAdmin = () => {
     const team = teams[teamIdToDisplay];
-    if (!team) return false;
-    return utils.isCurrentUserAdmin() || team.teamLeaderId === currentUser.id;
+    return team && (utils.isCurrentUserAdmin() || team.teamLeaderId === currentUser.id);
   };
 
   const userIsTeamlead = () => {
     const team = teams[teamIdToDisplay];
-    if (!team) return false;
-    return team.teamLeaderId === currentUser.id;
+    return team && team.teamLeaderId === currentUser.id;
   };
 
   const userBelongsToTeam = () => {
@@ -81,9 +62,9 @@ const Team = ({ fetchTeam, fetchUser, users, teams, regions, currentUser }) => {
   };
 
   const teamToDisplay = teams[teamIdToDisplay];
-  const breadCrumbItems = [
-    { active: false, text: 'Teams', link: Constants.PATHS.TEAM },
-  ];
+  console.log(teamToDisplay);
+
+  const breadCrumbItems = [{ active: false, text: 'Teams', link: Constants.PATHS.TEAM }];
   if (teamToDisplay) breadCrumbItems.push({ active: true, text: teamToDisplay.name });
 
   return (
@@ -97,7 +78,7 @@ const Team = ({ fetchTeam, fetchUser, users, teams, regions, currentUser }) => {
           <TeamProfileFragment
             canEdit={userIsTeamleadOrAdmin()}
             team={teamToDisplay}
-            regionName={regions[teamToDisplay?.regionId]?.name}
+            regionName={regions[teamToDisplay.regionId]?.name}
           />
         )}
       </CardWrapper>
@@ -136,7 +117,7 @@ const Team = ({ fetchTeam, fetchUser, users, teams, regions, currentUser }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   currentUser: state.users.all[state.users.current.id],
   scores: state.scores,
   teams: state.teams,
@@ -147,11 +128,7 @@ const mapStateToProps = (state) => ({
   events: state.events,
 });
 
-export default connect(mapStateToProps, {
-  fetchCurrentUser,
-  fetchTeam,
-  editTeam,
-  fetchUser,
-  fetchSpecificTeamRequests,
-  editUser,
-})(Team);
+export default connect(
+  mapStateToProps,
+  { fetchCurrentUser, fetchTeam, editTeam, fetchUser, fetchSpecificTeamRequests, editUser }
+)(Team);
