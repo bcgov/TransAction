@@ -62,7 +62,7 @@ const Team = ({ fetchTeam, fetchUser, currentUser, teams, regions, users }) => {
   };
 
   const teamToDisplay = teams[teamIdToDisplay];
-  console.log(teamToDisplay);
+  // console.log(teamToDisplay);
 
   const breadCrumbItems = [{ active: false, text: 'Teams', link: Constants.PATHS.TEAM }];
   if (teamToDisplay) breadCrumbItems.push({ active: true, text: teamToDisplay.name });

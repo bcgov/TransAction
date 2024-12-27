@@ -23,7 +23,6 @@ const TeamProfileFragment = ({
   const toggleEditTeamForm = () => {
     setShowEditTeamForm((prev) => !prev);
   };
-  console.log("i123gg",team.images[0]);
   const imageUrl =
     team.images.length > 0
       ? `${Constants.API_URL}/images/${team.images[0].guid}`

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 
@@ -8,80 +8,67 @@ import CardWrapper from '../ui/CardWrapper';
 import OneClickButton from '../ui/OneClickButton';
 import DialogModal from '../ui/DialogModal';
 
-class TeamJoinRequestPanel extends React.Component {
-  state = { loading: true, showConfirmDialog: false, confirmDialogOptions: {} };
+const TeamJoinRequestPanel = ({ team, fetchSpecificTeamRequests, joinRequests, fetchUser, addUserToTeam, rejectJoinRequest, users, regions }) => {
+  const [loading, setLoading] = useState(true);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [confirmDialogOptions, setConfirmDialogOptions] = useState({});
 
-  componentDidMount() {
-    this.setState({ loading: true });
+  useEffect(() => {
+    setLoading(true);
 
-    const { team, fetchSpecificTeamRequests } = this.props;
     fetchSpecificTeamRequests(team.id)
       .then(() => {
-        const usersToFetch = this.props.joinRequests.map(request => {
-          return request.userId;
-        });
+        const usersToFetch = joinRequests.map(request => request.userId);
 
-        return Promise.all(
-          usersToFetch.map(user => {
-            return this.props.fetchUser(user);
-          })
-        );
+        return Promise.all(usersToFetch.map(user => fetchUser(user)));
       })
       .then(() => {
-        this.setState({ loading: false });
+        setLoading(false);
       });
-  }
+  }, [team.id, fetchSpecificTeamRequests, fetchUser]);
 
-  acceptRequest = (confirm, request) => {
+  const closeConfirmDialog = useCallback(() => {
+    setShowConfirmDialog(false);
+    setConfirmDialogOptions({});
+  }, []);
+
+  const acceptRequest = useCallback((confirm, request) => {
     if (confirm) {
-      this.props
-        .addUserToTeam(request)
-        .then(() => {
-          return this.props.fetchUser(request.userId);
-        })
-        .finally(() => this.closeConfirmDialog());
+      addUserToTeam(request)
+        .then(() => fetchUser(request.userId))
+        .finally(() => closeConfirmDialog());
     }
-  };
+  }, [addUserToTeam, fetchUser, closeConfirmDialog]);
 
-  rejectRequest = (confirm, request) => {
+  const rejectRequest = useCallback((confirm, request) => {
     if (confirm) {
-      this.props.rejectJoinRequest(request).finally(() => this.closeConfirmDialog());
+      rejectJoinRequest(request).finally(() => closeConfirmDialog());
     } else {
-      this.closeConfirmDialog();
+      closeConfirmDialog();
     }
-  };
+  }, [rejectJoinRequest, closeConfirmDialog]);
 
-  confirmAcceptRequest = request => {
-    this.setState({
-      showConfirmDialog: true,
-      confirmDialogOptions: {
-        title: 'Accept Request?',
-        body: 'The user will become part of your team.',
-        secondary: true,
-        callback: confirm => this.acceptRequest(confirm, request),
-      },
+  const confirmAcceptRequest = useCallback(request => {
+    setShowConfirmDialog(true);
+    setConfirmDialogOptions({
+      title: 'Accept Request?',
+      body: 'The user will become part of your team.',
+      secondary: true,
+      callback: confirm => acceptRequest(confirm, request),
     });
-  };
+  }, [acceptRequest]);
 
-  confirmRejectRequest = request => {
-    this.setState({
-      showConfirmDialog: true,
-      confirmDialogOptions: {
-        title: 'Reject Request?',
-        body: 'The user will not become part of your team.',
-        secondary: true,
-        callback: confirm => this.rejectRequest(confirm, request),
-      },
+  const confirmRejectRequest = useCallback(request => {
+    setShowConfirmDialog(true);
+    setConfirmDialogOptions({
+      title: 'Reject Request?',
+      body: 'The user will not become part of your team.',
+      secondary: true,
+      callback: confirm => rejectRequest(confirm, request),
     });
-  };
+  }, [rejectRequest]);
 
-  closeConfirmDialog() {
-    this.setState({ showConfirmDialog: false, confirmDialogOptions: {} });
-  }
-
-  renderContent() {
-    const { regions, team, users, joinRequests } = this.props;
-
+  const renderContent = () => {
     const teamMemberElements = joinRequests.map(joinRequest => {
       const user = users[joinRequest.userId];
 
@@ -92,7 +79,7 @@ class TeamJoinRequestPanel extends React.Component {
               color="success"
               size="sm"
               className="w75 mr-1"
-              handleOnClick={() => this.confirmAcceptRequest(joinRequest)}
+              handleOnClick={() => confirmAcceptRequest(joinRequest)}
             >
               Accept
             </OneClickButton>
@@ -100,7 +87,7 @@ class TeamJoinRequestPanel extends React.Component {
               color="danger"
               size="sm"
               className="w75"
-              handleOnClick={() => this.confirmRejectRequest(joinRequest)}
+              handleOnClick={() => confirmRejectRequest(joinRequest)}
             >
               Reject
             </OneClickButton>
@@ -128,27 +115,23 @@ class TeamJoinRequestPanel extends React.Component {
             <Col xs="3" lg="4" />
           </Row>
           {teamMemberElements}
-          {this.state.showConfirmDialog && (
-            <DialogModal isOpen={this.state.showConfirmDialog} options={this.state.confirmDialogOptions} />
+          {showConfirmDialog && (
+            <DialogModal isOpen={showConfirmDialog} options={confirmDialogOptions} />
           )}
         </CardWrapper>
       )
     );
-  }
+  };
 
-  render() {
-    return !this.state.loading && this.renderContent();
-  }
-}
+  return !loading && renderContent();
+};
 
 const mapStateToProps = (state, ownProps) => {
   return {
     users: state.users.all,
     regions: state.regions,
     currentUser: state.users.all[state.users.current.id],
-    joinRequests: Object.values(state.joinRequests).filter(request => {
-      return request.teamId === ownProps.team.id;
-    }),
+    joinRequests: Object.values(state.joinRequests).filter(request => request.teamId === ownProps.team.id),
   };
 };
 

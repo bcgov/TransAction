@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Alert } from 'reactstrap';
 
@@ -9,26 +9,30 @@ import UserScoreCard from './UserScoreCard';
 
 import * as Constants from '../../Constants';
 
-class ProfileScoresPanel extends React.Component {
-  state = { loading: true, logActivityEventId: null, cancelTokenSource: undefined };
+const ProfileScoresPanel = () => {
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const scores = useSelector(state => state.scores);
+  const currentUser = useSelector(state => state.users.all[state.users.current.id]);
 
-  componentDidMount() {
-    this.setState({ loading: true });
-
-    const { fetchAllUserScores, fetchAllTeamScores, currentUser } = this.props;
-
+  useEffect(() => {
     if (currentUser.teamId) {
-      Promise.all([fetchAllUserScores(currentUser.id), fetchAllTeamScores(currentUser.teamId)]).then(() => {
-        this.setState({ loading: false });
-      });
-    } else {
-      this.setState({ loading: false });
+      Promise.all([
+        dispatch(fetchAllUserScores(currentUser.id)),
+        dispatch(fetchAllTeamScores(currentUser.teamId))
+      ]).then(() => setLoading(false));
     }
-  }
+    else {
+      setLoading(false);
+    }
 
-  renderUserScores() {
-    const { userIdToDisplay, teamIdToDisplay, scores, currentUser } = this.props;
+  }, [dispatch, currentUser]);
 
+
+
+  const renderUserScores = () => {
+    const userIdToDisplay = currentUser.id;
+    const teamIdToDisplay = currentUser.teamId;
     const combinedScores = [];
     const userScores = scores.user[userIdToDisplay];
     const teamScores = scores.team[teamIdToDisplay];
@@ -77,14 +81,14 @@ class ProfileScoresPanel extends React.Component {
           <Col>
             <Alert color="warning">
               {currentUser.teamId ? (
-                <React.Fragment>
+                <>
                   You have not participated in any events yet. Please head to the{' '}
                   <Link to={Constants.PATHS.EVENT}>Events</Link> page to participate in an event.
-                </React.Fragment>
+                </>
               ) : (
-                <React.Fragment>
+                <>
                   You are not currently on a team. Get started <Link to={Constants.PATHS.START}>here</Link>.
-                </React.Fragment>
+                </>
               )}
             </Alert>
           </Col>
@@ -93,32 +97,20 @@ class ProfileScoresPanel extends React.Component {
     );
   }
 
-  renderContent() {
+  const renderContent = () => {
     return (
-      <React.Fragment>
+      <>
         <Row className="mb-3">
           <Col>
             <h4>Activity Summary</h4>
           </Col>
         </Row>
-        {this.renderUserScores()}
-      </React.Fragment>
+        {renderUserScores()}
+      </>
     );
   }
+  return loading ? <PageSpinner /> : <>{renderContent()}</>;
 
-  render() {
-    return this.state.loading ? <PageSpinner /> : <React.Fragment>{this.renderContent()}</React.Fragment>;
-  }
 }
 
-const mapStateToProps = state => {
-  return {
-    scores: state.scores,
-    currentUser: state.users.all[state.users.current.id],
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  { fetchAllUserScores, fetchAllTeamScores }
-)(ProfileScoresPanel);
+export default ProfileScoresPanel;
