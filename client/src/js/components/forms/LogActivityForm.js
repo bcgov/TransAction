@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import _ from 'lodash';
@@ -18,24 +18,14 @@ import * as Constants from '../../Constants';
 
 const headers = ['> Low Intensity Activities', '> Medium Intensity Activities', '> High Intensity Activities'];
 
-const LogActivityForm = ({
-  eventId,
-  events,
-  activities,
-  initialValues,
-  formType,
-  isOpen,
-  pristine,
-  handleSubmit,
-  toggle,
-  refreshStandings
-}) => {
-  const [submitting, setSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
+class LogActivityForm extends React.Component {
+  state = { submitting: false, loading: true };
 
-  const dispatch = useDispatch();
+  componentDidMount() {}
 
-  useEffect(() => {
+  onInit = () => {
+    const { events, eventId, fetchEvent, activities, fetchActivityList } = this.props;
+
     const actions = [];
 
     if (!events[eventId]) {
@@ -47,44 +37,65 @@ const LogActivityForm = ({
     }
 
     if (actions.length > 0) {
-      setLoading(true);
+      this.setState({ loading: true });
       Promise.all(actions.map(action => action.action(action.param))).then(() => {
-        setLoading(false);
+        this.setState({ loading: false });
       });
     } else {
-      setLoading(false);
+      this.setState({ loading: false });
     }
-  }, [events, eventId, activities, dispatch]);
+  };
 
-  const onSubmit = formValues => {
+  onSubmit = formValues => {
     const minutes = parseInt(formValues.activityHours) * 60 + parseInt(formValues.activityMinutes);
     formValues = { ...formValues, name: formValues.description, minutes };
 
-    if (!submitting) {
-      setSubmitting(true);
+    if (!this.state.submitting) {
+      this.setState({ submitting: true });
 
-      const action = formType === Constants.FORM_TYPE.ADD ? createUserActivity : editUserActivity;
+      if (this.props.formType === Constants.FORM_TYPE.ADD) {
+        this.props.createUserActivity(formValues).then(() => {
+          if (this.props.refreshStandings) {
+            this.props.fetchTeamStandings(this.props.eventId);
+          }
 
-      dispatch(action(formValues.id, formValues)).then(() => {
-        if (refreshStandings) {
-          dispatch(fetchTeamStandings(eventId));
-        }
-        toggle();
-      });
+          this.toggleModal();
+        });
+      } else {
+        this.props.editUserActivity(formValues.id, formValues).then(() => {
+          if (this.props.refreshStandings) {
+            this.props.fetchTeamStandings(this.props.eventId);
+          }
+
+          this.toggleModal();
+        });
+      }
     }
   };
 
-  const createActivityOptions = () => {
+  toggleModal = () => {
+    this.setState({ submitting: false });
+
+    this.props.toggle();
+  };
+
+  createActivityOptions = () => {
     const activityOptions = [];
-    for (let i = 0; i < 3; i++) {
-      activityOptions.push(...createActivityIntensitySection(i + 1));
+
+    let i;
+    for (i = 0; i < 3; i++) {
+      activityOptions.push(...this.createActivityIntensitySection(i + 1));
     }
+
     return activityOptions;
   };
 
-  const createActivityIntensitySection = (intensity) => {
+  createActivityIntensitySection(intensity) {
+    const { activities } = this.props;
     const activityOptions = [];
+
     activityOptions.push({ type: 'header', text: headers[intensity - 1] });
+
     activityOptions.push(
       ..._.orderBy(activities.filter(o => o.name.toLowerCase() !== 'other' && o.intensity === intensity), ['name']).map(
         o => ({
@@ -95,6 +106,7 @@ const LogActivityForm = ({
         })
       )
     );
+
     activityOptions.push(
       ...activities
         .filter(o => o.name.toLowerCase() === 'other' && o.intensity === intensity)
@@ -105,14 +117,16 @@ const LogActivityForm = ({
           value: o.id,
         }))
     );
-    return activityOptions;
-  };
 
-  const renderFields = () => {
+    return activityOptions;
+  }
+
+  renderFields = () => {
+    const { eventId, events, activities, initialValues } = this.props;
     const selectedActivityType = activities.find(o => o.id === initialValues.activityId);
+
     const maxDate = moment.min(moment(), moment(events[eventId].endDate, 'YYYY-MM-DD')).toDate();
     const minDate = moment(events[eventId].startDate, 'YYYY-MM-DD').toDate();
-
     return (
       <React.Fragment>
         <Field
@@ -120,7 +134,7 @@ const LogActivityForm = ({
           component={DropdownInput}
           label="Activity Type"
           title={selectedActivityType ? selectedActivityType.description : 'Select an activity'}
-          menuItems={createActivityOptions()}
+          menuItems={this.createActivityOptions()}
         ></Field>
 
         <Field
@@ -158,19 +172,22 @@ const LogActivityForm = ({
     );
   };
 
-  return (
-    <FormModal
-      onSubmit={onSubmit}
-      toggle={toggle}
-      submitting={submitting}
-      onInit={() => { }}
-      {..._.pick({ isOpen, handleSubmit, pristine })}
-      title={formType === Constants.FORM_TYPE.ADD ? 'Log Activity' : 'Edit Activity'}
-    >
-      {loading ? <PageSpinner /> : renderFields()}
-    </FormModal>
-  );
-};
+  render() {
+    const { formType } = this.props;
+    return (
+      <FormModal
+        onSubmit={this.onSubmit}
+        toggle={this.toggleModal}
+        submitting={this.state.submitting}
+        onInit={this.onInit}
+        {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
+        title={formType === Constants.FORM_TYPE.ADD ? 'Log Activity' : 'Edit Activity'}
+      >
+        {this.state.loading ? <PageSpinner /> : this.renderFields()}
+      </FormModal>
+    );
+  }
+}
 
 LogActivityForm.propTypes = {
   eventId: PropTypes.number.isRequired,
@@ -237,11 +254,16 @@ const validate = (formValues, props) => {
 
 const form = reduxForm({ form: 'logActivityForm', enableReinitialize: true, validate })(LogActivityForm);
 
-const mapStateToProps = state => ({
-  activities: Object.values(state.activities),
-  events: state.events,
-});
+const mapStateToProps = state => {
+  return {
+    activities: Object.values(state.activities),
+    events: state.events,
+  };
+};
 
-const formConnect = connect(mapStateToProps, { fetchActivityList, createUserActivity, editUserActivity, fetchTeamStandings, fetchEvent })(form);
+const formConnect = connect(
+  mapStateToProps,
+  { fetchActivityList, createUserActivity, editUserActivity, fetchTeamStandings, fetchEvent }
+)(form);
 
 export default formConnect;

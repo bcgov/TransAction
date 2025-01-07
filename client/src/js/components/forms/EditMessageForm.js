@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
@@ -9,76 +10,78 @@ import FormInput from '../ui/FormInput';
 
 import * as Constants from '../../Constants';
 
-const EditMessageForm = ({
-  formType,
-  isOpen,
-  pristine,
-  handleSubmit,
-  initialize,
-  toggle,
-  initialValues,
-  createPost,
-  editPost,
-  fetchTopicDetail,
-}) => {
-  const [submitting, setSubmitting] = useState(false);
+class EditMessageForm extends React.Component {
+  state = { submitting: false };
 
-  const onInit = useCallback(() => {
-    initialize(initialValues);
-  }, [initialize, initialValues]);
+  onInit = () => {
+    this.props.initialize(this.props.initialValues);
+  };
 
-  useEffect(() => {
-    if (isOpen) {
-      onInit();
+  onSubmit = formValues => {
+    const { formType, createPost, editPost, fetchTopicDetail } = this.props;
+
+    if (!this.state.submitting) {
+      this.setState({ submitting: true });
     }
-  }, [isOpen, onInit]);
 
-  const onSubmit = (formValues) => {
-    setSubmitting(true);
-
-    const action =
-      formType === Constants.FORM_TYPE.ADD
-        ? createPost(formValues).then(() => fetchTopicDetail(formValues.topicId))
-        : editPost(formValues).then(() => fetchTopicDetail(formValues.topicId));
-
-    action.finally(() => toggleModal());
+    if (formType === Constants.FORM_TYPE.ADD) {
+      createPost(formValues).then(() => {
+        fetchTopicDetail(formValues.topicId);
+        this.toggleModal();
+      });
+    } else {
+      editPost(formValues).then(() => {
+        fetchTopicDetail(formValues.topicId);
+        this.toggleModal();
+      });
+    }
   };
 
-  const toggleModal = () => {
-    setSubmitting(false);
-    toggle();
+  toggleModal = () => {
+    this.setState({ submitting: false });
+
+    this.props.toggle();
   };
 
-  const title = formType === Constants.FORM_TYPE.ADD ? 'Reply to Topic' : 'Edit Reply';
+  render() {
+    const { formType } = this.props;
+    const title = formType === Constants.FORM_TYPE.ADD ? 'Reply to Topic' : 'Edit Reply';
 
-  return (
-    <FormModal
-      onSubmit={onSubmit}
-      toggle={toggleModal}
-      submitting={submitting}
-      onInit={onInit}
-      {..._.pick({ isOpen, handleSubmit, pristine }, ['isOpen', 'handleSubmit', 'pristine'])}
-      title={title}
-    >
-      <Field
-        name="body"
-        component={FormInput}
-        type="textarea"
-        label="Message Body"
-        placeholderText="Enter the message body"
-      />
-    </FormModal>
-  );
-};
+    return (
+      <FormModal
+        onSubmit={this.onSubmit}
+        toggle={this.toggleModal}
+        submitting={this.state.submitting}
+        onInit={this.onInit}
+        {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
+        title={title}
+      >
+        <Field
+          name="body"
+          component={FormInput}
+          type="textarea"
+          label="Message Body"
+          placeholderText="Enter the message body"
+        />
+      </FormModal>
+    );
+  }
+}
+EditMessageForm.propTypes = {};
 
-const validate = (formValues) => {
+const validate = formValues => {
   const errors = {};
+
   if (!formValues.body) errors.body = 'A message is required';
+
   return errors;
 };
 
 const form = reduxForm({ form: 'editMessageForm', enableReinitialize: true, validate })(EditMessageForm);
 
-const formConnect = connect(null, { createPost, editPost, fetchTopicDetail })(form);
+const formConnect = connect(
+  null,
+  { createPost, editPost, fetchTopicDetail }
+)(form);
 
 export default formConnect;

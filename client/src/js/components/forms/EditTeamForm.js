@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
@@ -11,89 +11,82 @@ import FormInput from '../ui/FormInput';
 
 import * as Constants from '../../Constants';
 
-const EditTeamForm = ({
-  formType,
-  isOpen,
-  pristine,
-  handleSubmit,
-  initialize,
-  toggle,
-  initialValues,
-  regions,
-  createTeam,
-  editTeam,
-  fetchCurrentUser,
-}) => {
-  const [submitting, setSubmitting] = useState(false);
+class EditTeamForm extends React.Component {
+  state = { submitting: false };
 
-  const onInit = useCallback(() => {
-    initialize(initialValues);
-  }, [initialize, initialValues]);
+  onInit = () => {
+    this.props.initialize(this.props.initialValues);
+  };
 
-  useEffect(() => {
-    if (isOpen) {
-      onInit();
+  onSubmit = (formValues) => {
+    if (!this.state.submitting) {
+      this.setState({ submitting: true });
     }
-  }, [isOpen, onInit]);
 
-  const onSubmit = (formValues) => {
-    setSubmitting(true);
-
-    const action =
-      formType === Constants.FORM_TYPE.ADD
-        ? createTeam(formValues).then(() => fetchCurrentUser())
-        : editTeam(formValues.id, formValues).then(() => toggleModal());
-
-    action.finally(() => setSubmitting(false));
+    if (this.props.formType === Constants.FORM_TYPE.ADD) {
+      this.props.createTeam(formValues).then(() => {
+        this.props.fetchCurrentUser();
+      });
+    } else {
+      this.props.editTeam(formValues.id, formValues).then(() => {
+        this.toggleModal();
+      });
+    }
   };
 
-  const toggleModal = () => {
-    setSubmitting(false);
-    toggle();
+  toggleModal = () => {
+    this.setState({ submitting: false });
+
+    this.props.toggle();
   };
 
-  const renderRegionOptions = () =>
-    Object.values(regions).map((region) => (
-      <option value={region.id} key={region.id}>
-        {region.name}
-      </option>
-    ));
+  renderRegionOptions() {
+    return Object.values(this.props.regions).map((region) => {
+      return (
+        <option value={region.id} key={region.id}>
+          {region.name}
+        </option>
+      );
+    });
+  }
 
-  const title = formType === Constants.FORM_TYPE.ADD ? 'Create Team' : 'Edit Team';
+  render() {
+    const title = this.props.formType === Constants.FORM_TYPE.ADD ? 'Create Team' : 'Edit Team';
 
-  return (
-    <FormModal
-      onSubmit={onSubmit}
-      toggle={toggleModal}
-      submitting={submitting}
-      onInit={onInit}
-      {..._.pick({ isOpen, handleSubmit, pristine }, ['isOpen', 'handleSubmit', 'pristine'])}
-      title={title}
-    >
-      <Field name="name" component={FormInput} type="text" label="Name" placeholderText="Enter team name" />
-      <Field name="regionId" component={FormInput} type="select" label="Region">
-        {renderRegionOptions()}
-      </Field>
-      <Field
-        name="description"
-        component={FormInput}
-        type="textarea"
-        label="Description"
-        placeholderText="Enter a short description about your team"
-      />
-      <Field
-        name="goal"
-        component={FormInput}
-        type="text"
-        label="Goal"
-        placeholderText="Enter team point goal"
-        tooltipText="The TransAction points goal for your team. Points are calculated using your team's workout
-        intensity and duration. One minute of workout equals one point, and then multiplied by the workout
-        intensity."
-      />
-    </FormModal>
-  );
-};
+    return (
+      <FormModal
+        onSubmit={this.onSubmit}
+        toggle={this.toggleModal}
+        submitting={this.state.submitting}
+        onInit={this.onInit}
+        {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
+        title={title}
+      >
+        <Field name="name" component={FormInput} type="text" label="Name" placeholderText="Enter team name" />
+        <Field name="regionId" component={FormInput} type="select" label="Region">
+          {this.renderRegionOptions()}
+        </Field>
+        <Field
+          name="description"
+          component={FormInput}
+          type="textarea"
+          label="Description"
+          placeholderText="Enter a short description about your team"
+        />
+        <Field
+          name="goal"
+          component={FormInput}
+          type="text"
+          label="Goal"
+          placeholderText="Enter team point goal"
+          tooltipText="The TransAction points goal for your team. Points are calculated using your team's workout
+          intensity and duration. One minute of workout equals one point, and then multiplied by the workout
+          intensity."
+        />
+      </FormModal>
+    );
+  }
+}
 
 EditTeamForm.propTypes = {
   regions: PropTypes.object.isRequired,
@@ -102,16 +95,12 @@ EditTeamForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
 };
 
-EditTeamForm.defaultProps = {
-  regions: {},
-  isOpen: false,
-  pristine: false,
-};
+EditTeamForm.defaultProps = { regions: {}, isOpen: false, pristine: false };
 
 const validate = (formValues) => {
   const errors = {};
 
-  const goal = parseInt(formValues.goal, 10);
+  const goal = parseInt(formValues.goal);
 
   if (!formValues.regionId || formValues.regionId <= 0) {
     errors.regionId = 'Region required';
@@ -125,7 +114,7 @@ const validate = (formValues) => {
     errors.description = 'Description required';
   }
 
-  if (!formValues.goal || isNaN(goal)) {
+  if (!formValues.goal || isNaN(formValues.goal)) {
     errors.goal = 'Please enter a valid number';
   }
 
@@ -138,10 +127,12 @@ const validate = (formValues) => {
 
 const form = reduxForm({ form: 'editTeamForm', enableReinitialize: true, validate })(EditTeamForm);
 
-const mapStateToProps = (state) => ({
-  regions: state.regions,
-  currentUser: state.users.all[state.users.current.id],
-});
+const mapStateToProps = (state) => {
+  return {
+    regions: state.regions,
+    currentUser: state.users.all[state.users.current.id],
+  };
+};
 
 const formConnect = connect(mapStateToProps, { editTeam, createTeam, fetchCurrentUser })(form);
 

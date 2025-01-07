@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
@@ -11,46 +11,43 @@ import FormInput from '../ui/FormInput';
 
 import * as Constants from '../../Constants';
 
-const EditActivityTypeForm = ({
-  //Assign Values to isOpen and pristine directly as Default props will be removed in future JS.
-  isOpen = false,
-  pristine = false,
-  handleSubmit,
-  initialize,
-  toggle,
-  formType,
-  initialValues,
-  regions,
-  createActivityType,
-  editActivityType,
-}) => {
-  const [submitting, setSubmitting] = useState(false);
+class EditActivityTypeForm extends React.Component {
+  state = { submitting: false };
 
-  useEffect(() => {
-    initialize(initialValues);
-  }, [initialize, initialValues]);
+  onInit = () => {
+    this.props.initialize(this.props.initialValues);
+  };
 
-  const onSubmit = (formValues) => {
-    if (!submitting) {
-      setSubmitting(true);
+  onSubmit = (formValues) => {
+    if (!this.state.submitting) {
+      this.setState({ submitting: true });
     }
 
-    const action =
-      formType === Constants.FORM_TYPE.ADD ? createActivityType(formValues) : editActivityType(formValues.id, formValues);
-    action.finally(() => toggleModal());
+    if (this.props.formType === Constants.FORM_TYPE.ADD) {
+      this.props.createActivityType(formValues).then(() => {
+        this.toggleModal();
+      });
+    } else {
+      this.props.editActivityType(formValues.id, formValues).then(() => {
+        this.toggleModal();
+      });
+    }
   };
 
-  const toggleModal = () => {
-    setSubmitting(false);
-    toggle();
+  toggleModal = () => {
+    this.setState({ submitting: false });
+
+    this.props.toggle();
   };
 
-  const renderRegionOptions = () => {
-    const regionOptions = Object.values(regions).map((region) => (
-      <option value={region.id} key={region.id}>
-        {region.name}
-      </option>
-    ));
+  renderRegionOptions() {
+    const regionOptions = Object.values(this.props.regions).map((region) => {
+      return (
+        <option value={region.id} key={region.id}>
+          {region.name}
+        </option>
+      );
+    });
 
     regionOptions.unshift(<option value={0} key={0} />);
     regionOptions.unshift(
@@ -60,47 +57,45 @@ const EditActivityTypeForm = ({
     );
 
     return regionOptions;
-  };
+  }
 
-  const title = formType === Constants.FORM_TYPE.ADD ? 'Create Activity Type' : 'Edit Activity Type';
+  render() {
+    const title = this.props.formType === Constants.FORM_TYPE.ADD ? 'Create Activity Type' : 'Edit Activity Type';
 
-  return (
-    <FormModal
-      onSubmit={handleSubmit(onSubmit)}
-      toggle={toggleModal}
-      submitting={submitting}
-      {..._.pick({ isOpen, pristine }, ['isOpen', 'pristine'])}
-      title={title}
-    >
-      <Field name="name" component={FormInput} type="text" label="Name" placeholderText="Enter activity type name" />
-      <Field
-        name="description"
-        component={FormInput}
-        type="text"
-        label="Description"
-        placeholderText="Enter activity type description"
-      />
-      <Field name="intensity" component={FormInput} type="select" label="Intensity">
-        <option value={1}>Low Intensity</option>
-        <option value={2}>Medium Intensity</option>
-        <option value={3}>High Intensity</option>
-      </Field>
-    </FormModal>
-  );
-};
+    return (
+      <FormModal
+        onSubmit={this.onSubmit}
+        toggle={this.toggleModal}
+        submitting={this.state.submitting}
+        onInit={this.onInit}
+        {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
+        title={title}
+      >
+        <Field name="name" component={FormInput} type="text" label="Name" placeholderText="Enter activity type name" />
+        <Field
+          name="description"
+          component={FormInput}
+          type="text"
+          label="Description"
+          placeholderText="Enter activity type description"
+        />
+        <Field name="intensity" component={FormInput} type="select" label="Intensity">
+          <option value={1}>Low Intensity</option>
+          <option value={2}>Medium Intensity</option>
+          <option value={3}>High Intensity</option>
+        </Field>
+      </FormModal>
+    );
+  }
+}
 
 EditActivityTypeForm.propTypes = {
-  isOpen: PropTypes.bool,
-  pristine: PropTypes.bool,
+  isOpen: PropTypes.bool.isRequired,
+  pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  initialize: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired,
-  formType: PropTypes.string.isRequired,
-  initialValues: PropTypes.object.isRequired,
-  regions: PropTypes.object.isRequired,
-  createActivityType: PropTypes.func.isRequired,
-  editActivityType: PropTypes.func.isRequired,
 };
+
+EditActivityTypeForm.defaultProps = { isOpen: false, pristine: false };
 
 const validate = (formValues) => {
   const errors = {};
