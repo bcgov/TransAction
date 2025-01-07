@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
@@ -13,92 +13,116 @@ import DatePickerInput from '../ui/DatePickerInput';
 
 import * as Constants from '../../Constants';
 
-class EditEventForm extends React.Component {
-  state = { submitting: false };
+const EditEventForm = ({
+  formType,
+  isOpen,
+  pristine,
+  handleSubmit,
+  initialize,
+  toggle,
+  initialValues,
+  createEvent,
+  editEvent,
+}) => {
+  const [submitting, setSubmitting] = useState(false);
 
-  onInit = () => {
-    this.props.initialize(this.props.initialValues);
-  };
+  const onInit = useCallback(() => {
+    initialize(initialValues);
+  }, [initialize, initialValues]);
 
-  onSubmit = formValues => {
-    if (!this.state.submitting) {
-      this.setState({ submitting: true });
+  useEffect(() => {
+    if (isOpen) {
+      onInit();
+    }
+  }, [isOpen, onInit]);
+
+  const onSubmit = (formValues) => {
+    if (!submitting) {
+      setSubmitting(true);
     }
 
-    if (this.props.formType === Constants.FORM_TYPE.ADD) {
-      this.props.createEvent(formValues).then(() => {
-        this.toggleModal();
-      });
-    } else {
-      this.props.editEvent(formValues.id, formValues).then(() => {
-        this.toggleModal();
-      });
-    }
+    const action =
+      formType === Constants.FORM_TYPE.ADD
+        ? createEvent(formValues)
+        : editEvent(formValues.id, formValues);
+
+    action.finally(() => {
+      toggleModal();
+    });
   };
 
-  toggleModal = () => {
-    this.setState({ submitting: false });
-
-    this.props.toggle();
+  const toggleModal = () => {
+    setSubmitting(false);
+    toggle();
   };
 
-  render() {
-    const title = this.props.formType === Constants.FORM_TYPE.ADD ? 'Add Event' : 'Edit Event';
+  const title = formType === Constants.FORM_TYPE.ADD ? 'Add Event' : 'Edit Event';
 
-    return (
-      <FormModal
-        onSubmit={this.onSubmit}
-        toggle={this.toggleModal}
-        submitting={this.state.submitting}
-        onInit={this.onInit}
-        size="lg"
-        {..._.pick(this.props, ['isOpen', 'handleSubmit', 'pristine'])}
-        title={title}
-      >
-        <Field name="name" component={FormInput} type="input" label="Name" placeholderText="Enter the event name" />
+  return (
+    <FormModal
+      onSubmit={onSubmit}
+      toggle={toggleModal}
+      submitting={submitting}
+      onInit={onInit}
+      size="lg"
+      {..._.pick({ isOpen, handleSubmit, pristine }, ['isOpen', 'handleSubmit', 'pristine'])}
+      title={title}
+    >
+      <Field
+        name="name"
+        component={FormInput}
+        type="input"
+        label="Name"
+        placeholderText="Enter the event name"
+      />
 
-        <Row>
-          <Col>
-            <Field
-              name="startDate"
-              component={DatePickerInput}
-              label="Start Date"
-              className="form-control"
-              todayButton="Today"
-              placeholderText="Start date"
-            />
-          </Col>
-          <Col>
-            <Field
-              name="endDate"
-              component={DatePickerInput}
-              label="End Date"
-              className="form-control"
-              todayButton="Today"
-              placeholderText="End date"
-            />
-          </Col>
-        </Row>
+      <Row>
+        <Col>
+          <Field
+            name="startDate"
+            component={DatePickerInput}
+            label="Start Date"
+            className="form-control"
+            todayButton="Today"
+            placeholderText="Start date"
+          />
+        </Col>
+        <Col>
+          <Field
+            name="endDate"
+            component={DatePickerInput}
+            label="End Date"
+            className="form-control"
+            todayButton="Today"
+            placeholderText="End date"
+          />
+        </Col>
+      </Row>
 
-        <Field
-          name="description"
-          component={FormInput}
-          type="textarea"
-          label="Description"
-          placeholderText="Enter the event description"
-        />
-      </FormModal>
-    );
-  }
-}
+      <Field
+        name="description"
+        component={FormInput}
+        type="textarea"
+        label="Description"
+        placeholderText="Enter the event description"
+      />
+    </FormModal>
+  );
+};
+
 EditEventForm.propTypes = {
   formType: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  initialize: PropTypes.func.isRequired,
+  toggle: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
+  createEvent: PropTypes.func.isRequired,
+  editEvent: PropTypes.func.isRequired,
 };
 
-const validate = formValues => {
+const validate = (formValues) => {
   const errors = {};
 
   if (!formValues.startDate) {
@@ -132,9 +156,6 @@ const validate = formValues => {
 
 const form = reduxForm({ form: 'editEventForm', enableReinitialize: true, validate })(EditEventForm);
 
-const formConnect = connect(
-  null,
-  { editEvent, createEvent }
-)(form);
+const formConnect = connect(null, { editEvent, createEvent })(form);
 
 export default formConnect;
